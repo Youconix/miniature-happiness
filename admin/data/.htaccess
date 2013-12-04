@@ -1,0 +1,10 @@
+# Workaround:
+# Order, Allow and Deny directives have been deprecated since version 2.3 in favor of AuthZ's Require directive. 
+# Versions 2.2 and earlier do not support said directive.
+<IfVersion >= 2.3>
+	Require all denied
+</IfVersion>
+<IfVersion < 2.3>
+	Order Allow,Deny
+	Deny from All
+</IfVersion>

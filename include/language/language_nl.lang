@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+	<encoding>iso-8859-1</encoding>
+	<locale>nl_NL</locale>
+	<noscript>Activeer AUB javascript.</noscript>
+	<sessionExpired>Uw sessie is verlopen. Opnieuw inloggen.</sessionExpired>
+	
+	<days>
+		<day0>Zondag</day0>
+		<day1>Maandag</day1>
+		<day2>Dinsdag</day2>
+		<day3>Woensdag</day3>
+		<day4>Donderdag</day4>
+		<day5>Vrijdag</day5>
+		<day6>Zaterdag</day6>
+	</days>
+	
+	<weekdaysShort>
+		<day0>Zo</day0>
+		<day1>Ma</day1>
+		<day2>Di</day2>
+		<day3>Wo</day3>
+		<day4>Do</day4>
+		<day5>Vr</day5>
+		<day6>Za</day6>
+	</weekdaysShort>
+
+	<months>
+		<month1>Januari</month1>
+		<month2>Februari</month2>
+		<month3>Maart</month3>
+		<month4>April</month4>
+		<month5>Mei</month5>
+		<month6>Juni</month6>
+		<month7>Juli</month7>
+		<month8>Augustus</month8>
+		<month9>September</month9>
+		<month10>Oktober</month10>
+		<month11>November</month11>
+		<month12>December</month12>
+	</months>
+
+	<gender>
+		<male>Man</male>
+		<female>Vrouw</female>
+		<other>Niet gespecificeerd</other>
+	</gender>
+
+	<rights>
+		<level_0>Gebruiker</level_0>
+		<level_1>Moderator</level_1>
+		<level_2>Administrator</level_2>
+	</rights>
+	
+	<marital>
+		<married>Getrouwd</married>
+		<registeredPartner>registeerd partnerschap</registeredPartner>
+		<divorced>Gescheiden</divorced>
+		<unknown>Anders</unknown>
+		<single>Alleenstaand</single>
+		<livingTogetherContract>Samenlevend met contract</livingTogetherContract>
+		<livingTogether>Samenlevend</livingTogether>
+		<widow>Weduwe</widow>
+	</marital>
+	
+	<admin>
+		<software>
+			<noContact>Er kan geen contact gemaakt worden met de update server.</noContact>
+			<upToDate>Systeem is up to date.</upToDate>
+			<updateAvailable>Er zijn updates beschikbaar.</updateAvailable>
+			<updateFailure>Er is een fout opgetreden tijdens het updaten.</updateFailure>
+			<updateSucceed>Het systeem is bijgewerkt.</updateSucceed>
+		</software>	
+		<index>
+			<title>Beheerderspaneel</title>
+			<portletLoading>Laden.....</portletLoading>
+			<securityTitle>Veiligheid log</securityTitle>
+			<errorTitle>Fout log</errorTitle>
+		</index>
+		<groups>
+			<title>Groepen beheer</title>
+			<id>ID</id>
+			<name>Naam</name>
+			<group>Groep</group>
+			<groups>Groepen</groups>
+			<viewUsers>Bekijk gebruikers</viewUsers>
+			<description>Beschrijving</description>
+			<standard>Standaard</standard>
+			<user>Gebruiker</user>
+			<rights>Rechten</rights>
+			<headerAdd>Toevoegen groep</headerAdd>
+			<headerEdit>Groep bewerken</headerEdit>
+			<headerUsers>Gebruikers van groep</headerUsers>
+			<js>
+				<nameEmpty>De naam is niet ingevuld.</nameEmpty>
+				<descriptionEmpty>De beschrijving is niet ingevuld.</descriptionEmpty>
+			</js>
+		</groups>
+		<users>
+			<title>Gebruiker beheer</title>
+			<users>Gebruikers</users>
+			<user>Gebruiker</user>
+			<bot>Bot</bot>
+			<username>Gebruikersnaam</username>
+			<forname>Voornaam</forname>
+			<nameBetween>Tussenvoegsel</nameBetween>
+			<surname>Achternaam</surname>
+			<email>Email</email>
+			<bot>Systeem bot</bot>
+			<activated>Geactiveerd</activated>
+			<blocked>Geblokkeerd</blocked>
+			<headerPassword>Wachtwoord opnieuw instellen</headerPassword>
+			<profile>Profiel tekst</profile>
+			<password>Wachtwoord</password>
+			<passwordAgain>Wachtwoord herhalen</passwordAgain>
+			<registrated>Geregistreerd op</registrated>
+			<headerGroups>Groepen</headerGroups>
+			<headerAdd>Gebruiker toevoegen</headerAdd>
+			<headerView>Gebruiker bekijken</headerView>
+			<headerEdit>Gebruiker bewerken</headerEdit>
+			<headerSearch>Gebruiker zoeken</headerSearch>
+			<registratedTrough>Deze gebruiker is geregistreerd via</registratedTrough>
+			<nationality>Nationaliteit</nationality>
+			<telephone>Telefoon</telephone>
+			<yes>Ja</yes>
+			<no>Nee</no>
+			<js>
+				<nickNotice>Deze gebruikersnaam is al in gebruik.</nickNotice>
+				<emailNotice>Dit E-mailadres is al in gebruik.</emailNotice>
+				<usernameEmpty>De gebruikersnaam is niet ingevuld.</usernameEmpty>
+				<passwordEmpty>Het wachtwoord is niet ingevuld.</passwordEmpty>
+				<passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
+				<passwordChanged>Het wachtwoord is veranderd.</passwordChanged>
+				<firstNameEmpty>De voornaam is niet ingevuld.</firstNameEmpty>
+				<surnameEmpty>De achternaam is niet ingevuld.</surnameEmpty>
+				<nationalityEmpty>Je hebt geen nationaliteit ingevuld.</nationalityEmpty>
+            	<telephoneEmpty>Je hebt geen telefoon nummer ingevuld.</telephoneEmpty>
+				<emailInvalid>Het E-mail adres is ongeldig.</emailInvalid>
+				<blockRejected>Euhm probeer je nu jezelf te blokkeren?</blockRejected>
+				<blockConfirm>Weet je zeker dat je deze gebruiker wilt blokkeren? \nHij/zij kan dan niet meer inloggen.</blockConfirm>
+				<deleteRejected>Euhm probeer je nu jezelf te verwijderen?</deleteRejected>
+				<deleteConfirm>Weet u zeker dat u deze gebruiker permanent wilt verwijderen?</deleteConfirm>
+				<groupAdminRejected>Je kan jezelf niet uit de Admin groep gooien. Deze heb je nodig voor het beheerpaneel.</groupAdminRejected>
+				<groupAdminConfirm>Weet je zeker dat je deze gebruiker toegang wilt geven tot het beheerpaneel?</groupAdminConfirm>
+			</js>
+		</users>
+		<stats>
+			<title>Statistieken</title>
+			<visitors>Bezoekers</visitors>
+			<uniqueVisitors>Unieke bezoekers</uniqueVisitors>
+			<OSses>Besturings systemen</OSses>
+			<OS>Besturings systeem</OS>
+			<browsers>Browsers</browsers>
+			<browser>Browser</browser>
+			<version>Versie</version>
+			<screenColors>Scherm kleuren</screenColors>
+			<colors>Kleuren</colors>
+			<screenSizes>Scherm Afmetingen</screenSizes>
+			<amount>Aantal</amount>
+			<size>Afmeting</size>
+			<fullList>Volledige lijst</fullList>
+			<reference>Verbinding naar site vanaf</reference>
+			<bookmark>Direkt adres / Bookmarks</bookmark>
+			<pages>Bezoekers per pagina</pages>
+			<domains>Bezoekers per domein</domains>
+		</stats>
+		<messages>
+			<screenTitle>Berichten</screenTitle>
+			<noMessages>Geen berichten</noMessages>
+			<title>Titel</title>
+			<date>Datum</date>
+		</messages>
+		<updates>
+			<title>Updates</title>
+		</updates>
+		<logs>
+			<title>Logboeken</title>				
+			<name>Naam</name>
+			<date>Datum</date>
+			<download>Downloaden</download>
+			<jsDelete>Weet je zeker dat je de log "+name+" wilt verwijderen?</jsDelete>
+		</logs>
+		<maintenance>
+			<compressCSS>CSS bestanden samenvoegen</compressCSS>
+			<compressJS>Javascript bestanden samenvoegen</compressJS>
+			<checkDatabase><![CDATA[ Database controleren &amp; repareren ]]></checkDatabase>
+			<optimizeDatabase>Database optimaliseren</optimizeDatabase>
+			<cleanLogs>Oude logs opruimen</cleanLogs>
+			<systemUpdate>Systeem updaten</systemUpdate>
+			<cleanStatsYear>Statistieken ouder dan een jaar verwijderen</cleanStatsYear>
+			<cleanStatsMonth>Statistieken ouder dan een maand verwijderen</cleanStatsMonth>
+			<ready>Gereed</ready>
+			<pending>Bezig</pending>
+			<error>Fout, zie log</error>
+		</maintenance>
+		<notices>
+			<screenTitle>Beheer paneel : bekijk systeem meldingen</screenTitle>
+			<notices>Systeem meldingen</notices>
+		</notices>
+		<settings>
+			<title>Instellingen</title>
+			<basedir>Submap</basedir>
+			<siteUrl>Site url</siteUrl>
+			<timezone>Tijd zone</timezone>
+			<sessionTitle>Sessie data (laat leeg voor standaard)</sessionTitle>
+			<sessionName>Sessie naam</sessionName>
+			<sessionPath>Sessie map</sessionPath>
+			<sessionExpire>Sessie verloop tijd (seconden)</sessionExpire>
+			<siteSettings>Site instellingen</siteSettings>
+			<defaultLanguage>Standaard taal</defaultLanguage>
+			<templateDir>Template map</templateDir>
+			<databaseSettings>Database instellingen</databaseSettings>
+			<username>Gebruikersnaam</username>
+			<password>Wachtwoord</password>
+			<database>Database</database>
+			<host>Server (host)</host>
+			<port>Poort (laat leeg voor standaard)</port>
+			<type>Type</type>
+			<ftpSettings>FTP instellingen</ftpSettings>
+			<disable>Uitschakelen</disable>
+			<js>
+				<urlEmpty>De site url kan niet leeg zijn.</urlEmpty>
+				<timezoneEmpty>De tijdzone kan niet leeg zijn.</timezoneEmpty>
+				<timezoneInvalid>De tijdzone is ongeldig.</timezoneInvalid>
+				<sessionInvalid>De sessie verloop tijd is ongeldig.</sessionInvalid>
+				<databaseEmpty>Niet alle database gegevens zijn ingevuld.</databaseEmpty>
+				<databasePortInvalid>De database poort is ongeldig.</databasePortInvalid>
+				<databaseInvalid>De database gegevens zijn incorrect.</databaseInvalid>
+				<ftpEmpty>Niet alle FTP gegevens zijn ingevuld.</ftpEmpty>
+				<ftpPortInvalid>De FTP poort is ongeldig.</ftpPortInvalid>
+				<ftpInvalid>De FTP gegevens zijn incorrect.</ftpInvalid>
+				<saved>De instellingen zijn opgeslagen.</saved>
+			</js>
+		</settings>
+		<menu>
+			<groups>Groepen</groups>
+    		<users>Gebruikers</users>
+    		<logs>Logs</logs>
+    		<settings>Instellingen</settings>
+    		<stats>Statistieken</stats>
+    		<maintenance>Onderhoud</maintenance>
+		</menu>
+	</admin>
+
+	<bann>
+		<bann1>1 Dag</bann1>
+		<bann2>1 Week</bann2>
+		<bann3>1 Maand</bann3>
+		<bann4>Permanent</bann4>
+	</bann>
+	
+	<buttons>
+	   <add>Toevoegen</add>
+	   <reset>Resetten</reset>
+	   <cancel>Annuleren</cancel>
+	   <edit>Aanpassen</edit>
+	   <save>Opslaan</save>
+	   <delete>Verwijderen</delete>
+	   <back>Terug</back>
+	   <view>Bekijken</view>
+	   <search>Zoeken</search>
+	   <send>Verzenden</send>
+	   <upload>Uploaden</upload>
+	   <download>Downloaden</download>
+	   <close>Sluiten</close>
+	</buttons>
+	
+	<menu>
+	   <home>Home</home>
+       <login>Inloggen</login>
+       <logout>Uitloggen</logout>
+       <adminPanel>Beheer paneel</adminPanel>
+    </menu>
+
+	<header>
+		<userWelcome>Welkom </userWelcome>
+		<adminWelcome>Welkom admin </adminWelcome>
+	</header>
+
+	<login>
+		<title></title>
+		<username>Gebruikersnaam </username>
+		<password>Wachtwoord</password>
+		<button>Inloggen</button>
+		<registration>Registreren</registration>
+		<forgotPassword>Wachtwoord vergeten</forgotPassword>
+		<editPassword>Wachtwoord aanpassen</editPassword>
+		<currentPassword>Huidige wachtwoord</currentPassword>
+		<newPassword>Nieuwe wachtwoord</newPassword>
+		<newPasswordAgain>Nieuwe wachtwoord herhalen</newPasswordAgain>
+		<currentPasswordIncorrect>Het oude wachtwoord is incorrect.</currentPasswordIncorrect>
+		<autologin>Automatisch inloggen</autologin>
+		<loginWith>Inloggen met</loginWith>
+	</login>
+	<logout>
+		<title></title>
+		<logoutSucceed>U Bent uitgelogd.</logoutSucceed>
+		<logoutFailed>U kon niet uitgelogd worden.</logoutFailed>
+	</logout>
+	<index>
+		<title>Standaard index pagina</title>
+	</index>
+	<registration>
+	    <title>Meld je nu aan</title>
+		<screenTitle>Registreren</screenTitle>
+		<name>Gebruikernaam</name>
+		<email>E-mail adres</email>
+		<password1>Wachtwoord</password1>
+		<password2>Wachtwoord herhalen</password2>
+		<conditions>Ik ga akkoord met de voorwaarden</conditions>
+		<submitButton>Registreren</submitButton>
+		<passwordIncorrect>De wachtwoorden zijn niet gelijk</passwordIncorrect>
+		<checkConditions>De voorwaarden moeten geaccepteerd worden</checkConditions>
+		<failed>Je account kon niet geregistreerd worden. Probeer het later nog een keer.</failed>
+		<emailSend>Je account is geregistreerd. Er is een activeringsmail verzonden naar [email].</emailSend>
+		<emailFailed>De activatie email kon niet verzonden worden.</emailFailed>
+		<captcha>Type de onderstaande code over als controle.</captcha>
+		<notices>
+            <notices0>Je hebt geen gebruikersnaam ingevuld.</notices0>
+            <notices1>Je hebt geen E-mail adres ingevuld.</notices1>
+            <notices2>Je hebt geen wachtwoord ingevuld.</notices2>
+            <conditions>Je moet wel met de voorwaarden akkoord gaan.</conditions>
+            <emailInvalid>Je hebt een ongeldig E-mail adres ingevuld.</emailInvalid>
+            <passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
+            <codeInvalid>De code is incorrect.</codeInvalid>
+            <usernameTaken>De gebruikersnaam is al in gebruik.</usernameTaken>
+            <usernameTakenOpenID>Er is al een account met deze gebruikersnaam. Heb je niet al een keer geregistreerd?</usernameTakenOpenID>
+            <emailTaken>Het E-mail adres is al in gebruik.</emailTaken>
+            <emailTakenOpenID>Er is al een account met dit E-mail adres. Heb je niet al een keer geregistreerd?</emailTakenOpenID>
+            <usernameToShort>De gebruikernaam moet minimaal 3 tekens lang zijn.</usernameToShort>
+            <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
+		</notices>
+		<registrationVia>Registratie via</registrationVia>
+	</registration>
+	<activate>
+	   <accountActivated><![CDATA[ Je account is geactiveerd. Je kan nu <a href="{NIV}login.php">inloggen.</a> ]]></accountActivated>
+	   <accountNotActivated>De activerings-link is ongeldig. Mogelijk is het account al geactiveerd.</accountNotActivated>
+	</activate>
+	<forgotPassword>
+	   <header>Wachtwoord resetten</header>
+	   <verifyCodeFailed>Het wachtwoord kon niet gereset worden. De reset code is niet geldig.</verifyCodeFailed>
+	   <verifyCodeSuccess><![CDATA[ Het wachtwoord is gereset. Je kan nu <a href="{NIV}login.php">inloggen</a>. ]]></verifyCodeSuccess>
+	   <fieldsEmpty>Je hebt niet alle velden ingevuld.</fieldsEmpty>
+	   <emailError>Het E-mail adres is ongeldig.</emailError>
+       <resetFailed>Onbekende combinatie van gebruikersnaam en E-mail adres.</resetFailed>
+       <resetSuccess>Er is een wachtwoord reset email verstuurd naar [email].</resetSuccess>	
+       <openID>Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk.</openID>   
+	</forgotPassword>
+	
+	<title>Scripthulp framework</title>
+	<slogan>Standaard slogan</slogan>
+	
+	
+  <messages>
+    <messages>Berichten</messages>
+    <subject>Onderwerp</subject>
+    <sender>Verzender</sender>
+    <recipient>Ontvanger</recipient>
+    <date>Datum</date>
+    <send>Verzonden</send>
+    <sendTo>Verzonden aan</sendTo>
+    <new>Nieuw bericht</new>
+    <form>
+      <read>Gelezen</read>
+      <unread>Ongelezen</unread>
+      <message>Bericht</message>
+      <subject>Onderwerp</subject>
+      <recipient>Ontvanger</recipient>
+      <reset>Opnieuw</reset>
+      <answer>Beantwoorden</answer>
+    </form>
+    <notices>
+      <messageSent><![CDATA[<h2 class="Notice">Je hebt het bericht naar [username] verzonden!]]></messageSent>
+      <noSuchUser><![CDATA[<h2 class="errorNotice">Deze gebruiker bestaat niet!</h2>]]></noSuchUser>
+      <noReceiver>Er is geen ontvanger ingevuld.</noReceiver>
+      <noSubject>Er is geen onderwerp ingevuld.</noSubject>
+      <noMessage>Er is geen bericht ingevuld.</noMessage>
+      <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
+    </notices>
+  </messages>
+	
+	<errors>
+		<error403>
+			<accessDenied>Verboden toegang.</accessDenied>
+			<noRights>Je hebt niet de benodigde rechten om deze pagina te bekijken.</noRights>
+		</error403>
+		<error404>
+			<notFound>Pagina niet gevonden.</notFound>
+			<pageMissing>De opgevraagde pagina is onvindbaar op deze server.</pageMissing>
+		</error404>
+		<error500>
+			<serverError>Oeps er ging iets fout.</serverError>
+			<systemError>Er heeft zich een fout voorgedaan op deze pagina. De administrator is gewaarschuwd.</systemError>
+		</error500>
+	</errors>
+</language>

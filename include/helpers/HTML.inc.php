@@ -1,0 +1,663 @@
+<?php
+/**
+ * Helper for generating (X)HTML-code
+ *
+ * This file is part of Scripthulp framework
+ *
+ * @copyright 2012,2013,2014  Rachelle Scheijen
+ * @author    Rachelle Scheijen
+ * @since     1.0
+ * @changed    12/06/2013
+ *
+ * Scripthulp framework is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Scripthulp framework is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
+ */
+class Helper_HTML extends Helper {
+	protected $bo_xhtml = true;
+	protected $bo_html5 = false;
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct() {
+		$this->bo_xhtml = null;
+		$this->bo_html5 = null;
+	}
+
+	/**
+	 * Sets the HTML type for the helper
+	 *
+	 * @param  String $s_type The HTML type (html|xhtml)
+	 */
+	public function setHtmlType($s_type) {
+		$s_type = strtolower($s_type);
+
+		$this->bo_xhtml = false;
+
+		if ($s_type == 'xhtml') {
+			$this->bo_xhtml = true;
+		}
+	}
+
+	/**
+	 * Sets the html type to html 5
+	 */
+	public function setHTML5() {
+		$this->bo_html5 = true;
+	}
+
+	/**
+	 * Generates a div
+	 *
+	 * @param   String $s_content   The content, optional
+	 * @return  HTML_Div The Div object
+	 */
+	public function div($s_content = '') {
+		$this->checkClass('HTML_Div');
+		 
+		return new HTML_Div($s_content);
+	}
+
+	/**
+	 * Generates a paragraph
+	 *
+	 * @param   String      $s_content      The content of the paragraph
+	 * @return  HTML_Paragraph   The Paragraph object
+	 */
+	public function paragraph($s_content) {
+		$this->checkClass('HTML_Paragraph');
+		 
+		return new HTML_Paragraph($s_content);
+	}
+
+	/**
+	 * Generates a multiply row text input field
+	 *
+	 * @param   String      $s_name         The name of the textarea
+	 * @param   String      $s_value        The default text of the textarea, optional
+	 * @return  HTML_Textarea    The Textarea object
+	 */
+	public function textarea($s_name, $s_value = '') {
+		$this->checkClass('HTML_Textarea');
+		 
+		return new HTML_Textarea($s_name, $s_value);
+	}
+
+	/**
+	 * Generates a list
+	 *
+	 * @param   Boolean $bo_numberd True when a numberd list is needed, default false
+	 * @return  HTML_UnList  The generated list object
+	 */
+	public function unList($bo_numberd = false) {
+		$this->checkClass('HTML_UnList');
+		 
+		return new HTML_UnList($bo_numberd);
+	}
+
+	/**
+	 * Generates a list item
+	 *
+	 * @param	String	$s_content	The content of the list item
+	 * @return	HTML_ListItem The generated list item
+	 */
+	public function listItem($s_content) {
+		$this->checkClass('HTML_ListItem','UnList');
+		 
+		return new HTML_ListItem($s_content);
+	}
+
+	/**
+	 * Generates a form
+	 *
+	 * @param	String	$s_link			The url
+	 * @param	String	$s_method		The call method (get|post)
+	 * @param	Boolean	$bo_multidata	Set to true for a mixed content form
+	 * @return  HTML_Form    The Form object
+	 */
+	public function form($s_link, $s_method, $bo_multidata = false) {
+		$this->checkClass('HTML_Form');
+		 
+		return new HTML_Form($s_link, $s_method, $bo_multidata);
+	}
+
+	/**
+	 * Generates a table
+	 *
+	 * @return  HTML_Table   The table object
+	 */
+	public function table() {
+		$this->checkClass('HTML_Table');
+
+		return new HTML_Table();
+	}
+
+	/**
+	 * Generates a table row
+	 *
+	 * @return  HTML_TableRow    The tableRow object
+	 */
+	public function tableRow() {
+		$this->checkClass('HTML_TableRow','HTML_Table');
+
+		return new HTML_TableRow();
+	}
+
+	/**
+	 * Generates a table cel
+	 *
+	 * @param   String      $s_value    The value from the cell,optional
+	 * @return  HTML_TableCell   The TableCell object
+	 */
+	public function tableCell($s_value = '') {
+		$this->checkClass('HTML_TableCell','HTML_Table');
+
+		return new HTML_TableCell($s_value);
+	}
+
+	/**
+	 * Generates a text input field
+	 *
+	 * @param   String  $s_name     The name of the text field
+	 * @param   String  $s_type     The type of the field (text|password|hidden|email)
+	 * @param   String  $s_value    The default text of the field, optional
+	 * @return  HTML_Input   The Input object
+	 */
+	public function input($s_name, $s_type, $s_value = '') {
+		$this->checkClass('HTML_Input');
+		 
+		return new HTML_Input($s_name, $s_type, $s_value, $this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a button
+	 *
+	 * @param 		String  $s_value    The text on the button
+	 * @param      String  $s_name     The name of the button, leave empty for no name
+	 * @param      String  $s_type     The type of the button (button|reset|submit)
+	 * @return     HTML_Button  The Button object
+	 */
+	public function button($s_value, $s_name, $s_type) {
+		$this->checkClass('HTML_Button','HTML_Input');
+		 
+		return new HTML_Button($s_value, $s_name, $s_type, $this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a link for linking to other pages
+	 *
+	 * @param       String  $s_url      The url the link has to point to
+	 * @param       String  $s_value    The link text, optional
+	 * @return      HTML_Link    The Link object
+	 */
+	public function link($s_url, $s_value = '') {
+		$this->checkClass('HTML_Link');
+		 
+		return new HTML_Link($s_url, $s_value);
+	}
+
+	/**
+	 * Generates a image
+	 *
+	 * @param       String  $s_url      The source url from the image
+	 * @return      HTML_Image   The Image object
+	 */
+	public function image($s_url) {
+		$this->checkClass('HTML_Image');
+		 
+		return new HTML_Image($s_url, $this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a header
+	 *
+	 * @param       int     $i_level    The type of header (1|2|3|4|5)
+	 * @param       String  $s_content  The content of the header
+	 * @return      HTML_Header  The Header object
+	 */
+	public function header($i_level, $s_content) {
+		$this->checkClass('HTML_Header');
+		 
+		return new HTML_Header($i_level, $s_content);
+	}
+
+	/**
+	 * Generates a radio button
+	 *
+	 * @param String	$s_name	The name
+	 * @param String	$s_value The value
+	 * @return      HTML_Radio   The Radio button object
+	 */
+	public function radio($s_name = '',$s_value = '') {
+		$this->checkClass('HTML_Radio','HTML_Input');
+		 
+		return new HTML_Radio($s_name,$s_value,$this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a checkbox
+	 *
+	 * @param String	$s_name	The name
+	 * @param String	$s_value The value
+	 * @return      HTML_Checkbox    The Checkbox object
+	 */
+	public function checkbox($s_name = '',$s_value = '') {
+		$this->checkClass('HTML_Checkbox','HTML_Input');
+		 
+		return new HTML_Checkbox($s_name,$s_value,$this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a select list
+	 *
+	 * @param   String  $s_name     The name of the select list
+	 * @return  HTML_Select   The Select list object
+	 */
+	public function select($s_name) {
+		$this->checkClass('HTML_Select');
+		 
+		return new HTML_Select($s_name);
+	}
+
+	/**
+	 * Generates a link to a external stylesheet
+	 *
+	 * @param    String $s_link  The link too the css-file
+	 * @param    String $s_media The media where the stylesheet is for, optional (screen|print|mobile)
+	 * @return   HTML_StylesheetLink  The Stylesheet link object
+	 */
+	public function stylesheetLink($s_link, $s_media = 'screen') {
+		$this->checkClass('HTML_StylesheetLink','Head');
+		 
+		return new HTML_StylesheetLink($s_link, $s_media, $this->bo_xhtml, $this->bo_html5);
+	}
+
+	/**
+	 * Generates the stylesheet tags for inpage CSS
+	 *
+	 * @param  String  $s_css  The css-content
+	 * @return	HTML_Stylesheet  The generated stylesheet object
+	 */
+	public function stylesheet($s_css) {
+		$this->checkClass('HTML_Stylesheet','Head');
+		 
+		return new HTML_Stylesheet($s_css, $this->bo_html5);
+	}
+
+	/**
+	 * Generates a link to a external javascript file
+	 *
+	 * @param	String $s_link  The link to the javascript-file
+	 * @return HTML_JavascriptLink  The Javascript link object
+	 */
+	public function javascriptLink($s_link) {
+		$this->checkClass('HTML_JavascriptLink','Head');
+		 
+		return new HTML_JavascriptLink($s_link, $this->bo_html5);
+	}
+
+	/**
+	 * Generates the javascript tags for inpage javascript
+	 *
+	 * @param  String  $s_javascript      The javascript-content
+	 * @return	HTML_Javascript  The generated javascript object
+	 */
+	public function javascript($s_javascript) {
+		$this->checkClass('HTML_Javascript','Head');
+		 
+		return new HTML_Javascript($s_javascript, $this->bo_html5);
+	}
+
+	/**
+	 * Generates a meta tag
+	 *
+	 * @param   String  $s_name     The name of the meta tag
+	 * @param   String  $s_content  The content of the meta tag
+	 * @param   String  $s_scheme   The optional scheme of the meta tag
+	 * @return  HTML_Metatag The metatag object
+	 */
+	public function metatag($s_name, $s_content, $s_scheme = '') {
+		$this->checkClass('HTML_Metatag','Head');
+		 
+		return new HTML_Metatag($s_name, $s_content, $s_scheme, $this->bo_xhtml);
+	}
+
+	/**
+	 * Generates a span
+	 *
+	 * @param   String $s_content The content of the span
+	 * @return  HTML_Span   The span object
+	 */
+	public function span($s_content) {
+		$this->checkClass('HTML_Span');
+		 
+		return new HTML_Span($s_content);
+	}
+
+	/**
+	 * Generates a audio object
+	 * HTML 5 only
+	 *
+	 * @param String $s_url		The audio url
+	 * @param String $s_type	The audio type, default ogg
+	 * @return HTML_Audio		The audio object
+	 */
+	public function audio($s_url,$s_type = 'ogg'){
+		if( !$this->bo_html5 )
+		throw new Exception("Audio is only supported in HTML 5");
+
+		$this->checkClass('HTML_Audio','Video');
+		 
+		return new HTML_Audio($s_url,$s_type);
+	}
+
+	/**
+	 * Generates a video object
+	 * HTML 5 only
+	 *
+	 * @param String $s_url		The source url
+	 * @param String $s_type	The video type, default WebM
+	 * @return HTML_Video		The video object
+	 */
+	public function video($s_url,$s_type = 'WebM'){
+		if( !$this->bo_html5 )
+		throw new Exception("Video is only supported in HTML 5");
+
+		$this->checkClass('HTML_Video');
+		 
+		return new HTML_Video($s_url,$s_type);
+	}
+
+	/**
+	 * Generates a canvas object
+	 * HTML 5 only
+	 *
+	 * @return HTML_Canvas	The canvas object
+	 */
+	public function canvas(){
+		if( !$this->bo_html5 )
+		throw new Exception("Canvas is only supported in HTML 5");
+
+		$this->checkClass('HTML_Canvas','Draw');
+		 
+		return new HTML_Canvas();
+	}
+
+	/**
+	 * Generates a header object
+	 * HTML 5 only
+	 *
+	 * @param String $s_content		The content
+	 * @return HTML_Header	The header object
+	 */
+	public function pageHeader($s_content = ''){
+		if( !$this->bo_html5 )
+		throw new Exception("Header is only supported in HTML 5");
+
+		$this->checkClass('HTML_PageHeader','Div');
+		 
+		return new HTML_PageHeader($s_content);
+	}
+
+	/**
+	 * Generates a footer object
+	 * HTML 5 only
+	 *
+	 * @param String $s_content		The content
+	 * @return HTML_Footer		The footer object
+	 */
+	public function pageFooter($s_content = ''){
+		if( !$this->bo_html5 )
+		throw new Exception("Footer is only supported in HTML 5");
+
+		$this->checkClass('HTML_Footer','Div');
+		 
+		return new HTML_Footer($s_content);
+	}
+
+	/**
+	 * Generates a navigation object
+	 * HTML 5 only
+	 *
+	 * @param String $s_content		The content
+	 * @return HTML_Nav		The navigation object
+	 */
+	public function navigation($s_content = ''){
+		if( !$this->bo_html5 )
+		throw new Exception("Navigation is only supported in HTML 5");
+
+		$this->checkClass('HTML_Nav','Div');
+		 
+		return new HTML_Nav($s_content);
+	}
+
+	/**
+	 * Checks if a class is loaded. If not the class is included
+	 *
+	 * @param String $s_name	The class name
+	 * @param String $s_name	The filename if different from the class name, optional
+	 */
+	private function checkClass($s_name,$s_file = ''){
+		if( !class_exists($s_name) ){
+			if( empty($s_file) )	$s_file = str_replace('HTML_','',$s_name);
+
+			require(NIV.'include/helpers/html/'.$s_file.'.php');
+		}
+	}
+}
+
+/**
+ * Core HTML class
+ */
+abstract class CoreHtmlItem {
+	protected $s_tag;
+	protected $s_between = '';
+	protected $s_value = '';
+	protected $s_id = '';
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct(){
+		$this->s_tag = null;
+		$this->s_between = null;
+		$this->s_value = null;
+		$this->s_id = null;
+	}
+
+	/**
+	 * Parses the incoming content
+	 *
+	 * @param String/CoreHTMLItem $s_content	The content
+	 * @throws Exception if the type is incompatible
+	 * @return String	The parses content
+	 */
+	protected function parseContent($s_content) {
+		if (is_object($s_content)) {
+			if (!is_subclass_of($s_content, 'CoreHtmlItem')) {
+				throw new Exception("Only types of CoreHTMLItem can be automaticly parsed.");
+			} else {
+				$s_content = $s_content->generateItem();
+			}
+		}
+
+		return $s_content;
+	}
+
+	/**
+	 * Sets the id on the item.  Overwrites the id if a id is allready active
+	 *
+	 * @param String $s_id		The ID
+	 */
+	public function setID($s_id) {
+		$this->s_id = $s_id;
+
+		return $this;
+	}
+
+	/**
+	 * Generates the (X)HTML-code
+	 *
+	 * @return  String  The (X)HTML code
+	 */
+	public function generateItem() {
+		if (!empty($this->s_id)) {
+			$this->s_between .= ' id="' . trim($this->s_id) . '"';
+		}
+		 
+		$s_value = str_replace(array('{value}', '{between}'), array($this->s_value, trim($this->s_between)), $this->s_tag);
+
+		return $s_value;
+	}
+}
+
+/**
+ * HTML parent class
+ */
+abstract class HtmlItem extends CoreHtmlItem {
+	protected $a_eventName = array();
+	protected $a_eventValue = array();
+	protected $s_style = '';
+	protected $s_class = '';
+	protected $s_javascript = '';
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct(){
+		$this->a_eventName	= null;
+		$this->a_eventValue = null;
+		$this->s_style	= null;
+		$this->s_class = null;
+		$this->s_javascript = null;
+		 
+		parent::__destruct();
+	}
+
+	/**
+	 * Sets the given event on the item
+	 *
+	 * @param String $s_name	The event name
+	 * @param String $s_value	The event value
+	 */
+	public function setEvent($s_name, $s_value) {
+		$this->a_eventName[] = $s_name;
+		$this->a_eventValue[] = $s_value;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the style on the item.  Adds the style if a style is allready active
+	 *
+	 * @param String $s_style	The style
+	 */
+	public function setStyle($s_style) {
+		if (!empty($this->s_style))
+		$this->s_style .= '; ';
+		$this->s_style .= ' ' . $s_style;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the class on the item.  Adds the class if a class is allready active
+	 *
+	 * @param String $s_class	The class
+	 */
+	public function setClass($s_class) {
+		if (!empty($this->s_class))
+		$this->s_class .= ' ';
+		$this->s_class .= ' ' . $s_class;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the value on the item.  Adds the value if a value is allready set
+	 *
+	 * @param String $s_value	The value
+	 */
+	public function setValue($s_value) {
+		$s_value = $this->parseContent($s_value);
+
+		$this->s_value .= $s_value;
+
+		return $this;
+	}
+
+	/**
+	 * Generates the (X)HTML-code
+	 *
+	 * @see  CoreHtmlItem::generateItem()
+	 * @return  String  The (X)HTML code
+	 */
+	public function generateItem() {
+		$this->s_javascript = '';
+		for ($i = 0; $i < count($this->a_eventName); $i++) {
+			$this->s_javascript .= $this->a_eventName[$i] . '="' . $this->a_eventValue[$i] . '" ';
+		}
+
+		if (!empty($this->s_style)) {
+			$this->s_between .= 'style="' . trim($this->s_style) . '"';
+		}
+		if (!empty($this->s_class)) {
+			$this->s_between .= ' class="' . trim($this->s_class) . '"';
+		}
+		if (!empty($this->s_javascript)) {
+			$this->s_between .= ' ' . trim($this->s_javascript);
+		}
+
+		return parent::generateItem();
+	}
+}
+
+/**
+ * HTML form parent class
+ */
+abstract class HtmlFormItem extends HtmlItem {
+	private $bo_disabled = false;
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct(){
+		$this->bo_disabled	= null;
+		 
+		parent::__destruct();
+	}
+
+	/**
+	 * Enables or disables the item
+	 *
+	 * @param Boolean $bo_disabled		Set to true to disable the item
+	 */
+	public function setDisabled($bo_disabled) {
+		$this->bo_disabled = $bo_disabled;
+	}
+
+	/**
+	 * Generates the (X)HTML-code
+	 *
+	 * @see  HtmlItem::generateItem()
+	 * @return  String  The (X)HTML code
+	 */
+	public function generateItem() {
+		if ($this->bo_disabled) {
+			$this->s_between .= ' disabled="disabled"';
+		}
+
+		return parent::generateItem();
+	}
+}
+?>

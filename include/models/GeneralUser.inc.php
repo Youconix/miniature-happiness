@@ -1,0 +1,43 @@
+<?php
+/** 
+ * Model is the general user model class. This class is abstract and                 
+ * should be inheritanced by every user model
+ *                                                                              
+ * This file is part of Scripthulp framework                                    
+ *                                                                              
+ * @copyright 2012,2013,2014  Rachelle Scheijen                                
+ * @author    Rachelle Scheijen                                                
+ * @since     1.0                                                              
+ * @changed   10/07/12                                                          
+ *                                                                              
+ * Scripthulp framework is free software: you can redistribute it and/or modify 
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3 of the License, or            
+ * (at your option) any later version.                                          
+ *                                                                              
+ * Scripthulp framework is distributed in the hope that it will be useful,      
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                
+ * GNU General Public License for more details.                                 
+ *                                                                              
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
+ */
+abstract class GeneralUser extends Model {
+    /**
+     * Hashes the given password with the set salt and sha1
+     *
+     * @param      string $s_password  The password
+     * @param		string	$s_username	The username
+     * @return     string  The hashed password
+     */
+    public function hashPassword($s_password,$s_username){
+        $service_XmlSettings  = Memory::services('XmlSettings');
+        
+        $s_salt = $service_XmlSettings->get('settings/main/salt');
+        
+        return sha1(substr(md5($s_username),5,30).$s_password.$s_salt);
+    }
+}
+
+?>

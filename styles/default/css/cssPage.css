@@ -1,0 +1,376 @@
+html,body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+table { border-collapse:collapse }
+
+.notice {
+	color:green;
+	font-weight:bold;
+}
+.errorNotice {
+	color:red;
+	font-weight:bold;
+}
+
+input, select,textarea {
+	border:1px solid #111;
+	-webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    -khtml-border-radius:8px;
+    -ms-border-radius:8px;
+    border-radius:8px;
+}
+#container {
+	min-width: 800px;
+	width:auto;
+	max-width: 1400px;
+	margin: auto;
+	min-height: 400px;
+}
+
+#header,#footer, #menu,#menu_lid, #footer {
+	width: 100%;
+	height: 90px;
+	float: left;
+}
+
+#menu,#menu_lid {
+	height:40px;
+}
+
+#headerLogo {
+	margin:0;
+	padding:0;
+	width:auto;
+	height:auto;
+	float:left;
+}
+#header{
+	height:auto;
+	border:1px solid grey;
+}
+a {
+	text-decoration:none;
+}
+li {
+	list-style-type:none;
+}
+ul {
+	padding:0;
+	margin:0;
+}
+
+#headerLanguages {
+	width:auto;
+	float:right;
+}
+#headerLanguages li {
+	float:right;
+}
+#headerLanguages ul {
+	width:60px;
+	float:right;
+	padding:0;
+	margin:0;
+	margin-top:5px;
+	margin-right:10px;
+}
+
+#headerSlogan {
+	width:400px;
+	height:100%;
+	float:right;
+}
+
+#content {
+	width:100%;
+	min-height: 400px;
+	padding-left: 10px;
+	padding-right: 10px;
+	float: left;
+	border:1px solid grey;
+}
+
+#footer {
+	margin-top:20px;
+	border:1px solid grey;
+}
+
+#footer table {
+	width:100%;
+}
+#footer thead{
+	color:green;
+}
+#footer td {
+	width:24.8%;
+}
+#footer img {
+	float:left;
+	margin-right:10px;
+}
+
+#footer li {
+	color:black;
+	float:left;
+	width:100%;
+}
+
+#footer a {
+	color:black;
+}
+
+/* Auto suggest */
+div.autosuggest {
+	position: absolute;
+	padding: 10px 0 0 0;
+}
+
+div.autosuggest ul {
+	list-style: none;
+	margin: 0 0 -4px 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+	
+	-khtml-border-radius:8px;
+	-ms-border-radius:8px;
+	border-radius:8px;
+}
+
+div.autosuggest ul li {
+	color: #ccc;
+	padding: 0;
+	margin: 0 4px 4px;
+	text-align: left;
+}
+
+div.autosuggest ul li a {
+	color: #ccc;
+	display: block;
+	text-decoration: none;
+	background-color: transparent;
+	text-shadow: #000 0px 0px 5px;
+	position: relative;
+	padding: 0;
+	width: 100%;
+}
+div.autosuggest ul li a:hover {
+	background-color: #444;
+}
+div.autosuggest ul li.as_highlight a:hover {
+	background-color: #1B5CCD;
+}
+
+div.autosuggest ul li a span {
+	display: block;
+	padding: 3px 6px;
+	font-weight: bold;
+}
+
+div.autosuggest ul li a span small {
+	font-weight: normal;
+	color: #999;
+}
+
+div.autosuggest ul li.as_highlight a span small {
+	color: #ccc;
+}
+
+div.autosuggest ul li.as_highlight a {
+	color: #fff;
+	background-color: #1B5CCD;
+}
+
+div.autosuggest ul li a .tl, div.autosuggest ul li a .tr {
+	background-image: transparent;
+	background-repeat: no-repeat;
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	top: 0;
+	padding: 0;
+	margin: 0;
+}
+div.autosuggest ul li a .tr {
+	right: 0;
+}
+
+div.autosuggest ul li.as_highlight a .tl {
+	left: 0;
+}
+
+div.autosuggest ul li.as_highlight a .tr {
+	right: 0;
+}
+
+div.autosuggest ul li.as_warning {
+	font-weight: bold;
+	text-align: center;
+}
+
+div.autosuggest ul em {
+	font-style: normal;
+	color: #6EADE7;
+}
+
+/* Menu */
+#menu li {
+	padding-left: 10px;
+	padding-right: 10px;
+	float: left;
+}
+
+#menu a {
+	padding-right: 82px;
+	text-decoration: none;
+	color: #111;
+	font-weight: bold;
+}
+#menu_lid li {
+	padding-left: 10px;
+	padding-right: 10px;
+	float: left;
+}
+#menu_lid small {
+	color:red;
+}
+#menu_lid a {
+	padding-right: 22px;
+	color: #111;
+	font-weight: bold;
+}
+
+/* Login */
+.login {
+ 	position:relative;
+    top:100px;
+	min-width: 300px;
+	margin-left: 10px;
+	margin-right: 10px;
+	float: left;
+	font-family: sans-serif;
+	font-style: normal;
+}
+.login a {
+	color: black;
+	font-family: sans-serif;
+	font-style: normal;
+	font-size: small;
+	font-variant: small-caps;
+	font-weight: normal;
+	line-height: 100%;
+	letter-spacing: normal;
+}
+
+noscript {
+	width:100%;
+	height:auto;
+	font-size:1.2em;
+	font-weight:bold;
+	color:red;
+	background-color:yellow;
+	display:block;
+	text-align:center;
+}
+.bold {
+	font-weight:bold;
+}
+
+
+/* Animation */
+label.checkbox,label.radio {
+	display: inline-block;
+	cursor: pointer;
+	position: relative;
+	padding-left: 25px;
+	margin-right: 15px;
+}
+
+input[type=checkbox].animation,input[type=radio].animation {
+	display:none;
+}
+
+label.checkbox:before,label.radio:before {
+	background-color: #aaa;
+	box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+	content: "";
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	position: absolute;
+	left: 0;
+	bottom:1px;
+}
+
+.fake-checkbox, label.checkbox:before {
+	border-radius:5px;
+}
+input[type=checkbox].animation:checked + label.checkbox:before {
+	content: "\2713";
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+	font-size: 15px;
+	color: #f3f3f3;
+	text-align: center;
+    line-height: 15px;
+}
+
+label.radio:before {
+	border-radius: 15px;
+}
+input[type=radio].animation:checked + label.radio:before {
+	content: "\2022";
+    color: #f3f3f3;
+    font-size: 30px;
+    text-align: center;
+    line-height: 18px;
+}
+
+select.animation {
+	background: transparent;
+   padding:0px 15px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 18px;
+   -webkit-appearance: none;
+   appearance: none;
+   color:#FFF;
+}
+div.select {
+   height: 18px;
+   overflow: hidden;
+   background: url(../images/down_arrow_select.jpg) no-repeat right #111;
+   border-color:1px solid #FFF;
+    box-shadow: 4px 4px 4px #907A83 inset;
+   float:left;
+   margin-right:5px;
+   border-radius:5px;
+}
+select.animation option {
+	background-color:#111;
+}
+
+/* HTML 5 validation */ 
+input[type=text].invalid,input[type=password].invalid,input[type=number].invalid,input[type=email].invalid,input[type=url].invalid,
+	input[type=tel].invalid,textarea.invalid {
+	border:2px solid red;
+	background-image:url(../images/icons/invalid.png);
+	background-repeat:no-repeat;
+	background-position:95%;
+	background-size:10px; 10px;
+}
+input[type=text].valid,input[type=password].valid,input[type=number].valid,input[type=email].valid,input[type=url].valid,
+	input[type=tel].valid,textarea.valid {
+	background-image:url(../images/icons/valid.png);
+	background-repeat:no-repeat;
+	background-position:95%;
+	background-size:10px; 10px;
+}
+
+select.invalid {
+	background-color:#e34e4e; color:#111;
+}

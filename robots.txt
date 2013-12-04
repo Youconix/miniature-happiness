@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /styles/
+Disallow: /stats/
+Disallow: /js/
+Disallow: /install/
+Disallow: /admin/
