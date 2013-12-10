@@ -1,7 +1,7 @@
-<div class="indexItem" style="width:95%">
+<section class="indexItem" style="width:95%">
 	<h2><a href="javascript:adminLogs.view()">{titleError}</a></h2>
 
-	<div class="adminPanel">
+	<section>
 		{errorLog}
-	</div>
-</div>
+	</section>
+</section>

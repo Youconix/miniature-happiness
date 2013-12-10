@@ -47,7 +47,8 @@
 	text-align:center;
 }
 
-.adminPanel {
+#groups>section,#updateScreen, #indexItem>section, #logs>section, #maintenance>section, #settingsView>section,
+	#statsView>section,#users>section.adminPanel {
 	padding:5px;
 	padding-bottom:15px;
 	background-color:#000;
@@ -62,10 +63,6 @@
     background:linear-gradient(top, #000, #8a8a8a);
 	color:#FFF;
 	border:2px outset #000000;
-    -webkit-border-radius:8px;
-    -moz-border-radius:8px;
-    -khtml-border-radius:8px;
-    -ms-border-radius:8px;
     border-radius:8px;
     
     padding:10px;
@@ -101,10 +98,6 @@
 	color:#FFF;
 	border-right:3px outset #111;
 	border-bottom:3px outset #111;
-    -webkit-border-radius:8px;
-    -moz-border-radius:8px;
-    -khtml-border-radius:8px;
-    -ms-border-radius:8px;
     border-radius:8px;
     text-align:center;
     width:auto;
@@ -294,6 +287,7 @@
 #maintenance A, #groupview A, #notices A {
     color:#FFF;
 }
+#maintenance A { font-weight:bold }
 .maintenanceReady {
     font-weight:bold;
     color:#FFF;

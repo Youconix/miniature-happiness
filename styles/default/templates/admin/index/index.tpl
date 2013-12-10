@@ -1,18 +1,18 @@
  <!-- admin view -->
- <div id="admin">
+ <section id="admin">
  	{[menuAdmin]}
  	
- 	<div id="adminContent">
- 		<div class="indexItem">
+ 	<section id="adminContent">
+ 		<section class="indexItem">
 			<h2>{titleUpdates}</h2>
 
-		    <div class="adminPanel" id="updateScreen">
+		    <section id="updateScreen">
 		        {loadingUpdates}
-		    </div>
-		</div>
+		    </section>
+		</section>
  	
  		{[securityView]}
 		
 		{[errorView]}
- 	</div>
- </div>
+ 	</section>
+ </section>

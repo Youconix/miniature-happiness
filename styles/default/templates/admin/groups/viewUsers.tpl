@@ -1,20 +1,24 @@
-<div id="groups">
+<section id="groups">
 	<h1>{groupTitle}</h1>
 	
-	<div class="adminPanel">
-	    <table id="groupview">
-	        <tr>
-	            <th>{headerUser}</th>
-	            <th>{headerRights}</th>
-	        </tr>
-	        <block {user}>
-	            <tr>
-	                <td><a href="javascript:adminUsers.viewUser({id})">{username}</a></td>
-	                <td>{rights}</td>
-	            </tr>
-	        </block>
+	<section>
+	   <table>
+	   <thead>
+	    <tr>
+	    	<td>{headerUser}</td>
+	        <td>{headerRights}</td>
+	    </tr>
+	   </thead>
+	   <tbody>
+	    <block {user}>
+	    <tr>
+	    	<td><a href="javascript:adminUsers.viewUser({id})">{username}</a></td>
+	        <td>{rights}</td>
+	    </tr>
+	    </block>
+	    </tbody>
 	    </table>
 	    
 	    <a href="javascript:adminGroups.view()" class="button">{backButton}</a>
-	</div>
-</div>
+	</section>
+</section>

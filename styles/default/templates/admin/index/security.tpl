@@ -1,7 +1,7 @@
-<div class="indexItem">
+<section class="indexItem">
 	<h2><a href="javascript:adminLogs.view()">{titleSecurity}</a></h2>
 
-	<div class="adminPanel">
+	<section>
 		{securityLog}
-	</div>
-</div>
+	</section>
+</section>
