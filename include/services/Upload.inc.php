@@ -150,34 +150,34 @@ class Service_Upload extends Service {
 				$i_ratio	= $i_maxWidth/$i_width;		
 			}
 			else if( $i_height > $i_maxHeight ){
-				$i_ratio = $i_maxHeigh/$i_height;
+				$i_ratio = $i_maxHeight/$i_height;
 			}
 		}
 		else if( $i_height > $i_width ){
-			if( $i_height > $i_maxHeigh ){
-				$i_ratio = $i_maxHeigh/$i_height;
+			if( $i_height > $i_maxHeight ){
+				$i_ratio = $i_maxHeight/$i_height;
 			}
-			else if( $i_width > maxWidth ){
+			else if( $i_width > $i_maxWidth ){
 				$i_ratio	= $i_maxWidth/$i_width;		
 			} 
 		}
 			        	
 		$i_maxWidth	= round($i_width*$i_ratio);
-		$i_maxHeigh	= round($i_height*$i_ratio);
+		$i_maxHeight	= round($i_height*$i_ratio);
 		
 		$obj_trumb	= null;
 		
 		if( $i_ratio != 1 ){
 			if( $a_mimetype[1] == 'jpg' || $a_mimetype[1] == 'jpeg' ){
-				$obj_trumb	= $this->resize($obj_image, $s_type,$i_maxWidth, $i_maxHeigh);
+				$obj_trumb	= $this->resize($obj_image, $s_type,$i_maxWidth, $i_maxHeight);
 				imagejpeg($obj_trumb, $s_file,83);
 			}
 			else if( $a_mimetype[1] == 'gif' ){
-				$obj_trumb	= $this->resize($obj_image, $s_type, $i_maxWidth, $i_maxHeigh);
+				$obj_trumb	= $this->resize($obj_image, $s_type, $i_maxWidth, $i_maxHeight);
 				imagegif($obj_trumb, $s_file);
 			} 
 			else if( $a_mimetype[1] == 'png' ){
-				$obj_trumb	= $this->resize($obj_image, $s_type, $i_maxWidth, $i_maxHeigh);
+				$obj_trumb	= $this->resize($obj_image, $s_type, $i_maxWidth, $i_maxHeight);
 				imagepng($obj_trumb, $s_file,3);
 			}
 		}
