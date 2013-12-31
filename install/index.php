@@ -296,7 +296,7 @@ class Install extends SettingsMain{
 			$main->appendChild($settings->createElement('url',$a_data['url']));
 			$main->appendChild($settings->createElement('base',$a_data['base']));
 			$main->appendChild($settings->createElement('timeZone',$a_data['timezone']));
-			$main->appendChild($settings->createElement('salt',$service_Random->numberLetter(15,true)));
+			$main->appendChild($settings->createElement('salt',$service_Random->numberLetter(30,true)));
 			$root->appendChild($main);
 			
 			/* Session */
