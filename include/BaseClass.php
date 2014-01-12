@@ -89,7 +89,6 @@ abstract class BaseClass {
 			$this->service_Template     = Memory::services('Template');
 			
 			$s_language	= Memory::services('Language')->getLanguage();
-			$this->service_Template->headerLink('<script src="'.NIV.'js/jquery-1.9.1.js" type="text/javascript"></script>');
 			$this->service_Template->headerLink('<script src="'.NIV.'js/site.php?lang='.$s_language.'" type="text/javascript"></script>');			
 
 			if( !Memory::isAjax())

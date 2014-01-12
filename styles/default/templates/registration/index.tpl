@@ -14,20 +14,15 @@
 				<td><label>{emailText} *</label></td>
 				<td><input type="email" name="email" id="reg_email" value="{email}" onblur="site.checkEmail(this.value)" required></td>
 			</tr>
-			<tr>
-				<td><label>{passwordText} *</label></td>
-				<td><input type="password" name="password" id="reg_password" required></td>
-			</tr>
-			<tr>
-				<td><label>{password2Text} *</label></td>
-				<td><input type="password" name="password2" id="reg_password2" required></td>
-			</tr>
-			<tr>
-				<td colspan="2"><br/></td>
-			</tr>
-			<tr>
-				<td colspan="2" class="bold">{captchaText}</td>
-			</tr>
+			</tbody>
+			</table>
+			
+			{passwordForm}			
+
+			<h2>{captchaText}</h2>
+			
+			<table>
+			<tbody>
 			<tr>
 				<td><img src="{style_dir}images/captcha.php" alt=""></td>
 				<td><input type="text" name="captcha" value="" required></td>

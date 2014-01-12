@@ -317,6 +317,10 @@
             <emailTakenOpenID>A account with this email allready exists. . Have you not allready registrated?</emailTakenOpenID>
             <usernameToShort>The username has to be at least 3 characters long.</usernameToShort>
             <passwordToShort>The password has to be at least 8 characters long.</passwordToShort>
+            <veryStrongPassword>Very strong password</veryStrongPassword>
+            <strongPassword>Strong password</strongPassword>
+            <fairPassword>Fair password</fairPassword>
+            <weakPassword>Weak password</weakPassword>
 		</notices>
 		<registrationVia>Registration via</registrationVia>
 	</registration>

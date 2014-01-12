@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="{lang}">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset={encoding}" />
-	<link rel="stylesheet" href="{style_dir}css/cssPage.css" media="screen"/>
+	<meta http-equiv="Content-Type" content="text/html; charset={encoding}" >
+	<link rel="stylesheet" href="{style_dir}css/cssPage.css" media="screen">
+    <script src="{NIV}js/jquery-2.0.3.min.js"></script>
     <script src="{NIV}js/general.js" type="text/javascript"></script>
 	<title>{mainTitle} {title}</title>
     {headblock}

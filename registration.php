@@ -116,8 +116,7 @@ class Registration extends BaseLogicClass {
             'password'      => '',
             'password2'     => '',
         	'bot'           => '0',
-            'activated'     => '0',
-        	'accountType'	=> TYPE
+            'activated'     => '0'
         	);
         	$this->s_notice     = '';
 
@@ -174,15 +173,14 @@ class Registration extends BaseLogicClass {
 		$this->service_Template->set('nick',$this->a_data['nick']);
 		$this->service_Template->set('emailText',$this->service_Language->get('language/admin/users/email'));
 		$this->service_Template->set('email',$this->a_data['email']);
-		$this->service_Template->set('passwordText',$this->service_Language->get('language/admin/users/password'));
-		$this->service_Template->set('password2Text',$this->service_Language->get('language/admin/users/passwordAgain'));
-
+		
+		$this->service_Template->set('passwordForm',Memory::helpers('PasswordForm')->generate());
+		
 		$a_openID	= $this->service_Authorization->getOpenIDList();
 		$s_registration	= $this->service_Language->get('language/registration/registrationVia');
 
 		foreach($a_openID AS $s_openID){
 			$s_key	= $s_openID;
-			if( !empty($s_type) )	$s_key .= '&amp;accountType='.$s_type;
 
 			$this->service_Template->setBlock('openID',array('key'=>$s_key,'image'=>strtolower($s_openID), 'text'=>$s_registration.' '.$s_openID));
 		}
@@ -217,8 +215,6 @@ class Registration extends BaseLogicClass {
 		}
 			
 		try {
-			Memory::services('Cookie')->set('accountType',$this->a_data['accountType'],'/');
-
 			if( $this->post['type'] != 'Facebook' )
 			$this->service_Authorization->registerOpenID($this->post);
 			else {

@@ -329,6 +329,10 @@
             <emailTakenOpenID>Er is al een account met dit E-mail adres. Heb je niet al een keer geregistreerd?</emailTakenOpenID>
             <usernameToShort>De gebruikernaam moet minimaal 3 tekens lang zijn.</usernameToShort>
             <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
+            <veryStrongPassword>Erg sterk wachtwoord</veryStrongPassword>
+            <strongPassword>Sterk wachtwoord</strongPassword>
+            <fairPassword>Redelijk wachtwoord</fairPassword>
+            <weakPassword>Zwak wachtwoord</weakPassword>
 		</notices>
 		<registrationVia>Registratie via</registrationVia>
 	</registration>

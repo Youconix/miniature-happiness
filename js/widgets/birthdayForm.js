@@ -59,19 +59,20 @@ BirthdayForm.prototype.validate  = function(){
 	return true;
 }
 
-BirthdayForm.prototype.validateDifference  = function(months,days,years){
+BirthdayForm.prototype.validateDifference  = function(months,days,years,future){
 	if( !this.validate() ){
 		return false;
 	}
 	
 	birthdate = this.get();
 			
-	var check	= new Date(birthdate.year,birthdate.month-1,birthdate.day);
+	var check	= new Date(birthdate.year,(birthdate.month-1),birthdate.day);
 	var date	= new Date();
-	var allowedDate	= new Date(date.getFullYear()-years,(date.getMonth()-months-1),date.getDay()-days);
+	var allowedDate	= new Date((date.getFullYear()-years),(date.getMonth()-months),(date.getDate()-days));
 	
 	var dif		= (allowedDate.getTime() - check.getTime());
-	if( dif > 0 ){
+	if( (!future && dif < 0) || (future && dif > 0) ){
+		alert("error 2");
 		$("#"+this.dayID).addClass("invalid");	
 		$("#"+this.monthID).addClass("invalid");
 		$("#"+this.yearID).addClass("invalid");
