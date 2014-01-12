@@ -1,13 +1,14 @@
-<div id="statsView">
+<section id="statsView">
 	<h1>{pageTitle}</h1>
 	
-	<div class="adminPanel statsItemHits">
+	<section class="statsItemHits">
 		<h2>{lastMonth} {HitsUniqueTitle} {nextMonth}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
 			<block {visitorsDay}>
-			<td class="bold">{day}</td>
+			<td><label>{day}</label></td>
 			</block>
 		</tr>
 		<tr>
@@ -15,13 +16,15 @@
 			<td>{number}</td>
 			</block>
 		</tr>
+		</tbody>
 		</table>
 	</div>
 	
-	<div class="adminPanel statsItemHits">
+	<section class="statsItemHits">
 		<h2>{lastMonth} {HitsTitle} {nextMonth}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
 			<block {hitsDay}>
 			<td class="bold">{day}</td>
@@ -35,8 +38,11 @@
 		<tr>
 			<td colspan="2"><br/></td>
 		</tr>
+		</tbody>
 		</table>
+		
 		<table>
+		<tbody>
 		<block {visitorsHour}>
 		<tr>
 			<td>{hour}</td>			
@@ -45,13 +51,15 @@
 			<td>{percent}%</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItemHits">
+	<section class="statsItemHits">
 		<h2>{pagesTitle}</h2>
 		
 		<table>
+		<tbody>
 		<block {visitorsPage}>
 		<tr>
 			<td>{page}</td>			
@@ -60,16 +68,18 @@
 			<td>{percent}%</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{screenSizesTitle}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold">{screenSize}</td>
-			<td class="bold">{amount}</td>
+			<td><label>{screenSize}</label></td>
+			<td><label>{amount}</label></td>
 		</tr>
 		<block {screenSize}>
 		<tr>
@@ -77,18 +87,20 @@
 			<td>{number}</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
 		
 		<p><a href="javascript:adminStats.viewSizes({month},{year})" class="button">{fullList}</a></p>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{operatingTitle}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold">{osTitle}</td>
-			<td class="bold">{amount}</td>
+			<td><label>{osTitle}</label></td>
+			<td><label>{amount}</label></td>
 		</tr>
 		<block {OS}>
 		<tr>
@@ -96,18 +108,20 @@
 			<td>{number}</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
 		
 		<p><a href="javascript:adminStats.viewOS({month},{year})" class="button">{fullList}</a></p>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{browsersTitle}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold">{browserTitle}</td>
-			<td class="bold">{amount}</td>
+			<td><label>{browserTitle}</label></td>
+			<td><label>{amount}</label></td>
 		</tr>
 		<block {browser}>
 		<tr>
@@ -115,18 +129,20 @@
 			<td>{number}</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
 		
 		<p><a href="javascript:adminStats.viewBrowsers({month},{year})" class="button">{fullList}</a></p>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{screenColorsTitle}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold">{colorTitle}</td>
-			<td class="bold">{amount}</td>
+			<td><label>{colorTitle}</label></td>
+			<td><label>{amount}</label></td>
 		</tr>
 		<block {screenColor}>
 		<tr>
@@ -134,16 +150,18 @@
 			<td>{number}</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{referencesTitle}</h2>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold"><br/></td>
-			<td class="bold">{amount}</td>
+			<td><br/></td>
+			<td><label>{amount}</label></td>
 			<td><br/></td>
 		</tr>
 		<block {reference}>
@@ -153,16 +171,18 @@
 			<td>{percent}%</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
-	</div>
+	</section>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{domainsTitle}</h2>
 		
 		<table>
-		<tr>
-			<td class="bold"><br/></td>
-			<td class="bold">{amount}</td>
+		<tbody>
+		<tr>		
+			<td><br/></td>
+			<td><label>{amount}</label></td>
 			<td colspan="2" ><br/></td>
 		</tr>
 		<block {visitorsDomain}>
@@ -173,6 +193,7 @@
 			<td>{percent}%</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
-	</div>
-</div>
+	</section>
+</section>

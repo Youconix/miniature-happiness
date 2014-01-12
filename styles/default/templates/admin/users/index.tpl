@@ -1,28 +1,18 @@
-<div id="users">
+<section id="users">
     <h1>{headerText}</h1>
 
-	<div class="adminPanel">
+	<section>
 		<h2>{searchTitle}</h2>
-	    <table>
-	    <tr>
-	    	<td><input type="text" id="searchUsername"/><a href="javascript:adminUsers.search()" class="button">{searchText}</a></td>
-	    	<td><br/></td>
-	    </tr>
-	    </table>
+	    <fieldset>
+	    	<input type="text" id="searchUsername"/><a href="javascript:adminUsers.search()" class="button">{searchText}</a>
+	   	</fieldset>
 	
+		<p><a href="javascript:adminUsers.newUser()" class="button">{textAdd}</a></p>
+		
+		<h2>{headerNick}</h2>
+		
 	    <table>
-	    <tr>
-	    	<td colspan="4"><a href="javascript:adminUsers.newUser()" class="button">{textAdd}</a></td>
-	    </tr>
-	    <tr>
-	    	<td colspan="4"><br/></td>
-	    </tr>
-	    <tr>
-	    		<td></th>
-	            <td class="bold">{headerNick}</td>
-	            <td></td>
-	            <td></td>
-	    </tr>
+	    <tbody>
 	        <block {users}>
 	            <tr id="row_{id}">
 	            	<td>{id}</td>
@@ -39,6 +29,7 @@
 	    <tr>
 	    	<td colspan="4"><a href="javascript:adminUsers.newUser()" class="button">{textAdd}</a></td>
 	    </tr>
+	    </tbody>
 	    </table>
-	</div>
-</div>
+	</section>
+</section>

@@ -1,15 +1,16 @@
-<div id="statsView">
+<section id="statsView">
 	<h1>{pageTitle}</h1>
 	
-	<div class="adminPanel statsItem">
+	<section class="statsItem">
 		<h2>{operatingTitle}</h2>
 		
 		<p><a href="javascript:adminStats.view2({month},{year})" class="button">{back}</a></p>
 		
 		<table>
+		<tbody>
 		<tr>
-			<td class="bold">{osTitle}</td>
-			<td class="bold">{amount}</td>
+			<td><label>{osTitle}</label></td>
+			<td><label>{amount}</label></td>
 		</tr>
 		<block {OS}>
 		<tr>
@@ -17,8 +18,9 @@
 			<td>{number}</td>
 		</tr>
 		</block>
+		</tbody>
 		</table>
 		
 		<p><a href="javascript:adminStats.view2({month},{year})" class="button">{back}</a></p>
-	</div>
-</div>
+	</section>
+</section>

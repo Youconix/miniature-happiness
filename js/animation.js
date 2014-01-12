@@ -68,18 +68,56 @@ Animation.prototype.triggerSelect = function(id){
 }
 
 Animation.prototype.select	= function(){
+	$("body").append('<div id="animationCalc" style="display:none"></div>');
+	
 	$("select").each(function(){
 		item = $(this);
 		id = item.attr("id");
-		width = item.width();
-		if( width < 85 ){	width=85; }
-		newWidth	= width+30;
 		
 		itemID = "select_"+id;
-		item.wrap('<div class="select" id="'+itemID+'" style="width:'+width+'px"></div>');
+		item.wrap('<div class="select" id="'+itemID+'"></div>');
 		item.addClass("animation");
-		item.css("width",newWidth+'px');
+		
+		animation.updateSelect( $(this));
 	});
+	
+	$("#animationCalc").remove();
+}
+
+Animation.prototype.updateSelect = function(item){
+	added = false;
+	if( $("#animationCalc").length == 0 ){
+		$("body").append('<div id="animationCalc" style="display:none"></div>');
+		added = true;
+	}
+	
+	id = item.attr("id");
+	width = parseInt($(item).css("width"));
+	if( width == 0 ){
+		maxlength = 0;
+		maxValue = '';
+		
+		$("#"+id+" option").each(function(){
+			w = $(this).text().length;
+			if( w > maxlength ){
+				maxValue = $(this).text();
+				maxlength = w;
+			}
+		});
+		
+		$("#animationCalc").html(maxValue);
+		width = $("#animationCalc").width()+20;
+	}
+	
+	if( width < 85 ){	width=85; }
+	newWidth	= width+30;
+	
+	$("#select_"+id).css("width",width+"px");
+	item.css("width",newWidth+'px');
+	
+	if( added ){
+		$("#animationCalc").remove();
+	}
 }
 
 var animation = new Animation();

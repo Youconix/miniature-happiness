@@ -1,8 +1,9 @@
-<div id="settingsView">
+<section id="settingsView">
     <h1>{settingsTitle}</h1>
 
-	<div class="adminPanel">
+	<section>
 	    <table>
+	    <tbody>
 	        <tr>
 	            <td class="Notice" colspan="2" class="title" id="notice"></td>
 	        </tr>
@@ -10,51 +11,51 @@
 	            <td class="title" colspan="2">General</td>
 	        </tr>
 	        <tr>
-	            <td >{basedir}</td>
-	            <td><input type="text" name="base" value="{base}" class="formField" id="base"/></td>
+	            <td><label>{basedir}</label></td>
+	            <td><input type="text" name="base" value="{base}" id="base"></td>
 	        </tr>
 	        <tr>
-	            <td >{siteUrl}</td>
-	            <td><input type="text" name="url" value="{url}" class="formField" id="url"/></td>
+	            <td><label>{siteUrl}</label></td>
+	            <td><input type="url" name="url" value="{url}" id="url" required></td>
 	        </tr>
 	        <tr>
-	            <td >{timezoneText}</td>
-	            <td><input type="text" name="timezone" value="{timezone}" class="formField" id="timezone"/></td>
+	            <td>{timezoneText}</td>
+	            <td><input type="text" name="timezone" value="{timezone}" id="timezone" required></td>
 	        </tr>
 	        <tr>
-	            <td><br/></td>
+	            <td><br></td>
 	        </tr>
 	        <tr>
 	            <td class="title" colspan="2">{sessionTitle}</td>
 	        </tr>
 	        <tr>
-	            <td >{sessionNameText}</td>
-	            <td><input type="text" name="sessionName" value="{sessionName}" class="formField" id="sessionName"/></td>
+	            <td><label>{sessionNameText}</label></td>
+	            <td><input type="text" name="sessionName" value="{sessionName}" id="sessionName"></td>
 	        </tr>
 	        <tr>
-	            <td >{sessionPathText}</td>
-	            <td><input type="text" name="sessionPath" value="{sessionPath}" class="formField" id="sessionPath"/></td>
+	            <td><label>{sessionPathText}</label></td>
+	            <td><input type="text" name="sessionPath" value="{sessionPath}" id="sessionPath"></td>
 	        </tr>
 	        <tr>
-	            <td >{sessionExpireText}</td>
-	            <td><input type="text" name="sessionExpire" value="{sessionExpire}" class="formField" id="sessionExpire"/></td>
+	            <td><label>{sessionExpireText}</label></td>
+	            <td><input type="text" name="sessionExpire" value="{sessionExpire}" id="sessionExpire" pattern="^[0-9]+$"></td>
 	        </tr>
 	        <tr>
-	            <td><br/></td>
+	            <td><br></td>
 	        </tr>
 	        <tr>
 	            <td class="title" colspan="2">{siteSettings}</td>
 	        </tr>
 	        <tr>
-	            <td >{defaultLanguage}</td>
+	            <td><label>{defaultLanguage}</label></td>
 	            <td><select name="language" id="language">{posibleLanguages}</select></td>
 	        </tr>
 	        <tr>
-	            <td >{templateDir}</td>
+	            <td><label>{templateDir}</label></td>
 	            <td><select name="template" id="template">{templates}</select></td>
 	        </tr>
 	        <tr>
-	            <td><br/></td>
+	            <td><br></td>
 	        </tr>
 	        <tr>
 	            <td class="title" colspan="2">{databaseSettings}</td>
@@ -63,32 +64,33 @@
 	            <td class="errorNotice" colspan="2" id="sqlError">{sqlError}</td>
 	        </tr>
 	        <tr>
-	            <td>{username}</td>
-	            <td><input type="text" name="sqlUsername" value="{sqlUsername}" class="formField" id="sqlUsername" onblur="adminSettings.validateSQL()"/></td>
+	            <td><label>{username}</label></td>
+	            <td><input type="text" name="sqlUsername" value="{sqlUsername}" id="sqlUsername" onblur="adminSettings.validateSQL()" required></td>
 	        </tr>
 	        <tr>
-	            <td >{password}</td>
-	            <td><input type="text" name="sqlPassword" value="{sqlPassword}" class="formField" id="sqlPassword" onblur="adminSettings.validateSQL()"/></td>
+	            <td><label>{password}</label></td>
+	            <td><input type="text" name="sqlPassword" value="{sqlPassword}" id="sqlPassword" onblur="adminSettings.validateSQL()" required></td>
 	        </tr>
 	        <tr>
-	            <td >{database}</td>
-	            <td><input type="text" name="sqlDatabase" value="{sqlDatabase}" class="formField" id="sqlDatabase" onblur="adminSettings.validateSQL()"/></td>
+	            <td><label>{database}</label></td>
+	            <td><input type="text" name="sqlDatabase" value="{sqlDatabase}" id="sqlDatabase" onblur="adminSettings.validateSQL()" required></td>
 	        </tr>
 	        <tr>
-	            <td >{host}</td>
-	            <td><input type="text" name="sqlHost" value="{sqlHost}" class="formField" id="sqlHost" onblur="adminSettings.validateSQL()"/></td>
+	            <td><label>{host}</label></td>
+	            <td><input type="text" nae="sqlHost" value="{sqlHost}" id="sqlHost" onblur="adminSettings.validateSQL()" required></td>
 	        </tr>
 	        <tr>
-	            <td >{port}</td>
-	            <td><input type="text" name="sqlPort" value="{sqlPort}" class="formField" id="sqlPort" onblur="adminSettings.validateSQL()"/></td>
+	            <td><label>{port}</label></td>
+	            <td><input type="text" name="sqlPort" value="{sqlPort}" id="sqlPort" onblur="adminSettings.validateSQL()" pattern="^[0-9]+$"></td>
 	        </tr>
 	        <tr>
-	            <td >{type}</td>
+	            <td><label>{type}</label></td>
 	            <td><select name="databaseType" id="sqlType" onchange="adminSettings.validateSQL()">{databases}</select></td>
 	        </tr>
 	        <tr>
-	            <td  colspan="2"><input type="button" class="button" value="{buttonSave}" onclick="adminSettings.checkSettings()"/></td>
+	            <td  colspan="2"><input type="button" class="button" value="{buttonSave}" onclick="adminSettings.checkSettings()"></td>
 	        </tr>
+	    </tbody>
 	    </table>
-	</div>
-</div>
+	</section>
+</section>
