@@ -1,4 +1,4 @@
-<div id="adminMenu" class="adminPanel">
+<nav id="adminMenu" class="adminPanel">
         <ul>   
 		<li><a href="javascript:adminGroups.view()">{groups}</a></li>
 		<li><a href="javascript:adminUsers.view()">{users}</a></li>
@@ -8,4 +8,4 @@
 		<li><a href="javascript:adminMaintenance.view()">{maintenance}</a></li>
 		<li>{logout}</li>
         </ul>
-</div>
+</nav>

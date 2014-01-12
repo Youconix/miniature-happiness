@@ -7,11 +7,11 @@
 		<tbody>
 		<tr>
 			<td><label>Nieuwe wachtwoord</label></td>
-			<td><input type="password" id="password1"></td>
+			<td><input type="password" id="password1" required></td>
 		</tr>
 		<tr>
 			<td><label>Wachtwoord herhalen</label></td>
-			<td><input type="password" id="password2"></td>
+			<td><input type="password" id="password2" required></td>
 		</tr>
 		<tr>
 			<td colspan="2"><a href="javascript:adminUsers.changePassword()" class="button">Aanpassen</a></td>

@@ -15,19 +15,19 @@
 		</tr>
 		<tr>
 			<td><label>{firstnameHeader}</label></td>
-			<td><input type="text" id="firstname" value="{firstname}" class="formField"></td>
+			<td><input type="text" id="firstname" value="{firstname}"></td>
 		</tr>
 		<tr>
 			<td><label>{nameBetweenHeader}</label></td>
-			<td><input type="text" id="nameBetween" value="{nameBetween}" class="formField"></td>
+			<td><input type="text" id="nameBetween" value="{nameBetween}"></td>
 		</tr>
 		<tr>
 			<td><label>{surnameHeader}</label></td>
-			<td><input type="text" id="surname" value="{surname}" class="formField"></td>
+			<td><input type="text" id="surname" value="{surname}"></td>
 		</tr>
 		<tr>
 			<td><label>{emailHeader}</label></td>
-			<td><input type="email" id="email" value="{email}" class="formField" required></td>
+			<td><input type="email" id="email" value="{email}" required></td>
 		</tr>
 		<tr>
 			<td><label>{botHeader}</label></td>

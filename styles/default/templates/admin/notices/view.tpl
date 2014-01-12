@@ -1,5 +1,5 @@
  <!-- admin view -->
-<div id="notices" class="window">
+<section id="notices" class="window">
     <table>
     <tbody>
     <tr>
@@ -20,4 +20,4 @@
    </tr>
    </tbody>
     </table>
-</div>
+</section>

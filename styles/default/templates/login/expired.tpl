@@ -1,32 +1,30 @@
-<div class="login">
+<section class="login">
 	<form action="login.php" method="post">
 		<h1>{expired_title}</h1>
+		
+		<h2 class="errorNotice">{errorNotice}</h2>
 	
-		<table cellpadding="0" cellspacing="0" style="margin: auto; border: 0;">
+		<table style="margin: auto; border: 0;">
+		<tbody>
 			<tr>
-				<td colspan="2" class="errorNotice">{errorNotice}</td>
+				<td><label>{password} :</label></td>
+				<td><input type="password" name="password_old" required></td>
 			</tr>
 			<tr>
-				<td class="bold">{password} :</td>
-				<td><input type="password" name="password_old" />
-				</td>
+				<td><label>{newPassword} :</label></td>
+				<td><input type="password" name="password" required></td>
 			</tr>
 			<tr>
-				<td class="bold">{newPassword} :</td>
-				<td><input type="password" name="password" />
-				</td>
+				<td><label>{newPassword2} :</label></td>
+				<td><input type="password" name="password2" required></td>
 			</tr>
 			<tr>
-				<td class="bold">{newPassword2} :</td>
-				<td><input type="password" name="password2" />
-				</td>
+				<td colspan="2"><input type="hidden" name="command" value="expired">
+					<input type="hidden" name="userid" value="{userid}">
+					<input type="hidden" name="username" value="{username}">
+					<input type="submit" value="{loginButton}" class="button"></td>
 			</tr>
-			<tr>
-				<td colspan="2"><input type="hidden" name="command" value="expired"/>
-					<input type="hidden" name="userid" value="{userid}"/>
-					<input type="hidden" name="username" value="{username}"/>
-					<input type="submit" value="{loginButton}" class="button" /></td>
-			</tr>
+			</tbody>
 		</table>
 	</form>
-</div>
+</section>

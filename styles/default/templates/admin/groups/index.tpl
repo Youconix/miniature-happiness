@@ -39,5 +39,5 @@
 	    </table>
 	    
 	    <a href="javascript:adminGroups.addScreen()" class="button">{addButton}</a>
-	</div>
+	</section>
 </section>

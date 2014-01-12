@@ -1,4 +1,5 @@
 <table>
+<tbody>
     <tr>
         <th></th>
         <th></th>
@@ -13,4 +14,5 @@
         <td>{time}</td>
     </tr>
     </block>
+    </tbody>
 </table>

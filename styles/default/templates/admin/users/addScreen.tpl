@@ -7,31 +7,31 @@
     	<tbody>
         <tr>
             <td><label>{usernameHeader}</label></td>
-            <td><input type="text" id="username" value="" class="formField" onblur="adminUsers.checkUsername(this.value)" required></td>
+            <td><input type="text" id="username" value="" onblur="adminUsers.checkUsername(this.value)" required></td>
         </tr>
         <tr>
             <td><label>{firstnameHeader}</label></td>
-            <td><input type="text" id="firstname" value="" class="formField"></td>
+            <td><input type="text" id="firstname" value=""></td>
         </tr>
         <tr>
             <td><label>{nameBetweenHeader}</label></td>
-            <td><input type="text" id="nameBetween" value="" class="formField"></td>
+            <td><input type="text" id="nameBetween" value=""></td>
         </tr>
         <tr>
             <td><label>{surnameHeader}</label></td>
-            <td><input type="text" id="surname" value="" class="formField"></td>
+            <td><input type="text" id="surname" value=""></td>
         </tr>
         <tr>
             <td><label>{emailHeader}</label></td>
-            <td><input type="email" id="email" value="" class="formField" onblur="adminUsers.checkEmail(this.value)" required></td>
+            <td><input type="email" id="email" value="" onblur="adminUsers.checkEmail(this.value)" required></td>
         </tr>
         <tr>
             <td><label>{passwordHeader}</label></td>
-            <td><input type="password" id="password" value="" class="formField" required></td>
+            <td><input type="password" id="password" value="" required></td>
         </tr>        
         <tr>
             <td><label>{passwordRepeatHeader}</label></td>
-            <td><input type="password" id="password2" value="" class="formField" required></td>
+            <td><input type="password" id="password2" value="" required></td>
         </tr>
         <tr>
             <td><label>{botHeader}</label></td>

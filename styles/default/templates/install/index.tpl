@@ -1,8 +1,8 @@
 <!-- installer -->
-<div id="installer">
+<section id="installer">
 	{steps}
 
 	{[settings]}
 	{[add]}
 	{install}
-</div>
+</section>

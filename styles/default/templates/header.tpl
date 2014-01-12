@@ -1,4 +1,4 @@
-<div id="header">
+<header>
 	<div id="headerLogo"><a href="{NIV}home.php"><img src="{style_dir}/images/logo.png" alt="Logo place holder"/></a></div>
 	
 	<div id="headerLanguages">
@@ -12,4 +12,4 @@
 	<p class="textLeft" style="width:auto">{welcomeHeader}</p>
 	
 	<div id="headerSlogan">{slogan}</div>
-</div>
+</header>

@@ -7,11 +7,11 @@
 		<tbody>
 	    <tr>
 			<td><label>{headerName}</label></td>
-	        <td><input type="text" name="name" value="{nameDefault}" class="textAdd" id="name"></td>
+	        <td><input type="text" name="name" value="{nameDefault}" id="name" required></td>
 	    </tr>
 	    <tr>
 	    	<td><label>{headerDescription}</label></td>
-	        <td><textarea name="description" id="description">{descriptionDefault}</textarea></td>
+	        <td><textarea name="description" id="description" required>{descriptionDefault}</textarea></td>
 		</tr>
 		<tr>
 			<td><label>{headerAutomatic}</label></td>
