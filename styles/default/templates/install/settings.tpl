@@ -1,97 +1,153 @@
+<section id="settings">
 <h1>{title}</h1>
 
 <h2 class="errorNotice">{generalError}</h2>
 
-<form action="index.php?step=3" method="post">
-<table>
-<tbody>
-<tr>
-    <td class="title" colspan="2">General</td>
-</tr>
-<tr>
-    <td><label>{basedir}</label></td>
-    <td><input type="text" name="base" value="{base}"></td>
-</tr>
-<tr>
-    <td ><label>{siteUrl}</label></td>
-    <td><input type="text" name="url" value="{url}"></td>
-</tr>
-<tr>
-    <td><label>{timezoneText}</label></td>
-    <td><input type="text" name="timezone" value="{timezone}"></td>
-</tr>
-<tr>
-    <td><br/></td>
-</tr>
-<tr>
-    <td class="title" colspan="2">{sessionTitle}</td>
-</tr>
-<tr>
-    <td><label>{sessionNameText}</label></td>
-    <td><input type="text" name="sessionName" value="{sessionName}"></td>
-</tr>
-<tr>
-    <td><label>{sessionPathText}</label></td>
-    <td><input type="text" name="sessionPath" value="{sessionPath}"></td>
-</tr>
-<tr>
-    <td><label>{sessionExpireText}</label></td>
-    <td><input type="text" name="sessionExpire" value="{sessionExpire}" pattern="^[0-9]+$"></td>
-</tr>
-<tr>
-    <td><br/></td>
-</tr>
-<tr>
-    <td class="title" colspan="2">{siteSettings}</td>
-</tr>
-<tr>
-    <td><label>{defaultLanguage}</label></td>
-    <td><select name="language">{languages}</select></td>
-</tr>
-<tr>
-    <td><label>{templateDir}</label></td>
-    <td><select name="template">{templates}</select></td>
-</tr>
-<tr>
-    <td><br/></td>
-</tr>
-<tr>
-    <td class="title" colspan="2">{databaseSettings}</td>
-</tr>
-<tr>
-    <td class="errorNotice" colspan="2">{sqlError}</td>
-</tr>
-<tr>
-    <td><label>{username}</label></td>
-    <td><input type="text" name="sqlUsername" value="{sqlUsername}" required></td>
-</tr>
-<tr>
-    <td><label>{password}</label></td>
-    <td><input type="passwordt" name="sqlPassword" value="{sqlPassword}" required></td>
-</tr>
-<tr>
-    <td><label>{database}</label></td>
-    <td><input type="text" name="sqlDatabase" value="{sqlDatabase}" required></td>
-</tr>
-<tr>
-    <td><label>{host}</label></td>
-    <td><input type="text" name="sqlHost" value="{sqlHost}" required></td>
-</tr>
-<tr>
-    <td><label>{port}</label></td>
-    <td><input type="text" name="sqlPort" value="{sqlPort}" pattern="^[0-9]+$"></td>
-</tr>
-<tr>
-    <td><label>{type}</label></td>
-    <td><select name="databaseType">{databases}</select></td>
-</tr>
-<tr>
-	<td><label>{databasePrefixText}</label></td>
-	<td><input type="text" name="databasePrefix" value="{databasePrefix}" required></td>
-</tr>
-<tr>
-    <td  colspan="2"><input type="submit" class="button" value="{buttonSave}"></td>
-</tr>
-</tbody>
-</table>
-</form>
+<h2>General</h2>
+
+<div>
+	<fieldset>
+		<label>{basedir}</label>
+    	<input type="text" id="base" value="{base}">
+    </fieldset>
+	<fieldset>
+		<label>{siteUrl} *</label>
+    	<input type="url" id="url" value="{url}">
+    </fieldset>
+    <fieldset>
+		<label>{timezoneText} *</label>
+    	<input type="text" id="timezone" value="{timezone}" pattern="^[a-zA-Z]+/{1}[a-zA-Z]+$">
+	</fieldset>
+</div>
+
+<div>
+	<h2>Login</h2>
+
+	<fieldset>
+		<label>Normal login</label>
+		<input type="checkbox" id="normalLogin" checked="checked">
+	</fieldset>
+	</fieldset>
+	<fieldset>
+		<label>OpenID support</label>
+		<input type="checkbox" id="openID">
+	</fieldset>
+	<fieldset>
+		<label>LDAP support</label>
+		<input type="checkbox" id="lDAP">
+	</fieldset>
+	
+	<div id="LDAP_block">
+		<fieldset>
+			<label>{host} *</label>
+			<input type="text" id="ldap_server">
+		</fieldset>
+		<fieldset>
+			<label>Port *</label>
+			<input type="text" id="ldap_port" pattern="^[0-9]+$">
+		</fieldset>
+	</div>
+</div>
+<div>
+	<h2>{sessionTitle}</h2>
+
+	<fieldset>
+    	<label>{sessionNameText}</label>
+    	<input type="text" id="sessionName" value="{sessionName}">
+	</fieldset>
+	<fieldset>
+    	<label>{sessionPathText}</label>
+    	<input type="text" id="sessionPath" value="{sessionPath}">
+	</fieldset>
+	<fieldset>
+    	<label>{sessionExpireText}</label>
+    	<input type="text" id="sessionExpire" value="{sessionExpire}" pattern="^[0-9]+$">
+	</fieldset>
+</div>
+<div>
+    <h2>{siteSettings}</h2>
+
+	<fieldset>
+		<label>{defaultLanguage}</label>
+    	<select id="language">{languages}</select>
+	</fieldset>
+	<fieldset>
+    	<label>{templateDir}</label>
+    	<select id="template">{templates}</select>
+	</fieldset>
+</div>
+
+<div>
+	<h2>Mail instellingen</h2>
+	
+	<fieldset>
+		<label>Afzender naam</label>
+		<input type="text" id="mail_name">
+	</fieldset>
+	<fieldset>
+		<label>Afzender adres *</label>
+		<input type="email" id="mail_email" required>
+	</fieldset>
+	
+	<fieldset>
+		<label>Gebruik SMTP</label>
+		<input type="checkbox" id="smtp">
+	</fieldset>
+	<div id="smtp_box">
+		<fieldset>
+			<label>{host} *</label>
+			<input type="text" id="smtp_host">
+		</fieldset>
+		<fieldset>
+			<label>Port *</label>
+			<input type="text" id="smtp_port" pattern="^[0-9]+$">
+		</fieldset>
+		<fieldset>
+			<label>{username} *</label>
+			<input type="text" id="smtp_username">
+		</fieldset>
+		<fieldset>
+			<label>{password} *</label>
+			<input type="password" id="smtp_password">
+		</fieldset>
+	</div>
+</div>
+
+<div>
+    <h2>{databaseSettings}</h2>
+
+    <h2 class="errorNotice">{sqlError}</h2>
+
+	<fieldset>
+		<label>{username} *</label>
+    	<input type="text" id="sqlUsername" value="{sqlUsername}" required>
+	</fieldset>
+	<fieldset>
+    	<label>{password} *</label>
+    	<input type="password" id="sqlPassword" value="{sqlPassword}" required>
+	</fieldset>
+	<fieldset>
+    	<label>{database} *</label>
+    	<input type="text" id="sqlDatabase" value="{sqlDatabase}" required>
+	</fieldset>
+	<fieldset>
+    	<label>{host} *</label>
+    	<input type="text" id="sqlHost" value="{sqlHost}" required>
+    </fieldset>
+	<fieldset>
+    	<label>{port}</label>
+   		<input type="text" id="sqlPort" value="{sqlPort}" pattern="^[0-9]+$">
+	</fieldset>
+	<fieldset>
+    	<label>{type}</label>
+    	<select id="databaseType">{databases}</select>
+	</fieldset>
+	<fieldset>
+		<label>{databasePrefixText} *</label>
+		<input type="text" id="databasePrefix" value="{databasePrefix}" required>
+	</fieldset>
+</div>
+<div>
+    <p><input type="button" id="settings_save" value="{buttonSave}"></p>
+</div>
+</settings>

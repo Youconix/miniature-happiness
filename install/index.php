@@ -26,6 +26,9 @@
 define('NIV','../');
 define('PROCESS','1');
 
+/* Style dir */
+define('STYLEDIR',NIV.'styles/default/');
+
 require(NIV.'admin/SettingsMain.php');
 
 class Install extends SettingsMain{
@@ -34,6 +37,8 @@ class Install extends SettingsMain{
 	private $i_step = 1;
 	private $s_layout;
 	private $bo_error   = false;
+	
+	private $a_output;
 
 	/**
 	 * PHP 5 constructor
@@ -42,9 +47,49 @@ class Install extends SettingsMain{
 		$this->init();
 
 		if( $_SERVER['REQUEST_METHOD'] == 'POST' ){
+			if( isset($_POST['command']) ){
+				if( $_POST['command'] == 'checkLDAP' ){
+					if( $this->checkLDAP($_POST['server'],$_POST['port']) ){
+						echo('1');
+					}
+					else {
+						echo('0');
+					}
+				}
+				else if( $_POST['command'] == 'checkSMTP' ){
+					if( $this->checkSMTP($_POST['server'],$_POST['port'],$_POST['username'],$_POST['password']) ){
+						echo('1');
+					}
+					else {
+						echo('0');
+					}
+				}
+				else if( $_POST['command'] == 'checkDB' ){
+					$a_data = array(
+						'databaseType'  => $_POST['type'],
+						'sqlUsername' => $_POST['username'],
+						'sqlPassword' => $_POST['password'],
+						'sqlDatabase' => $_POST['database'],
+                		'sqlHost' => $_POST['host'],
+						'sqlPort' => $_POST['port']
+					);
+					if( $this->checkDatabase($a_data) ){
+						echo('1');
+					}
+					else {
+						echo('0');
+					}
+				}
+				return;
+			}
+			
 			switch($this->i_step){
 				case 3 :
 					$this->settingsCheck();
+					break;
+					
+				case 4 :
+					$this->populateDB();
 					break;
 
 				case 5 :
@@ -55,31 +100,30 @@ class Install extends SettingsMain{
 		else {
 			switch($this->i_step){
 				case 1 :
-					$this->systemCheck();
+					$this->mainscreen();
 					break;
-					 
+				
 				case 2 :
+					$this->a_output = array('result'=>1,'system'=>'','logs'=>'','settings'=>'','framework'=>'');
+					
+					$this->systemCheck();
 					$this->frameworkCheck();
+					
+					echo('['.json_encode($this->a_output).']');
+					exit();
 					break;
 
 				case 3 :
 					$this->settingsScreen();
 					break;
 
-				case 4 :
-					$this->populateDB();
-					break;
-
 				case 5 :
 					$this->standardUserScreen();
-					break;
-
-				case 6 :
-					$this->complete();
 					break;
 			}
 		}
 
+		$this->s_layout = str_replace(array('{step}','{styledir}'),array($this->i_step,STYLEDIR),$this->s_layout);
 		$this->s_layout = preg_replace("#{+[a-zA-Z_0-9]+}+#si", "", $this->s_layout);
 		echo($this->s_layout);
 	}
@@ -123,43 +167,9 @@ class Install extends SettingsMain{
 		}
 	}
 	
-	/**
-	 * Checks the progress
-	 */
-	private function progressCheck(){
-		$i_step = -1;
-		
-		if( file_exists(DATA_DIR.'settings/settings.xml') ){
-			$i_step=4;
-			
-			try {
-				$service_Database	= Memory::services('Database');
-				define('DB_PREFIX',Memory::services('XmlSettings')->get('settings/SQL/prefix'));
-				
-				$service_Database->query("SHOW TABLES LIKE ".DB_PREFIX."users");
-				if( $service_Database->num_rows() > 0 ){
-					$i_step = 5;
-					
-					$service_Database->query("SELECT * FROM ".DB_PREFIX."users WHERE id = 1");
-					if( $service_Database->num_rows() > 0 ){
-						$i_step = 6;
-					}
-				}
-			}
-			catch(Exception $e){	
-				/* Install failed */
-				unlink(DATA_DIR.'/settings/settings.xml');
-				;
-				$i_step = 3;
-			}
-		}
-		
-		if( $i_step != -1 ){
-			header('location: index.php?step='.$i_step);
-			exit();
-		}
+	private function mainscreen(){		
 	}
-
+	
 	/**
 	 * Performs the system check
 	 */
@@ -167,12 +177,22 @@ class Install extends SettingsMain{
 		require(NIV.'install/systemCheck.php');
 		$obj_check	= new SystemCheck();
 		
+		$s_settingsDir = DATA_DIR.'settings';
+		$s_logsDir	 	= DATA_DIR.'logs';
+		
 		$s_output	= $obj_check->validate();
-		if( $obj_check->isValid()){
-			$s_output .= '<p><a href="index.php?step=2" class="button">2 &gt;&gt;</a></p>';
+		if( !$obj_check->isValid()){
+			$this->a_output['result'] = 0;
+			$this->a_output['system'] = $s_output;
 		}
-					
-		$this->s_layout = str_replace('{content}',$s_output,$this->s_layout);
+		if( !$obj_check->checkWritable($s_settingsDir) ){
+			$this->a_output['result'] = 0;
+			$this->a_output['settings'] = $s_settingsDir;
+		}
+		if( !$obj_check->checkWritable($s_logsDir) ){
+			$this->a_output['result'] = 0;
+			$this->a_output['logs'] = $s_logsDir;
+		}
 	}
 
 	/**
@@ -183,13 +203,10 @@ class Install extends SettingsMain{
 		$obj_check	= new FileCheck();
 		
 		$s_output	= $obj_check->validate();
-		if( $obj_check->isValid()){
-			$s_output = '<p><a href="index.php?step=3" class="button">3 &gt;&gt;</a></p>'.
-			$s_output.
-			'<p><a href="index.php?step=3" class="button">3 &gt;&gt;</a></p>';
+		if( !$obj_check->isValid()){
+			$this->a_output['result'] = 0;
+			$this->a_output['framework'] = $s_output;
 		}
-					
-		$this->s_layout = str_replace('{content}','<h1>'.$this->service_Language->get('step2/title').'</h1>'.$s_output,$this->s_layout);
 	}
 
 	/**
@@ -231,125 +248,147 @@ class Install extends SettingsMain{
 	private function settingsCheck(){
 		$a_data     = $_POST;
 		$bo_error   = false;
-		$a_data['generalError'] = '';
-		$a_data['sqlError']     = '';
-		
+		$s_error	 = '';
 
 		/* Check fields */
 		$a_check    = array('url','timezone','language','template');
 		foreach($a_check AS $s_check){
 			if( trim($a_data[$s_check]) == '' ){
-				$a_data['generalError'] = $this->service_Language->get('step3/fieldsEmpty').'<br/>';
+				$s_error = $this->service_Language->get('step3/fieldsEmpty').'<br/>';
 				$bo_error   = true;
 				break;
 			}
 		}
-
 		if( !empty($a_data['sessionExpire']) && !is_numeric($a_data['sessionExpire']) ){
-			$a_data['generalError'] .= $this->service_Language->get('step3/sessionExpireInvalid').'<br/>';
+			$s_error .= $this->service_Language->get('step3/sessionExpireInvalid').'<br/>';
 			$bo_error   = true;
 		}
-
 		if( !in_array($a_data['language'],$this->getLanguages()) ){
-			$a_data['generalError'] .= $this->service_Language->get('step3/languageInvalid').'<br/>';
+			$s_error .= $this->service_Language->get('step3/languageInvalid').'<br/>';
 			$bo_error   = true;
 		}
-
-
 		if( !in_array($a_data['template'],$this->getTemplates()) ){
-			$a_data['generalError'] .= $this->service_Language->get('step3/templateInvalid').'<br/>';
+			$s_error .= $this->service_Language->get('step3/templateInvalid').'<br/>';
 			$bo_error   = true;
 		}
  
 		/* Check database data */
 		if( !in_array($a_data['databaseType'],$this->getDatabases() ) ){
-			$a_data['sqlError'] .= $this->service_Language->get('step3/databaseTypeInvalid').'<br/>';
+			$s_error .= $this->service_Language->get('step3/databaseTypeInvalid').'<br/>';
 			$bo_error   = true;
 		}
 		else if( !$this->checkDatabase($a_data) ){
-			$a_data['sqlError']     = $this->service_Language->get('step3/databaseInvalid').'<br/>';
+			$s_error     = $this->service_Language->get('step3/databaseInvalid').'<br/>';
 			$bo_error   = true;
 		}
 
 		if( $bo_error ){
-			$this->settingsScreen($a_data);
-		}
-		else {
-			unset($a_data['generalError']);
-			unset($a_data['sqlError']);
-		
-			/* Generate settings file */
-			require(NIV.'include/services/Random.inc.php');
-					
-			$service_Random	= new Service_Random();
-			$settings     = new DOMDocument('1.0', 'iso-8859-1');
-			// We don't want to bother with white spaces
-			$settings->preserveWhiteSpace = false;
-			$settings->resolveExternals = true; // for character entities
-			$settings->formatOutput = true;
-	
-			$root	= $settings->createElement('settings');
-			
-			/* Main */
-			$main	= $settings->createElement('main');
-			$main->appendChild($settings->createElement('nameSite',$a_data['base']));
-			$main->appendChild($settings->createElement('url',$a_data['url']));
-			$main->appendChild($settings->createElement('base',$a_data['base']));
-			$main->appendChild($settings->createElement('timeZone',$a_data['timezone']));
-			$main->appendChild($settings->createElement('salt',$service_Random->numberLetter(30,true)));
-			$root->appendChild($main);
-			
-			/* Session */
-			$session	= $settings->createElement('session');
-			$session->appendChild($settings->createElement('sessionName',$a_data['sessionName']));
-			$session->appendChild($settings->createElement('sessionPath',$a_data['sessionPath']));
-			$session->appendChild($settings->createElement('sessionExpire',$a_data['sessionExpire']));
-			$root->appendChild($session);
-			
-			/* Language */
-			$root->appendChild($settings->createElement('defaultLanguage',$a_data['language']));
-	
-			/* Mail */
-			$mail	= $settings->createElement('mail');
-			$mail->appendChild($settings->createElement('senderName'));
-			$mail->appendChild($settings->createElement('username'));
-			$mail->appendChild($settings->createElement('password'));
-			$mail->appendChild($settings->createElement('port'));
-			$root->appendChild($mail);
-
-			/* Templates */
-			$templates	= $settings->createElement('templates');
-			$templates->appendChild($settings->createElement('dir',$a_data['template']));
-			$root->appendChild($templates);
-
-			/* Database */
-			$databaseMain	= $settings->createElement('SQL');
-			$databaseMain->appendChild($settings->createElement('prefix',$a_data['databasePrefix']));
-			$databaseMain->appendChild($settings->createElement('type',$a_data['databaseType']));
-			$database	= $settings->createElement($a_data['databaseType']);
-			$database->appendChild($settings->createElement('username',$a_data['sqlUsername']));
-			$database->appendChild($settings->createElement('password',$a_data['sqlPassword']));
-			$database->appendChild($settings->createElement('database',$a_data['sqlDatabase']));
-			$database->appendChild($settings->createElement('host',$a_data['sqlHost']));
-			$database->appendChild($settings->createElement('port',$a_data['sqlPort']));
-			$databaseMain->appendChild($database);
-			$root->appendChild($databaseMain);
-			
-			$version	= $settings->createElement('version','1.0');
-			$root->appendChild($version);
-			
-			$settings->appendChild($root);				
-
-			$s_dir	= DATA_DIR.'/settings/';
-
-			if( !is_writable($s_dir) ){
-				throw new Exception($this->service_Language->get('step3/permissionFailure').' '.$s_dir.'.');
-			}
-		
-			$settings->save($s_dir.'settings.xml');						
-			header('location: index.php?step=4');
+			$this->reportError($s_error);
+						
+			echo('error');
 			die();
 		}
+		
+		/* Generate settings file */
+		require(NIV.'include/services/Hashing.inc.php');
+					
+		$service_Hashing	= new Service_Hashing();
+		$settings     = new DOMDocument('1.0', 'iso-8859-1');
+		// We don't want to bother with white spaces
+		$settings->preserveWhiteSpace = false;
+		$settings->resolveExternals = true; // for character entities
+		$settings->formatOutput = true;
+
+		$root	= $settings->createElement('settings');
+			
+		/* Main */
+		$main	= $settings->createElement('main');
+		$main->appendChild($settings->createElement('nameSite',$a_data['base']));
+		$main->appendChild($settings->createElement('url',$a_data['url']));
+		$main->appendChild($settings->createElement('base',$a_data['base']));
+		$main->appendChild($settings->createElement('timeZone',$a_data['timezone']));
+		$main->appendChild($settings->createElement('salt',$service_Hashing->createSalt()));
+		$root->appendChild($main);
+		
+		/* Login */
+		$login = $settings->createElement('login');
+		$login->appendChild($settings->createElement("normalLogin",$a_data['normalLogin']));
+		$login->appendChild($settings->createElement("openID",$a_data['openID']));
+		$login->appendChild($settings->createElement("lDAP",$a_data['lDAP']));
+		$login->appendChild($settings->createElement("ldap_server",$a_data['ldap_server']));
+		$login->appendChild($settings->createElement("ldap_port",$a_data['ldap_port']));
+		$root->appendChild($login);
+			
+		/* Session */
+		$session	= $settings->createElement('session');
+		$session->appendChild($settings->createElement('sessionName',$a_data['sessionName']));
+		$session->appendChild($settings->createElement('sessionPath',$a_data['sessionPath']));
+		$session->appendChild($settings->createElement('sessionExpire',$a_data['sessionExpire']));
+		$root->appendChild($session);
+		
+		/* Language */
+		$root->appendChild($settings->createElement('defaultLanguage',$a_data['language']));
+
+		/* Mail */
+		$mail	= $settings->createElement('mail');
+		$mail->appendChild($settings->createElement('senderName',$a_data['mail_name']));
+		$mail->appendChild($settings->createElement('senderEmail',$a_data['mail_email']));
+		$mail->appendChild($settings->createElement('SMTP',$a_data['smtp']));
+		$mail->appendChild($settings->createElement('host',$a_data['smtp_host']));
+		$mail->appendChild($settings->createElement('username',$a_data['smtp_username']));
+		$mail->appendChild($settings->createElement('password',$a_data['smtp_password']));
+		$mail->appendChild($settings->createElement('port',$a_data['smtp_port']));
+		$root->appendChild($mail);
+
+		/* Templates */
+		$templates	= $settings->createElement('templates');
+		$templates->appendChild($settings->createElement('dir',$a_data['template']));
+		$root->appendChild($templates);
+
+		/* Database */
+		$databaseMain	= $settings->createElement('SQL');
+		$databaseMain->appendChild($settings->createElement('prefix',$a_data['databasePrefix']));
+		$databaseMain->appendChild($settings->createElement('type',$a_data['databaseType']));
+		$database	= $settings->createElement($a_data['databaseType']);
+		$database->appendChild($settings->createElement('username',$a_data['sqlUsername']));
+		$database->appendChild($settings->createElement('password',$a_data['sqlPassword']));
+		$database->appendChild($settings->createElement('database',$a_data['sqlDatabase']));
+		$database->appendChild($settings->createElement('host',$a_data['sqlHost']));
+		$database->appendChild($settings->createElement('port',$a_data['sqlPort']));
+		$databaseMain->appendChild($database);
+		$root->appendChild($databaseMain);
+			
+		$version	= $settings->createElement('version','2.0');
+		$root->appendChild($version);
+			
+		$settings->appendChild($root);				
+
+		$s_dir	= DATA_DIR.'/settings/';
+
+		if( !is_writable($s_dir) ){
+			$this->reportError($this->service_Language->get('step3/permissionFailure').' '.$s_dir.'.');
+			echo('error');
+			die();
+		}
+		
+		$settings->save($s_dir.'/settings.xml');
+		
+		/* Check access */
+		require_once(NIV.'include/services/CurlManager.inc.php');
+		$service_Curl = new Service_CurlManager();
+		
+		$s_url = $_SERVER['HTTP_HOST'].'/'.$_POST['base'].'/'.$s_dir.'settings.xml';
+		$service_Curl->performGetCall($s_url,array());
+		if( $service_Curl->getHeader() == 200 ){
+			$this->reportError('The data-directory '.DATA-DIR.' is world readable! Installation canceled.');
+			unlink($s_dir.'/settings.xml');
+			
+			echo('security error');
+		}
+		else {
+			echo('ok');
+		}
+		die();
 	}
 	
 	/**
@@ -359,13 +398,16 @@ class Install extends SettingsMain{
 		require(NIV.'install/Database.php');
 		$obj_Database	= new Database();
 		
-		if( !$obj_Database->populateDatabase()){
-			$this->s_layout = str_replace('{content}','<h2>'.$this->service_Language->get('step4/error').'</h2>',$this->s_layout);
+		try {
+			$obj_Database->populateDatabase();
+			
+			echo('1');
 		}
-		else {
-			header('location: index.php?step=5');
-			exit();
+		catch(Exception $e){
+			$this->reportError($e);
+			echo('0');
 		}
+		exit();
 	}
 	
 	/**
@@ -392,65 +434,48 @@ class Install extends SettingsMain{
 	private function standardUserSave(){
 		$a_data     = $_POST;
 		$bo_error   = false;
-		$a_data['generalError'] = '';
+		$s_error = '';
 
 		/* Check fields */
 		$a_check    = array('nick','email','password','password2');
 		foreach($a_check AS $s_check){
 			if( trim($a_data[$s_check]) == '' ){
-				$a_data['generalError'] = $this->service_Language->get('step5/fieldsEmpty').'<br/>';
+				$s_error = $this->service_Language->get('step5/fieldsEmpty').'<br/>';
 				$bo_error   = true;
 				break;
 			}
 		}
 
 		if( $a_data['password'] != $a_data['password2'] ){
-			$a_data['ftpError']     = $this->service_Language->get('step5/passwordInvalid').'<br/>';
+			$s_error    .= $this->service_Language->get('step5/passwordInvalid').'<br/>';
+			$bo_error   = true;
+		}
+		if( strlen($a_data['password']) < 8 ){
+			$s_error .= 'The password is too short. At least 8 characters.';
 			$bo_error   = true;
 		}
 
 		if( $bo_error ){
-			$this->standardUserScreen($a_data);
+			echo('error');
+			exit();
 		}
-		else {
-			require(NIV.'install/Database.php');
-			$obj_Database	= new Database();
+		
+		require(NIV.'install/Database.php');
+		$obj_Database	= new Database();
 			
-			if( !$obj_Database->createUser($a_data['nick'],$a_data['email'],$a_data['password'])){
-				$this->s_layout = str_replace('{content}','<h2 class="errorNotice">'.$this->service_Language->get('step5/error').'</h2>',$this->s_layout);
-			}
-			else {
-				header('location: index.php?step=6');
-				exit();
-			}
+		try {
+			$obj_Database->createUser($a_data['nick'],$a_data['email'],$a_data['password']);
+			
+			echo('oke');
 		}
+		catch(Exception $e){
+			$this->reportError($e);
+			
+			echo('error');
+		}
+		exit();
 	}
 	
-	/**
-	 * Completes the installation
-	 */
-	private function complete(){
-		$s_content = '<h1 class="Notice">'.$this->service_Language->get('step6/complete').'</h1>
-		
-		<h2 class="errorNotice">'.$this->service_Language->get('step6/removeDir').'</h2>';
-		
-		require(NIV.'include/Memory.php');
-		Memory::startUp();
-		$service_CurlManager	= Memory::services('CurlManager');
-		
-		$s_protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-		$s_url = $s_protocol.$_SERVER['HTTP_HOST'].Memory::getBase().'/admin/data/settings/settings.xml';
-		
-		$service_CurlManager->performGetCall($s_url,array());
-		
-		if( $service_CurlManager->getHeader() == 200 ){
-			$s_content .= '<h2 class="errorNotice">'.str_replace('[base]',Memory::getBase(),$this->service_Language->get('step6/settingsVisible')).'</h2>
-					<h2 class="errorNotice">'.$this->service_Language->get('step6/moveDir').'</h2>';
-		}
-		
-		$this->s_layout = str_replace('{content}',$s_content,$this->s_layout);
-	}
-
 	/**
 	 * Reads the given template
 	 * 
@@ -458,8 +483,8 @@ class Install extends SettingsMain{
 	 * @return string	The template content
 	 */
 	private function readTemplate($s_template){
-		$file       = fopen(NIV.'styles/default/templates/install/'.$s_template.'.tpl','r');
-		$s_content = fread($file,filesize(NIV.'styles/default/templates/install/'.$s_template.'.tpl'));
+		$file       = fopen(STYLEDIR.'templates/install/'.$s_template.'.tpl','r');
+		$s_content = fread($file,filesize(STYLEDIR.'templates/install/'.$s_template.'.tpl'));
 		fclose($file);
 
 		return $s_content;
@@ -504,6 +529,20 @@ class Install extends SettingsMain{
 		}
 
 		return str_replace($a_keys, $a_values, $s_template);
+	}
+	
+	private function reportError($s_error){
+		if( !class_exists('Service_Logs') ){
+			require(NIV.'include/services/Logs.inc.php');
+		}
+		$service_Logs	= new Service_Logs();
+		
+		if( is_object($s_error) ){
+			$s_error	= $s_error->getMessage().'
+			'.		$s_error->getTraceAsString();
+		}
+		
+		$service_Logs->errorLog($s_error);
 	}
 }
 

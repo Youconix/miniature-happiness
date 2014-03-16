@@ -6,6 +6,14 @@ Animation.prototype.animate	= function(){
 		return;
 	}
 	
+	/* Check for stylesheet */
+	styledir = $('body').data('styledir');
+	if( !styledir ){	styledir = '/styles/default/';	}
+	
+	if( !$("link[href='"+styledir+"css/animation.css']").length ){
+	    $('<link href="'+styledir+'css/animation.css" rel="stylesheet">').appendTo("head");
+	}
+	
 	this.radio();
 	this.checkbox();
 	this.select();
@@ -28,14 +36,14 @@ Animation.prototype.hasCSS3	= function(){
 Animation.prototype.radio	= function(){
 	$(":radio").each(function(){
 		checkbox = $(this);
-		labelID = 'label_'+checkbox.attr("id");
+		labelID = 'label_'+checkbox.prop("id");
 		label = '<label id="'+labelID+'" class="radio"></label>';
 		
 		checkbox.addClass("animation");
 		checkbox.after(label);
 		
 		$("#"+labelID).click(function(){
-			id = $(this).prev().attr("id");
+			id = $(this).prev().prop("id");
 			animation.triggerSelect(id);
 		});
 	});
@@ -44,14 +52,14 @@ Animation.prototype.radio	= function(){
 Animation.prototype.checkbox	= function(){
 	$(":checkbox").each(function(){
 		checkbox = $(this);
-		labelID = 'label_'+checkbox.attr("id");
+		labelID = 'label_'+checkbox.prop("id");
 		label = '<label id="'+labelID+'" class="checkbox"></label>';
 		
 		checkbox.addClass("animation");
 		checkbox.after(label);
 		
 		$("#"+labelID).click(function(){
-			id = $(this).prev().attr("id");
+			id = $(this).prev().prop("id");
 			animation.triggerSelect(id);
 		});
 	});
@@ -72,7 +80,10 @@ Animation.prototype.select	= function(){
 	
 	$("select").each(function(){
 		item = $(this);
-		id = item.attr("id");
+		id = item.prop("id");
+		if( !id ){
+			id = item.prop("name");
+		}
 		
 		itemID = "select_"+id;
 		item.wrap('<div class="select" id="'+itemID+'"></div>');
@@ -91,7 +102,7 @@ Animation.prototype.updateSelect = function(item){
 		added = true;
 	}
 	
-	id = item.attr("id");
+	id = item.prop("id");
 	width = parseInt($(item).css("width"));
 	if( width == 0 ){
 		maxlength = 0;
@@ -112,7 +123,7 @@ Animation.prototype.updateSelect = function(item){
 	if( width < 85 ){	width=85; }
 	newWidth	= width+30;
 	
-	$("#select_"+id).css("width",width+"px");
+	$(item).parent().css("width",width+"px");
 	item.css("width",newWidth+'px');
 	
 	if( added ){

@@ -10,6 +10,16 @@ class MailWrapper extends Service {
 		$this->obj_phpMailer  = new PHPMailer();
 	}
 	
+	public function checkSmtpDetails($s_host,$i_port,$s_username,$s_password){
+		require_once(NIV.'include/mailer/class.smtp.php');
+		$obj_SMTP = new SMTP();
+		
+		if( !$obj_SMTP->Connect($s_host, $i_port) ){
+			return false;
+		}
+		return $obj_SMTP->Authenticate($s_username, $s_password);
+	}
+	
 	/////////////////////////////////////////////////
 	// MESSAGE FUNCTIONS
 	/////////////////////////////////////////////////

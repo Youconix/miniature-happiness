@@ -24,35 +24,6 @@ String.prototype.startsWith = function(str) {
 	var firstIndex = this.firstIndexOf(str);
 	return (firstIndex != -1) && (firstIndex + str.length == this.length);
 }
-
-/* Validation function */
-function validateEmail(email) {
-	return email.match("^[a-zA-Z0-9!#$%&'*+\-\/=?^_`\{\|\}~\.]{2,64}[@]{1}[a-zA-Z0-9\-\.]{2,255}[\.]{1}[a-zA-Z0-9\-]{2,63}$");
-}
-function validateURI(uri) {
-
-}
-function checkPostalNL(value) {
-	if (value == "")
-		return false;
-	if (!value.match("^\\d{4}\\s?[a-zA-Z]{2}$"))
-		return false;
-
-	return true;
-}
-
-function checkPostalBE(value) {
-	if (value == "")
-		return false;
-	if (!value.match("^\\d{4}$"))
-		return false;
-
-	postal = parseInt(value);
-	if (postal < 1000 || postal > 9999)
-		return false;
-
-	return true;
-}
 /* Array functions */
 function arraySearch(arrayName, value) {
 	for (i = 0; i < arrayName.length; i++) {
@@ -148,6 +119,8 @@ function getDaysMonth(month, year) {
 	return 28;
 }
 
+
+
 function encode(text){
 	text = text.replace(/“/g,"&#8220;").replace(/”/g,"&#8221;");
 	text = text.replace(/‘/g, "'");
@@ -234,76 +207,6 @@ function uni2ent(srcTxt) {
 	    len++;
 	}
 	return entTxt;
-}
-function html5ValidationArray(fields){
-	oke = true;
-	
-	for(i in fields){
-		if( !html5Validation(fields[i]) ){
-			oke = false;
-		}
-	}
-	
-	return oke;
-}
-
-function html5Validation(id){
-	item = $("#" + id); 
-	
-	$(item).removeClass("invalid","valid");
-		
-	required = $(item).prop("required");
-	isRequired = false;
-	if( (typeof required !== "undefined" && required !== false) ){
-		isRequired = true;
-	}
-		
-	type = $(item).prop("type");
-	pattern = $(item).prop("pattern");
-	value = $(item).val();
-	
-	if( isRequired && $.trim(value) == "" ){
-		$(item).addClass("invalid");
-		return false;
-	}
-	if( (typeof pattern != "undefined") && pattern != false ){
-		if( value != "" && (value.match(pattern) == null)  ){
-			$(item).addClass("invalid");
-			return false;
-		}
-	}
-		
-	if( (typeof type === "undefined" || type === false) ){
-		$(item).addClass("valid");
-		return true;
-	}
-		
-	if( type == "number" || type == "range" ){
-		if( isNaN(value) ){
-			$(item).addClass("invalid");
-			return false;
-		}
-		
-		min = $(item).prop("min");
-		max = $(item).prop("max");
-				
-		if( ((typeof min !== "undefined") && min !== false && value < min) || ((typeof max !== "undefined") && max !== false && value > max) ){
-			$(item).addClass("invalid");
-			return false;
-		}
-	}
-	if( type == "email" && $.trim(value) != "" && !validateEmail(value) ){
-		$(item).addClass("invalid");
-		return false;
-	}
-	if( type == "url" && $.trim(value) != "" && !validateURI(value) ){
-		$(item).addClass("invalid");
-		return false;
-	}
-	
-	$(item).addClass("valid");
-	
-	return true;
 }
 
 function firstToUpper(text){

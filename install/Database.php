@@ -50,30 +50,13 @@ class Database {
 	 */
 	public function populateDatabase(){
 		$service_File = Memory::services('File');
-		try {
-			$this->a_countries	= explode("\n",$service_File->readFile(NIV.'install/countries.cvs'));
-			$this->a_nationalities = explode("\n",$service_File->readFile(NIV.'install/nationality.cvs'));
-				
-		}
-		catch(IOException $e){
-			return false;
-		}
+		$this->a_countries	= explode("\n",$service_File->readFile(NIV.'install/countries.cvs'));
+		$this->a_nationalities = explode("\n",$service_File->readFile(NIV.'install/nationality.cvs'));
 		
-		try{
-			$obj_create	= $this->service_QueryBuilder->transaction();
+		$this->populateFramework();
+		$this->populateSite();
 
-			$this->populateFramework();
-
-			$this->populateSite();
-
-			$obj_create	= $this->service_QueryBuilder->commit();
-
-			return true;
-		}
-		catch(DBException $e){
-			$obj_create	= $this->service_QueryBuilder->rollback();
-			return false;
-		}
+		$obj_create	= $this->service_QueryBuilder->commit();
 	}
 
 	/**
@@ -360,11 +343,12 @@ class Database {
 			$this->service_QueryBuilder->insert('users',array('id','nick','bot','active','registrated'),array('i','s','s','s','i'),array(0,'System','1','1',time()))->getResult();
 				
 			$this->service_QueryBuilder->commit();
-			return true;
+			
 		}
 		catch(Exception $e){
 			$this->service_QueryBuilder->rollback();
-			return false;
+			
+			throw $e;
 		}
 	}
 }

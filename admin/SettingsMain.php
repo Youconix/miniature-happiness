@@ -188,6 +188,22 @@ class SettingsMain {
         if( $a_data['ftpPort'] != '' ) $i_port = $a_data['ftpPort'];
         return $obj_FTP->checkLogin($a_data['ftpUsername'],$a_data['ftpPassword'],$a_data['ftpHost'],$i_port = 21,$a_data['ftpType']);
     }
+    
+    public function checkLDAP($s_host,$i_port){
+    	require_once(NIV.'include/services/Service.inc.php');
+    	require_once(NIV.'include/services/LDAP.inc.php');
+    	
+    	$obj_LDAP = new Service_LDAP();
+    	return $obj_LDAP->checkConnection($s_host,$i_port);
+    }
+    
+    public function checkSMTP($s_host,$i_port,$s_username,$s_password){
+    	require_once(NIV.'include/services/Service.inc.php');
+    	require_once(NIV.'include/mailer/MailWrapper.inc.php');
+    	$obj_MailWrapper = new MailWrapper();
+    	
+    	return $obj_MailWrapper->checkSmtpDetails($s_host,$i_port,$s_username,$s_password);
+    }
 }
 
 ?>

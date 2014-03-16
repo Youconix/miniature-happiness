@@ -47,9 +47,8 @@ class SystemCheck {
 	 * Validates the server
 	 */
 	public function validate(){
-		$s_output	= '<h1>System check</h1>
-    	    
-    	    <table>
+		$s_output	= '<table>
+			<tbody>
     	    <tr>
     	    	<td>Minimun PHP 5.2</td>
     	    	<td>'.$this->phpVersion().'</td>
@@ -77,16 +76,21 @@ class SystemCheck {
     	    <tr>
     	    	<td colspan="2"><br/></td>
     	    </tr>
-    	    <tr>
-    	    	<td colspan="2">Checking write permissions</td>
-    	    </tr>
-    	    '.$this->checkData().'
+    	    </tbody>
     	    </table>';
 
 		if( !$this->bo_mysql && !$this->bo_postgres )
 		$this->bo_valid	= false;
 			
 		return $s_output;
+	}
+	
+	public function checkWritable($s_dir){
+		if( is_writable($s_dir) ){
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -183,40 +187,6 @@ class SystemCheck {
 		}
 		
 		return $this->s_valid;
-	}
-	
-	private function checkData(){
-		$s_data_dir	= DATA_DIR;
-		
-		$s_output = '<tr>
-			<td>'.$s_data_dir.'/logs</td>
-			<td>';
-		
-		if( is_writable($s_data_dir.'/logs') ){
-			$s_output .= $this->s_valid;	
-		}
-		else {
-			$s_output .= $this->s_inValid;
-			$this->bo_valid	= false;
-		}
-		$s_output .= '</td>
-		</tr>
-		<tr>
-			<td>'.$s_data_dir.'/settings</td>
-			<td>';
-		
-		if( is_writable($s_data_dir.'/settings') ){
-			$s_output .= $this->s_valid;	
-		}
-		else {
-			$s_output .= $this->s_inValid;
-			$this->bo_valid	= false;
-		}
-		
-		$s_output .= '</td>
-		</tr>';
-		
-		return $s_output;
 	}
 }
 ?>
