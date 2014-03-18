@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testHTML extends GeneralTest {
 	private $helper_HTML;
@@ -19,7 +21,6 @@ class testHTML extends GeneralTest {
 		parent::setUp();
 
 		$this->helper_HTML	= new Helper_HTML();
-		$this->helper_HTML->setHtmlType('xhtml');
 		
 		$this->s_class = 'defaultClass';
 		$this->s_id = 'defaultID';
@@ -34,8 +35,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_Div
+	 * 
+	 * @test
 	 */
-	public function testDiv() {
+	public function div(){
 		$helper	= $this->helper_HTML->div($this->s_content);
 		$this->assertTrue(($helper instanceof HTML_Div));
 		
@@ -48,8 +51,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_Paragraph
+	 * 
+	 * @test
 	 */
-	public function testParagraph() {
+	public function paragraph(){
 		$helper = $this->helper_HTML->paragraph($this->s_content);
 		$this->assertTrue(($helper instanceof HTML_Paragraph) );
 		$helper->setID($this->s_id);
@@ -61,8 +66,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_Textarea
+	 * 
+	 * @test
 	 */
-	public function testTextarea() {
+	public function textarea(){
 		$helper = $this->helper_HTML->textarea('message',$this->s_content);
 		$this->assertTrue( ($helper instanceof HTML_Textarea) );
 		 
@@ -75,8 +82,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_UnList
+	 * 
+	 * @test
 	 */
-	public function testUnList() {
+	public function unList(){
 		$helper = $this->helper_HTML->unList(true);
 		
 		$this->assertTrue( ($helper instanceof HTML_UnList) );
@@ -90,8 +99,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_ListItem
+	 * 
+	 * @test
 	 */
-	public function testListItem() {
+	public function listItem(){
 		$helper = $this->helper_HTML->listItem($this->s_content);
 		
 		$this->assertTrue( ($helper instanceof HTML_ListItem ));
@@ -105,8 +116,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Form
+	 * 
+	 * @test
 	 */
-	public function testForm(){
+	public function form(){
 		$s_link = 'index.php';
 		$s_method = 'post';
 		
@@ -122,8 +135,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Table
+	 * 
+	 * @test
 	 */
-	public function testTable() {
+	public function table(){
 		$helper = $this->helper_HTML->table();
 		
 		$this->assertTrue( ($helper instanceof  HTML_Table ));
@@ -145,8 +160,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_TableRow
+	 * 
+	 * @test
 	 */
-	public function testTableRow() {
+	public function tableRow(){
 		$helper = $this->helper_HTML->tableRow();
 		
 		$this->assertTrue( ($helper instanceof HTML_TableRow) );
@@ -161,8 +178,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_TableCell
+	 * 
+	 * @test
 	 */
-	public function testTableCell() {
+	public function tableCell(){
 		$helper = $this->helper_HTML->tableCell();
 		
 		$this->assertTrue( ($helper instanceof HTML_TableCell) );
@@ -177,8 +196,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_Input
+	 * 
+	 * @test
 	 */
-	public function testInput() {
+	public function input(){
 		$s_name = 'inputTest';
 		$s_type = "password";
 		
@@ -195,8 +216,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test of calling HTML_Button
+	 * 
+	 * @test
 	 */
-	public function testButton() {
+	public function button(){
 		$s_name = 'inputTest';
 		$s_type = "submit";
 		
@@ -213,8 +236,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Link
+	 * 
+	 * @test
 	 */
-	public function testLink() {
+	public function link(){
 		$s_url = 'test.php';
 		
 		$helper = $this->helper_HTML->link($s_url,$this->s_content);
@@ -230,8 +255,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Image
+	 * 
+	 * @test
 	 */
-	public function testImage() {
+	public function image(){
 		$s_url = 'image.png';
 		$s_alt = $s_title = 'image';
 		
@@ -250,8 +277,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Header
+	 * 
+	 * @test
 	 */
-	public function testHeader(){
+	public function header(){
 		$i_level = 2;
 		$helper = $this->helper_HTML->header($i_level,$this->s_content);
 		
@@ -266,8 +295,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Radio
+	 * 
+	 * @test
 	 */
-	public function testRadio() {
+	public function radio(){
 		$s_name = 'radio';
 		
 		$helper = $this->helper_HTML->radio($s_name,$this->s_content);
@@ -283,8 +314,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Checkbox
+	 * 
+	 * @test
 	 */
-	public function testCheckbox() {
+	public function checkbox(){
 		$s_name = 'checkbox';
 		
 		$helper = $this->helper_HTML->checkbox($s_name,$this->s_content);
@@ -300,8 +333,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Select
+	 * 
+	 * @test
 	 */
-	public function testSelect() {
+	public function select(){
 		$s_name	= 'select';
 		$a_values = array(1,2,3,4,5,6);
 		
@@ -323,8 +358,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_StylesheetLink
+	 * 
+	 * @test
 	 */
-	public function testStylesheetLink() {
+	public function stylesheetLink(){
 		$s_link = 'style.css';
 		$s_media = 'screen';
 		
@@ -339,8 +376,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Stylesheet
+	 * 
+	 * @test
 	 */
-	public function testStylesheet() {
+	public function stylesheet(){
 		$s_css = 'body { color#FFF; }';
 		 
 		$helper = $this->helper_HTML->stylesheet($s_css);
@@ -353,8 +392,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_JavascriptLink
+	 * 
+	 * @test
 	 */
-	public function testJavascriptLink() {
+	public function javascriptLink(){
 		$s_link = 'javascript.js';
 		$helper = $this->helper_HTML->javascriptLink($s_link);
 		
@@ -368,8 +409,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Javascript
+	 * 
+	 * @test
 	 */
-	public function testJavascript() {
+	public function testJavascript(){
 		$s_javascript = 'alert("hi");';
 		 
 		$helper = $this->helper_HTML->javascript($s_javascript);
@@ -382,8 +425,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Metatag
+	 * 
+	 * @test
 	 */
-	public function testMetatag() {
+	public function metatag(){
 		$s_name = 'meta';
 		 
 		$helper = $this->helper_HTML->metatag($s_name, $this->s_content);
@@ -398,8 +443,10 @@ class testHTML extends GeneralTest {
 
 	/**
 	 * Test for calling HTML_Span
+	 * 
+	 * @test
 	 */
-	public function testSpan() {
+	public function span(){
 		$helper = $this->helper_HTML->span($this->s_content);
 		
 		$this->assertTrue( ($helper instanceof  HTML_Span) );
@@ -414,19 +461,13 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_Audio
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testAudio(){
+	public function audio(){
 		$s_url = 'audio.ogg';
 		$s_type = 'ogg';
 		
-		try {
-			$this->helper_HTML->audio("");
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
 		$helper = $this->helper_HTML->audio($s_url,$s_type);
 		
 		$this->assertTrue( ($helper instanceof HTML_Audio) );
@@ -443,19 +484,13 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_Video
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testVideo(){
+	public function video(){
 		$s_url = 'video.webm';
 		$s_type = 'WebM';
 		
-		try {
-			$this->helper_HTML->video("");
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
 		$helper = $this->helper_HTML->video($s_url,$s_type);
 		
 		$this->assertTrue( ($helper instanceof HTML_Video) );
@@ -472,16 +507,10 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_Canvas
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testCanvas(){
-		try {
-			$this->helper_HTML->canvas();
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
+	public function canvas(){
 		$helper = $this->helper_HTML->canvas();
 		
 		$helper->setID($this->s_id);
@@ -494,16 +523,10 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_PageHeader
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testPageHeader(){
-		try {
-			$this->helper_HTML->pageHeader("");
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
+	public function pageHeader(){
 		$helper = $this->helper_HTML->pageHeader($this->s_content);
 		
 		$this->assertTrue( ($helper instanceof HTML_PageHeader) );
@@ -518,16 +541,10 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_Footer
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testPageFooter(){
-		try {
-			$this->helper_HTML->pageFooter();
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
+	public function pageFooter(){
 		$helper = $this->helper_HTML->pageFooter($this->s_content);
 		
 		$this->assertTrue( ($helper instanceof HTML_Footer) );
@@ -542,16 +559,10 @@ class testHTML extends GeneralTest {
 	/**
 	 * Test for calling HTML_Nav
 	 * HTML 5 only
+	 * 
+	 * @test
 	 */
-	public function testNavigation(){
-		try {
-			$this->helper_HTML->navigation("");
-			
-			$this->fail("Expected Exception");
-		}
-		catch(Exception $e){}
-		
-		$this->helper_HTML->setHTML5();
+	public function navigation(){		
 		$helper = $this->helper_HTML->navigation($this->s_content);
 		
 		$this->assertTrue( ($helper instanceof HTML_Nav) );

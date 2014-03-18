@@ -12,10 +12,7 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase {
 		
 		/* First run for inclusion */
 		Memory::setTesting();
-/*		$this->s_base = Memory::services('XmlSettings')->get('settings/main/base');
-		if( !empty($this->s_base) && substr($this->s_base,0,1) != '/' )	$this->s_base = '/'.$this->s_base;
-		
-		Memory::reset(); */
+		$this->s_base = '/';
 	}
 	
 	public function setUp(){

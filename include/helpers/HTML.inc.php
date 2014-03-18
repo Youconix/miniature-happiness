@@ -23,37 +23,27 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Helper_HTML extends Helper {
-	protected $bo_xhtml = true;
-	protected $bo_html5 = false;
+	protected $s_htmlType	= 'html5';
 
 	/**
 	 * Destructor
 	 */
-	public function __destruct() {
-		$this->bo_xhtml = null;
-		$this->bo_html5 = null;
+	public function __destruct(){
+		$this->s_htmlType = null;
 	}
 
 	/**
 	 * Sets the HTML type for the helper
+	 * Default setting is html5
 	 *
-	 * @param  String $s_type The HTML type (html|xhtml)
+	 * @param  String $s_type The HTML type (html|xhtml|html5)
 	 */
-	public function setHtmlType($s_type) {
+	public function setHtmlType($s_type){
 		$s_type = strtolower($s_type);
-
-		$this->bo_xhtml = false;
-
-		if ($s_type == 'xhtml') {
-			$this->bo_xhtml = true;
+		
+		if( in_array($s_type,array('html','xhtml','html5')) ){
+			$this->htmlType = $s_type;
 		}
-	}
-
-	/**
-	 * Sets the html type to html 5
-	 */
-	public function setHTML5() {
-		$this->bo_html5 = true;
 	}
 
 	/**
@@ -62,7 +52,7 @@ class Helper_HTML extends Helper {
 	 * @param   String $s_content   The content, optional
 	 * @return  HTML_Div The Div object
 	 */
-	public function div($s_content = '') {
+	public function div($s_content = ''){
 		$this->checkClass('HTML_Div');
 		 
 		return new HTML_Div($s_content);
@@ -74,7 +64,7 @@ class Helper_HTML extends Helper {
 	 * @param   String      $s_content      The content of the paragraph
 	 * @return  HTML_Paragraph   The Paragraph object
 	 */
-	public function paragraph($s_content) {
+	public function paragraph($s_content){
 		$this->checkClass('HTML_Paragraph');
 		 
 		return new HTML_Paragraph($s_content);
@@ -87,7 +77,7 @@ class Helper_HTML extends Helper {
 	 * @param   String      $s_value        The default text of the textarea, optional
 	 * @return  HTML_Textarea    The Textarea object
 	 */
-	public function textarea($s_name, $s_value = '') {
+	public function textarea($s_name, $s_value = ''){
 		$this->checkClass('HTML_Textarea');
 		 
 		return new HTML_Textarea($s_name, $s_value);
@@ -99,7 +89,7 @@ class Helper_HTML extends Helper {
 	 * @param   Boolean $bo_numberd True when a numberd list is needed, default false
 	 * @return  HTML_UnList  The generated list object
 	 */
-	public function unList($bo_numberd = false) {
+	public function unList($bo_numberd = false){
 		$this->checkClass('HTML_UnList');
 		 
 		return new HTML_UnList($bo_numberd);
@@ -111,7 +101,7 @@ class Helper_HTML extends Helper {
 	 * @param	String	$s_content	The content of the list item
 	 * @return	HTML_ListItem The generated list item
 	 */
-	public function listItem($s_content) {
+	public function listItem($s_content){
 		$this->checkClass('HTML_ListItem','UnList');
 		 
 		return new HTML_ListItem($s_content);
@@ -125,7 +115,7 @@ class Helper_HTML extends Helper {
 	 * @param	Boolean	$bo_multidata	Set to true for a mixed content form
 	 * @return  HTML_Form    The Form object
 	 */
-	public function form($s_link, $s_method, $bo_multidata = false) {
+	public function form($s_link, $s_method, $bo_multidata = false){
 		$this->checkClass('HTML_Form');
 		 
 		return new HTML_Form($s_link, $s_method, $bo_multidata);
@@ -136,7 +126,7 @@ class Helper_HTML extends Helper {
 	 *
 	 * @return  HTML_Table   The table object
 	 */
-	public function table() {
+	public function table(){
 		$this->checkClass('HTML_Table');
 
 		return new HTML_Table();
@@ -147,7 +137,7 @@ class Helper_HTML extends Helper {
 	 *
 	 * @return  HTML_TableRow    The tableRow object
 	 */
-	public function tableRow() {
+	public function tableRow(){
 		$this->checkClass('HTML_TableRow','HTML_Table');
 
 		return new HTML_TableRow();
@@ -159,24 +149,33 @@ class Helper_HTML extends Helper {
 	 * @param   String      $s_value    The value from the cell,optional
 	 * @return  HTML_TableCell   The TableCell object
 	 */
-	public function tableCell($s_value = '') {
+	public function tableCell($s_value = ''){
 		$this->checkClass('HTML_TableCell','HTML_Table');
 
 		return new HTML_TableCell($s_value);
+	}
+	
+	public function getInputFactory(){
+		$obj_factory = InputFactory::getInstance();
+		return $obj_factory;
 	}
 
 	/**
 	 * Generates a text input field
 	 *
 	 * @param   String  $s_name     The name of the text field
-	 * @param   String  $s_type     The type of the field (text|password|hidden|email)
+	 * @param   String  $s_type     The type of the field 
+	 * 		(text|password|hidden) for HTML/XHTML
+	 * 		(text|password|hidden|search|email|url|tel|number|range|date|month|week|time|datetime|
+	 * 			datetime-local|color) for HTML5 
 	 * @param   String  $s_value    The default text of the field, optional
 	 * @return  HTML_Input   The Input object
 	 */
-	public function input($s_name, $s_type, $s_value = '') {
+	public function input($s_name, $s_type, $s_value = ''){
 		$this->checkClass('HTML_Input');
 		 
-		return new HTML_Input($s_name, $s_type, $s_value, $this->bo_xhtml);
+		$obj_factory = InputFactory::getInstance();
+		return $obj_factory->input($s_name,$s_type,$s_value,$this->s_htmlType);
 	}
 
 	/**
@@ -187,7 +186,7 @@ class Helper_HTML extends Helper {
 	 * @param      String  $s_type     The type of the button (button|reset|submit)
 	 * @return     HTML_Button  The Button object
 	 */
-	public function button($s_value, $s_name, $s_type) {
+	public function button($s_value, $s_name, $s_type){
 		$this->checkClass('HTML_Button','HTML_Input');
 		 
 		return new HTML_Button($s_value, $s_name, $s_type, $this->bo_xhtml);
@@ -200,7 +199,7 @@ class Helper_HTML extends Helper {
 	 * @param       String  $s_value    The link text, optional
 	 * @return      HTML_Link    The Link object
 	 */
-	public function link($s_url, $s_value = '') {
+	public function link($s_url, $s_value = ''){
 		$this->checkClass('HTML_Link');
 		 
 		return new HTML_Link($s_url, $s_value);
@@ -212,7 +211,7 @@ class Helper_HTML extends Helper {
 	 * @param       String  $s_url      The source url from the image
 	 * @return      HTML_Image   The Image object
 	 */
-	public function image($s_url) {
+	public function image($s_url){
 		$this->checkClass('HTML_Image');
 		 
 		return new HTML_Image($s_url, $this->bo_xhtml);
@@ -225,7 +224,7 @@ class Helper_HTML extends Helper {
 	 * @param       String  $s_content  The content of the header
 	 * @return      HTML_Header  The Header object
 	 */
-	public function header($i_level, $s_content) {
+	public function header($i_level, $s_content){
 		$this->checkClass('HTML_Header');
 		 
 		return new HTML_Header($i_level, $s_content);
@@ -238,7 +237,7 @@ class Helper_HTML extends Helper {
 	 * @param String	$s_value The value
 	 * @return      HTML_Radio   The Radio button object
 	 */
-	public function radio($s_name = '',$s_value = '') {
+	public function radio($s_name = '',$s_value = ''){
 		$this->checkClass('HTML_Radio','HTML_Input');
 		 
 		return new HTML_Radio($s_name,$s_value,$this->bo_xhtml);
@@ -251,7 +250,7 @@ class Helper_HTML extends Helper {
 	 * @param String	$s_value The value
 	 * @return      HTML_Checkbox    The Checkbox object
 	 */
-	public function checkbox($s_name = '',$s_value = '') {
+	public function checkbox($s_name = '',$s_value = ''){
 		$this->checkClass('HTML_Checkbox','HTML_Input');
 		 
 		return new HTML_Checkbox($s_name,$s_value,$this->bo_xhtml);
@@ -263,7 +262,7 @@ class Helper_HTML extends Helper {
 	 * @param   String  $s_name     The name of the select list
 	 * @return  HTML_Select   The Select list object
 	 */
-	public function select($s_name) {
+	public function select($s_name){
 		$this->checkClass('HTML_Select');
 		 
 		return new HTML_Select($s_name);
@@ -276,7 +275,7 @@ class Helper_HTML extends Helper {
 	 * @param    String $s_media The media where the stylesheet is for, optional (screen|print|mobile)
 	 * @return   HTML_StylesheetLink  The Stylesheet link object
 	 */
-	public function stylesheetLink($s_link, $s_media = 'screen') {
+	public function stylesheetLink($s_link, $s_media = 'screen'){
 		$this->checkClass('HTML_StylesheetLink','Head');
 		 
 		return new HTML_StylesheetLink($s_link, $s_media, $this->bo_xhtml, $this->bo_html5);
@@ -288,7 +287,7 @@ class Helper_HTML extends Helper {
 	 * @param  String  $s_css  The css-content
 	 * @return	HTML_Stylesheet  The generated stylesheet object
 	 */
-	public function stylesheet($s_css) {
+	public function stylesheet($s_css){
 		$this->checkClass('HTML_Stylesheet','Head');
 		 
 		return new HTML_Stylesheet($s_css, $this->bo_html5);
@@ -300,7 +299,7 @@ class Helper_HTML extends Helper {
 	 * @param	String $s_link  The link to the javascript-file
 	 * @return HTML_JavascriptLink  The Javascript link object
 	 */
-	public function javascriptLink($s_link) {
+	public function javascriptLink($s_link){
 		$this->checkClass('HTML_JavascriptLink','Head');
 		 
 		return new HTML_JavascriptLink($s_link, $this->bo_html5);
@@ -312,7 +311,7 @@ class Helper_HTML extends Helper {
 	 * @param  String  $s_javascript      The javascript-content
 	 * @return	HTML_Javascript  The generated javascript object
 	 */
-	public function javascript($s_javascript) {
+	public function javascript($s_javascript){
 		$this->checkClass('HTML_Javascript','Head');
 		 
 		return new HTML_Javascript($s_javascript, $this->bo_html5);
@@ -326,7 +325,7 @@ class Helper_HTML extends Helper {
 	 * @param   String  $s_scheme   The optional scheme of the meta tag
 	 * @return  HTML_Metatag The metatag object
 	 */
-	public function metatag($s_name, $s_content, $s_scheme = '') {
+	public function metatag($s_name, $s_content, $s_scheme = ''){
 		$this->checkClass('HTML_Metatag','Head');
 		 
 		return new HTML_Metatag($s_name, $s_content, $s_scheme, $this->bo_xhtml);
@@ -338,7 +337,7 @@ class Helper_HTML extends Helper {
 	 * @param   String $s_content The content of the span
 	 * @return  HTML_Span   The span object
 	 */
-	public function span($s_content) {
+	public function span($s_content){
 		$this->checkClass('HTML_Span');
 		 
 		return new HTML_Span($s_content);
@@ -464,6 +463,9 @@ abstract class CoreHtmlItem {
 	protected $s_between = '';
 	protected $s_value = '';
 	protected $s_id = '';
+	protected $s_htmlType;
+	protected $a_data = array();
+	protected $s_rel = '';
 
 	/**
 	 * Destructor
@@ -473,6 +475,9 @@ abstract class CoreHtmlItem {
 		$this->s_between = null;
 		$this->s_value = null;
 		$this->s_id = null;
+		$this->s_htmlType = null;
+		$this->a_data = null;
+		$this->s_rel = null;
 	}
 
 	/**
@@ -482,9 +487,9 @@ abstract class CoreHtmlItem {
 	 * @throws Exception if the type is incompatible
 	 * @return String	The parses content
 	 */
-	protected function parseContent($s_content) {
-		if (is_object($s_content)) {
-			if (!is_subclass_of($s_content, 'CoreHtmlItem')) {
+	protected function parseContent($s_content){
+		if (is_object($s_content)){
+			if (!is_subclass_of($s_content, 'CoreHtmlItem')){
 				throw new Exception("Only types of CoreHTMLItem can be automaticly parsed.");
 			} else {
 				$s_content = $s_content->generateItem();
@@ -499,10 +504,41 @@ abstract class CoreHtmlItem {
 	 *
 	 * @param String $s_id		The ID
 	 */
-	public function setID($s_id) {
+	public function setID($s_id){
 		$this->s_id = $s_id;
 
 		return $this;
+	}
+	
+	/**
+	 * Sets a data item
+	 * HTML 5 only
+	 * 
+	 * @param string $s_name	The name
+	 * @param string $s_value	The value
+	 */
+	public function setData($s_name,$s_value){
+		if( $this->s_htmlType == 'html5' ){
+			$this->a_data[] = array($s_name,$s_value);
+		}
+	}
+	
+	/**
+	 * Sets the rel-attribute
+	 * 
+	 * @param string $s_relation	The value
+	 */
+	public function setRelation($s_relation){
+		$this->s_rel = $s_relation;
+	}
+	
+	/**
+	 * Sets the HTML type
+	 * 
+	 * @param string $s_type	The html type
+	 */
+	protected function setHtmlType($s_type){
+		$this->s_htmlType = $s_type;
 	}
 
 	/**
@@ -510,9 +546,21 @@ abstract class CoreHtmlItem {
 	 *
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
-		if (!empty($this->s_id)) {
+	public function generateItem(){
+		if( !empty($this->s_id) ){
 			$this->s_between .= ' id="' . trim($this->s_id) . '"';
+		}
+		
+		$s_data = '';
+		foreach($this->a_data AS $a_item){
+			$s_data .= ' data-'.$a_item[0].'="'.$a_item[1].'"';
+		}
+		if( !empty($s_data) ){
+			$this->s_between .= $s_data;
+		}
+		
+		if( !empty($this->s_rel) ){
+			$this->s_between .= ' rel="'.$this->s_rel.'"';
 		}
 		 
 		$s_value = str_replace(array('{value}', '{between}'), array($this->s_value, trim($this->s_between)), $this->s_tag);
@@ -550,7 +598,7 @@ abstract class HtmlItem extends CoreHtmlItem {
 	 * @param String $s_name	The event name
 	 * @param String $s_value	The event value
 	 */
-	public function setEvent($s_name, $s_value) {
+	public function setEvent($s_name, $s_value){
 		$this->a_eventName[] = $s_name;
 		$this->a_eventValue[] = $s_value;
 
@@ -562,10 +610,10 @@ abstract class HtmlItem extends CoreHtmlItem {
 	 *
 	 * @param String $s_style	The style
 	 */
-	public function setStyle($s_style) {
-		if (!empty($this->s_style))
+	public function setStyle($s_style){
+		if (!empty($this->s_style) )
 		$this->s_style .= '; ';
-		$this->s_style .= ' ' . $s_style;
+		$this->s_style .= $s_style;
 
 		return $this;
 	}
@@ -575,10 +623,10 @@ abstract class HtmlItem extends CoreHtmlItem {
 	 *
 	 * @param String $s_class	The class
 	 */
-	public function setClass($s_class) {
+	public function setClass($s_class){
 		if (!empty($this->s_class))
 		$this->s_class .= ' ';
-		$this->s_class .= ' ' . $s_class;
+		$this->s_class .= $s_class;
 
 		return $this;
 	}
@@ -588,7 +636,7 @@ abstract class HtmlItem extends CoreHtmlItem {
 	 *
 	 * @param String $s_value	The value
 	 */
-	public function setValue($s_value) {
+	public function setValue($s_value){
 		$s_value = $this->parseContent($s_value);
 
 		$this->s_value .= $s_value;
@@ -602,19 +650,19 @@ abstract class HtmlItem extends CoreHtmlItem {
 	 * @see  CoreHtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
+	public function generateItem(){
 		$this->s_javascript = '';
-		for ($i = 0; $i < count($this->a_eventName); $i++) {
+		for ($i = 0; $i < count($this->a_eventName); $i++){
 			$this->s_javascript .= $this->a_eventName[$i] . '="' . $this->a_eventValue[$i] . '" ';
 		}
 
-		if (!empty($this->s_style)) {
+		if (!empty($this->s_style)){
 			$this->s_between .= 'style="' . trim($this->s_style) . '"';
 		}
-		if (!empty($this->s_class)) {
+		if (!empty($this->s_class)){
 			$this->s_between .= ' class="' . trim($this->s_class) . '"';
 		}
-		if (!empty($this->s_javascript)) {
+		if (!empty($this->s_javascript)){
 			$this->s_between .= ' ' . trim($this->s_javascript);
 		}
 
@@ -627,12 +675,14 @@ abstract class HtmlItem extends CoreHtmlItem {
  */
 abstract class HtmlFormItem extends HtmlItem {
 	private $bo_disabled = false;
+	protected $s_name;
 
 	/**
 	 * Destructor
 	 */
 	public function __destruct(){
 		$this->bo_disabled	= null;
+		$this->s_name = null;
 		 
 		parent::__destruct();
 	}
@@ -642,7 +692,7 @@ abstract class HtmlFormItem extends HtmlItem {
 	 *
 	 * @param Boolean $bo_disabled		Set to true to disable the item
 	 */
-	public function setDisabled($bo_disabled) {
+	public function setDisabled($bo_disabled){
 		$this->bo_disabled = $bo_disabled;
 	}
 
@@ -652,10 +702,12 @@ abstract class HtmlFormItem extends HtmlItem {
 	 * @see  HtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
-		if ($this->bo_disabled) {
+	public function generateItem(){
+		if ($this->bo_disabled){
 			$this->s_between .= ' disabled="disabled"';
 		}
+		
+		$this->s_tag = str_replace('{name}',$this->s_name, $this->s_tag);
 
 		return parent::generateItem();
 	}

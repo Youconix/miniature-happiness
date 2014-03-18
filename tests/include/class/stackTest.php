@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testStack extends GeneralTest {
 	private $obj_Stack;
@@ -28,8 +30,10 @@ class testStack extends GeneralTest {
 	
 	/**
 	 * Tests setting initial value
+	 * 
+	 * @test
 	 */
-	public function testConstruct(){
+	public function construct(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		
 		$this->obj_Stack	= new Stack($this->a_data);
@@ -39,8 +43,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test for adding another stack
+	 * 
+	 * @test
 	 */
-	public function testAddStack(){
+	public function addStack(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		
 		$obj_Queue	= new Stack($this->a_data);
@@ -51,8 +57,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test for adding a array
+	 * 
+	 * @test
 	 */
-	public function testAddArray(){
+	public function addArray(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		
 		$this->obj_Stack->addArray($this->a_data);
@@ -62,8 +70,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test of pushing a item to the end of the stack
+	 * 
+	 * @test
 	 */
-	public function testPush(){
+	public function push(){
 		$i_item = 32543245;
 		$this->obj_Stack->push($i_item);
 		$this->assertEquals($i_item,$this->obj_Stack->peek());
@@ -71,8 +81,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test of retreaving a item from the end of the stack
+	 * 
+	 * @test
 	 */
-	public function testPop(){
+	public function pop(){
 		$this->obj_Stack->addArray($this->a_data);
 		$this->assertEquals(end($this->a_data),$this->obj_Stack->pop());
 		$this->assertNotEquals(end($this->a_data),$this->obj_Stack->pop());
@@ -80,8 +92,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test of retreaving a item from the end of the stack without removing it
+	 * 
+	 * @test
 	 */
-	public function testPeek(){
+	public function peek(){
 		$this->obj_Stack->addArray($this->a_data);
 		$this->assertEquals(end($this->a_data),$this->obj_Stack->peek());
 		$this->assertEquals(end($this->a_data),$this->obj_Stack->peek());
@@ -89,8 +103,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test for checking or a item exists in the stack
+	 * 
+	 * @test
 	 */
-	public function testSearch(){
+	public function search(){
 		$this->assertFalse($this->obj_Stack->search($this->a_data[1]));
 		$this->obj_Stack->addArray($this->a_data);
 		$this->assertTrue($this->obj_Stack->search($this->a_data[1]));
@@ -98,8 +114,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Tests the empty detection of the stack
+	 * 
+	 * @test
 	 */
-	public function testIsEmpty(){
+	public function myIsEmpty(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		$this->obj_Stack->addArray($this->a_data);
 		$this->assertFalse($this->obj_Stack->isEmpty());
@@ -107,8 +125,10 @@ class testStack extends GeneralTest {
 
 	/**
 	 * Test for clearing the stack
+	 * 
+	 * @test
 	 */
-	public function testClear(){
+	public function clear(){
 		$this->obj_Stack->addArray($this->a_data);
 		$this->assertFalse($this->obj_Stack->isEmpty());
 		$this->obj_Stack->clear();

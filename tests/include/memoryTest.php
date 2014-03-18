@@ -1,34 +1,45 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testMemory extends GeneralTest {
 	/**
 	 * Tests the protocol detection
+	 * 
+	 * @test
 	 */
-	public function testGetProtocol(){
+	public function getProtocol(){
 		$this->assertEquals('http://',Memory::getProtocol());
 	}
 
 	/**
 	 * Tests the page detection
+	 * 
+	 * @test
 	 */
-	public function testGetPage(){
-		$this->assertEquals('/phpunit',Memory::getPage());
+	public function getPage(){
+		$a_page	= explode('/',Memory::getPage());
+		$this->assertEquals('phpunit',end($a_page));
 	}
 
 	/**
 	 * Tests the ajax mode
+	 * 
+	 * @test
 	 */
-	public function testIsAjax() {
+	public function isAjax(){
 		$this->assertFalse(Memory::isAjax());
 	}
 
 	/**
 	 * Tests the ajax mode
+	 * 
+	 * @test
 	 */
-	public function testSetAjax() {
+	public function setAjax(){
 		$this->assertFalse(Memory::isAjax());
 		
 		Memory::setAjax();
@@ -37,27 +48,34 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Tests the base detection
+	 * 
+	 * @test
 	 */
-	public function testGetBase() {
+	public function getBase(){
 		$this->assertEquals($this->s_base,Memory::getBase());
 	}
 
 	/**
 	 * Checks if the class gets loaded
+	 * 
+	 * @test
 	 */
-	public function testEnsureClass(){
+	public function ensureClass(){
 		$s_class = 'Queue';
 		
-		$this->assertFalse(class_exists($s_class));
+		if( !class_exists($s_class) ){
+			Memory::ensureClass($s_class);
+		}
 		
-		Memory::ensureClass($s_class);
 		$this->assertTrue(class_exists($s_class));
 	}
 
 	/**
 	 * Checks if a interface gets loaded
+	 * 
+	 * @test
 	 */
-	public function testEnsureInterface(){
+	public function ensureInterface(){
 		$s_interface = 'Observer';
 		
 		$this->assertFalse(interface_exists($s_interface));
@@ -68,41 +86,47 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Tests the helper existance check
+	 * 
+	 * @test
 	 */
-	public function testIsHelper() {
+	public function isHelper(){
 		$this->assertFalse(Memory::isHelper('lalalallaa'));
 		$this->assertTrue(Memory::isHelper('UBB'));
 	}
 
 	/**
 	 * Tests the helper loading
+	 * 
+	 * @test
 	 */
-	public function testHelpers() {
+	public function helpers(){
+		$helper = Memory::helpers('UBB');
+		if( !($helper instanceof Helper_UBB) ){
+			$this->fail('Called wrong helper. expected helper UBB');
+		}
+		
 		try {
 			Memory::helpers('lalalallaa');
 			
 			$this->fail('Calling helper lalalallaa must throw a Memory exception.');
 		}
 		catch(MemoryException $e){}
-		
-		$helper = Memory::helpers('UBB');
-		if( !($helper instanceof Helper_UBB) ){
-			$this->fail('Called wrong helper. expected helper UBB');
-		}
 	}
 
 	/**
 	 * Tests the service existance check
 	 */
-	public function testIsService() {
+	public function testIsService(){
 		$this->assertFalse(Memory::isService('lalalallaa'));
 		$this->assertTrue(Memory::isService('Template'));
 	}
 
 	/**
 	 * Tests the service loading
+	 * 
+	 * @test
 	 */
-	public function testServices() {
+	public function services(){
 		try {
 			Memory::services('lalalallaa');
 			
@@ -118,16 +142,20 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Tests the model existance check
+	 * 
+	 * @test
 	 */
-	public function testIsModel() {
+	public function isModel(){
 		$this->assertFalse(Memory::isModel('lalalallaa'));
 		$this->assertTrue(Memory::isModel('PM'));
 	}
 
 	/**
 	 * Tests the service loading
+	 * 
+	 * @test
 	 */
-	public function testModels() {
+	public function models(){
 		try {
 			Memory::models('lalalallaa');
 			
@@ -143,8 +171,10 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Tests the loaded check
+	 * 
+	 * @test
 	 */
-	public function testIsLoaded() {
+	public function isLoaded(){
 		$this->assertTrue(Memory::isLoaded('service', 'XmlSettings'));
 		$this->assertTrue(Memory::isLoaded('service', 'File'));
 		
@@ -154,8 +184,10 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Test for the type check
+	 * 
+	 * @test
 	 */
-	public function testType() {
+	public function type(){
 		try {
 			Memory::type('string', null);
 			
@@ -175,8 +207,10 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Test for deleting a object from the memory
+	 * 
+	 * @test
 	 */
-	public function testDelete() {
+	public function delete(){
 		$this->assertTrue(Memory::isLoaded('service', 'File'));
 		Memory::delete('service', 'File');
 		$this->assertFalse(Memory::isLoaded('service', 'File'));
@@ -184,8 +218,10 @@ class testMemory extends GeneralTest {
 
 	/**
 	 * Test for the url creation 
+	 * 
+	 * @test
 	 */
-	public function testGenerateUrl() {
+	public function generateUrl(){
 		$s_url = 'lalalal.php';
 		$this->assertEquals($this->s_base.$s_url, Memory::generateUrl('./../../'.$s_url));
 	}

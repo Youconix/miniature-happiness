@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testQueue extends GeneralTest {
 	private $obj_Queue;
@@ -28,8 +30,10 @@ class testQueue extends GeneralTest {
 	
 	/**
 	 * Tests setting initial value
+	 * 
+	 * @test
 	 */
-	public function testConstruct(){
+	public function construct(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		
 		$this->obj_Queue	= new Queue($this->a_data);
@@ -39,8 +43,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test for adding another queue
+	 * 
+	 * @test
 	 */
-	public function testAddQueue(){
+	public function addQueue(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		
 		$obj_Queue	= new Queue($this->a_data);
@@ -51,8 +57,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test for adding a array
+	 * 
+	 * @test
 	 */
-	public function testAddArray(){
+	public function addArray(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		
 		$this->obj_Queue->addArray($this->a_data);
@@ -62,8 +70,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test of pushing a item to the end of the queue
+	 * 
+	 * @test
 	 */
-	public function testPush(){
+	public function push(){
 		$i_item = 32543245;
 		$this->obj_Queue->push($i_item);
 		$this->assertEquals($i_item,$this->obj_Queue->peek());
@@ -71,8 +81,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test of retreaving a item from the front of the queue
+	 * 
+	 * @test
 	 */
-	public function testPop(){
+	public function pop(){
 		$this->obj_Queue->addArray($this->a_data);
 		$this->assertEquals($this->a_data[0],$this->obj_Queue->pop());
 		$this->assertNotEquals($this->a_data[0],$this->obj_Queue->pop());
@@ -80,8 +92,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test of retreaving a item from the front of the queue without removing it
+	 * 
+	 * @test
 	 */
-	public function testPeek(){
+	public function peek(){
 		$this->obj_Queue->addArray($this->a_data);
 		$this->assertEquals($this->a_data[0],$this->obj_Queue->peek());
 		$this->assertEquals($this->a_data[0],$this->obj_Queue->peek());
@@ -89,8 +103,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test for checking or a item exists in the queue
+	 * 
+	 * @test
 	 */
-	public function testSearch(){
+	public function search(){
 		$this->assertFalse($this->obj_Queue->search($this->a_data[1]));
 		$this->obj_Queue->addArray($this->a_data);
 		$this->assertTrue($this->obj_Queue->search($this->a_data[1]));
@@ -98,8 +114,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Tests the empty detection of the queue
+	 * 
+	 * @test
 	 */
-	public function testIsEmpty(){
+	public function myIsEmpty(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		$this->obj_Queue->addArray($this->a_data);
 		$this->assertFalse($this->obj_Queue->isEmpty());
@@ -107,8 +125,10 @@ class testQueue extends GeneralTest {
 
 	/**
 	 * Test for clearing the queue
+	 * 
+	 * @test
 	 */
-	public function testClear(){
+	public function clear(){
 		$this->obj_Queue->addArray($this->a_data);
 		$this->assertFalse($this->obj_Queue->isEmpty());
 		$this->obj_Queue->clear();

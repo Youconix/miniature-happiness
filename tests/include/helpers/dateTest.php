@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/include/GeneralTest.php');
+}
 
 class testDate extends GeneralTest {
 	private $helper_Date;
@@ -26,8 +28,10 @@ class testDate extends GeneralTest {
 	}
 	/**
 	 * Test of calculating the timestamp from the given parameters
+	 * 
+	 * @test
 	 */
-	public function testGetTime(){
+	public function getTime(){
 		$this->assertEquals(time(),$this->helper_Date->getTime());
 		$this->assertEquals(0,$this->helper_Date->getTime(0,0,0,1,1,1970));
 		$this->assertEquals(mktime(1, 1, 1, 1, 1, 1),$this->helper_Date->getTime(1,1,1,1,1,1));
@@ -35,8 +39,10 @@ class testDate extends GeneralTest {
 
 	/**
 	 * Test for calulation the timestamp in the future
+	 * 
+	 * @test
 	 */
-	public function testGetFutureTime($i_days=0,$i_months=0,$i_years = 0 ,$i_hours = 0,$i_minutes = 0,$i_seconds = 0){
+	public function getFutureTime($i_days=0,$i_months=0,$i_years = 0 ,$i_hours = 0,$i_minutes = 0,$i_seconds = 0){
 		$this->assertEquals(time(),$this->helper_Date->getFutureTime());
 		$this->assertEquals((time()+86400),$this->helper_Date->getFutureTime(1));
 		$this->assertEquals((time()+86399),$this->helper_Date->getFutureTime(0,0,0,23,59,59));
@@ -44,8 +50,10 @@ class testDate extends GeneralTest {
 
 	/**
 	 * Test of calculation the timestamp from now added with the given seconds
+	 * 
+	 * @test
 	 */
-	public function testGetTimeFrom(){
+	public function getTimeFrom(){
 		$this->assertEquals(time(),$this->helper_Date->getTimeFrom());
 		
 		$i_seconds = 54352423;
@@ -54,53 +62,67 @@ class testDate extends GeneralTest {
 
 	/**
 	 * Test of calculating the seconds in a day
+	 * 
+	 * @test
 	 */
-	public function testGetDaySeconds(){
+	public function getDaySeconds(){
 		$this->assertEquals(86400,$this->helper_Date->getDaySeconds());
 	}
 
 	/**
 	 * Test of calculating the seconds in a week
+	 * 
+	 * @test
 	 */
-	public function testGetWeekSeconds(){
+	public function getWeekSeconds(){
 		$this->assertEquals((86400*7),$this->helper_Date->getWeekSeconds());
 	}
 
 	/**
 	 * Test of calculating the current timestamp
+	 * 
+	 * @test
 	 */
-	public function testNow(){
+	public function now(){
 		$this->assertEquals(time(),$this->helper_Date->now());
 	}
 
 	/**
 	 * Test for validating the date and time
+	 * 
+	 * @test
 	 */
-	public function testValidateDateTime(){
+	public function validateDateTime(){
 		$this->assertTrue($this->helper_Date->validateDateTime(1, 1, 2000, 23, 23, 23));
 		$this->assertFalse($this->helper_Date->validateDateTime(32, 1, 2000, 23, 23, 23));
 	}
 
 	/**
 	 * Test for validating the time
+	 * 
+	 * @test
 	 */
-	public function testValidateTime(){
+	public function validateTime(){
 		$this->assertTrue($this->helper_Date->validateTime(23, 23, 23));
 		$this->assertFalse($this->helper_Date->validateTime(24, 23, 23));
 	}
 
 	/**
 	 * Test for validating the date
+	 * 
+	 * @test
 	 */
-	public function testValidateDate(){
+	public function validateDate(){
 		$this->assertTrue($this->helper_Date->validateDate(1, 1, 2000));
 		$this->assertFalse($this->helper_Date->validateDate(30, 2, 2000));
 	}
 
 	/**
 	 * Test for getting  the number of days from the given month
+	 * 
+	 * @test
 	 */
-	public function testGetDaysMonth(){
+	public function getDaysMonth(){
 		$i_year = 2000;
 		
 		$this->assertEquals(31,$this->helper_Date->getDaysMonth(3,$i_year));

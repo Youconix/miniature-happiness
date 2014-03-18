@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testString extends GeneralTest {
 	private $obj_String;
@@ -30,24 +32,30 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of setting the initial value
+	 * 
+	 * @test
 	 */
-	public function testConstruct(){
+	public function construct(){
 		$this->obj_String	= new String($this->s_data);
 		$this->assertEquals($this->s_data,$this->obj_String->value());
 	}
 
 	/**
 	 * Test of setting the value
+	 * 
+	 * @test
 	 */
-	public function testSet(){
+	public function set(){
 		$this->obj_String->set($this->s_data);
 		$this->assertEquals($this->s_data,$this->obj_String->value());
 	}
 
 	/**
 	 * Test of appending a value
+	 * 
+	 * @test
 	 */
-	public function testAppend(){
+	public function append(){
 		$s_append = '+append';
 		
 		$this->obj_String->set($this->s_data);
@@ -58,8 +66,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of the size
+	 * 
+	 * @test
 	 */
-	public function testLength(){
+	public function length(){
 		$this->assertEquals(0,$this->obj_String->length());
 		$this->obj_String->set($this->s_data);
 		
@@ -68,8 +78,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Tests the value
+	 * 
+	 * @test
 	 */
-	public function testValue(){
+	public function value(){
 		$this->assertEquals('',$this->obj_String->value());
 		$this->obj_String->set($this->s_data);
 		$this->assertEquals($this->s_data,$this->obj_String->value());
@@ -77,8 +89,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of the string starting check
+	 * 
+	 * @test
 	 */
-	public function testStartsWith($s_text){
+	public function startsWith(){
 		$this->obj_String->set($this->s_data);
 		$this->obj_String->append('sdkjhsdjghsdlfadsjkhvbadfasdfa');
 		$this->obj_String->append('ssdl,vnml d329-p0rifojnsajfs[d,afgadf');
@@ -90,8 +104,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of the string ending check
+	 * 
+	 * @test
 	 */
-	public function testEndsWith(){		
+	public function endsWith(){		
 		$this->obj_String->set('sdkjhsdjghsdlfadsjkhvbadfasdfa');
 		$this->obj_String->append('ssdl,vnml d329-p0rifojnsajfs[d,afgadf');
 		$this->obj_String->append('sjdkhfsfajkfnhbafdsd');
@@ -102,8 +118,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test for the containing check
+	 * 
+	 * @test
 	 */
-	public function testContains(){		
+	public function myContains(){		
 		$this->obj_String->set('sdkjhsdjghsdlfadsjkhvbadfasdfa');
 		$this->obj_String->append('ssdl,vnml d329-p0rifojnsajfs[d,afgadf');
 		$this->obj_String->append($this->s_data2);
@@ -115,8 +133,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test for case sensitive comparison
+	 * 
+	 * @test
 	 */
-	public function testEquals(){
+	public function equals(){
 		$this->obj_String->set(strtolower($this->s_data2));
 		$this->obj_String->append($this->s_data);
 		
@@ -126,8 +146,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test for case insensitive comparison
+	 * 
+	 * @test
 	 */
-	public function testEqualsIgnoreCase(){		
+	public function equalsIgnoreCase(){		
 		$this->obj_String->set(strtolower($this->s_data2));
 		$this->obj_String->append($this->s_data);
 		
@@ -137,8 +159,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of searching the location of a string
+	 * 
+	 * @test
 	 */
-	public function testIndexOf(){
+	public function indexOf(){
 		$this->obj_String->set($this->s_data);
 		$this->assertEquals(-1,$this->obj_String->indexOf('=-2342354234252'));
 		$this->assertEquals(2,$this->obj_String->indexOf('gfsw'));
@@ -146,8 +170,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test for the empty check
+	 * 
+	 * @test
 	 */
-	public function testIsEmpty(){
+	public function myIsEmpty(){
 		$this->assertTrue($this->obj_String->isEmpty());
 		$this->obj_String->set($this->s_data);
 		$this->assertFalse($this->obj_String->isEmpty());
@@ -155,8 +181,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of removes the spaces at the begin and end
+	 * 
+	 * @test
 	 */
-	public function testTrim(){
+	public function trim(){
 		$this->obj_String->set('           ');
 		$this->obj_String->append($this->s_data);
 		$this->assertNotEquals($this->s_data,$this->obj_String->value());
@@ -165,8 +193,10 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of replacing the given search with the given text if the value contains the given search
+	 * 
+	 * @test
 	 */
-	public function testReplace(){
+	public function replace(){
 		$this->obj_String->set('           ');
 		$this->obj_String->append($this->s_data);
 		$this->obj_String->replace('           ',$this->s_data2);
@@ -175,16 +205,20 @@ class testString extends GeneralTest {
 
 	/**
 	 * Test of returning a part from the set value
+	 * 
+	 * @test
 	 */
-	public function testSubstring(){
+	public function substring(){
 		$this->obj_String->set($this->s_data);
 		$this->assertEquals('fhgasdfsvddfg',$this->obj_String->substring(-13));
 	}
 
 	/**
 	 * Test of cloning the object
+	 * 
+	 * @test
 	 */
-	public function testCopy(){
+	public function copy(){
 		$this->obj_String->set($this->s_data);
 		$obj_string	= $this->obj_String->copy();
 		$this->assertEquals($obj_string->value(),$this->obj_String->value());
