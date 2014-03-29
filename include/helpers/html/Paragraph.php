@@ -1,5 +1,7 @@
 <?php
-class HTML_Paragraph extends HtmlItem {
+namespace core\helpers\html;
+
+class Paragraph extends HtmlItem {
     /**
      * Generates a new paragraph element
      * 

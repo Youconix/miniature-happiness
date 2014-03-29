@@ -7,12 +7,17 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase {
 				
 		parent::__construct();
 		
-		define('DATA_DIR',NIV.'admin/data/');
-		define('LEVEL',NIV);
+		if( !defined('DATA_DIR') )
+			define('DATA_DIR',NIV.'admin/data/');
+		if( !defined('LEVEL') )
+			define('LEVEL',NIV);
 		
 		/* First run for inclusion */
 		Memory::setTesting();
 		$this->s_base = '/';
+		
+		error_reporting(E_ALL);
+		ini_set('display_errors','on');
 	}
 	
 	public function setUp(){

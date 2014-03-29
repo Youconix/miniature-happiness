@@ -40,7 +40,7 @@ class Memory {
 	/**
 	 * Destructor
 	 */
-	public function __destruct() {
+	public function __destruct(){
 		Memory::reset();
 	}
 
@@ -65,7 +65,7 @@ class Memory {
 	/**
 	 * Starts the framework
 	 */
-	public static function startUp() {
+	public static function startUp(){
 		if (!is_null(Memory::$a_memory))
 			return;
 
@@ -111,7 +111,7 @@ class Memory {
 		if( !defined('DB_PREFIX') )	define('DB_PREFIX',$service_XmlSettings->get('settings/SQL/prefix'));
 		
 		$s_base = $service_XmlSettings->get('settings/main/base');
-		if (substr($s_base, 0, 1) != '/') {
+		if (substr($s_base, 0, 1) != '/'){
 			Memory::$s_base = '/' . $s_base;
 		} else {
 			Memory::$s_base = $s_base;
@@ -151,7 +151,7 @@ class Memory {
 	/**
 	 * Returns the used protocol
 	 *
-	 * @return string	The protocol
+	 * @return String	The protocol
 	 */
 	public static function getProtocol(){
 		return Memory::$s_protocol;
@@ -160,7 +160,7 @@ class Memory {
 	/**
 	 * Returns the current page
 	 *
-	 * @return string	The page
+	 * @return String	The page
 	 */
 	public static function getPage(){
 		return Memory::$s_page;
@@ -171,14 +171,14 @@ class Memory {
 	 *
 	 * @return boolean	True if ajax-mode is active
 	 */
-	public static function isAjax() {
+	public static function isAjax(){
 		return Memory::$bo_ajax;
 	}
 
 	/**
 	 * Sets the framework in ajax-mode
 	 */
-	public static function setAjax() {
+	public static function setAjax(){
 		Memory::$bo_ajax = true;
 	}
 
@@ -194,16 +194,16 @@ class Memory {
 	/**
 	 * Returns the base directory
 	 *
-	 * @return string	The directory
+	 * @return String	The directory
 	 */
-	public static function getBase() {
+	public static function getBase(){
 		return Memory::$s_base;
 	}
 
 	/**
 	 * Ensures that the given class is loaded
 	 *
-	 * @param string $s_class		The class name
+	 * @param String $s_class		The class name
 	 * @throws MemoryException		If the class does not exists in include/class/
 	 */
 	public static function ensureClass($s_class){
@@ -220,7 +220,7 @@ class Memory {
 	/**
 	 * Ensures that the given interface is loaded
 	 *
-	 * @param string $s_interface		The interface name
+	 * @param String $s_interface		The interface name
 	 * @throws MemoryException			If the interface does not exists in include/interface/
 	 */
 	public static function ensureInterface($s_interface){
@@ -237,12 +237,12 @@ class Memory {
 	/**
 	 * Checks or the given service or model allready is loaded
 	 *
-	 * @param   string  $s_type  The type (model|service)
-	 * @param   string  $s_name  The name of the service or model
+	 * @param   String  $s_type  The type (model|service)
+	 * @param   String  $s_name  The name of the service or model
 	 * @return  boolean True if the given service or model is allready loaded, otherwise false
 	 */
-	private static function checkMemory($s_type, $s_name) {
-		if (array_key_exists($s_name, Memory::$a_memory[$s_type])) {
+	private static function checkMemory($s_type, $s_name){
+		if (array_key_exists($s_name, Memory::$a_memory[$s_type])){
 			return true;
 		}
 
@@ -252,36 +252,37 @@ class Memory {
 	/**
 	 * Returns the requested service or model from the memory
 	 *
-	 * @param   string  $s_type  The type (model|service)
-	 * @param   string  $s_name  The name of the service or model
+	 * @param   String  $s_type  The type (model|service)
+	 * @param   String  $s_name  The name of the service or model
 	 * @return  object  The requested service or model
 	 */
-	private static function getMemory($s_type, $s_name) {
+	private static function getMemory($s_type, $s_name){
 		return Memory::$a_memory[$s_type][$s_name];
 	}
 
 	/**
 	 * Saves the given service or model in the memory
 	 *
-	 * @param   string  $s_type     The type (model|service)
-	 * @param   string  $s_name     The name of the service or model
+	 * @param   String  $s_type     The type (model|service)
+	 * @param   String  $s_name     The name of the service or model
 	 * @param   object  $obj_value  The service or model
 	 */
-	private static function setMemory($s_type, $s_name, $obj_value) {
+	private static function setMemory($s_type, $s_name, $obj_value){
 		Memory::$a_memory[$s_type][$s_name] = $obj_value;
 	}
 
 	/**
 	 * API for checking or a helper exists
 	 *
-	 * @param    string $s_name  The name of the helper
-	 * @return   boolean True if the helper exists, otherwise false
+	 * @param		String $s_name  The name of the helper
+	 * @param		bool	$bo_data	 Set to true to use the data directory
+	 * @return  bool	True if the helper exists, otherwise false
 	 */
-	public static function isHelper($s_name) {
+	public static function isHelper($s_name,$bo_data = false){
 		$s_name = ucfirst($s_name);
 
 		/* Check or class is in the global memory */
-		if (Memory::checkMemory('helper', $s_name)) {
+		if( !$bo_data && Memory::checkMemory('helper', $s_name) ){
 			return true;
 		}
 
@@ -289,43 +290,80 @@ class Memory {
 		$service_File = Memory::getMemory('service', 'File');
 
 		/* Check or the file exists */
-		if( !$service_File->exists(Memory::$s_helperPath . $s_name . '.inc.php') ){
+		if( $bo_data ){
+			$s_path = Memory::$s_helperPath .'data/'. $s_name . '.inc.php';
+		}
+		else {
+			$s_path = Memory::$s_helperPath . $s_name . '.inc.php';
+		}
+		if( !$service_File->exists($s_path) ){
 			return false;
 		}
 
-		$s_helper = $service_File->readFile(Memory::$s_helperPath . $s_name . '.inc.php');
-		if (strpos($s_helper, 'class Helper_' . $s_name) === false) {
-			return false;
+		$s_helper = $service_File->readFile($s_path);
+		if( !$bo_data && strpos($s_helper, 'namespace core\models;') !== false ){
+			return true;
 		}
+		if( $bo_data && strpos($s_helper, 'namespace core\models\data;') !== false ){
+			return true;
+		}
+		if( strpos($s_helper, 'class Helper_' . $s_name) !== false ){
+			return true;
+		}		
 
-		return true;
+		return false;
 	}
 
 	/**
 	 * Loads the requested helper
 	 *
-	 * @param   string  $s_helper  The name of the helper
+	 * @param   String  $s_helper  The name of the helper
+	 * @param		bool		$bo_data	 Set to true to use the data directory
 	 * @return  Helper  The requested helper
 	 * @throws  Exception If the requested helper does not exist
 	 */
-	public static function helpers($s_helper) {
+	public static function helpers($s_helper,$bo_data = false){
 		$s_helper = ucfirst($s_helper);
 
-		if (Memory::checkMemory('helper', $s_helper)) {
+		if( !$bo_data && Memory::checkMemory('helper', $s_helper) ){
 			return Memory::getMemory('helper', $s_helper);
 		}
 
 		/* Check service */
 		$service_File = Memory::getMemory('service', 'File');
-		if( !$service_File->exists(Memory::$s_helperPath. $s_helper . '.inc.php') ){
+		if( $bo_data ){
+			$s_path	= Memory::$s_helperPath. 'data/'.$s_helper . '.inc.php';
+		}
+		else {
+			$s_path	= Memory::$s_helperPath. $s_helper . '.inc.php';
+		}
+		
+		if( !$service_File->exists($s_path) ){
 			throw new MemoryException('Can not find helper ' . $s_helper);
 		}
 
-		require_once(Memory::$s_helperPath . $s_helper . '.inc.php');
-		$s_caller = 'Helper_' . $s_helper;
-		$object = new $s_caller();
-
-		Memory::setMemory('helper', $s_helper, $object);
+		require_once($s_path);
+		
+		if( $s_helper == 'HTML' ){
+			$s_caller = 'core\helpers\html\\'.$s_helper;
+		}
+		else {
+			if( class_exists('core\helpers\\'.$s_helper) ){
+				$s_caller = 'core\helpers\\'.$s_helper;
+			}
+			else if( class_exists('HTML_'.$s_helper) ){
+				/* Legancy way */
+				$s_caller = 'Helper_' . $s_helper;
+			}
+			else {
+				throw new MemoryException('Could not find helper '.$s_helper.' in file '.$s_path.'.');
+			}			
+		}		
+		$object = Memory::injection($s_caller,$s_path);
+		
+		if( !$bo_data ){
+			Memory::setMemory('helper', $s_helper, $object);
+		}
 
 		return $object;
 	}
@@ -333,14 +371,15 @@ class Memory {
 	/**
 	 * API for checking or a service exists
 	 *
-	 * @param   string $s_name  The name of the service
-	 * @return  boolean True if the service exists, otherwise false
+	 * @param   String $s_name  The name of the service
+	 * @param		bool	$bo_data	 Set to true to use the data directory 
+	 * @return  bool	True if the service exists, otherwise false
 	 */
-	public static function isService($s_name) {
+	public static function isService($s_name,$bo_data = false){
 		$s_name = ucfirst($s_name);
 
 		/* Check or class is in the global memory */
-		if (Memory::checkMemory('service', $s_name)) {
+		if (Memory::checkMemory('service', $s_name)){
 			return true;
 		}
 
@@ -348,50 +387,81 @@ class Memory {
 		$service_File = Memory::getMemory('service', 'File');
 
 		/* Check or the file exists */
-		if( !$service_File->exists(Memory::$s_servicePath . $s_name . '.inc.php')) {
+		if( $bo_data ){
+			$s_path = Memory::$s_servicePath .'data/'. $s_name . '.inc.php';
+		}
+		else {
+			$s_path = Memory::$s_servicePath . $s_name . '.inc.php';
+		}
+		if( !$service_File->exists($s_path)){
 			return false;
 		}
 
-		$s_service = $service_File->readFile(Memory::$s_servicePath . $s_name . '.inc.php');
-		if( strpos($s_service, 'class Service_' . $s_name) === false ){
-			return false;
+		$s_service = $service_File->readFile($s_path);
+		if( !$bo_data && strpos($s_service, 'namespace core\services;') !== false ){
+			return true;
+		}
+		if( $bo_data && strpos($s_service, 'namespace core\services\data;') !== false ){
+			return true;
+		}
+		if( strpos($s_service, 'class Service_' . $s_name) !== false ){
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
 	 * Loads the requested service
 	 *
-	 * @param   string  $s_service  The name of the service
+	 * @param   String  $s_service  The name of the service
+	 * @param		bool		$bo_data	 Set to true to use the data directory
 	 * @return  Service  The requested service
 	 * @throws  Exception If the requested service does not exist
 	 */
-	public static function services($s_service) {
+	public static function services($s_service,$bo_data = false){
 		$s_service = ucfirst($s_service);
 
-		if (Memory::checkMemory('service', $s_service)) {
+		if( !$bo_data && Memory::checkMemory('service', $s_service) ){
 			return Memory::getMemory('service', $s_service);
 		}
 
 		/* Check service */
 		$service_File = Memory::getMemory('service', 'File');
-		if( !$service_File->exists(Memory::$s_servicePath . $s_service . '.inc.php')) {
+		if( $bo_data ){
+			$s_path = Memory::$s_servicePath .'data/'. $s_service . '.inc.php';
+		}
+		else {
+			$s_path = Memory::$s_servicePath . $s_service . '.inc.php';
+		}
+		if( !$service_File->exists($s_path) ){
 			throw new MemoryException('Can not find service ' . $s_service);
 		}
+		
+		require_once($s_path);
 
 		if( $s_service == 'Database' ){
-			require_once(Memory::$s_servicePath.'Database.inc.php');
-			$obj_Query_main = new Query_main();
+			$obj_Query_main = new core\database\Query_main();
 			$object = $obj_Query_main->loadDatabase();
 		} 
 		else {
-			require_once(Memory::$s_servicePath . $s_service . '.inc.php');
-			$s_caller = 'Service_' . $s_service;
-			$object = new $s_caller();
+			if( class_exists('core\services\\'.$s_service) ){
+				$s_caller = 'core\services\\'.$s_service;
+			}
+			else if( class_exists('Service_'.$s_service) ){
+				/* Legancy way */
+				$s_caller = 'Service_' . $s_service;
+			}
+			else {
+				throw new MemoryException('Could not find service '.$s_service.' in file '.$s_path.'.');
+			}
+			
+			$object = Memory::injection($s_caller,$s_path);
 		}
 
-		Memory::setMemory('service', $s_service, $object);
+		if( !$bo_data ){
+			Memory::setMemory('service', $s_service, $object);
+		}
 
 		return $object;
 	}
@@ -399,14 +469,15 @@ class Memory {
 	/**
 	 * API for checking or a model exists
 	 *
-	 * @param    string $s_name  The name of the model
-	 * @return   boolean      True if the model exists, otherwise false
+	 * @param		String $s_name  The name of the model
+	 * @param		bool	$bo_data	 Set to true to use the data directory
+	 * @return  bool	True if the model exists, otherwise false
 	 */
-	public static function isModel($s_name) {
+	public static function isModel($s_name,$bo_data = false){
 		$s_name = ucfirst($s_name);
 
 		/* Check or class is in the global memory */
-		if (Memory::checkMemory('model', $s_name)) {
+		if( !$bo_data && Memory::checkMemory('model', $s_name) ){
 			return true;
 		}
 
@@ -414,45 +485,76 @@ class Memory {
 		$service_File = Memory::getMemory('service', 'File');
 
 		/* Check or the file exists */
-		if( !$service_File->exists(Memory::$s_modelPath. $s_name . '.inc.php') ){
+		if( $bo_data ){
+			$s_path = Memory::$s_modelPath. 'data/'.$s_name . '.inc.php';
+		}
+		else {
+			$s_path = Memory::$s_modelPath. $s_name . '.inc.php';
+		}
+		if( !$service_File->exists($s_path) ){
 			return false;
 		}
 
 		/* Check or the class exists */
-		$s_model = $service_File->readFile(Memory::$s_modelPath. $s_name . '.inc.php');
-		if( strpos($s_model, 'class Model_' . $s_name) === false ){
-			return false;
+		$s_model = $service_File->readFile($s_path);
+		if( !$bo_data && strpos($s_model, 'namespace core\models;') !== false ){
+			return true;
+		}
+		if( $bo_data && strpos($s_model, 'namespace core\models\data;') !== false ){
+			return true;
+		}
+		if( strpos($s_model, 'class Model_' . $s_name) !== false ){
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
 	 * Loads the requested model
 	 *
-	 * @param   string  $s_model  The name of the model
+	 * @param   String  $s_model  The name of the model
+	 * @param		bool		$bo_data	 Set to true to use the data directory
 	 * @return  Model  The requested model
 	 * @throws  Exception If the requested model does not exist
 	 */
-	public static function models($s_model) {
+	public static function models($s_model,$bo_data = false){
 		$s_model = ucfirst($s_model);
 
-		if( Memory::checkMemory('model', $s_model) ){
+		if( !bo_data && Memory::checkMemory('model', $s_model) ){
 			return Memory::getMemory('model', $s_model);
 		}
 
 		/* Check model */
 		$service_File = Memory::getMemory('service', 'File');
-		if( !$service_File->exists(Memory::$s_modelPath. $s_model . '.inc.php') ){
+		if( $bo_data ){
+			$s_path = Memory::$s_modelPath.'data/'. $s_model . '.inc.php';
+		}
+		else {
+			$s_path = Memory::$s_modelPath. $s_model . '.inc.php';
+		}
+		if( !$service_File->exists($s_path) ){
 			throw new MemoryException('Can not find model ' . $s_model);
 		}
 
-		require_once(Memory::$s_modelPath. $s_model . '.inc.php');
+		require_once($s_path);
+		
+		if( class_exists('core\models\\'.$s_model) ){
+			$s_caller = 'core\modesl\\'.$s_model;
+		}
+		else if( class_exists('Model_'.$s_model) ){
+			/* Legancy way */
+			$s_caller = 'Model_' . $s_model;
+		}
+		else {
+			throw new MemoryException('Could not find model '.$s_model.' in file '.$s_path.'.');
+		}
+			
+		$object = Memory::injection($s_caller,$s_path);
 
-		$s_caller = 'Model_' . $s_model;
-		$object = new $s_caller();
-
-		Memory::setMemory('model', $s_model, $object);
+		if( !$bo_data ){
+			Memory::setMemory('model', $s_model, $object);
+		}
 
 		return $object;
 	}
@@ -460,11 +562,11 @@ class Memory {
 	/**
 	 * Checks if a helper, service or model is loaded
 	 *
-	 * @param  string 	$s_type     The type (Service|Model|Helper)
-	 * @param  string	$s_name     The name of the object
+	 * @param  String 	$s_type     The type (Service|Model|Helper)
+	 * @param  String	$s_name     The name of the object
 	 * @return boolean	True if the value exists in the memory, false if it does not
 	 */
-	public static function isLoaded($s_type, $s_name) {
+	public static function isLoaded($s_type, $s_name){
 		$s_type = strtolower($s_type);
 		$s_name = ucfirst($s_name);
 		
@@ -475,27 +577,101 @@ class Memory {
 			return false;
 		}
 	}
+	
+	/**
+	 * Performs the dependency injection
+	 * 
+	 * @param String $s_caller		The class name
+	 * @param String $s_filename	The source file name
+	 * @throws MemoryException		If the object is not instantiable.
+	 * @return Object	The called object
+	 */
+	private static function injection($s_caller,$s_filename){
+		$ref = new ReflectionClass($s_caller);
+		if( !$ref->isInstantiable() ){
+			throw new MemoryException('Can not create a object from class '.$s_caller.'.');
+		}
+		
+		$s_file = Memory::services('File')->readFile(NIV.$s_filename);
+		preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si',$s_file,$a_matches);
+		if( count($a_matches) == 0 ){
+			/* No arguments */
+			return new $s_caller();
+		}
+		$a_argumentNamesPre = explode(',',$a_matches[1]);
+		
+		$a_argumentNames	= array();
+		$a_arguments = array();
+		foreach($a_argumentNamesPre AS $s_name){
+			$s_name = trim($s_name);
+			if( strpos($s_name,' ') === false ){	continue; }
+			if( substr($s_name,0,1) == '\\' ){	$s_name =  substr($s_name,1);	} 
+			
+			$a_item = explode(' ',$s_name);
+			$a_argumentNames[] = $a_item[0];
+		}
+				
+		foreach($a_argumentNames AS $s_name){
+			$a_path = explode('\\',$s_name);
+			
+			if( count($a_path) == 1 ){
+				/* No namespace */
+				if( strpos($s_name,'Helper_') !== false ){
+					$a_arguments[] = Memory::helpers($s_name);
+				}
+				else if( strpos($s_name,'Service_') !== false ){
+					$a_arguments[] = Memory::services($s_name);
+				}
+				else if( strpos($s_name,'Model_') !== false ){
+					$a_arguments[] = Memory::models($s_name);
+				}
+				else {
+					/* Try to load object */
+					$a_arguments[] = Memory::injection($s_caller);
+				}
+			}
+			else {
+				$s_name = end($a_path);
+				$bo_data = false;
+				if( $a_path[2] == 'data' ){
+					$bo_data = true;
+				}
+				
+				if( ($a_path[1] == 'helpers') || ($a_path[1] == 'html') ){
+					$a_arguments[] = Memory::helpers($s_name,$bo_data);
+				}
+				else if( ($a_path[1] == 'services') || ($a_path[1] == 'database') ){
+					$a_arguments[] = Memory::services($s_name,$bo_data);
+				}
+				else if( $a_path[1] == 'models' ){
+					$a_arguments[] = Memory::models($s_name,$bo_data);
+				}
+			}
+		}
+			
+		return $ref->newInstanceArgs($a_arguments);
+	}
 
 	/**
 	 * API for checking the type of the given value.
 	 * Kills the program when the type of the variable is not the requested type
 	 *
-	 * @param	 string	$s_type	The type the variable schould be
+	 * @param	 String	$s_type	The type the variable schould be
 	 * @param	 object	$value	The variable that needs to be checked
 	 * @throws  NullPointerException if $value is null and $s_type is not 'null'.
 	 * @throws  TypeException if $value has the wrong type.
 	 */
-	public static function type($s_type, $value) {
+	public static function type($s_type, $value){
 		$bo_oke = true;
 
 		if (is_null($s_type))
 			throw new NullPointerException('Type can not be a null-pointer');
 
-		if ($s_type != 'null' && is_null($value)) {
+		if ($s_type != 'null' && is_null($value)){
 			throw new NullPointerException('Null found when expected ' . $s_type . '.');
 		}
 
-		switch ($s_type) {
+		switch ($s_type){
 			case 'bool':
 				if (!is_bool($value))
 					$bo_oke = false;
@@ -511,8 +687,8 @@ class Memory {
 					$bo_oke = false;
 				break;
 
-			case 'string':
-				if (!is_string($value))
+			case 'String':
+				if (!is_String($value))
 					$bo_oke = false;
 				break;
 
@@ -532,7 +708,7 @@ class Memory {
 				break;
 		}
 
-		if (!$bo_oke) {
+		if (!$bo_oke){
 			throw new TypeException('Wrong datatype found. Expected ' . $s_type . ' but found ' . gettype($value) . '.');
 		}
 	}
@@ -540,12 +716,12 @@ class Memory {
 	/**
 	 * Removes a value from the global memory
 	 *
-	 * @param	string  $s_type The type (Service|Model|Helper)
-	 * @param	string  $s_name The name of the data
+	 * @param	String  $s_type The type (Service|Model|Helper)
+	 * @param	String  $s_name The name of the data
 	 */
-	public static function delete($s_type, $s_name) {
-		Memory::type('string', $s_type);
-		Memory::type('string', $s_name);
+	public static function delete($s_type, $s_name){
+		Memory::type('String', $s_type);
+		Memory::type('String', $s_name);
 
 		$s_type = strtolower($s_type);
 		$s_name = ucfirst(strtolower($s_name));
@@ -561,7 +737,7 @@ class Memory {
 	/**
 	 * Stops the framework and writes all the content to the screen
 	 */
-	public static function endProgram() {
+	public static function endProgram(){
 		if( Memory::checkMemory('service', 'Template') ){
 			$service_Template = Memory::getMemory('service', 'Template');
 			$service_Template->printToScreen();
@@ -588,10 +764,10 @@ class Memory {
 	/**
 	 * Transforms a relative url into a absolute url (site domain only)
 	 *
-	 * @param   string  $s_url  The relative url
-	 * @return  string The absolute url
+	 * @param   String  $s_url  The relative url
+	 * @return  String The absolute url
 	 */
-	public static function generateUrl($s_url) {
+	public static function generateUrl($s_url){
 		$s_url = str_replace('../', '', $s_url);
 		$s_url = str_replace('./', '', $s_url);
 		$s_url = Memory::$s_base . $s_url;
@@ -600,8 +776,8 @@ class Memory {
 	}
 }
 
-if (!function_exists('class_alias')) {
-	function class_alias($original, $alias) {
+if (!function_exists('class_alias')){
+	function class_alias($original, $alias){
 		eval('class ' . $alias . ' extends ' . $original . ' {}');
 	}
 }

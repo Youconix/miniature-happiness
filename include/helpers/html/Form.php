@@ -1,5 +1,7 @@
 <?php
-class HTML_Form extends CoreHtmlItem {
+namespace core\helpers\html;
+
+class Form extends CoreHtmlItem {
 	private $s_method;
 	private $s_action;
 	private $bo_multidata = false;

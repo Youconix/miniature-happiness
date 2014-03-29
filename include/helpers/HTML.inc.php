@@ -1,4 +1,7 @@
 <?php
+namespace core\helpers\html;
+use core\helpers\Helper;
+
 /**
  * Helper for generating (X)HTML-code
  *
@@ -22,7 +25,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Helper_HTML extends Helper {
+class HTML extends Helper {
 	protected $s_htmlType	= 'html5';
 
 	/**
@@ -50,24 +53,24 @@ class Helper_HTML extends Helper {
 	 * Generates a div
 	 *
 	 * @param   String $s_content   The content, optional
-	 * @return  HTML_Div The Div object
+	 * @return  Div The Div object
 	 */
 	public function div($s_content = ''){
-		$this->checkClass('HTML_Div');
-		 
-		return new HTML_Div($s_content);
+		$this->checkClass('Div');
+		
+		return new Div($s_content);
 	}
 
 	/**
 	 * Generates a paragraph
 	 *
 	 * @param   String      $s_content      The content of the paragraph
-	 * @return  HTML_Paragraph   The Paragraph object
+	 * @return  Paragraph   The Paragraph object
 	 */
 	public function paragraph($s_content){
-		$this->checkClass('HTML_Paragraph');
+		$this->checkClass('Paragraph');
 		 
-		return new HTML_Paragraph($s_content);
+		return new Paragraph($s_content);
 	}
 
 	/**
@@ -75,36 +78,24 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param   String      $s_name         The name of the textarea
 	 * @param   String      $s_value        The default text of the textarea, optional
-	 * @return  HTML_Textarea    The Textarea object
+	 * @return  Textarea    The Textarea object
 	 */
 	public function textarea($s_name, $s_value = ''){
-		$this->checkClass('HTML_Textarea');
+		$this->checkClass('Input');
 		 
-		return new HTML_Textarea($s_name, $s_value);
+		$obj_factory = InputFactory::getInstance();
+		return $obj_factory->textarea($s_name, $s_value);
 	}
 
 	/**
-	 * Generates a list
+	 * Returns the list factory
 	 *
-	 * @param   Boolean $bo_numberd True when a numberd list is needed, default false
-	 * @return  HTML_UnList  The generated list object
+	 * @return  listFactory  The list factory
 	 */
-	public function unList($bo_numberd = false){
-		$this->checkClass('HTML_UnList');
+	public function ListFactory(){
+		$this->checkClass('ListFactory');
 		 
-		return new HTML_UnList($bo_numberd);
-	}
-
-	/**
-	 * Generates a list item
-	 *
-	 * @param	String	$s_content	The content of the list item
-	 * @return	HTML_ListItem The generated list item
-	 */
-	public function listItem($s_content){
-		$this->checkClass('HTML_ListItem','UnList');
-		 
-		return new HTML_ListItem($s_content);
+		return ListFactory::getInstance();
 	}
 
 	/**
@@ -113,48 +104,29 @@ class Helper_HTML extends Helper {
 	 * @param	String	$s_link			The url
 	 * @param	String	$s_method		The call method (get|post)
 	 * @param	Boolean	$bo_multidata	Set to true for a mixed content form
-	 * @return  HTML_Form    The Form object
+	 * @return  Form    The Form object
 	 */
 	public function form($s_link, $s_method, $bo_multidata = false){
-		$this->checkClass('HTML_Form');
+		$this->checkClass('Form');
 		 
-		return new HTML_Form($s_link, $s_method, $bo_multidata);
+		return new Form($s_link, $s_method, $bo_multidata);
 	}
 
 	/**
-	 * Generates a table
+	 * Returns the table factory
 	 *
-	 * @return  HTML_Table   The table object
+	 * @return  TableFactory   The table object
 	 */
-	public function table(){
-		$this->checkClass('HTML_Table');
+	public function tableFactory(){
+		$this->checkClass('TableFactory','Table');
 
-		return new HTML_Table();
-	}
-
-	/**
-	 * Generates a table row
-	 *
-	 * @return  HTML_TableRow    The tableRow object
-	 */
-	public function tableRow(){
-		$this->checkClass('HTML_TableRow','HTML_Table');
-
-		return new HTML_TableRow();
-	}
-
-	/**
-	 * Generates a table cel
-	 *
-	 * @param   String      $s_value    The value from the cell,optional
-	 * @return  HTML_TableCell   The TableCell object
-	 */
-	public function tableCell($s_value = ''){
-		$this->checkClass('HTML_TableCell','HTML_Table');
-
-		return new HTML_TableCell($s_value);
+		return TableFactory::getInstance();
 	}
 	
+	/**
+	 * Returns the input factory
+	 * @return unknown
+	 */
 	public function getInputFactory(){
 		$obj_factory = InputFactory::getInstance();
 		return $obj_factory;
@@ -162,6 +134,7 @@ class Helper_HTML extends Helper {
 
 	/**
 	 * Generates a text input field
+	 * @deprecated	Use getInputFactory 
 	 *
 	 * @param   String  $s_name     The name of the text field
 	 * @param   String  $s_type     The type of the field 
@@ -169,10 +142,10 @@ class Helper_HTML extends Helper {
 	 * 		(text|password|hidden|search|email|url|tel|number|range|date|month|week|time|datetime|
 	 * 			datetime-local|color) for HTML5 
 	 * @param   String  $s_value    The default text of the field, optional
-	 * @return  HTML_Input   The Input object
+	 * @return  Input   The Input object
 	 */
 	public function input($s_name, $s_type, $s_value = ''){
-		$this->checkClass('HTML_Input');
+		$this->checkClass('Input');
 		 
 		$obj_factory = InputFactory::getInstance();
 		return $obj_factory->input($s_name,$s_type,$s_value,$this->s_htmlType);
@@ -180,16 +153,18 @@ class Helper_HTML extends Helper {
 
 	/**
 	 * Generates a button
+	 * @deprecated	Use getInputFactory
 	 *
 	 * @param 		String  $s_value    The text on the button
 	 * @param      String  $s_name     The name of the button, leave empty for no name
 	 * @param      String  $s_type     The type of the button (button|reset|submit)
-	 * @return     HTML_Button  The Button object
+	 * @return     Button  The Button object
 	 */
 	public function button($s_value, $s_name, $s_type){
-		$this->checkClass('HTML_Button','HTML_Input');
+		$this->checkClass('Input');
 		 
-		return new HTML_Button($s_value, $s_name, $s_type, $this->bo_xhtml);
+		$obj_factory = InputFactory::getInstance();
+		return $obj_factory->button($s_value, $s_name, $s_type, $this->bo_xhtml);
 	}
 
 	/**
@@ -197,24 +172,24 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param       String  $s_url      The url the link has to point to
 	 * @param       String  $s_value    The link text, optional
-	 * @return      HTML_Link    The Link object
+	 * @return      Link    The Link object
 	 */
 	public function link($s_url, $s_value = ''){
-		$this->checkClass('HTML_Link');
+		$this->checkClass('Link');
 		 
-		return new HTML_Link($s_url, $s_value);
+		return new Link($s_url, $s_value);
 	}
 
 	/**
 	 * Generates a image
 	 *
 	 * @param       String  $s_url      The source url from the image
-	 * @return      HTML_Image   The Image object
+	 * @return      Image   The Image object
 	 */
 	public function image($s_url){
-		$this->checkClass('HTML_Image');
+		$this->checkClass('Image');
 		 
-		return new HTML_Image($s_url, $this->bo_xhtml);
+		return new Image($s_url, $this->s_htmlType);
 	}
 
 	/**
@@ -222,12 +197,12 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param       int     $i_level    The type of header (1|2|3|4|5)
 	 * @param       String  $s_content  The content of the header
-	 * @return      HTML_Header  The Header object
+	 * @return      Header  The Header object
 	 */
 	public function header($i_level, $s_content){
-		$this->checkClass('HTML_Header');
+		$this->checkClass('Header');
 		 
-		return new HTML_Header($i_level, $s_content);
+		return new Header($i_level, $s_content);
 	}
 
 	/**
@@ -235,12 +210,12 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param String	$s_name	The name
 	 * @param String	$s_value The value
-	 * @return      HTML_Radio   The Radio button object
+	 * @return      Radio   The Radio button object
 	 */
 	public function radio($s_name = '',$s_value = ''){
-		$this->checkClass('HTML_Radio','HTML_Input');
+			$this->checkClass('Radio','Input');
 		 
-		return new HTML_Radio($s_name,$s_value,$this->bo_xhtml);
+	 		return new Radio($s_name,$s_value,$this->s_htmlType);
 	}
 
 	/**
@@ -248,24 +223,25 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param String	$s_name	The name
 	 * @param String	$s_value The value
-	 * @return      HTML_Checkbox    The Checkbox object
+	 * @return      Checkbox    The Checkbox object
 	 */
 	public function checkbox($s_name = '',$s_value = ''){
-		$this->checkClass('HTML_Checkbox','HTML_Input');
+		$this->checkClass('Checkbox','Input');
 		 
-		return new HTML_Checkbox($s_name,$s_value,$this->bo_xhtml);
+		return new Checkbox($s_name,$s_value,$this->s_htmlType);
 	}
 
 	/**
 	 * Generates a select list
 	 *
 	 * @param   String  $s_name     The name of the select list
-	 * @return  HTML_Select   The Select list object
+	 * @return  Select   The Select list object
 	 */
 	public function select($s_name){
-		$this->checkClass('HTML_Select');
+		$this->checkClass('Input');
 		 
-		return new HTML_Select($s_name);
+		$obj_factory = InputFactory::getInstance();
+		return $obj_factory->Select($s_name);
 	}
 
 	/**
@@ -273,48 +249,48 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param    String $s_link  The link too the css-file
 	 * @param    String $s_media The media where the stylesheet is for, optional (screen|print|mobile)
-	 * @return   HTML_StylesheetLink  The Stylesheet link object
+	 * @return   StylesheetLink  The Stylesheet link object
 	 */
 	public function stylesheetLink($s_link, $s_media = 'screen'){
-		$this->checkClass('HTML_StylesheetLink','Head');
+		$this->checkClass('StylesheetLink','Head');
 		 
-		return new HTML_StylesheetLink($s_link, $s_media, $this->bo_xhtml, $this->bo_html5);
+		return new StylesheetLink($s_link, $s_media, $this->s_htmlType);
 	}
 
 	/**
 	 * Generates the stylesheet tags for inpage CSS
 	 *
 	 * @param  String  $s_css  The css-content
-	 * @return	HTML_Stylesheet  The generated stylesheet object
+	 * @return	Stylesheet  The generated stylesheet object
 	 */
 	public function stylesheet($s_css){
-		$this->checkClass('HTML_Stylesheet','Head');
+		$this->checkClass('Stylesheet','Head');
 		 
-		return new HTML_Stylesheet($s_css, $this->bo_html5);
+		return new Stylesheet($s_css, $this->s_htmlType);
 	}
 
 	/**
 	 * Generates a link to a external javascript file
 	 *
 	 * @param	String $s_link  The link to the javascript-file
-	 * @return HTML_JavascriptLink  The Javascript link object
+	 * @return JavascriptLink  The Javascript link object
 	 */
 	public function javascriptLink($s_link){
-		$this->checkClass('HTML_JavascriptLink','Head');
+		$this->checkClass('JavascriptLink','Head');
 		 
-		return new HTML_JavascriptLink($s_link, $this->bo_html5);
+		return new JavascriptLink($s_link, $this->s_htmlType);
 	}
 
 	/**
 	 * Generates the javascript tags for inpage javascript
 	 *
 	 * @param  String  $s_javascript      The javascript-content
-	 * @return	HTML_Javascript  The generated javascript object
+	 * @return	Javascript  The generated javascript object
 	 */
 	public function javascript($s_javascript){
-		$this->checkClass('HTML_Javascript','Head');
+		$this->checkClass('Javascript','Head');
 		 
-		return new HTML_Javascript($s_javascript, $this->bo_html5);
+		return new Javascript($s_javascript, $this->s_htmlType);
 	}
 
 	/**
@@ -323,24 +299,24 @@ class Helper_HTML extends Helper {
 	 * @param   String  $s_name     The name of the meta tag
 	 * @param   String  $s_content  The content of the meta tag
 	 * @param   String  $s_scheme   The optional scheme of the meta tag
-	 * @return  HTML_Metatag The metatag object
+	 * @return  Metatag The metatag object
 	 */
 	public function metatag($s_name, $s_content, $s_scheme = ''){
-		$this->checkClass('HTML_Metatag','Head');
+		$this->checkClass('Metatag','Head');
 		 
-		return new HTML_Metatag($s_name, $s_content, $s_scheme, $this->bo_xhtml);
+		return new Metatag($s_name, $s_content, $s_scheme,$this->s_htmlType);
 	}
 
 	/**
 	 * Generates a span
 	 *
 	 * @param   String $s_content The content of the span
-	 * @return  HTML_Span   The span object
+	 * @return  Span   The span object
 	 */
 	public function span($s_content){
-		$this->checkClass('HTML_Span');
+		$this->checkClass('Span');
 		 
-		return new HTML_Span($s_content);
+		return new Span($s_content);
 	}
 
 	/**
@@ -349,15 +325,15 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param String $s_url		The audio url
 	 * @param String $s_type	The audio type, default ogg
-	 * @return HTML_Audio		The audio object
+	 * @return Audio		The audio object
 	 */
 	public function audio($s_url,$s_type = 'ogg'){
-		if( !$this->bo_html5 )
-		throw new Exception("Audio is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Audio is only supported in HTML 5");
 
-		$this->checkClass('HTML_Audio','Video');
+		$this->checkClass('Audio','Video');
 		 
-		return new HTML_Audio($s_url,$s_type);
+		return new Audio($s_url,$s_type);
 	}
 
 	/**
@@ -366,30 +342,30 @@ class Helper_HTML extends Helper {
 	 *
 	 * @param String $s_url		The source url
 	 * @param String $s_type	The video type, default WebM
-	 * @return HTML_Video		The video object
+	 * @return Video		The video object
 	 */
 	public function video($s_url,$s_type = 'WebM'){
-		if( !$this->bo_html5 )
-		throw new Exception("Video is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Video is only supported in HTML 5");
 
-		$this->checkClass('HTML_Video');
+		$this->checkClass('Video');
 		 
-		return new HTML_Video($s_url,$s_type);
+		return new Video($s_url,$s_type);
 	}
 
 	/**
 	 * Generates a canvas object
 	 * HTML 5 only
 	 *
-	 * @return HTML_Canvas	The canvas object
+	 * @return Canvas	The canvas object
 	 */
 	public function canvas(){
-		if( !$this->bo_html5 )
-		throw new Exception("Canvas is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Canvas is only supported in HTML 5");
 
-		$this->checkClass('HTML_Canvas','Draw');
+		$this->checkClass('Canvas','Draw');
 		 
-		return new HTML_Canvas();
+		return new Canvas();
 	}
 
 	/**
@@ -397,15 +373,15 @@ class Helper_HTML extends Helper {
 	 * HTML 5 only
 	 *
 	 * @param String $s_content		The content
-	 * @return HTML_Header	The header object
+	 * @return Header	The header object
 	 */
 	public function pageHeader($s_content = ''){
-		if( !$this->bo_html5 )
-		throw new Exception("Header is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Header is only supported in HTML 5");
 
-		$this->checkClass('HTML_PageHeader','Div');
+		$this->checkClass('PageHeader','Div');
 		 
-		return new HTML_PageHeader($s_content);
+		return new PageHeader($s_content);
 	}
 
 	/**
@@ -416,12 +392,12 @@ class Helper_HTML extends Helper {
 	 * @return HTML_Footer		The footer object
 	 */
 	public function pageFooter($s_content = ''){
-		if( !$this->bo_html5 )
-		throw new Exception("Footer is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Footer is only supported in HTML 5");
 
-		$this->checkClass('HTML_Footer','Div');
+		$this->checkClass('Footer','Div');
 		 
-		return new HTML_Footer($s_content);
+		return new Footer($s_content);
 	}
 
 	/**
@@ -432,12 +408,12 @@ class Helper_HTML extends Helper {
 	 * @return HTML_Nav		The navigation object
 	 */
 	public function navigation($s_content = ''){
-		if( !$this->bo_html5 )
-		throw new Exception("Navigation is only supported in HTML 5");
+		if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Navigation is only supported in HTML 5");
 
-		$this->checkClass('HTML_Nav','Div');
+		$this->checkClass('Nav','Div');
 		 
-		return new HTML_Nav($s_content);
+		return new Nav($s_content);
 	}
 
 	/**
@@ -448,9 +424,9 @@ class Helper_HTML extends Helper {
 	 */
 	private function checkClass($s_name,$s_file = ''){
 		if( !class_exists($s_name) ){
-			if( empty($s_file) )	$s_file = str_replace('HTML_','',$s_name);
-
-			require(NIV.'include/helpers/html/'.$s_file.'.php');
+			if( empty($s_file) )	$s_file = $s_name;
+			
+			require_once(NIV.'include/helpers/html/'.$s_file.'.php');
 		}
 	}
 }
@@ -490,7 +466,7 @@ abstract class CoreHtmlItem {
 	protected function parseContent($s_content){
 		if (is_object($s_content)){
 			if (!is_subclass_of($s_content, 'CoreHtmlItem')){
-				throw new Exception("Only types of CoreHTMLItem can be automaticly parsed.");
+				throw new \Exception("Only types of CoreHTMLItem can be automaticly parsed.");
 			} else {
 				$s_content = $s_content->generateItem();
 			}
@@ -514,31 +490,37 @@ abstract class CoreHtmlItem {
 	 * Sets a data item
 	 * HTML 5 only
 	 * 
-	 * @param string $s_name	The name
-	 * @param string $s_value	The value
+	 * @param String $s_name	The name
+	 * @param String $s_value	The value
 	 */
 	public function setData($s_name,$s_value){
 		if( $this->s_htmlType == 'html5' ){
 			$this->a_data[] = array($s_name,$s_value);
 		}
+		
+		return $this;
 	}
 	
 	/**
 	 * Sets the rel-attribute
 	 * 
-	 * @param string $s_relation	The value
+	 * @param String $s_relation	The value
 	 */
 	public function setRelation($s_relation){
 		$this->s_rel = $s_relation;
+		
+		return $this;
 	}
 	
 	/**
 	 * Sets the HTML type
 	 * 
-	 * @param string $s_type	The html type
+	 * @param String $s_type	The html type
 	 */
 	protected function setHtmlType($s_type){
 		$this->s_htmlType = $s_type;
+		
+		return $this;
 	}
 
 	/**

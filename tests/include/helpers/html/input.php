@@ -21,7 +21,7 @@ class testInput extends GeneralTest {
 	public function setUp(){
 		parent::setUp();
 
-		$this->inputFactory	= InputFactory::getInstance();
+		$this->inputFactory	= core\helpers\html\InputFactory::getInstance();
 	}
 
 	public function tearDown(){
@@ -38,7 +38,7 @@ class testInput extends GeneralTest {
 	public function input(){
 		$object = $this->inputFactory->input($this->s_name,'text',$this->s_value,$this->s_htmlType);
 		
-		$this->assertTrue( ($object instanceof HTML_Input));
+		$this->assertTrue( ($object instanceof core\helpers\html\Input));
 	}
 	
 	/**
@@ -53,13 +53,13 @@ class testInput extends GeneralTest {
 		
 		$object = $this->inputFactory->range($this->s_name,$i_value);
 		
-		$this->assertTrue( ($object instanceof HTML_Range));
+		$this->assertTrue( ($object instanceof core\helpers\html\Range));
 		
 		$object->setMinimun($i_min);
 		$object->setMaximun($i_max);
 		
 		$s_expected = '<input type="range" name="'.$this->s_name.'" min="'.$i_min.'" max="'.$i_max.'" value="'.$i_value.'">';
-		$this->assertEquals($object->generateItem(),$s_expected);
+		$this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -75,13 +75,13 @@ class testInput extends GeneralTest {
 		
 		$object = $this->inputFactory->number($this->s_name,$i_value);
 		
-		$this->assertTrue( ($object instanceof HTML_Number));
+		$this->assertTrue( ($object instanceof core\helpers\html\Number));
 		
 		$object->setMinimun($i_min);
 		$object->setMaximun($i_max);
 		$object->setStep($i_step);
 		$s_expected = '<input type="number" name="'.$this->s_name.'" min="'.$i_min.'" max="'.$i_max.'" step="'.$i_step.'" value="'.$i_value.'">';
-		$this->assertEquals($object->generateItem(),$s_expected);
+		$this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -96,13 +96,13 @@ class testInput extends GeneralTest {
 	
 		$object = $this->inputFactory->date($this->s_name,$i_value);
 	
-		$this->assertTrue( ($object instanceof HTML_Date));
+		$this->assertTrue( ($object instanceof core\helpers\html\Date));
 	
 		$object->setMinimun($i_min);
 		$object->setMaximun($i_max);
 	
 		$s_expected = '<input type="date" name="'.$this->s_name.'" min="'.$i_min.'" max="'.$i_max.'" value="'.$i_value.'">';
-		$this->assertEquals($object->generateItem(),$s_expected);
+		$this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -113,8 +113,10 @@ class testInput extends GeneralTest {
 	public function datetime(){
 		$object = $this->inputFactory->datetime($this->s_name,false);
 		
-		$this->assertTrue( ($object instanceof HTML_Datetime));
-		$this->assertEquals($object->generateItem(),'<input type="datetime" name="'.$this->s_name.'" >');
+		$this->assertTrue( ($object instanceof core\helpers\html\Datetime));
+    
+    $s_expected = '<input type="datetime" name="'.$this->s_name.'" >';
+		$this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -125,7 +127,10 @@ class testInput extends GeneralTest {
 	public function button(){
 		$object = $this->inputFactory->button($this->s_name,'reset',$this->s_value,$this->s_htmlType);
 		
-		$this->assertTrue( ($object instanceof HTML_Button));
+		$this->assertTrue( ($object instanceof core\helpers\html\Button));
+    
+    $s_expected = '<input type="reset" name="'.$this->s_name.'"  value="'.$this->s_value.'">';
+    $this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -136,12 +141,15 @@ class testInput extends GeneralTest {
 	public function radio(){
 		$object = $this->inputFactory->radio($this->s_name,$this->s_value,$this->s_htmlType);
 		
-		$this->assertTrue( ($object instanceof HTML_Radio));
-		$this->assertEquals($object->generateItem(),'<input type="radio" name="'.$this->s_name.'" value="'.$this->s_value.'" >');
+		$this->assertTrue( ($object instanceof core\helpers\html\Radio));
+    
+    $s_expected = '<input type="radio" name="'.$this->s_name.'" value="'.$this->s_value.'" >';
+		$this->assertEquals($s_expected,$object->generateItem());
 		
 		$object = $this->inputFactory->radio($this->s_name,$this->s_value,$this->s_htmlType);
 		$object->setChecked();
-		$this->assertEquals($object->generateItem(),'<input type="radio" name="'.$this->s_name.'" value="'.$this->s_value.'" checked="checked" >');
+    $s_expected = '<input type="radio" name="'.$this->s_name.'" value="'.$this->s_value.'" checked="checked" >';
+		$this->assertEquals($s_expected,$object->generateItem());
 	}
 	
 	/**
@@ -152,11 +160,50 @@ class testInput extends GeneralTest {
 	public function checkbox(){
 		$object = $this->inputFactory->checkbox($this->s_name,$this->s_value,$this->s_htmlType);
 	
-		$this->assertTrue( ($object instanceof HTML_Checkbox));
-		$this->assertEquals($object->generateItem(),'<input type="checkbox" name="'.$this->s_name.'" value="'.$this->s_value.'" >');
+		$this->assertTrue( ($object instanceof core\helpers\html\Checkbox));
+    
+    $s_expected = '<input type="checkbox" name="'.$this->s_name.'" value="'.$this->s_value.'" >';
+		$this->assertEquals($s_expected,$object->generateItem());
 	
 		$object = $this->inputFactory->checkbox($this->s_name,$this->s_value,$this->s_htmlType);
 		$object->setChecked();
-		$this->assertEquals($object->generateItem(),'<input type="checkbox" name="'.$this->s_name.'" value="'.$this->s_value.'" checked="checked" >');
+    $s_expected = '<input type="checkbox" name="'.$this->s_name.'" value="'.$this->s_value.'" checked="checked" >';
+		$this->assertEquals($s_expected,$object->generateItem());
+	}
+
+	/**
+	 * Test of calling Textarea
+	 * 
+	 * @test
+	 */
+	public function textarea(){
+		$helper = $this->inputFactory->textarea('message',$this->s_content);
+		$this->assertTrue( ($helper instanceof core\helpers\html\Textarea) );
+		
+		$s_expected = '<textarea rows="0" cols="0" name="message" >'.$this->s_content."</textarea>";
+		$this->assertEquals($s_expected, $helper->generateItem());
+	}
+
+	/**
+	 * Test for calling Select
+	 * 
+	 * @test
+	 */
+	public function select(){
+		$s_name	= 'select';
+		$a_values = array(1,2,3,4,5,6);
+		
+		$helper = $this->inputFactory->select($s_name);
+		
+		$this->assertTrue( ($helper instanceof core\helpers\html\Select) );
+		
+		$s_expected = '<select name="'.$s_name.'" >'."\n";
+		
+		foreach($a_values AS $i_value){
+			$helper->setOption($i_value, false);
+			$s_expected .= '<option>'.$i_value."</option>\n";
+		}
+		$s_expected .= "</select>\n";
+		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 }

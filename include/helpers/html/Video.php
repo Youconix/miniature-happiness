@@ -1,5 +1,7 @@
 <?php
-class HTML_Audio extends HtmlItem {
+namespace core\helpers\html;
+
+class Audio extends HtmlItem {
 	protected $a_sources		= array();
 	protected $bo_autoplay	= false;
 	protected $bo_controls	= false;
@@ -92,7 +94,7 @@ class HTML_Audio extends HtmlItem {
 		/* Generate sources */
 		$this->s_value	= '';
 		foreach($this->a_sources AS $a_source){
-			$this->s_value .= '<source src="'.$a_source[0].'" type="video/'.$a_source[1].'" />';
+			$this->s_value .= '<source src="'.$a_source[0].'" type="video/'.$a_source[1].'">';
 		}
 
 		/* Generate between */
@@ -101,13 +103,12 @@ class HTML_Audio extends HtmlItem {
 		if( $this->bo_loop )		$this->s_between .= ' loop="loop"';
 		if( $this->bo_muted )		$this->s_between .= ' muted="muted"';
 		if( !empty($this->s_preload))	$this->s_between .= ' preload="'.$this->s_poster.'"';
-
-
+		
 		return parent::generateItem();
 	}
 }
 
-class HTML_Video extends HTML_Audio {
+class Video extends Audio {
 	private $s_poster		= '';
 
 	/**

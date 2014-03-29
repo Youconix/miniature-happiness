@@ -1,5 +1,7 @@
 <?php
-class HTML_Canvas extends HtmlItem {
+namespace core\helpers\html;
+
+class Canvas extends HtmlItem {
 	/**
 	 * Generates a new canvas element
 	 */

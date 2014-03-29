@@ -1,52 +1,97 @@
 <?php
-class HTML_Table extends HtmlItem {
-	private $a_header;
+namespace core\helpers\html;
+
+class TableFactory {
+	private static $_instance;
+	
+	public static function getInstance(){
+		if( is_null(self::$_instance) ){
+			self::$_instance = new TableFactory();
+		}
+		
+		return self::$_instance;
+	}
+	
+	public function table(){
+		return new Table();
+	}
+	
+	public function row(){
+		return new TableRow();
+	}
+	
+	public function cell($s_content){
+		return new TableCell($s_content);
+	}
+}
+	
+class Table extends HtmlItem {
+	private $obj_header = null;
 	private $a_rows;
-	private $a_footer;
+	private $obj_footer = null;
 	private $i_cellspacing = -1;
 	private $i_cellpadding = -1;
 
 	/**
 	 * Generates a new table element
 	 */
-	public function __construct() {
-		$this->s_tag = "<table{cellspacing}{cellpadding} {between}>\n{value}\n</table>\n";
+	public function __construct(){
+		$this->s_tag = "<table{cellspacing}{cellpadding} {between}>\n{value}</table>\n";
 
-		$this->a_header = array();
 		$this->a_rows = array();
-		$this->a_footer = array();
 	}
-
+	
 	/**
-	 * Adds a header cell
-	 *
-	 * @param String/HTML_TableCell $s_cell		The table cell(content)
+	 * Adds the table header
+	 * 
+	 * @param TableRow $obj_row		The row
 	 */
-	public function addHeaderCell($s_cell) {
-		if (is_object($s_cell)) {
-			if (get_class($s_cell) != 'HTML_TableCell')
-			throw new Exception("Unexpected input in Table:addheaderCell. Expect string or TableCell");
-
-			$s_cell = $s_cell->generateItem();
+	public function addHeader($obj_row){
+		if( !($obj_row instanceof core\helpers\html\TableRow) ){
+			throw new \Exception('Invalid input in Table:addHeader. Only a TableRow is allowed. Found '.get_class($obj_row).'.');
 		}
-
-		if( substr($s_cell, 0,3) != '<td' )		$s_cell = '<td>'.$s_cell.'</td>';
-		$this->a_header[] = $s_cell;
-
+		
+		$this->obj_header = $obj_row;
+		return $this;
+	}
+	
+	/**
+	 * Sets the content of the table.
+	 * Overwrites any added content
+	 *
+	 * @param   TableRow $obj_row  The row to add
+	 * @throws Exception if $obj_row is the wrong type
+	 */
+	public function setValue($obj_row){
+		$this->a_rows = array();
+	
+		return $this->addRow($obj_row);
+	}
+	
+	/**
+	 * Adds a row
+	 *
+	 * @param  TableRow $obj_row  The row to add
+	 * @throws Exception if $obj_row is the wrong type
+	 */
+	public function addRow($obj_row){
+		if( !($obj_row instanceof TableRow) ){
+			throw new \Exception('Invalid input in Table:addRow. Only a TableRow is allowed. Found '.get_class($obj_row).'.');
+		}
+	
+		$this->a_rows[] = $obj_row;
+	
 		return $this;
 	}
 
 	/**
-	 * Adds a footer cell
+	 * Adds the table footer
 	 *
-	 * @param String/HTML_TableCell $s_cell		The table cell(content)
+	 * @param TableRow $obj_row		The row
 	 */
-	public function addFooterCell($s_cell) {
-		if (is_object($s_cell)) {
-			if (get_class($s_cell) != 'HTML_TableCell')
-			throw new Exception("Unexpected input in Table:addFooterCell. Expect string or TableCell");
-
-			$s_cell = $s_cell->generateItem();
+	public function addFooter($obj_row){
+		if( !($obj_row instanceof TableRow) ){
+			throw new \Exception('Invalid input in Table:addFooter. Only a TableRow is allowed. Found '.get_class($obj_row).'.');
 		}
 
 		if( substr($s_cell, 0,3) != '<td' )		$s_cell = '<td>'.$s_cell.'</td>';
@@ -56,44 +101,12 @@ class HTML_Table extends HtmlItem {
 	}
 
 	/**
-	 * Sets the content of the table.
-	 * Overwrites any added content
-	 *
-	 * @param   String/HtmlTableRow $s_row  The row to add
-	 * @throws Exception if $row is the wrong type
-	 */
-	public function setValue($s_row) {
-		$this->a_rows = array();
-
-		return $this->addRow($s_row);
-	}
-
-	/**
-	 * Adds a row
-	 *
-	 * @param  String/HtmlTableRow $s_row  The row to add
-	 * @throws Exception if $row is the wrong type
-	 */
-	public function addRow($s_row) {
-		if (is_object($s_row)) {
-			if (get_class($s_row) != 'HTML_TableRow')
-			throw new Exception("Unexpected input in Table:addRow. Expect string or TableRow");
-
-			$s_row = $s_row->generateItem();
-		}
-
-		$this->a_rows[] = $s_row;
-
-		return $this;
-	}
-
-	/**
 	 * Sets the cell spacing
 	 *
 	 * @param int $i_spacing    The cell spacing
 	 */
-	public function setSpacing($i_spacing) {
-		if ($i_spacing >= 0) {
+	public function setSpacing($i_spacing){
+		if ($i_spacing >= 0){
 			$this->i_cellspacing = $i_spacing;
 		}
 
@@ -105,8 +118,8 @@ class HTML_Table extends HtmlItem {
 	 *
 	 * @param int $i_padding    The cell padding
 	 */
-	public function setPadding($i_padding) {
-		if ($i_padding >= 0) {
+	public function setPadding($i_padding){
+		if ($i_padding >= 0){
 			$this->i_cellpadding = $i_padding;
 		}
 
@@ -119,36 +132,22 @@ class HTML_Table extends HtmlItem {
 	 * @see HtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
+	public function generateItem(){
 		/* Generate header */
-		if (count($this->a_header) > 0) {
-			$this->s_value = "<thead>\n<tr>\n";
-			foreach ($this->a_header AS $s_cell) {
-				$this->s_value .= $s_cell . "\n";
-			}
-			$this->s_value .= "</tr>\n</thead>\n";
+		if( !is_null($this->obj_header) ){
+			$this->s_value = "<thead>\n".$this->obj_header->generateItem()."</thead>\n";
 		}
+		
+		/* Generate rows */
+		$this->s_value .= "<tbody>\n";
+		foreach($this->a_rows AS $obj_row){
+			$this->s_value .= $obj_row->generateItem();
+		}
+		$this->s_value .= "</tbody>\n";
 
 		/* Generate footer */
-		if (count($this->a_footer) > 0) {
-			$this->s_value .= "<tfoot>\n<tr>\n";
-			foreach ($this->a_footer AS $s_cell) {
-				$this->s_value .= $s_cell . "\n";
-			}
-			$this->s_value .= "</tr>\n</tfoot>\n";
-		}
-
-		/* Generate rows */
-		$i_rows = count($this->a_rows);
-		if( $i_rows > 0 ){
-			$this->s_value .= "<tbody>\n";
-			 
-			for ($i = 0; $i < $i_rows; $i++) {
-				$this->s_value .= $this->a_rows[$i];
-				$this->s_value .= "\n";
-			}
-			 
-			$this->s_value .= "</tbody>";
+		if( !is_null($this->obj_footer) ){
+			$this->s_value .= "<tfoot>\n".$this->obj_footer->generateItem()."</tfoot>\n";
 		}
 
 		$this->i_cellspacing != -1 ? $s_spacing = ' cellspacing="' . $this->i_cellspacing . '"' : $s_spacing = '';
@@ -160,14 +159,14 @@ class HTML_Table extends HtmlItem {
 	}
 }
 
-class HTML_TableRow extends HtmlItem {
+class TableRow extends HtmlItem {
 	private $a_cells;
 
 	/**
 	 * Generates a new table row element
 	 */
-	public function __construct() {
-		$this->s_tag = "<tr {between}>\n{value}\n</tr>";
+	public function __construct(){
+		$this->s_tag = "<tr {between}>\n{value}</tr>\n";
 
 		$this->a_cells = array();
 	}
@@ -175,18 +174,15 @@ class HTML_TableRow extends HtmlItem {
 	/**
 	 * Adds a table cell
 	 *
-	 * @param String/HTML_TableCell $s_cell The table cell
+	 * @param TableCell $obj_cell The table cell
 	 * @throws Exception    If the content is from the wrong type
 	 */
-	public function addCell($s_cell) {
-		if (is_object($s_cell)) {
-			if (get_class($s_cell) != 'HTML_TableCell')
-			throw new Exception("Unexpected input in TableRow:addcell. Expect string or TableCell");
-
-			$s_cell = $s_cell->generateItem();
+	public function addCell($obj_cell){
+		if( !($obj_row instanceof core\helpers\html\TableCell) ){
+			throw new \Exception('Invalid input in TableRow:addCell. Only a TableCell is allowed. Found '.get_class($obj_cell).'.');
 		}
 
-		$this->a_cells[] = $s_cell;
+		$this->a_cells[] = $obj_cell;
 
 		return $this;
 	}
@@ -196,11 +192,9 @@ class HTML_TableRow extends HtmlItem {
 	 *
 	 * @param String $s_content The content of the cell. Also accepts a subtype of CoreHtmlItem
 	 */
-	public function createCell($s_content) {
-		$s_content = $this->parseContent($s_content);
-
-		$obj_cell = new HTML_TableCell($s_content);
-		$this->a_cells[] = $obj_cell->generateItem();
+	public function createCell($s_content){
+		$obj_cell = new TableCell($s_content);
+		$this->a_cells[] = $obj_cell;
 
 		return $this;
 	}
@@ -210,12 +204,13 @@ class HTML_TableRow extends HtmlItem {
 	 *
 	 * @param String/array $s_value The value(s) to add
 	 */
-	public function setValue($s_value) {
-		if (is_array($s_value)) {
-			foreach ($s_value AS $s_item) {
+	public function setValue($s_value){
+		if (is_array($s_value)){
+			foreach ($s_value AS $s_item){
 				$this->createCell($s_item);
 			}
-		} else {
+		} 
+		else {
 			$this->createCell($s_value);
 		}
 
@@ -228,20 +223,17 @@ class HTML_TableRow extends HtmlItem {
 	 * @see HtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
+	public function generateItem(){
 		/* Generate row */
-		$i_cells = count($this->a_cells) - 1;
-		for ($i = 0; $i <= $i_cells; $i++) {
-			$this->s_value .= $this->a_cells[$i];
-			if ($i < $i_cells)
-			$this->s_value .= "\n";
+		foreach($this->a_cells AS $obj_cell){
+			$this->s_value .= $obj_cell->generateItem()."\n";
 		}
 
 		return parent::generateItem();
 	}
 }
 
-class HTML_TableCell extends HtmlItem {
+class TableCell extends HtmlItem {
 	private $i_rowspan = 0;
 	private $i_colspan = 0;
 
@@ -250,7 +242,7 @@ class HTML_TableCell extends HtmlItem {
 	 *
 	 * @param String $s_value The value of the cell. Also accepts a subtype of CoreHtmlItem
 	 */
-	public function __construct($s_value) {
+	public function __construct($s_value){
 		$this->s_tag = "<td {between}{span}>{value}</td>";
 		$this->setValue($s_value);
 	}
@@ -260,7 +252,7 @@ class HTML_TableCell extends HtmlItem {
 	 *
 	 * @param int $i_rowspan    The rowspan
 	 */
-	public function setRowspan($i_rowspan) {
+	public function setRowspan($i_rowspan){
 		if ($i_rowspan >= 0)
 		$this->i_rowspan = $i_rowspan;
 
@@ -272,7 +264,7 @@ class HTML_TableCell extends HtmlItem {
 	 *
 	 * @param int $i_colspan    The colspan
 	 */
-	public function setColspan($i_colspan) {
+	public function setColspan($i_colspan){
 		if ($i_colspan >= 0)
 		$this->i_colspan = $i_colspan;
 
@@ -285,7 +277,7 @@ class HTML_TableCell extends HtmlItem {
 	 * @see HtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
+	public function generateItem(){
 		$s_span = '';
 		if ($this->i_colspan > 0)
 		$s_span .= 'colspan="' . $this->i_colspan . '" ';

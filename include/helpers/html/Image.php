@@ -1,17 +1,21 @@
 <?php
-class HTML_Image extends HtmlItem {
+namespace core\helpers\html;
+
+class Image extends HtmlItem {
 	private $s_title = '';
 
 	/**
 	 * Generates a new image element
 	 *
-	 * @param String    $s_url      The url of the image
-	 * @param Boolean   $bo_xhtml   True for XHTML-code, otherwise false
+	 * @param	String    $s_url      The url of the image
+	 * @param String	$s_htmlType	The HTML type
 	 */
-	public function __construct($s_url, $bo_xhtml) {
-		if ($bo_xhtml) {
+	public function __construct($s_url, $s_htmlType){
+		$this->setHtmlType($s_htmlType);
+		if( $s_htmlType == 'xhtml' ){
 			$this->s_tag = '<img src="' . $s_url . '"{title} alt="{value}" {between}/>';
-		} else {
+		} 
+		else {
 			$this->s_tag = '<img src="' . $s_url . '"{title} alt="{value}" {between}>';
 		}
 	}
@@ -21,7 +25,7 @@ class HTML_Image extends HtmlItem {
 	 *
 	 * @param String  $s_title    The title text
 	 */
-	public function setTitle($s_title) {
+	public function setTitle($s_title){
 		$this->s_title = $s_title;
 
 		return $this;
@@ -32,7 +36,7 @@ class HTML_Image extends HtmlItem {
 	 *
 	 * @param       String  $s_alt      The alternative text (when the image doesn't work/is not supported)
 	 */
-	public function setValue($s_alt) {
+	public function setValue($s_alt){
 		return parent::setValue($s_alt);
 	}
 
@@ -42,8 +46,8 @@ class HTML_Image extends HtmlItem {
 	 * @see HtmlItem::generateItem()
 	 * @return  String  The (X)HTML code
 	 */
-	public function generateItem() {
-		if (!empty($this->s_title)) {
+	public function generateItem(){
+		if (!empty($this->s_title)){
 			$this->s_title = ' title="'.$this->s_title.'"';
 		}
 		 

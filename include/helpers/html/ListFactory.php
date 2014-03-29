@@ -1,11 +1,37 @@
 <?php
-class HTML_UnList extends HtmlFormItem {
+namespace core\helpers\html;
+
+class ListFactory {
+	private static $_instance;
+	
+	public static function getInstance(){
+		if( is_null(self::$_instance) ){
+			self::$_instance = new ListFactory();
+		}
+		
+		return self::$_instance;
+	}
+	
+	public function numberedList(){
+		$list = new ListCollection(true);
+		return $list;
+	}
+	public function uNumberedList(){
+		$list = new ListCollection(false);
+		return $list;
+	}
+	public function createItem($s_content){
+		return new ListItem($s_content);
+	}
+}
+
+class ListCollection extends HtmlItem {
     private $a_fields;
 
     /**
      * Generates a new list element
      *
-     * @param boolean	$bo_numberd True when a numberd list is needed, default false
+     * @param bool	$bo_numberd True when a numberd list is needed, default false
      */
     public function __construct($bo_numberd) {
         if (!$bo_numberd) {
@@ -20,12 +46,12 @@ class HTML_UnList extends HtmlFormItem {
     /**
      * Adds a list row item
      *
-     * @param string/Html_ListItem	$s_row  The list row item
+     * @param String/ListItem	$s_row  The list row item
      */
     public function addRow($s_row) {
         if (is_object($s_row)) {
-            if (get_class($s_row) != 'HTML_ListItem')
-                throw new Exception("Unexpected input in UnList::addRow. Expect string or ListItem");
+            if( get_class($s_row) != 'ListItem' )
+                throw new \Exception("Unexpected input in UnList::addRow. Expect string or ListItem");
 
             $s_row = $s_row->generateItem();
         }
@@ -36,23 +62,12 @@ class HTML_UnList extends HtmlFormItem {
     }
 
     /**
-     * Creates a new row item and adds it
-     *
-     * @param	string	$s_content	The content of the row
-     */
-    public function createRow($s_content) {
-        $s_content = $this->parseContent($s_content);
-
-        return $this->addRow(new HTML_ListItem($s_content));
-    }
-
-    /**
      * Generates the (X)HTML-code
      *
      * @see HtmlFormItem::generateItem()
-     * @return  string  The (X)HTML code
+     * @return  String  The (X)HTML code
      */
-    public function generateItem() {
+    public function generateItem(){
         $this->s_value = '';
         foreach ($this->a_fields AS $s_row) {
             $this->s_value .= $s_row . "\n";
@@ -62,11 +77,11 @@ class HTML_UnList extends HtmlFormItem {
     }
 }
 
-class HTML_ListItem extends HtmlItem {
+class ListItem extends HtmlItem {
     /**
      * Generates a new list item element
      * 
-     * @param string/CoreHtmLItem $s_content		The content
+     * @param String/CoreHtmLItem $s_content		The content
      */
     public function __construct($s_content) {
         $this->s_tag = "<li {between}>" . $this->parseContent($s_content) . "</li>\n";

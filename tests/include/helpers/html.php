@@ -20,7 +20,7 @@ class testHTML extends GeneralTest {
 	public function setUp(){
 		parent::setUp();
 
-		$this->helper_HTML	= new Helper_HTML();
+		$this->helper_HTML	= new core\helpers\html\HTML();
 		
 		$this->s_class = 'defaultClass';
 		$this->s_id = 'defaultID';
@@ -34,13 +34,14 @@ class testHTML extends GeneralTest {
 	}
 
 	/**
-	 * Test of calling HTML_Div
+	 * Test of calling Div
 	 * 
 	 * @test
 	 */
 	public function div(){
 		$helper	= $this->helper_HTML->div($this->s_content);
-		$this->assertTrue(($helper instanceof HTML_Div));
+		
+		$this->assertTrue(($helper instanceof core\helpers\html\Div));
 		
 		$helper->setID($this->s_id);
 		$helper->setClass($this->s_class);
@@ -56,7 +57,7 @@ class testHTML extends GeneralTest {
 	 */
 	public function paragraph(){
 		$helper = $this->helper_HTML->paragraph($this->s_content);
-		$this->assertTrue(($helper instanceof HTML_Paragraph) );
+		$this->assertTrue(($helper instanceof core\helpers\html\Paragraph) );
 		$helper->setID($this->s_id);
 		$helper->setClass($this->s_class);
 		
@@ -65,53 +66,38 @@ class testHTML extends GeneralTest {
 	}
 
 	/**
-	 * Test of calling HTML_Textarea
+	 * Test of calling the list factory
 	 * 
 	 * @test
 	 */
-	public function textarea(){
-		$helper = $this->helper_HTML->textarea('message',$this->s_content);
-		$this->assertTrue( ($helper instanceof HTML_Textarea) );
-		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
+	public function listfactory(){
+		$factory = $this->helper_HTML->listFactory();
 		
-		$s_expected = '<textarea rows="0" cols="0" name="message" class="'.$this->s_class.'" id="'.$this->s_id.'">'.$this->s_content."</textarea>";
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
-	 * Test of calling HTML_UnList
-	 * 
-	 * @test
-	 */
-	public function unList(){
-		$helper = $this->helper_HTML->unList(true);
+		$this->assertTrue( ($factory instanceof core\helpers\html\ListFactory) );
 		
-		$this->assertTrue( ($helper instanceof HTML_UnList) );
-		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
+		$obj_list = $factory->numberedList();		 
+		$obj_list->setID($this->s_id);
+		$obj_list->setClass($this->s_class);
 		
 		$s_expected = '<ol class="'.$this->s_class.'" id="'.$this->s_id.'">'."</ol>\n";
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
-	 * Test of calling HTML_ListItem
-	 * 
-	 * @test
-	 */
-	public function listItem(){
-		$helper = $this->helper_HTML->listItem($this->s_content);
+		$this->assertEquals($s_expected, $obj_list->generateItem());
 		
-		$this->assertTrue( ($helper instanceof HTML_ListItem ));
+		$obj_list = $factory->uNumberedList();			
+		$obj_list->setID($this->s_id);
+		$obj_list->setClass($this->s_class);
 		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
+		$s_expected = '<ul class="'.$this->s_class.'" id="'.$this->s_id.'">'."</ul>\n";
+		$this->assertEquals($s_expected, $obj_list->generateItem());
+		
+		$item = $factory->createItem($this->s_content);
+		
+		$this->assertTrue( ($item instanceof core\helpers\html\ListItem ));
+		
+		$item->setID($this->s_id);
+		$item->setClass($this->s_class);
 		 
 		$s_expected = '<li class="'.$this->s_class.'" id="'.$this->s_id.'">'.$this->s_content."</li>\n";
-		$this->assertEquals($s_expected, $helper->generateItem());
+		$this->assertEquals($s_expected, $item->generateItem());
 	}
 
 	/**
@@ -125,7 +111,7 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->form($s_link,$s_method,true);
 		
-		$this->assertTrue( ($helper instanceof HTML_Form) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Form) );
 		
 		$helper->setID($this->s_id);
 
@@ -139,40 +125,19 @@ class testHTML extends GeneralTest {
 	 * @test
 	 */
 	public function table(){
-		$helper = $this->helper_HTML->table();
+		$factory = $this->helper_HTML->tableFactory();
 		
-		$this->assertTrue( ($helper instanceof  HTML_Table ));
+		$this->assertTrue( ($factory instanceof  core\helpers\html\TableFactory ));
 		
+		$helper = $factory->table();
 		$helper->setID($this->s_id);
 		$helper->setClass($this->s_class);
 		
-		$helper->addHeaderCell('head');
-		$helper->addFooterCell('foot');
-		$helper->addRow($this->helper_HTML->tableRow());
+		$helper->addRow($factory->row());
 		
 		$s_expected = '<table class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n";
-		$s_expected .= "<thead>\n<tr>\n<td>head</td>\n</tr>\n</thead>\n";
-		$s_expected .= "<tfoot>\n<tr>\n<td>foot</td>\n</tr>\n</tfoot>\n";
-		$s_expected .= "<tbody>\n<tr >\n\n</tr>\n</tbody>\n</table>\n";
+		$s_expected .= "<tbody>\n<tr >\n</tr>\n</tbody>\n</table>\n";
 		
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
-	 * Test of calling HTML_TableRow
-	 * 
-	 * @test
-	 */
-	public function tableRow(){
-		$helper = $this->helper_HTML->tableRow();
-		
-		$this->assertTrue( ($helper instanceof HTML_TableRow) );
-
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		$helper->setValue('test');
-		
-		$s_expected = '<tr class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n<td >test</td>\n</tr>";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
@@ -182,119 +147,73 @@ class testHTML extends GeneralTest {
 	 * @test
 	 */
 	public function tableCell(){
-		$helper = $this->helper_HTML->tableCell();
+		$factory = $this->helper_HTML->tableFactory();
 		
-		$this->assertTrue( ($helper instanceof HTML_TableCell) );
+		$helper = $factory->row();
+		$s_expected	= "<tr >\n";
+		for($i=1; $i<=6; $i++){
+			$helper->createCell($i);
+			
+			$s_expected .= "<td >".$i."</td>\n";
+		}
+		$s_expected .= "</tr>\n";
 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		$helper->setValue('test');
-		
-		$s_expected = '<td class="'.$this->s_class.'" id="'.$this->s_id.'">'."test</td>";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
-
-	/**
-	 * Test of calling HTML_Input
-	 * 
-	 * @test
-	 */
-	public function input(){
-		$s_name = 'inputTest';
-		$s_type = "password";
-		
-		$helper = $this->helper_HTML->input($s_name, $s_type,$this->s_content);
-		
-		$this->assertTrue( ($helper instanceof HTML_Input) );
-		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<input type="password" name="'.$s_name.'" class="'.$this->s_class.'" id="'.$this->s_id.'" value="'.$this->s_content.'"/>';
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
-	 * Test of calling HTML_Button
-	 * 
-	 * @test
-	 */
-	public function button(){
-		$s_name = 'inputTest';
-		$s_type = "submit";
-		
-		$helper = $this->helper_HTML->button($this->s_content,$s_name, $s_type);
-		
-		$this->assertTrue( ($helper instanceof HTML_Button) );
-		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<input type="submit" name="'.$s_name.'" class="'.$this->s_class.'" id="'.$this->s_id.'" value="'.$this->s_content.'"/>';
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
+	
 	/**
 	 * Test for calling HTML_Link
-	 * 
+	 *
 	 * @test
 	 */
-	public function link(){
-		$s_url = 'test.php';
+	 public function link(){
+		 $s_url = 'test.php';
 		
-		$helper = $this->helper_HTML->link($s_url,$this->s_content);
+		 $helper = $this->helper_HTML->link($s_url,$this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Link) );
-		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<a href="'.$s_url.'" class="'.$this->s_class.'" id="'.$this->s_id.'">'.$this->s_content.'</a>';
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
+		 $this->assertTrue( ($helper instanceof core\helpers\html\Link) );
+		 	
+		 $s_expected = '<a href="'.$s_url.'" >'.$this->s_content.'</a>';
+		 $this->assertEquals($s_expected, $helper->generateItem());
+	 }
+	
+	 /**
 	 * Test for calling HTML_Image
-	 * 
+	 *
 	 * @test
 	 */
-	public function image(){
-		$s_url = 'image.png';
-		$s_alt = $s_title = 'image';
+	 public function image(){
+		 $s_url = 'image.png';
+		 $s_alt = $s_title = 'image';
 		
-		$helper = $this->helper_HTML->image($s_url);
+		 $helper = $this->helper_HTML->image($s_url);
 		
-		$this->assertTrue( ($helper instanceof HTML_Image) );
-		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		$helper->setTitle($s_title);
-		$helper->setvalue($s_alt);
-		 
-		$s_expected = '<img src="'.$s_url.'" title="'.$s_title.'" alt="'.$s_alt.'" class="'.$this->s_class.'" id="'.$this->s_id.'"/>';
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
+		 $this->assertTrue( ($helper instanceof core\helpers\html\Image) );
+		 	
+		 $helper->setTitle($s_title);
+		 $helper->setvalue($s_alt);
+		 	
+		 $s_expected = '<img src="'.$s_url.'" title="'.$s_title.'" alt="'.$s_alt.'" >';
+		 $this->assertEquals($s_expected, $helper->generateItem());
+	 }
+	
+	 /**
 	 * Test for calling HTML_Header
-	 * 
+	 *
 	 * @test
 	 */
-	public function header(){
-		$i_level = 2;
-		$helper = $this->helper_HTML->header($i_level,$this->s_content);
+	 public function header(){
+		 $i_level = 2;
+		 $helper = $this->helper_HTML->header($i_level,$this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Header) );
-		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<h'.$i_level.' class="'.$this->s_class.'" id="'.$this->s_id.'">'.$this->s_content.'</h'.$i_level.'>';
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
+		 $this->assertTrue( ($helper instanceof core\helpers\html\Header) );
+		 	
+		 $s_expected = '<h'.$i_level.' >'.$this->s_content.'</h'.$i_level.'>';
+		 $this->assertEquals($s_expected, $helper->generateItem());
+	 }
 
 	/**
-	 * Test for calling HTML_Radio
+	 * Test for calling Radio
 	 * 
 	 * @test
 	 */
@@ -303,17 +222,14 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->radio($s_name,$this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Radio) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Radio) );
 		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<input type="radio" name="'.$s_name.'" value="'.$this->s_content.'" class="'.$this->s_class.'" id="'.$this->s_id.'"/>';
+		$s_expected = '<input type="radio" name="'.$s_name.'" value="'.$this->s_content.'" >';
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Checkbox
+	 * Test for calling Checkbox
 	 * 
 	 * @test
 	 */
@@ -322,42 +238,14 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->checkbox($s_name,$this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Checkbox) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Checkbox) );
 		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<input type="checkbox" name="'.$s_name.'" value="'.$this->s_content.'" class="'.$this->s_class.'" id="'.$this->s_id.'"/>';
+		$s_expected = '<input type="checkbox" name="'.$s_name.'" value="'.$this->s_content.'" >';
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Select
-	 * 
-	 * @test
-	 */
-	public function select(){
-		$s_name	= 'select';
-		$a_values = array(1,2,3,4,5,6);
-		
-		$helper = $this->helper_HTML->select($s_name);
-		
-		$this->assertTrue( ($helper instanceof HTML_Select) );
-		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		$s_expected = '<select name="'.$s_name.'" class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n";
-		
-		foreach($a_values AS $i_value){
-			$helper->setOption($i_value, false);
-			$s_expected .= '<option>'.$i_value."</option>\n";
-		}
-		$s_expected .= "</select>\n";
-		$this->assertEquals($s_expected, $helper->generateItem());
-	}
-
-	/**
-	 * Test for calling HTML_StylesheetLink
+	 * Test for calling StylesheetLink
 	 * 
 	 * @test
 	 */
@@ -367,15 +255,14 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->stylesheetLink($s_link,$s_media);
 		
-		$this->assertTrue( ($helper instanceof HTML_StylesheetLink) );
-		$helper->setID($this->s_id);
+		$this->assertTrue( ($helper instanceof core\helpers\html\StylesheetLink) );
 		 
-		$s_expected = '<link rel="stylesheet" href="'.$s_link.'" type="text/css" media="'.$s_media.'" id="'.$this->s_id.'"/>';
-		$this->assertEquals($s_expected, $helper->generateItem());
+		$s_expected = '<link rel="stylesheet" href="'.$s_link.'" media="'.$s_media.'" >';
+		$this->assertEquals($s_expected, $helper->generateItem()); 
 	}
 
 	/**
-	 * Test for calling HTML_Stylesheet
+	 * Test for calling Stylesheet
 	 * 
 	 * @test
 	 */
@@ -384,14 +271,14 @@ class testHTML extends GeneralTest {
 		 
 		$helper = $this->helper_HTML->stylesheet($s_css);
 		
-		$this->assertTrue( ($helper instanceof HTML_Stylesheet) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Stylesheet) );
 		 
-		$s_expected = '<style type="text/css">'."\n<!--\n".$s_css."\n-->\n</style>\n";
+		$s_expected = '<style>'."\n<!--\n".$s_css."\n-->\n</style>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_JavascriptLink
+	 * Test for calling JavascriptLink
 	 * 
 	 * @test
 	 */
@@ -399,16 +286,14 @@ class testHTML extends GeneralTest {
 		$s_link = 'javascript.js';
 		$helper = $this->helper_HTML->javascriptLink($s_link);
 		
-		$this->assertTrue( ($helper instanceof HTML_JavascriptLink) );
-		
-		$helper->setID($this->s_id);
+		$this->assertTrue( ($helper instanceof core\helpers\html\JavascriptLink) );
 		 
-		$s_expected = '<script src="'.$s_link.'" type="text/javascript" id="'.$this->s_id.'">'."</script>\n";
+		$s_expected = '<script src="'.$s_link.'" >'."</script>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Javascript
+	 * Test for calling Javascript
 	 * 
 	 * @test
 	 */
@@ -417,14 +302,14 @@ class testHTML extends GeneralTest {
 		 
 		$helper = $this->helper_HTML->javascript($s_javascript);
 		
-		$this->assertTrue( ($helper instanceof HTML_Javascript) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Javascript) );
 		 
-		$s_expected = '<script type="text/javascript">'."\n<!--\n".$s_javascript."\n//-->\n</script>\n";
+		$s_expected = '<script>'."\n<!--\n".$s_javascript."\n//-->\n</script>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Metatag
+	 * Test for calling Metatag
 	 * 
 	 * @test
 	 */
@@ -433,33 +318,28 @@ class testHTML extends GeneralTest {
 		 
 		$helper = $this->helper_HTML->metatag($s_name, $this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Metatag) );
-		
-		$helper->setID($this->s_id);
+		$this->assertTrue( ($helper instanceof core\helpers\html\Metatag) );
 		 
-		$s_expected = '<meta name="'.$s_name.'" content="'. $this->s_content.'" id="'.$this->s_id.'"/>'."\n";
+		$s_expected = '<meta name="'.$s_name.'" content="'. $this->s_content.'" >'."\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Span
+	 * Test for calling Span
 	 * 
 	 * @test
 	 */
 	public function span(){
 		$helper = $this->helper_HTML->span($this->s_content);
 		
-		$this->assertTrue( ($helper instanceof  HTML_Span) );
+		$this->assertTrue( ($helper instanceof  core\helpers\html\Span) );
 		 
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<span class="'.$this->s_class.'" id="'.$this->s_id.'">'.$this->s_content.'</span>';
+		$s_expected = '<span >'.$this->s_content.'</span>';
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Audio
+	 * Test for calling Audio
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -470,19 +350,18 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->audio($s_url,$s_type);
 		
-		$this->assertTrue( ($helper instanceof HTML_Audio) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Audio) );
 		 
-		$helper->setID($this->s_id);
 		$helper->autoplay(true);
 		$helper->controls(true);
 		$helper->loop(false);		
 		
-		$s_expected = '<audio autoplay="autoplay" controls="controls" id="'.$this->s_id.'"><source src="'.$s_url.'" type="video/'.$s_type.'" /></audio>' ;
+		$s_expected = '<audio autoplay="autoplay" controls="controls"><source src="'.$s_url.'" type="video/'.$s_type.'"></audio>' ;
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Video
+	 * Test for calling Video
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -493,19 +372,18 @@ class testHTML extends GeneralTest {
 		
 		$helper = $this->helper_HTML->video($s_url,$s_type);
 		
-		$this->assertTrue( ($helper instanceof HTML_Video) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Video) );
 		 
-		$helper->setID($this->s_id);
 		$helper->autoplay(true);
 		$helper->controls(true);
 		$helper->loop(false);		
 		
-		$s_expected = '<video autoplay="autoplay" controls="controls" id="'.$this->s_id.'"><source src="'.$s_url.'" type="video/'.$s_type.'" /></video>' ;
+		$s_expected = '<video autoplay="autoplay" controls="controls"><source src="'.$s_url.'" type="video/'.$s_type.'"></video>' ;
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Canvas
+	 * Test for calling Canvas
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -513,15 +391,14 @@ class testHTML extends GeneralTest {
 	public function canvas(){
 		$helper = $this->helper_HTML->canvas();
 		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
+		$this->assertTrue( ($helper instanceof core\helpers\html\Canvas) );
 		 
-		$s_expected = '<canvas class="'.$this->s_class.'" id="'.$this->s_id.'"></canvas>';
+		$s_expected = '<canvas ></canvas>';
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_PageHeader
+	 * Test for calling PageHeader
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -529,17 +406,14 @@ class testHTML extends GeneralTest {
 	public function pageHeader(){
 		$helper = $this->helper_HTML->pageHeader($this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_PageHeader) );
-		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<header class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n".$this->s_content."\n</header>\n";
+		$this->assertTrue( ($helper instanceof core\helpers\html\PageHeader) );
+				 
+		$s_expected = '<header >'."\n".$this->s_content."\n</header>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Footer
+	 * Test for calling Footer
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -547,17 +421,14 @@ class testHTML extends GeneralTest {
 	public function pageFooter(){
 		$helper = $this->helper_HTML->pageFooter($this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Footer) );
-		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
+		$this->assertTrue( ($helper instanceof core\helpers\html\Footer) );
 		 
-		$s_expected = '<footer class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n".$this->s_content."\n</footer>\n";
+		$s_expected = '<footer >'."\n".$this->s_content."\n</footer>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 
 	/**
-	 * Test for calling HTML_Nav
+	 * Test for calling Nav
 	 * HTML 5 only
 	 * 
 	 * @test
@@ -565,12 +436,9 @@ class testHTML extends GeneralTest {
 	public function navigation(){		
 		$helper = $this->helper_HTML->navigation($this->s_content);
 		
-		$this->assertTrue( ($helper instanceof HTML_Nav) );
+		$this->assertTrue( ($helper instanceof core\helpers\html\Nav) );
 		
-		$helper->setID($this->s_id);
-		$helper->setClass($this->s_class);
-		 
-		$s_expected = '<nav class="'.$this->s_class.'" id="'.$this->s_id.'">'."\n".$this->s_content."\n</nav>\n";
+		$s_expected = '<nav >'."\n".$this->s_content."\n</nav>\n";
 		$this->assertEquals($s_expected, $helper->generateItem());
 	}
 }

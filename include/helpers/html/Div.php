@@ -1,5 +1,7 @@
 <?php
-class HTML_Div extends HtmlItem {
+namespace core\helpers\html;
+
+class Div extends HtmlItem {
 	/**
 	 * Generates a new div element
 	 *
@@ -23,7 +25,7 @@ class HTML_Div extends HtmlItem {
 	}
 }
 
-class HTML_PageHeader extends HTML_Div {
+class PageHeader extends Div {
 	/**
 	 * Generates a new header element
 	 *
@@ -36,7 +38,7 @@ class HTML_PageHeader extends HTML_Div {
 	}
 }
 
-class HTML_Footer extends HTML_Div {
+class Footer extends Div {
 	/**
 	 * Generates a new footer element
 	 *
@@ -49,7 +51,7 @@ class HTML_Footer extends HTML_Div {
 	}
 }
 
-class HTML_Nav extends HTML_Div {
+class Nav extends Div {
 	/**
 	 * Generates a new nav element
 	 *

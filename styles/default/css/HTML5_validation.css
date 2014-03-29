@@ -4,14 +4,14 @@ input[type=text].invalid,input[type=password].invalid,input[type=number].invalid
 	background-image:url(../images/icons/invalid.png);
 	background-repeat:no-repeat;
 	background-position:95%;
-	background-size:10px; 10px;
+	background-size:10px 10px;
 }
 input[type=text].valid,input[type=password].valid,input[type=number].valid,input[type=email].valid,input[type=url].valid,
 	input[type=tel].valid,textarea.valid {
 	background-image:url(../images/icons/valid.png);
 	background-repeat:no-repeat;
 	background-position:95%;
-	background-size:10px; 10px;
+	background-size:10px 10px;
 }
 
 select.invalid {

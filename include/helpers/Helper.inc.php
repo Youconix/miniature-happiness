@@ -1,4 +1,6 @@
 <?php
+namespace core\helpers;
+
 /** 
  * General helper interface                                                     
  *                                                                              
