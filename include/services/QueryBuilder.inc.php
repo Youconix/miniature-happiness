@@ -1,14 +1,17 @@
 <?php
+
+namespace core\services;
+
 /**
  * General query builder configuration layer
  * Loads the preset query builder
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 2012,2013,2014  Rachelle Scheijen
- * @author    Rachelle Scheijen
- * @since     1.0
- * @changed   07/09/13
+ * @copyright 		2014,2015,2016  Rachelle Scheijen
+ * @author        Rachelle Scheijen
+ * @since         1.0
+ * @changed   		30/03/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,28 +27,23 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Service_QueryBuilder extends Service{
+class QueryBuilder extends Service{
+  private $service_Database;
 	private $obj_builder;
 	private $s_type;
 
 	/**
 	 * Includes the correct DAL
+   * 
+   * @param core\services\Settings $service_Settings    The settings service
+   * @param core\database\DAL      $service_Database    The DAL
 	 */
-	public function __construct(){
-
-		$service_XmlSettings    = Memory::services('XmlSettings');
+	public function __construct(\core\services\Settings $service_Settings,\core\database\DAL $service_Database){
+    $this->service_Database = $service_Database;
 
 		/* databasetype */
-		$this->s_type           = ucfirst($service_XmlSettings->get('settings/SQL/type'));
+		$this->s_type           = ucfirst($service_Settings->get('settings/SQL/type'));
 		$this->loadBuilder();
-	}
-
-	/**
-	 * Destructor
-	 */
-	public function __destruct(){
-		$this->service_Memory  = null;
-		$this->s_type		= null;
 	}
 
 	/**
@@ -54,14 +52,18 @@ class Service_QueryBuilder extends Service{
 	private function loadBuilder(){
 		require_once(NIV.'include/database/builder_'.$this->s_type.'.inc.php');
 
-		$service_Database	= Memory::services('Database');
-		$service_Database->defaultConnect();
+		$this->service_Database->defaultConnect();
 	}
 	
+  /**
+   * Creates the builder
+   * 
+   * @return Builder    The builder
+   */
 	public function createBuilder(){
 		if( is_null($this->obj_builder) ){
-			$s_name     = 'Builder_'.$this->s_type;
-			$this->obj_builder    = new $s_name();
+			$s_name     = '\core\database\Builder_'.$this->s_type;
+			$this->obj_builder    = new $s_name($this->service_Database);
 		}
 		
 		return $this->obj_builder;
@@ -69,6 +71,13 @@ class Service_QueryBuilder extends Service{
 }
 
 interface Builder {
+  /**
+   * Creates the builder
+   * 
+   * @param core\database\DAL      $service_Database    The DAL
+   */
+  public function __construct(\core\database\DAL $service_Database);
+  
 	/**
 	 * Shows the tables in the current database
 	 */
@@ -276,6 +285,13 @@ interface Builder {
 	 * @throws DBException	If no transaction is active
 	*/
 	public function rollback();
+  
+  /**
+   * Returns the DAL
+   * 
+   * @return DAL  The DAL
+   */
+  public function getDatabase();
 }
 
 interface Where {

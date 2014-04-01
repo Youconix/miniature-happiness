@@ -1,6 +1,8 @@
 <?php
 
-/** 
+namespace core\models;
+
+/**
  * Group model.  Contains the group data 
  *                                                                              
  * This file is part of Scripthulp framework  
@@ -26,195 +28,180 @@
  * @see 	include/services/Session.inc.php
  * @see		include/models/data/Data_Group.inc.php
  */
-class Model_Groups extends Model {    
-    protected $a_groups;
-    protected $service_Session;
+class Groups extends Model{
 
-    /**
-     * PHP5 constructor
-     */
-    public function __construct() {
-        parent::__construct();
-        
-        $this->init();
+  protected $a_groups;
+  protected $service_Session;
+
+  /**
+   * PHP5 constructor
+   * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @param \core\services\Session  $service_Session    The session handler
+   */
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Session $service_Session){
+    parent::__construct($service_QueryBuilder);
+
+    $this->service_Session = $service_Session;
+    require_once(NIV . 'include/models/data/Data_Group.inc.php');
+
+    $this->a_groups = array();
+
+    /* Load group-names */
+    $this->service_Database->query("SELECT * FROM " . DB_PREFIX . "groups ORDER BY id");
+    $a_groups = $this->service_Database->fetch_assoc();
+    foreach( $a_groups AS $a_group ){
+      $this->a_groups[ $a_group[ 'id' ] ] = new Data_Group($a_group);
+
+      $s_name = strtoupper($a_group[ 'name' ]);
+      if( !defined('GROUP_' . $s_name) ){
+        define('GROUP_' . $s_name, ( int ) $a_group[ 'id' ]);
+      }
+    }
+  }
+
+  /**
+   * Gets all the registrated groups
+   *
+   * @return  Data_Group-array   The registrated groups
+   */
+  public function getGroups(){
+    return $this->a_groups;
+  }
+
+  /**
+   * Gets the registrated group with the given ID
+   *
+   * @param   int $i_groupid  The group ID
+   * @return  Data_Group   The registrated group
+   * @throws  TypeException if $i_groupid is not a int
+   * @throws  MemoryException if the group does not exist
+   */
+  public function getGroup($i_groupid){
+    \core\Memory::type('int', $i_groupid);
+
+    if( !array_key_exists($i_groupid, $this->a_groups) ){
+      throw new \MemoryException("Calling non existing group with id " . $i_groupid);
     }
 
-    /**
-     * Destructor
-     */
-    public function __destruct() {
-        $this->a_groups         = null;
-        $this->service_Session = null;
+    return $this->a_groups[ $i_groupid ];
+  }
 
-        parent::__destruct();
+  /**
+   * Gets the user access level for current group
+   * Based on the controller
+   *
+   * @param   int $i_userid     The user ID  
+   * @return  int The access level defined in /include/services/Session.inc.php
+   */
+  public function getLevel($i_userid){
+    \core\Memory::type('int', $i_userid);
+
+    $s_page = \core\Memory::getPage();
+    $this->service_Database->queryBinded("SELECT groupID FROM " . DB_PREFIX . "group_pages WHERE page = ?", array( 's' ), array( $s_page ));
+    if( $this->service_Database->num_rows() > 0 ){
+      $i_groupid = ( int ) $this->service_Database->result(0, 'groupID');
+      return $this->getLevelByGroupID($i_groupid, $i_userid);
     }
 
-    /**
-     * Inits the class Model_Groups
-     */
-    protected function init() {
-        $this->service_Session = Memory::services('Session');
-        require_once(NIV.'include/models/data/Data_Group.inc.php');
-        
-        $this->a_groups     = array();
+    return Session::FORBIDDEN;
+  }
 
-        /* Load group-names */
-        $this->service_Database->query("SELECT * FROM ".DB_PREFIX."groups ORDER BY id");
-        $a_groups = $this->service_Database->fetch_assoc();
-        foreach ($a_groups AS $a_group) {
-            $this->a_groups[$a_group['id']]   = new Data_Group($a_group);
-            
-            $s_name = strtoupper($a_group['name']);
-            if (!defined('GROUP_' . $s_name)) {
-                define('GROUP_' . $s_name, (int) $a_group['id']);
-            }
-        }
+  /**
+   * Gets the user access level for the given group
+   *
+   * @param   int $i_groupid  The group ID
+   * @param   int $i_userid     The user ID  
+   * @return  int The access level defined in /include/services/Session.inc.php
+   */
+  public function getLevelByGroupID($i_groupid, $i_userid){
+    \core\Memory::type('int', $i_groupid);
+    \core\Memory::type('int', $i_userid);
+
+    $this->service_Database->queryBinded("SELECT level FROM " . DB_PREFIX . "group_users WHERE userid = ? AND groupID = ?", array( 'i', 'i' ), array( $i_userid, $i_groupid ));
+    if( $this->service_Database->num_rows() > 0 ){
+      return $this->service_Database->result(0, 'level');
     }
 
-    /**
-     * Gets all the registrated groups
-     *
-     * @return  Data_Group-array   The registrated groups
-     */
-    public function getGroups() {
-        return $this->a_groups;
+    return Session::FORBIDDEN;
+  }
+
+  /**
+   * Generates a new group
+   * 
+   * @return Data_Group	The new group
+   */
+  public function generateGroup(){
+    return \core\Memory::models('Data_Group',true);
+  }
+
+  /**
+   * Gets the groups with level from the given user
+   *
+   * @param   int $i_userid   The userid
+   * @return  array   The users groups with level
+   */
+  public function getGroupsLevel($i_userid){
+    \core\Memory::type('int', $i_userid);
+
+    $a_groups = array();
+    foreach( $this->a_groups AS $obj_group ){
+      $a_groups[ $obj_group->getID() ] = $obj_group->getLevelByGroupID($i_userid);
     }
 
-    /**
-     * Gets the registrated group with the given ID
-     *
-     * @param   int $i_groupid  The group ID
-     * @return  Data_Group   The registrated group
-     * @throws  TypeException if $i_groupid is not a int
-     * @throws  MemoryException if the group does not exist
-     */
-    public function getGroup($i_groupid) {
-        Memory::type('int', $i_groupid);
-        
-        if( !array_key_exists($i_groupid, $this->a_groups) ){
-            throw new MemoryException("Calling non existing group with id ".$i_groupid);
-        }
+    return $a_groups;
+  }
 
-        return $this->a_groups[$i_groupid];
-    }
-    
-    /**
-     * Gets the user access level for current group
-     * Based on the controller
-     *
-     * @param   int $i_userid     The user ID  
-     * @return  int The access level defined in /include/services/Session.inc.php
-     */
-    public function getLevel($i_userid) {
-        Memory::type('int', $i_userid);
-        
-        $s_page     = Memory::getPage();        
-        $this->service_Database->queryBinded("SELECT groupID FROM ".DB_PREFIX."group_pages WHERE page = ?",array('s'),array($s_page));
-        if( $this->service_Database->num_rows() > 0 ){
-            $i_groupid =  (int) $this->service_Database->result(0,'groupID');
-            return $this->getLevelByGroupID($i_groupid, $i_userid);
-        }
-        
-        return Session::FORBIDDEN;
-    }
+  /**
+   * Adds a user to the default groups
+   *
+   * @param   int $i_userid   The userid
+   * @param   int $i_level    The requested level (0|1|2)
+   */
+  public function addUserDefaultGroups($i_userid, $i_level = 0){
+    \core\Memory::type('int', $i_userid);
+    \core\Memory::type('int', $i_level);
 
-    /**
-     * Gets the user access level for the given group
-     *
-     * @param   int $i_groupid  The group ID
-     * @param   int $i_userid     The user ID  
-     * @return  int The access level defined in /include/services/Session.inc.php
-     */
-    public function getLevelByGroupID($i_groupid, $i_userid) {
-        Memory::type('int', $i_groupid);
-        Memory::type('int', $i_userid);
-        
-        $this->service_Database->queryBinded("SELECT level FROM ".DB_PREFIX."group_users WHERE userid = ? AND groupID = ?",array('i','i'),array($i_userid,$i_groupid));
-        if( $this->service_Database->num_rows() > 0 ){
-            return $this->service_Database->result(0,'level');
-        }
-        
-        return Session::FORBIDDEN;
-    }
-    
-    /**
-     * Generates a new group
-     * 
-     * @return Data_Group	The new group
-     */
-    public function generateGroup(){
-    	$obj_Group  = new Data_Group();
-    	return $obj_Group;
-    }
+    foreach( $this->a_groups AS $obj_group ){
+      if( !$obj_group->isDefault() ) continue;
 
-    /**
-     * Gets the groups with level from the given user
-     *
-     * @param   int $i_userid   The userid
-     * @return  array   The users groups with level
-     */
-    public function getGroupsLevel($i_userid) {
-        Memory::type('int', $i_userid);
-        
-        $a_groups   = array();
-        foreach($this->a_groups AS $obj_group){
-            $a_groups[$obj_group->getID()]  = $obj_group->getLevelByGroupID($i_userid);
-        }
+      $obj_group->addUser($i_userid, $i_level);
+    }
+  }
 
-        return $a_groups;
-    }
+  /**
+   * Deletes a user from all the groups
+   *
+   * @param   int $i_userid   The userid
+   */
+  public function deleteUserFromGroups($i_userid){
+    \core\Memory::type('int', $i_userid);
 
-    /**
-     * Adds a user to the default groups
-     *
-     * @param   int $i_userid   The userid
-     * @param   int $i_level    The requested level (0|1|2)
-     */
-    public function addUserDefaultGroups($i_userid,$i_level=0) {
-        Memory::type('int', $i_userid);
-        Memory::type('int',$i_level);
-        
-        foreach($this->a_groups AS $obj_group){
-            if( !$obj_group->isDefault() )  continue;
-            
-            $obj_group->addUser($i_userid,$i_level);
-        }
+    foreach( $this->a_groups AS $obj_group ){
+      $obj_group->deleteUser($i_userid);
     }
-    
-    /**
-     * Deletes a user from all the groups
-     *
-     * @param   int $i_userid   The userid
-     */
-    public function deleteUserFromGroups($i_userid) {
-        Memory::type('int', $i_userid);
-        
-        foreach($this->a_groups AS $obj_group){
-            $obj_group->deleteUser($i_userid);
-        }
-    }
+  }
 
-    /**
-     * Edits the access levels for the given groups
-     * 
-     * @param int	$i_userid	The userid
-     * @param array	$a_groups	The groups-ids
-     * @param int	$i_level	The access level
-     * @throws IllegalArgumentException	If the group ID does niet exist
-     */
-    public function editUserLevel($i_userid,$a_groups,$i_level){
-        Memory::type('int',$i_userid);
-        Memory::type('array',$a_groups);
-        Memory::type('int',$i_level);
-        
-        foreach($a_groups AS $i_group){
-            if( !is_int($i_group) || !array_key_exists($i_group, $this->a_groups) ){
-                throw new IllegalArgumentException("Only IDs of the members of Data_Group are accepted");
-            }
-            
-            $this->a_groups[$i_group]->editUser($i_userid, $i_level);
-        }
+  /**
+   * Edits the access levels for the given groups
+   * 
+   * @param int	$i_userid	The userid
+   * @param array	$a_groups	The groups-ids
+   * @param int	$i_level	The access level
+   * @throws IllegalArgumentException	If the group ID does niet exist
+   */
+  public function editUserLevel($i_userid, $a_groups, $i_level){
+    \core\Memory::type('int', $i_userid);
+    \core\Memory::type('array', $a_groups);
+    \core\Memory::type('int', $i_level);
+
+    foreach( $a_groups AS $i_group ){
+      if( !is_int($i_group) || !array_key_exists($i_group, $this->a_groups) ){
+        throw new \IllegalArgumentException("Only IDs of the members of Data_Group are accepted");
+      }
+
+      $this->a_groups[ $i_group ]->editUser($i_userid, $i_level);
     }
+  }
+
 }
-
 ?>

@@ -1,15 +1,18 @@
 <?php
+
+namespace core\services;
+
 /**
  * Language-handler for making your website language-independand
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 		2012,2013,2014  Rachelle Scheijen
+ * @copyright 		2014,2015,2016  Rachelle Scheijen
  * @author    		Rachelle Scheijen
- * @version		1.0
- * @since		    1.0
- * @date			12/01/2006
- * @changed   		03/03/2010
+ * @version       1.0
+ * @since         1.0
+ * @date          12/01/2006
+ * @changed   		30/03/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,163 +27,147 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Service_Language extends Service_Xml {
-	private $s_language;
-	private $s_encoding;
+class Language extends Xml{
 
-	/**
-	 * PHP 5 constructor
-	 */
-	public function __construct(){
-		parent::__construct();
+  private $s_language = null;
+  private $s_encoding = null;
+  private $service_File;
 
-		$this->s_language	= null;
-		$this->s_encoding       = null;
+  /**
+   * PHP 5 constructor
+   * 
+   * @param core\services\Settings $service_Settings    The settings service
+   * @param core\services\Cookie   $service_Cookie      The cookie handler
+   * @param core\services\File     $service_File        The file service
+   */
+  public function __construct(\core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie, \core\services\File $service_File){
+    parent::__construct();
 
-		$this->init();
+    /*  Check language */
+    $this->service_File = $service_File;
+    $a_languages = $this->getLanguages();
+    $this->s_language = $service_Settings->get('defaultLanguage');
 
-		$this->readLanguage();
-	}
+    if( isset($_GET[ 'lang' ]) ){
+      if( in_array($_GET[ 'lang' ], $a_languages) ){
+        $this->s_language = $_GET[ 'lang' ];
+        $service_Cookie->set('language', $this->s_language, '/');
+      }
+      unset($_GET[ 'lang' ]);
+    }
+    else if( $service_Cookie->exists('language') ){
+      if( in_array($service_Cookie->get('language'), $a_languages) ){
+        $this->s_language = $service_Cookie->get('language');
+        /* Renew cookie */
+        $service_Cookie->set('language', $this->s_language, '/');
+      }
+      else {
+        $service_Cookie->delete('language');
+      }
+    }
 
-	/**
-	 * Destructor
-	 */
-	public function __destruct(){
-		$this->s_language       = null;
-		$this->s_encoding       = null;
+    $this->s_startTag = 'language';
 
-		parent::__destruct();
-	}
+    $this->readLanguage();
+  }
 
-	/**
-	 * Init the class Language
-	 */
-	private function init(){
-		/*  Check language */
-		$a_languages            = $this->getLanguages();
+  /**
+   * Collects the installed languages
+   *
+   * @return array    The installed languages
+   */
+  public function getLanguages(){
+    $a_languages = array();
+    $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
 
-		$service_XmlSettings    = Memory::services('XmlSettings');
-		$this->s_language       = $service_XmlSettings->get('defaultLanguage');
+    foreach( $a_languageFiles AS $s_languageFile ){
+      if( strpos($s_languageFile, 'language_') === false ) continue;
 
-		$service_cookie         = Memory::services('Cookie');
-		if( isset($_GET['lang']) ){
-			if( in_array($_GET['lang'],$a_languages) ){
-				$this->s_language   = $_GET['lang'];
-				$service_cookie->set('language',$this->s_language,'/');
-			}
-			unset($_GET['lang']);
-		}
-		else if( $service_cookie->exists('language') ){
-			if( in_array($service_cookie->get('language'),$a_languages) ){
-				$this->s_language   = $service_cookie->get('language');
-				/* Renew cookie */
-				$service_cookie->set('language',$this->s_language,'/');
-			}
-			else {
-				$service_cookie->delete('language');
-			}
-		}
-		
-		$this->s_startTag = 'language';
-	}
+      $s_languageFile = str_replace(array( 'language_', '.lang' ), array( '', '' ), $s_languageFile);
 
-	/**
-	 * Collects the installed languages
-	 *
-	 * @return array    The installed languages
-	 */
-	public function getLanguages(){
-		$a_languages		= array();
-		$service_File		= Memory::services('File');
-		$a_languageFiles	= $service_File->readDirectory(NIV.'include/language');
+      $a_languages[] = $s_languageFile;
+    }
 
-		foreach($a_languageFiles AS $s_languageFile){
-			if( strpos($s_languageFile,'language_') === false )	continue;
+    return $a_languages;
+  }
 
-			$s_languageFile	= str_replace(array('language_','.lang'),array('',''),$s_languageFile);
+  /**
+   * Sets the language
+   * 
+   * @param String	$s_language	The language code
+   * @throws IOException when the language code does not exist
+   */
+  public function setLanguage($s_language){
+    $this->s_language = $s_language;
 
-			$a_languages[]	= $s_languageFile;
-		}
+    $this->readLanguage();
+  }
 
-		return $a_languages;
-	}
+  /**
+   * Calls the set language-file and reads it
+   * 
+   * @throws	IOException when the file does not exist
+   */
+  private function readLanguage(){
+    $this->load(NIV . 'include/language/language_' . $this->s_language . '.lang');
 
-	/**
-	 * Sets the language
-	 * 
-	 * @param	string	$s_language	The language code
-	 * @throws IOException when the language code does not exist
-	 */
-	public function setLanguage($s_language){
-		$this->s_language = $s_language;
-		 
-		$this->readLanguage();
-	}
+    /* Get encoding */
+    $this->s_encoding = $this->get('language/encoding');
+  }
 
-	/**
-	 * Calls the set language-file and reads it
-	 * 
-	 * @throws	IOException when the file does not exist
-	 */
-	private function readLanguage(){
-		$this->load(NIV.'include/language/language_'.$this->s_language.'.lang');
+  /**
+   * Returns the set language
+   *
+   * @return  String  The set language
+   */
+  public function getLanguage(){
+    return $this->s_language;
+  }
 
-		/* Get encoding */
-		$this->s_encoding   = $this->get('language/encoding');
-	}
+  /**
+   * Returns the set encoding
+   *
+   * @return	String  The set encoding
+   */
+  public function getEncoding(){
+    return $this->s_encoding;
+  }
 
-	/**
-	 * Returns the set language
-	 *
-	 * @return  string  The set language
-	 */
-	public function getLanguage(){
-		return $this->s_language;
-	}
+  /**
+   * Gives the asked part of the loaded file
+   *
+   * @param   String      $s_path      The path to the language-part
+   * @return  String       The content of the requested part
+   * @throws  XMLException when the path does not exist
+   */
+  public function get($s_path){
+    $s_text = parent::get($s_path);
 
-	/**
-	 * Returns the set encoding
-	 *
-	 * @return	string  The set encoding
-	 */
-	public function getEncoding(){
-		return $this->s_encoding;
-	}
-	
-	/**
-	 * Gives the asked part of the loaded file
-	 *
-	 * @param   string      $s_path      The path to the language-part
-	 * @return  string       The content of the requested part
-	 * @throws  XMLException when the path does not exist
-	 */
-	public function get($s_path) {
-		$s_text	= parent::get($s_path);
-    	
-		return trim($s_text);
-	}
+    return trim($s_text);
+  }
 
-	/**
-	 * Changes the language-values with the given values
-	 *
-	 * @param	string	$s_text		The text
-	 * @param	array	$a_fields	The fields, accepts also a string
-	 * @param	array	$a_values	The values, accepts also a string
-	 * @return	string	The changed language-string
-	 */
-	public function insert($s_text,$a_fields,$a_values){
-		Memory::type('string',$s_text);
+  /**
+   * Changes the language-values with the given values
+   *
+   * @param	string	$s_text		The text
+   * @param	array	$a_fields	The fields, accepts also a string
+   * @param	array	$a_values	The values, accepts also a string
+   * @return	string	The changed language-string
+   */
+  public function insert($s_text, $a_fields, $a_values){
+    \core\Memory::type('string', $s_text);
 
-		if( !is_array($a_fields) ){
-			$s_text     = str_replace('['.$a_fields.']', $a_values, $s_text);
-		}
-		else {
-			for($i=0; $i<count($a_fields); $i++){
-				$s_text     = str_replace('['.$a_fields[$i].']', $a_values[$i], $s_text);
-			}
-		}
+    if( !is_array($a_fields) ){
+      $s_text = str_replace('[' . $a_fields . ']', $a_values, $s_text);
+    }
+    else {
+      for( $i = 0; $i < count($a_fields); $i++ ){
+        $s_text = str_replace('[' . $a_fields[ $i ] . ']', $a_values[ $i ], $s_text);
+      }
+    }
 
-		return $s_text;
-	}
+    return $s_text;
+  }
+
 }
 ?>

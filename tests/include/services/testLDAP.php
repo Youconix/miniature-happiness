@@ -1,9 +1,12 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+  require(NIV.'tests/GeneralTest.php');
+}
 
 class testLDAP extends GeneralTest {
+  private $service_Settings;
 	private $service_LDAP;
 	
 	private $s_server;
@@ -16,12 +19,20 @@ class testLDAP extends GeneralTest {
 
 		require_once(NIV.'include/exceptions/LdapException.inc.php');
 		require_once(NIV.'include/services/LDAP.inc.php');
+    
+    $this->loadStub('DummySettings');
+    $this->service_Settings = new DummySettings();
+    $this->service_Settings->setValue('settings_LDAP_server','test_server.loc');
+    $this->service_Settings->setValue('settings_LDAP_port',1050);
+    $this->service_Settings->setValue('settings_LDAP_version',3);
+    $this->service_Settings->setValue('settings_LDAP_active',1);
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->service_LDAP = new Service_LDAP();
+    
+		$this->service_LDAP = new \core\services\LDAP($this->service_Settings);
 	}
 	
 	public function tearDown(){
@@ -33,7 +44,7 @@ class testLDAP extends GeneralTest {
 	/**
 	 * Tests connecting to the default LDAP server
 	 *
-	 * @expectedException     XMLException
+	 * @expectedException     LdapConnectionException
 	 * @test
 	 */
 	public function bind(){		
@@ -139,7 +150,7 @@ class testLDAP extends GeneralTest {
 	 *
 	 * @test
 	 */
-	public function checkLogin($s_server,$i_port,$s_username,$s_password){
+	public function checkLogin(){
 		$this->assertFalse($this->service_LDAP->checkLogin($this->s_server,$this->i_port,$this->s_username,$this->s_password));
 	}
 	

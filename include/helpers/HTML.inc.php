@@ -125,9 +125,12 @@ class HTML extends Helper {
 	
 	/**
 	 * Returns the input factory
-	 * @return unknown
+   * 
+	 * @return InputFactory The factory
 	 */
 	public function getInputFactory(){
+    $this->checkClass('Input');
+    
 		$obj_factory = InputFactory::getInstance();
 		return $obj_factory;
 	}

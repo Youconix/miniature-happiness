@@ -1,16 +1,19 @@
 <?php
+
+namespace core\services;
+
 /**
  * Service parent class
  * This class is abstract and should be inheritanced by every service  
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 		2012,2013,2014  Rachelle Scheijen
+ * @copyright 		2014,2015,2016  Rachelle Scheijen
  * @author    		Rachelle Scheijen
- * @version		1.0
- * @since		    1.0
- * @date			12/01/2006
- * @changed   		03/03/2010
+ * @version       1.0
+ * @since         1.0
+ * @date          12/01/2006
+ * @changed   		30/03/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,14 +28,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-abstract class Service {
-	/**
-	 * Clones the service
-	 * 
-	 * @return Service		A clone from the service
-	 */
-	public function cloneService(){
-        return clone $this;
-    }
+abstract class Service{
+
+  /**
+   * Clones the service
+   * 
+   * @return Service		A clone from the service
+   */
+  public function cloneService(){
+    return clone $this;
+  }
+
 }
 ?>

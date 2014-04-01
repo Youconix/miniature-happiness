@@ -1,5 +1,8 @@
 <?php
-class Builder_mysqli implements Builder {
+
+namespace core\database;
+
+class Builder_mysqli implements \core\services\Builder {
 	private $service_Database;
 	private $s_query;
 	private $s_limit;
@@ -21,9 +24,11 @@ class Builder_mysqli implements Builder {
 
 	/**
 	 * PHP 5 constructor
+   * 
+   * @param core\database\DAL      $service_Database    The DAL
 	 */
-	public function __construct(){
-		$this->service_Database	= Memory::services('Database');
+	public function __construct(\core\database\DAL $service_Database){
+		$this->service_Database	= $service_Database;
 		
 		$this->obj_where	= new Where_Mysqli();
 		$this->obj_create	= new Create_Mysqli();
@@ -550,6 +555,15 @@ class Builder_mysqli implements Builder {
 		
 		return $this;
 	}
+  
+  /**
+   * Returns the DAL
+   * 
+   * @return DAL  The DAL
+   */
+  public function getDatabase(){
+    return $this->service_Database;
+  }
 }
 
 abstract class QueryConditions_Mysqli {

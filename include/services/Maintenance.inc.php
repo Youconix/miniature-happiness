@@ -1,15 +1,18 @@
 <?php 
+
+namespace core\services;
+
 /**
  * Maintenance service for maintaining the website
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 		2012,2013,2014  Rachelle Scheijen
+ * @copyright 		2014,2015,2016  Rachelle Scheijen
  * @author    		Rachelle Scheijen
- * @version		1.0
- * @since		    1.0
- * @date			12/01/2006
- * @changed   		03/06/2013
+ * @version       1.0
+ * @since         1.0
+ * @date          12/01/2006
+ * @changed   		30/03/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,9 +27,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Service_Maintenance extends Service {
+class Maintenance extends Service {
 	private $service_File;
 	private $service_QueryBuilder;
+  private $model_Stats;
 	private $s_styleDir;
 	private $a_cssAdmin;
 	private $a_jsAdmin;
@@ -34,19 +38,24 @@ class Service_Maintenance extends Service {
 
 	/**
 	 * PHP 5 constructor
+   * 
+   * @param core\services\File          $service_File         The file service
+   * @param core\services\QueryBuilder  $service_QueryBuilder The query builder
+   * @param core\services\Template      $service_Template     The template service
+   * @param core\models\Stats           $model_Stats          The statistics model
 	 */
-	public function __construct(){
-		$this->service_File	= Memory::services('File');
-		$this->service_QueryBuilder	= Memory::services('QueryBuilder')->createBuilder();
-		$this->s_styleDir	= Memory::services('Template')->getStylesDir();
+	public function __construct(\core\services\File $service_File, \core\services\QueryBuilder $service_QueryBuilder, 
+    \core\services\Template $service_Template,\core\models\Stats $model_Stats){
+		$this->service_File	= $service_File;
+		$this->service_QueryBuilder	= $service_QueryBuilder->createBuilder();
+    $this->model_Stats  = $model_Stats;
+		$this->s_styleDir	= $service_Template->getStylesDir();
 	}
 
 	/**
 	 * Compresses the CSS files into one file
 	 */
-	public function compressCSS(){
-		$this->checkStyleDir();
-		
+	public function compressCSS(){		
 		$this->a_cssAdmin	= array();
 		$this->s_cssPrint	= '';
 
@@ -74,8 +83,8 @@ class Service_Maintenance extends Service {
 				
 			return 1;
 		}
-		catch(Exception $e){
-			Memory::services('ErrorHandler')->error($e);
+		catch(\Exception $e){
+			\core\Memory::services('ErrorHandler')->error($e);
 			return 0;
 		}
 	}
@@ -128,9 +137,7 @@ class Service_Maintenance extends Service {
 	/**
 	 * Compresses the javascript files into one file
 	 */
-	public function compressJS(){
-		$this->checkStyleDir();
-		
+	public function compressJS(){		
 		$this->a_jsAdmin	= array();
 
 		try {
@@ -152,8 +159,8 @@ class Service_Maintenance extends Service {
 
 			return 1;
 		}
-		catch(Exception $e){
-			Memory::services('ErrorHandler')->error($e);
+		catch(\Exception $e){
+			\core\Memory::services('ErrorHandler')->error($e);
 			return 0;
 		}
 	}
@@ -193,10 +200,6 @@ class Service_Maintenance extends Service {
 
 		return $s_file;
 	}
-	
-	private function checkStyleDir(){
-		$this->s_styleDir	= Memory::services('Template')->getStylesDir();
-	}
 
 	/**
 	 * Optimizes the database tables
@@ -213,7 +216,7 @@ class Service_Maintenance extends Service {
 			$this->service_QueryBuilder->delete('pm')->getWhere()->addAnd('send','i',$i_pm,'<');
 			$this->service_QueryBuilder->getResult();
 			
-			$service_Database	= Memory::services('Database');
+			$service_Database	= $this->service_QueryBuilder->getDatabase();
 				
 			foreach($a_tables AS $a_table){
 				$bo_status = $service_Database->optimize($a_table[0]);
@@ -227,8 +230,8 @@ class Service_Maintenance extends Service {
 			
 			return 1;
 		}
-		catch(DBException $e){
-			Memory::services('ErrorHandler')->error($e);
+		catch(\DBException $e){
+			\core\Memory::services('ErrorHandler')->error($e);
 			return 0;
 		}
 	}
@@ -239,7 +242,7 @@ class Service_Maintenance extends Service {
 	public function checkDatabase(){
 		$a_tables	= $this->getTables();
 
-		$service_Database	= Memory::services('Database');
+		$service_Database	= $this->service_QueryBuilder->getDatabase();
 		
 		try {
 			foreach($a_tables AS $a_table){
@@ -253,8 +256,8 @@ class Service_Maintenance extends Service {
 			
 			return 1;
 		}
-		catch(DBException $e){
-			Memory::services('ErrorHandler')->error($e);
+		catch(\DBException $e){
+			\core\Memory::services('ErrorHandler')->error($e);
 			return 0;
 		}
 	}
@@ -275,21 +278,21 @@ class Service_Maintenance extends Service {
 	 * Cleans the stats from a year old
 	 */
 	public function cleanStatsYear(){
-		return Memory::models('Stats')->cleanStatsYear();
+		$this->model_Stats->cleanStatsYear();
 	}
 
 	/**
 	 * Cleans the stats from a month old
 	 */
 	public function cleanStatsMonth(){
-		return Memory::models('Stats')->cleanStatsMonth();
+		$this->model_Stats->cleanStatsMonth();
 	}
 
 	/**
 	 * Cleans the old logs
 	 */
 	public function cleanLogs(){
-		return Memory::services('Logs')->clean();
+		$this->model_Stats->clean();
 	}
 }
 ?>

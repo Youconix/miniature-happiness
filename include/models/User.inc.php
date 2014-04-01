@@ -301,37 +301,6 @@ class Model_User extends GeneralUser {
 		return true;
 	}
 
-	public function activateUser($s_code){
-		$this->service_QueryBuilder->select('users','id')->getWhere()->addAnd('activation','s',$s_code);
-		$service_Database = $this->service_QueryBuilder->getResult();
-		if( $service_Database->num_rows() == 0 )
-			return false;
-
-		$i_userid	= $service_Database->result(0,'id');
-
-		try {
-			$this->service_QueryBuilder->transaction();
-
-			$this->service_QueryBuilder->insert('profile','userid','i',$i_userid)->getResult();
-				
-			$this->service_QueryBuilder->update('users',array('activation','active'),array('s','s'),array('','1'));
-			$this->service_QueryBuilder->getWhere()->addAnd('id','i',$i_userid);
-			$this->service_QueryBuilder->getResult();
-
-			define('USERID',$i_userid);
-				
-			$this->service_QueryBuilder->commit();
-
-			return true;
-		}
-		catch(Exception $e){
-			$this->service_QueryBuilder->rollback();
-			Memory::services('ErrorHandler')->error($e);
-
-			return false;
-		}
-	}
-
 	/**
 	 * Registers the password reset request
 	 *

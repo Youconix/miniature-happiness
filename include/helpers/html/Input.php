@@ -220,7 +220,7 @@ class Datetime extends CoreHTML_Input {
 	}
 }
 
-class Range extends CoreHTML_Input {
+class Range extends HtmlFormItem {
 	private $i_min;
 	private $i_max;
 	
@@ -231,7 +231,8 @@ class Range extends CoreHTML_Input {
    * @param String $s_value   The value
    */
 	public function __construct($s_name,$s_value){
-		parent::__construct($s_name,$s_type,'html5');
+    $this->s_name = $s_name;
+    $this->setHtmlType('html5');
 		$this->setValue($s_value);
 	
 		$this->s_tag = '<input type="range" name="{name}"{min}{max}{between} value="{value}">';
@@ -283,7 +284,7 @@ class Date extends Range {
    * @param String $s_value   The value
    */
 	public function __construct($s_name,$s_value){
-		parent::__construct($s_name,$s_type,'html5');
+		parent::__construct($s_name,'html5');
 		$this->setValue($s_value);
 	
 		$this->s_tag = '<input type="date" name="{name}"{min}{max}{between} value="{value}">';
@@ -300,7 +301,7 @@ class Number extends Range {
    * @param String $s_value   The value
    */
 	public function __construct($s_name,$s_value){
-		parent::__construct($s_name,$s_type,'html5');
+		parent::__construct($s_name,'html5');
 		$this->setValue($s_value);
 		
 		$this->s_tag = '<input type="number" name="{name}"{min}{max}{step}{between} value="{value}">';

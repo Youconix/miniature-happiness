@@ -1,4 +1,7 @@
 <?php
+
+namespace core\database;
+
 /**
  * General database configuration layer                                         
  * Loads the preset DAL                                                         

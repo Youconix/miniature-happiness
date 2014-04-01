@@ -1,9 +1,12 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+require(NIV.'tests/GeneralTest.php');
 
 class testSession extends GeneralTest {
+  private $service_Settings;
+  private $service_Database;
+  private $model_Groups;
 	private $service_Session;
 	private $s_name;
 	private $s_data;
@@ -12,12 +15,20 @@ class testSession extends GeneralTest {
 		parent::__construct();
 		
 		require_once(NIV.'include/services/Session.inc.php');
+    
+    $this->loadStub('DummySettings');
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyGroups');
+    
+    $this->service_Settings = new DummySettings();
+    $this->service_Database = new DummyDAL();
+    $this->model_Groups = new DummyGroups();
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->service_Session = new Service_Session();
+		$this->service_Session = new \core\services\Session($this->service_Settings,$this->service_Database,$this->model_Groups);
 		
 		$this->s_name	= 'testSession';
 		$this->s_data	= 'lalalala';
@@ -34,9 +45,9 @@ class testSession extends GeneralTest {
 	/**
 	 * Tests the deleting of a session
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testDelete(){	
+	public function delete(){	
 		$this->service_Session->set($this->s_name,$this->s_data);
 		$this->assertTrue(isset($_SESSION[$this->s_name]),'Session '.$this->s_name.' should exist.');
 		
@@ -48,9 +59,9 @@ class testSession extends GeneralTest {
 	/**
 	 * Test setting a session
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testSet(){		
+	public function set(){		
 		$this->service_Session->set($this->s_name,$this->s_data);
 		
 		$this->assertTrue(isset($_SESSION[$this->s_name]),'Session '.$this->s_name.' should exist.');
@@ -59,9 +70,9 @@ class testSession extends GeneralTest {
 	/**
 	 * Tests the retreaval of a cookie
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testGet($s_cookieName){
+	public function get(){
 		$this->service_Session->set($this->s_name,$this->s_data);
 		$this->assertEquals($this->s_data,$this->service_Session->get($this->s_name));
 	}
@@ -69,9 +80,9 @@ class testSession extends GeneralTest {
 	/**
 	 * Test the session existing check
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testExists($s_cookieName){
+	public function existsTest(){
 		$this->assertFalse($this->service_Session->exists($this->s_name));
 		
 		$this->service_Session->set($this->s_name,$this->s_data);

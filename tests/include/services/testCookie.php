@@ -1,9 +1,10 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+require(NIV.'tests/GeneralTest.php');
 
 class testCookie extends GeneralTest {
+  private $service_Security;
 	private $service_Cookie;
 	private $s_name;
 	private $s_data;
@@ -13,12 +14,17 @@ class testCookie extends GeneralTest {
 		parent::__construct();
 		
 		require_once(NIV.'include/services/Cookie.inc.php');
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummySecurity');
+    
+    $service_DAL  = new DummyDAL();
+    $this->service_Security = new DummySecurity($service_DAL);
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->service_Cookie = new Service_Cookie();
+		$this->service_Cookie = new \core\services\Cookie($this->service_Security);
 		
 		$this->s_name	= 'testCookie';
 		$this->s_data	= 'lalalala';
@@ -36,9 +42,9 @@ class testCookie extends GeneralTest {
 	/**
 	 * Tests the deleting of a cookie
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testDelete(){	
+	public function delete(){	
 		$this->service_Cookie->set($this->s_name,$this->s_data,$this->s_domain);
 		$this->assertTrue(isset($_COOKIE[$this->s_name]),'Cookie '.$this->s_name.' should exist.');
 		
@@ -50,9 +56,9 @@ class testCookie extends GeneralTest {
 	/**
 	 * Test setting a cookie
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testSet(){		
+	public function set(){		
 		$this->service_Cookie->set($this->s_name,$this->s_data,$this->s_domain);
 		
 		$this->assertTrue(isset($_COOKIE[$this->s_name]),'Cookie '.$this->s_name.' should exist.');
@@ -61,9 +67,9 @@ class testCookie extends GeneralTest {
 	/**
 	 * Tests the retreaval of a cookie
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testGet($s_cookieName){
+	public function get(){
 		$this->service_Cookie->set($this->s_name,$this->s_data,$this->s_domain);
 		$this->assertEquals($this->s_data,$this->service_Cookie->get($this->s_name));
 	}
@@ -71,9 +77,9 @@ class testCookie extends GeneralTest {
 	/**
 	 * Test the cookie existing check
 	 * 
-	 * @Test
+	 * @test
 	 */
-	public function testExists($s_cookieName){
+	public function exists(){
 		$this->assertFalse($this->service_Cookie->exists($this->s_name));
 		
 		$this->service_Cookie->set($this->s_name,$this->s_data,$this->s_domain);

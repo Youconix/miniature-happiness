@@ -1,15 +1,18 @@
 <?php
+
+namespace core\services;
+
 /**
  * Random generator service
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 		2012,2013,2014  Rachelle Scheijen
+ * @copyright 		2014,2015,2016  Rachelle Scheijen
  * @author    		Rachelle Scheijen
- * @version		1.0
- * @since		    1.0
- * @date			12/01/2006
- * @changed   		01/05/2011
+ * @version       1.0
+ * @since         1.0
+ * @date          12/01/2006
+ * @changed   		30/03/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,109 +27,113 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Service_Random extends Service {
-	/**
-	 * Generates a random code of letters
-	 *
-	 * @param   int     $i_length       The length of the code
-	 * @param   boolean $bo_uppercase   Set to true to use also uppercase letters
-	 * @return  string  A random letter-string
-	 */
-	public function letter($i_length, $bo_uppercase = false){
-		$s_codeString = 'abcdefghijklmnopqrstuvwxyz' ;
-		if( $bo_uppercase )
-		$s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ';
+class Random extends Service{
 
-		$i_letters   = strlen($s_codeString)-1;
-		$s_code      = '';
-		for($i = 1; $i <= $i_length; $i++){
-			$s_num = rand(0, $i_letters);
+  /**
+   * Generates a random code of letters
+   *
+   * @param   int     $i_length       The length of the code
+   * @param   boolean $bo_uppercase   Set to true to use also uppercase letters
+   * @return  String  A random letter-string
+   */
+  public function letter($i_length, $bo_uppercase = false){
+    $s_codeString = 'abcdefghijklmnopqrstuvwxyz';
+    if( $bo_uppercase ){
+      $s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ';
+    }
 
-			$s_code .= $s_codeString[$s_num];
-		}
+    $i_letters = strlen($s_codeString) - 1;
+    $s_code = '';
+    for( $i = 1; $i <= $i_length; $i++ ){
+      $s_num = rand(0, $i_letters);
 
-		return $s_code;
-	}
+      $s_code .= $s_codeString[ $s_num ];
+    }
 
-	/**
-	 * Generates a random code of numbers
-	 *
-	 * @param   int     $i_length       The length of the code
-	 * @return  string  A random number-string
-	 */
-	public function number($i_length){
-		$s_codeString = '1234567890';
-		$s_code       = '';
+    return $s_code;
+  }
 
-		for($i = 1; $i <= $i_length; $i++){
-			$s_num = rand(0, 10);
+  /**
+   * Generates a random code of numbers
+   *
+   * @param   int     $i_length       The length of the code
+   * @return  String  A random number-string
+   */
+  public function number($i_length){
+    $s_codeString = '1234567890';
+    $s_code = '';
 
-			$s_code .= $s_codeString[$s_num];
-		}
+    for( $i = 1; $i <= $i_length; $i++ ){
+      $s_num = rand(0, 10);
 
-		return $s_code;
-	}
+      $s_code .= $s_codeString[ $s_num ];
+    }
 
-	/**
-	 * Generates a random code of numbers and letters
-	 *
-	 * @param   int     $i_length       The length of the code
-	 * @param   boolean $bo_uppercase   Set to true to use also uppercase letters
-	 * @return  string  A random letter and number-string
-	 */
-	public function numberLetter($i_length, $bo_uppercase){
-		$s_codeString = 'abcdefghijklmnopqrstuvwxyz1234567890';
-		if( $bo_uppercase )
-		$s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890';
+    return $s_code;
+  }
 
-		$i_letters  = strlen($s_codeString)-1;
-		$s_code     = '';
-		for($i=1; $i <= $i_length; $i++){
-			$s_num = rand(0, $i_letters);
+  /**
+   * Generates a random code of numbers and letters
+   *
+   * @param   int     $i_length       The length of the code
+   * @param   boolean $bo_uppercase   Set to true to use also uppercase letters
+   * @return  String  A random letter and number-string
+   */
+  public function numberLetter($i_length, $bo_uppercase){
+    $s_codeString = 'abcdefghijklmnopqrstuvwxyz1234567890';
+    if( $bo_uppercase ){
+      $s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890';
+    }
 
-			$s_code .= $s_codeString[$s_num];
-		}
+    $i_letters = strlen($s_codeString) - 1;
+    $s_code = '';
+    for( $i = 1; $i <= $i_length; $i++ ){
+      $s_num = rand(0, $i_letters);
 
-		return $s_code;
-	}
-	
-	/**
-	 * Generates a random code of numbers and letters for a captcha
-	 *
-	 * @param   int     $i_length       The length of the code
-	 * @return  string  A random letter and number-string
-	 */
-	public function numberLetterCaptcha($i_length){
-		$s_codeString = 'abcdefhjkmnpqrstuvwxyz23456789';
-	
-		$i_letters  = strlen($s_codeString)-1;
-		$s_code     = '';
-		for($i=1; $i <= $i_length; $i++){
-			$s_num = rand(0, $i_letters);
-	
-			$s_code .= $s_codeString[$s_num];
-		}
-	
-		return $s_code;
-	}
+      $s_code .= $s_codeString[ $s_num ];
+    }
 
-	/** Generates a random code of all signs
-	 *
-	 * @param   int     $i_length       The length of the code
-	 * @return  string  A random sign-string
-	 */
-	public function randomAll($i_length){
-		$s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890`~!@#$%^&*()-_+={[}];:\|<,>.?/';
+    return $s_code;
+  }
 
-		$i_letters  = strlen($s_codeString);
-		$s_code     = '';
-		for($i=1; $i <= $i_length; $i++){
-			$s_num = rand(0, $i_letters);
+  /**
+   * Generates a random code of numbers and letters for a captcha
+   *
+   * @param   int     $i_length       The length of the code
+   * @return  String  A random letter and number-string
+   */
+  public function numberLetterCaptcha($i_length){
+    $s_codeString = 'abcdefhjkmnpqrstuvwxyz23456789';
 
-			$s_code .= $s_codeString[$s_num];
-		}
+    $i_letters = strlen($s_codeString) - 1;
+    $s_code = '';
+    for( $i = 1; $i <= $i_length; $i++ ){
+      $s_num = rand(0, $i_letters);
 
-		return $s_code;
-	}
+      $s_code .= $s_codeString[ $s_num ];
+    }
+
+    return $s_code;
+  }
+
+  /** Generates a random code of all signs
+   *
+   * @param   int     $i_length       The length of the code
+   * @return  String  A random sign-string
+   */
+  public function randomAll($i_length){
+    $s_codeString = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890`~!@#$%^&*()-_+={[}];:\|<,>.?/';
+
+    $i_letters = strlen($s_codeString);
+    $s_code = '';
+    for( $i = 1; $i <= $i_length; $i++ ){
+      $s_num = rand(0, $i_letters);
+
+      $s_code .= $s_codeString[ $s_num ];
+    }
+
+    return $s_code;
+  }
+
 }
 ?>
