@@ -1,184 +1,225 @@
 <?php
-define('NIV',dirname(__FILE__).'/../../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+define('NIV', dirname(__FILE__) . '/../../../../');
 
-class testStats extends GeneralTest {
-	private $service_QueryBuilder;
-	private $obj_User;
-	private $i_userid;
+require(NIV . 'tests/GeneralTest.php');
 
-	public function __construct(){
-		parent::__construct();
+class testStats extends GeneralTest{
 
-		require_once(NIV.'include/models/GeneralUser.inc.php');
-		require_once(NIV.'include/models/data/Data_User.inc.php');
-	}
+  private $obj_User;
+  private $i_userid;
 
-	public function setUp(){
-		parent::setUp();
+  public function __construct(){
+    parent::__construct();
 
-		$this->service_QueryBuilder = Memory::services('QueryBuilder')->createBuilder();
+    require_once(NIV . 'include/models/GeneralUser.inc.php');
+    require_once(NIV . 'include/models/data/Data_User.inc.php');
 
-		$this->i_userid = 0;
-		$this->obj_User = new Data_User();
-		$this->obj_User->loadData($this->i_userid);
-	}
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyQueryBuilder');
+    $this->loadStub('DummySecurity');
+    $this->loadStub('DummyGroups');
+    $this->loadStub('DummyLanguage');
+  }
 
-	public function tearDown(){
-		$this->obj_User = null;
+  public function setUp(){
+    parent::setUp();
 
-		parent::tearDown();
-	}
+    $service_Database = new DummyDAL();
+    $service_Security = new DummySecurity($service_Database);
+    $service_Builder = new DummyQueryBuilder($service_Database);
+    $model_Groups = new DummyGroups();
+    $service_Language = new DummyLanguage();
 
-	/**
-	 * Test of setting the username
-	 */
-	public function testSetUsername() {
-		$s_username = 'test user';
-		
-		$this->obj_User->setUsername($s_username);
-		$this->assertEquals($s_username,$this->obj_User->getUsername());
-	}
+    $this->i_userid = 0;
+    $this->obj_User = new \core\models\data\Data_User($service_Builder, $service_Security, $model_Groups, $service_Language);
+  }
 
-	/**
-	 * Test of setting the email address
-	 */
-	public function testSetEmail() {
-		$s_email	= 'tester@example.com';
-		
-		$this->obj_User->setEmail($s_email);
-		$this->assertEquals($s_email,$this->obj_User->getEmail());
-	}
+  public function tearDown(){
+    $this->obj_User = null;
 
-	/**
-	 * Test of setting a new password
-	 * Note : username has to be set first!
-	 */
-	public function testSetPassword() {
-		$s_password	= 'new password';
+    parent::tearDown();
+  }
 
-		$this->service_QueryBuilder->transaction();
-		
-		$this->obj_User->setPassword($s_password);
+  /**
+   * Tests loading the data 
+   * 
+   * @test
+   * @expectedException DBException
+   */
+  public function loadData(){
+    $this->obj_User->loadData($this->i_userid);
+  }
 
-		$this->service_QueryBuilder->select('users','password')->getWhere()->addAnd('id','i',$this->i_userid);
-		$s_setPassword = $this->service_QueryBuilder->getResult()->result(0,'password');
-		
-		$this->service_QueryBuilder->rollback();
-		
-		$this->assertNotEquals('', $s_setPassword);
-	}
+  /**
+   * Test of setting the username
+   * 
+   * @test
+   */
+  public function setUsername(){
+    $s_username = 'test user';
 
-	/**
-	 * Test of setting the account as a normal or system account
-	 */
-	public function testSetBot() {
-		$this->assertTrue($this->obj_User->isBot());
-		$this->obj_User->setBot(false);
-		$this->assertFalse($this->obj_User->isBot());
-	}
+    $this->obj_User->setUsername($s_username);
+    $this->assertEquals($s_username, $this->obj_User->getUsername());
+  }
 
-	/**
-	 * Test of (Un)Blocking the account
-	 */
-	public function testSetBlocked() {
-		$this->obj_User->setBlocked(true);
-		$this->assertTrue($this->obj_User->isBlocked());
-		
-		$this->obj_User->setBlocked(false);
-		$this->assertFalse($this->obj_User->isBlocked());
-	}
+  /**
+   * Test of setting the email address
+   * 
+   * @test
+   */
+  public function setEmail(){
+    $s_email = 'tester@example.com';
 
-	/**
-	 * Test of getting the profile
-	 */
-	public function testGetProfile() {
-		$this->obj_User->loadData(1);
-		$this->assertEquals('',$this->obj_User->getProfile());
-	}
+    $this->obj_User->setEmail($s_email);
+    $this->assertEquals($s_email, $this->obj_User->getEmail());
+  }
 
-	/**
-	 * Test of collecting the groups where the user is in
-	 */
-	public function testGetGroups(){
-		Memory::services('Session');
-		
-		$this->assertEquals(array(),$this->obj_User->getGroups());
-	}
+  /**
+   * Test of setting a new password
+   * Note : username has to be set first!
+   * 
+   * @test
+   */
+  public function setPassword(){
+    $s_username = 'my username';
+    $s_password = 'new password';
 
-	/**
-	 * Test of collecting the access level for the current group
-	 */
-	public function testGetLevel() {
-		Memory::services('Session');
-		
-		$this->assertEquals(Session::FORBIDDEN,$this->obj_User->getLevel());
-	}
+    $this->obj_User->setUsername($s_username);
+    $this->obj_User->setPassword($s_password);
 
-	/**
-	 * Test of changing the password
-	 */
-	public function testChangePassword() {
-		$s_password	= 'new password';
+    try{
+      $this->obj_User->save();
 
-		$this->service_QueryBuilder->transaction();
-		
-		$this->obj_User->setPassword($s_password);
+      $this->fail('Expected validation exception.');
+    }
+    catch( ValidationException $ex ){
+      $s_error = $ex->getMessage();
 
-		$this->service_QueryBuilder->select('users','password')->getWhere()->addAnd('id','i',$this->i_userid);
-		$s_setPassword = $this->service_QueryBuilder->getResult()->result(0,'password');
-		
-		$this->service_QueryBuilder->rollback();
+      if( strpos($s_error, 'Error validating non existing field s_password') !== false ){
+        $this->fail('Username is not set');
+      }
+    }
+  }
 
-echo('password : '.$s_setPassword.'   ');
-		
-		$this->assertNotEquals('', $s_setPassword);
-	}
-	
-	/**
-	 * Test of disabling and enabling the account
-	 */
-	public function testIsEnabled(){
-		$this->assertTrue($this->obj_User->isEnabled());
-		
-		$this->obj_User->disableAccount();
-		$this->assertFalse($this->obj_User->isEnabled());
-		
-		$this->obj_User->enableAccount();
-		$this->assertTrue($this->obj_User->isEnabled());
-	}
+  /**
+   * Test of setting the account as a normal or system account
+   * 
+   * @test
+   */
+  public function setBot(){
+    $this->assertFalse($this->obj_User->isBot());
+    $this->obj_User->setBot(true);
+    $this->assertTrue($this->obj_User->isBot());
+  }
 
-	/**
-	 * Test of collecting the color corosponding the users level
-	 */
-	public function testGetColor() {
-		Memory::services('Session');
+  /**
+   * Test of (Un)Blocking the account
+   * 
+   * @test
+   */
+  public function setBlocked(){
+    $this->obj_User->setBlocked(true);
+    $this->assertTrue($this->obj_User->isBlocked());
 
-		$this->assertEquals(Session::FORBIDDEN_COLOR,$this->obj_User->getColor());
-	}
+    $this->obj_User->setBlocked(false);
+    $this->assertFalse($this->obj_User->isBlocked());
+  }
 
-	/**
-	 * Test of checking if the visitor has moderator rights
-	 * Expected : no rights
-	 */
-	public function TestIsModerator() {
-		$this->assertFalse($this->obj_User->isModerator());
-	}
+  /**
+   * Test of getting the profile
+   * 
+   * @test
+   */
+  public function getProfile(){
+    $s_profile = 'lal lal al a';
+    
+    $this->assertEquals('', $this->obj_User->getProfile());
+    $this->obj_User->setProfile($s_profile);
+    $this->assertEquals($s_profile, $this->obj_User->getProfile());
+  }
 
-	/**
-	 * Test of checking if the visitor has administrator rights
-	 * Expected : no rights
-	 */
-	public function testIsAdmin() {
-		$this->assertFalse($this->obj_User->isAdmin());
-	}
+  /**
+   * Test of collecting the groups where the user is in
+   * 
+   * @test
+   */
+  public function getGroups(){
+    $this->assertEquals(array(), $this->obj_User->getGroups());
+  }
 
-	/**
-	 * Test of collecting the set user language
-	 */
-	public function testGetLanguage(){
-		$this->assertNotNull($this->obj_User->getLanguage());
-	}
+  /**
+   * Test of collecting the access level for the current group
+   * 
+   * @test
+   */
+  public function getLevel(){
+    $this->assertEquals(Session::FORBIDDEN, $this->obj_User->getLevel());
+  }
+
+  /**
+   * Test of changing the password
+   * 
+   * @test
+   */
+  public function changePassword(){
+    $s_password = 'new password';
+
+    $this->obj_User->setPassword($s_password);
+  }
+
+  /**
+   * Test of disabling and enabling the account
+   * 
+   * @test
+   */
+  public function isEnabled(){
+    $this->assertFalse($this->obj_User->isEnabled());
+    
+    $this->obj_User->enableAccount();
+    $this->assertTrue($this->obj_User->isEnabled());
+
+    $this->obj_User->disableAccount();
+    $this->assertFalse($this->obj_User->isEnabled());
+  }
+
+  /**
+   * Test of collecting the color corosponding the users level
+   * 
+   * @test
+   */
+  public function getColor(){
+    $this->assertEquals(\core\services\Session::FORBIDDEN_COLOR, $this->obj_User->getColor());
+  }
+
+  /**
+   * Test of checking if the visitor has moderator rights
+   * Expected : no rights
+   * 
+   * @test
+   */
+  public function isModerator(){
+    $this->assertFalse($this->obj_User->isModerator());
+  }
+
+  /**
+   * Test of checking if the visitor has administrator rights
+   * Expected : no rights
+   * 
+   * @test
+   */
+  public function isAdmin(){
+    $this->assertFalse($this->obj_User->isAdmin());
+  }
+
+  /**
+   * Test of collecting the set user language
+   * 
+   * @test
+   */
+  public function getLanguage(){
+    $this->assertNull($this->obj_User->getLanguage());
+  }
+
 }
 ?>

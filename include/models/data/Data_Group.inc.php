@@ -1,4 +1,6 @@
 <?php
+namespace core\models\data;
+
 /**
  * Group data model.  Contains the group data
  *
@@ -7,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   19/05/13
+ * @changed   04/05/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

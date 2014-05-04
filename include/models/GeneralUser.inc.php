@@ -1,4 +1,6 @@
 <?php
+namespace core\models;
+
 /** 
  * Model is the general user model class. This class is abstract and                 
  * should be inheritanced by every user model
@@ -8,7 +10,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen                                
  * @author    Rachelle Scheijen                                                
  * @since     1.0                                                              
- * @changed   10/07/12                                                          
+ * @changed   04/05/2014                                                        
  *                                                                              
  * Scripthulp framework is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU Lesser General Public License as published by  
@@ -32,7 +34,7 @@ abstract class GeneralUser extends Model {
      * @return     string  The hashed password
      */
     public function hashPassword($s_password,$s_username){
-        $service_XmlSettings  = Memory::services('XmlSettings');
+        $service_XmlSettings  = \core\Memory::services('XmlSettings');
         
         $s_salt = $service_XmlSettings->get('settings/main/salt');
         

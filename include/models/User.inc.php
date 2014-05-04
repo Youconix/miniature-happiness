@@ -1,4 +1,6 @@
 <?php
+namespace core\models;
+
 /**
  * User data model.  Contains the user data
  *
@@ -7,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   01/06/13
+ * @changed   04/05/2014
  *
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
@@ -23,33 +25,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-require_once(NIV.'include/models/GeneralUser.inc.php');
+if( !class_exists('GeneralUser') ){
+  require(NIV.'include/models/GeneralUser.inc.php');
+}
 
 class Model_User extends GeneralUser {
+  protected $service_Session;
 	protected $model_Groups;
 	protected $a_userModels;
+  protected $model_UserData;
 
 	/**
-	 * PHP5 constructor
-	 */
-	public function __construct(){
-		parent::__construct();
+   * PHP5 constructor
+   * 
+   * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @param \core\services\Session $service_Session   The session service
+   * @param \core\models\Groups $model_Groups   The groups model
+   */
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Session $service_Session,
+    \core\models\Groups $model_Groups,\core\models\data\Data_User $model_UserData){
+		parent::__construct($service_QueryBuilder);
 			
-		$this->init();
-
 		$this->a_userModels = array();
+    $this->model_Groups = $model_Groups;
+    $this->model_UserData = $model_UserData;
+    $this->service_Session  = $service_Session;
 
 		/* Check for login */
-		Memory::services('Session')->checkLogin();
-	}
-
-	/**
-	 * Inits the class Model_User
-	 */
-	protected function init(){
-		$this->model_Groups     = Memory::models('Groups');
-
-		require_once(NIV.'include/models/data/Data_User.inc.php');
+		$service_Session->checkLogin();
 	}
 
 	/**
@@ -59,7 +62,7 @@ class Model_User extends GeneralUser {
 	 * @return  Data_User-array   The data objects
 	 */
 	public function getUsersById($a_userid){
-		Memory::type('array',$a_userid);
+		\core\Memory::type('array',$a_userid);
 
 		$a_users   = array();
 		$this->service_QueryBuilder->select('users','*')->getWhere()->addAnd('id','i',array(0=>$a_userid),'IN');
@@ -95,12 +98,12 @@ class Model_User extends GeneralUser {
 		$i_userid = (int)$this->checkUserid($i_userid);
 
 		if( $i_userid == -1 ){
-			return new Data_User();
+			return $this->model_UserData->clone();
 		}
 
 		if( array_key_exists($i_userid,$this->a_userModels) )   return $this->a_userModels[$i_userid];
 
-		$obj_User   = new Data_User();
+		$obj_User   = $this->model_UserData->clone();
 		$obj_User->loadData($i_userid);
 		$this->a_userModels[$i_userid]  = $obj_User;
 
@@ -114,7 +117,7 @@ class Model_User extends GeneralUser {
 	 * @return int	The userid
 	 */
 	private function checkUserid($i_userid){
-		if( $i_userid == -1 && defined('USERID') )   $i_userid   = USERID;
+    if( $i_userid == -1 && defined('USERID') ){   $i_userid   = USERID; }
 
 		return (int) $i_userid;
 	}
@@ -126,7 +129,7 @@ class Model_User extends GeneralUser {
 	 * @return      array   The users
 	 */
 	public function getUsers($i_start = 0){
-		Memory::type('int',$i_start);
+		\core\Memory::type('int',$i_start);
 
 		$this->service_QueryBuilder->select('users','*')->order('nick','ASC')->limit(25,$i_start);
 		$service_Database = $this->service_QueryBuilder->getResult();
@@ -135,7 +138,7 @@ class Model_User extends GeneralUser {
 		$a_result   = array('number'=>0,'data'=>array());
 
 		foreach($a_users AS $a_user){
-			$obj_User   = new Data_User();
+			$obj_User   = $this->model_UserData->clone();
 			$obj_User->setData($a_user);
 			$a_result['data'][] = $obj_User;
 		}
@@ -154,7 +157,7 @@ class Model_User extends GeneralUser {
 	 * @return      array   The users
 	 */
 	public function searchUser($s_username){
-		Memory::type('string',$s_username);
+		\core\Memory::type('string',$s_username);
 
 		$this->service_QueryBuilder->select('users','*')->order('nick','ASC')->limit(25)->getWhere()->addAnd('nick','s','%'.$s_username.'%','LIKE');
 
@@ -162,14 +165,14 @@ class Model_User extends GeneralUser {
 		$a_result   = array('number'=>0,'data'=>array());
 
 		foreach($a_users AS $a_user){
-			$obj_User   = new Data_User();
+			$obj_User   = $this->model_UserData->clone();
 			$obj_User->setData($a_user);
 			$a_result['data'][] = $obj_User;
 		}
 
 		$this->service_QueryBuilder->select('users','*')->order('nick','ASC')->limit(25)->getWhere()->addAnd('nick','s','%'.$s_username.'%','LIKE');
 		$service_Database = $this->service_QueryBuilder->getResult();
-		if( $service_Database->num_rows() > 0 )		$a_users    = $service_Database->fetch_assoc();
+    if( $service_Database->num_rows() > 0 ){		$a_users    = $service_Database->fetch_assoc(); }
 
 		return $a_result;
 	}
@@ -180,7 +183,7 @@ class Model_User extends GeneralUser {
 	 * @return int	The number of tries done including this one
 	 */
 	public function registerLoginTries(){
-		$s_fingerprint	= Memory::services('Session')->getFingerprint();
+		$s_fingerprint	= $this->service_Session->getFingerprint();
 			
 		$this->service_QueryBuilder->select('login_tries','tries')->getWhere()->addAnd('hash','s',$s_fingerprint);
 		$service_Database = $this->service_QueryBuilder->getResult();
@@ -189,8 +192,9 @@ class Model_User extends GeneralUser {
 			$i_tries	= 1;
 			$this->service_QueryBuilder->select('login_tries','tries')->getWhere()->addAnd(array('ip','timestamp'),array('s','i','i'),array($_SERVER['REMOTE_ADDR'],time(),(time()-3)),array('=','BETWEEN'));
 			$service_Database = $this->service_QueryBuilder->getResult();
-			if( $service_Database->num_rows() > 10)
+			if( $service_Database->num_rows() > 10 ){
 				$i_tries	= 6; //reject login to be sure
+      }
 
 			$this->service_QueryBuilder->insert('login_tries', array('hash','ip','tries','timestamp'),array('s','s','i','i'),array($s_fingerprint,$_SERVER['REMOTE_ADDR'],1,time()))->getResult();
 
@@ -208,7 +212,7 @@ class Model_User extends GeneralUser {
 	 * Clears the login tries
 	 */
 	public function clearLoginTries(){
-		$s_fingerprint	= Memory::services('Session')->getFingerprint();
+		$s_fingerprint	= $this->service_Session->getFingerprint();
 
 		$this->service_QueryBuilder->delete('login_tries')->getWhere()->addAnd('hash','s',$s_fingerprint);
 		$this->service_QueryBuilder->getResult();
@@ -221,6 +225,7 @@ class Model_User extends GeneralUser {
 	 * @param String	$s_username		The username
 	 * @param String	$s_passwordOld	The current plain text password
 	 * @param String	$s_password		The new plain text password
+   * @return bool True if the password is changed
 	 */
 	public function changePassword($i_userid,$s_username,$s_passwordOld,$s_password){
 		$s_passwordOld	= $this->hashPassword($s_passwordOld, $s_username);
@@ -229,8 +234,7 @@ class Model_User extends GeneralUser {
 		$this->service_QueryBuilder->select('users','id')->getWhere()->addAnd(array('id','password'),array('i','s'),array($i_userid,$s_passwordOld));
 		$service_Database = $this->service_QueryBuilder->getResult();
 
-		if( $service_Database->num_rows() == 0)
-			return false;
+    if( $service_Database->num_rows() == 0 ){ return false; }
 
 		$this->service_QueryBuilder->update('users',array('password','password_expired'),array('s','s'),array($s_password,'0'));
 		$this->service_QueryBuilder->getWhere()->addAnd('id','i',$i_userid);
@@ -244,7 +248,7 @@ class Model_User extends GeneralUser {
 	 * @return Data_User    The user object
 	 */
 	public function createUser(){
-		return new Data_User();
+		return $this->model_UserData->clone();
 	}
 
 	/**
@@ -256,9 +260,9 @@ class Model_User extends GeneralUser {
 	 * @return  boolean	True if the username is available
 	 */
 	public function checkUsername($s_username,$i_userid = -1,$s_type = 'normal'){
-		Memory::type('string',$s_username);
-		Memory::type('int',$i_userid);
-		Memory::type('string',$s_type);
+		\core\Memory::type('string',$s_username);
+		\core\Memory::type('int',$i_userid);
+		\core\Memory::type('string',$s_type);
 
 		if( $i_userid != -1 ){
 			$this->service_QueryBuilder->select('users','id')->getWhere()->addAnd(array('nick','loginType','id'),array('s','s','i'),array($s_username,$s_type,$i_userid),array('=','=','<>'));
@@ -283,8 +287,8 @@ class Model_User extends GeneralUser {
 	 * @return      Boolean  True if the email address is available
 	 */
 	public function checkEmail($s_email,$i_userid = -1){
-		Memory::type('string',$s_email);
-		Memory::type('int',$i_userid);
+		\core\Memory::type('string',$s_email);
+		\core\Memory::type('int',$i_userid);
 
 		if( $i_userid != -1 ){
 			$this->service_QueryBuilder->select('users','id')->getWhere()->addAnd(array('email','id'),array('s','i'),array($s_email,$i_userid),array('=','<>'));
@@ -314,18 +318,16 @@ class Model_User extends GeneralUser {
 		$this->service_QueryBuilder->select('users','id,loginType,nick')->getWhere()->addAnd(array('active','blocked','email'),array('s','s','s'),array(1,0,$s_email));
 		$service_Database = $this->service_QueryBuilder->getResult();
 
-		if( $service_Database->num_rows() == 0 )
-			return 0;
+    if( $service_Database->num_rows() == 0 ){ return 0; }
 
 		$s_username		= $service_Database->result(0,'nick');
 		$i_userid		= $service_Database->result(0,'id');
 		$s_loginType	= $service_Database->result(0,'loginType');
 
-		if( $s_loginType != 'normal' )
-			return -1;
+    if( $s_loginType != 'normal' ){ return -1; }
 
 
-		$service_Random	= Memory::services('Random');
+		$service_Random	= \core\Memory::services('Random');
 		$s_newPassword	= $service_Random->numberLetter(10,true);
 		$s_hash			= sha1($s_username.$service_Random->numberLetter(20,true).$s_email);
 
@@ -349,8 +351,7 @@ class Model_User extends GeneralUser {
 				array('s','i'),array($s_hash,time()),array('=','>'));
 
 		$service_Database = $this->service_QueryBuilder->getResult();
-		if( $service_Database->num_rows() == 0 )
-			return false;
+    if( $service_Database->num_rows() == 0 ){ return false; }
 
 		$i_userid	= $service_Database->result(0,'userid');
 		$s_password	= $service_Database->result(0,'password');
@@ -372,7 +373,7 @@ class Model_User extends GeneralUser {
 			$this->service_QueryBuilder->commit();
 			return true;
 		}
-		catch(DBException $e){
+		catch(\DBException $e){
 			$this->service_QueryBuilder->rollback();
 			Memory::services('ErrorHandler')->error($e);
 			return false;
@@ -399,7 +400,7 @@ class Model_User extends GeneralUser {
 	 * @param String $s_username	The username
 	 */
 	public function disableAccount($s_username){
-		Memory::type('string',$s_username);
+		\core\Memory::type('string',$s_username);
 
 		try {
 			$this->service_QueryBuilder->select('users','email')->getWhere()->addAnd('nick','s',$s_username);

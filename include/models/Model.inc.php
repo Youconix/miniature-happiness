@@ -28,12 +28,9 @@ namespace core\models;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 abstract class Model{
-
+  protected $service_Security;
   protected $service_Database;
   protected $service_QueryBuilder;
-  protected $s_tableGroups;
-  protected $s_tableMembers;
-  protected $s_tablePM;
   protected $a_validation = array();
   protected $bo_throwError = true;
 
@@ -41,14 +38,12 @@ abstract class Model{
    * PHP5 constructor
    * 
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @parma \core\services\Security $service_Security The security service
    */
-  public function __construct(\core\services\QueryBuilder $service_QueryBuilder){
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security){
     $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
     $this->service_Database = $this->service_QueryBuilder->getDatabase();
-
-    $this->s_tableGroups = 'groups';
-    $this->s_tableMembers = 'members';
-    $this->s_tablePM = 'pm';
+    $this->service_Security = $service_Security;
   }
 
   /**
@@ -81,13 +76,12 @@ abstract class Model{
    * @throws ValidationException the model is invalid
    */
   protected function performValidation(){
-    $service_Security = Memory::services('Security');
     $a_error = array();
 
     $a_keys = array_keys($this->a_validation);
     foreach( $a_keys as $s_key ){
       if( !isset($this->$s_key) ){
-        $a_error[] = 'Error validating non existing field ' . $s_field . '.';
+        $a_error[] = 'Error validating non existing field ' . $s_key . '.';
         continue;
       }
 
@@ -127,8 +121,8 @@ abstract class Model{
       }
 
       if( array_key_exists('pattern', $this->a_validation[ $s_key ]) && !is_null($this->s_key) && trim($this->s_key) != '' ){
-        if( ($this->a_validation[ $s_key ][ 'pattern' ] == 'email' && !$service_Security->checkEmail($this->$s_key)) || ($this->a_validation[ $s_key ][ 'pattern' ] == 'url' &&
-          !$service_Security->checkURI($this->$s_key)) || (!preg_match("/" . $this->a_validation[ $s_key ][ 'pattern' ] . "/", $this->$s_key)) ){
+        if( ($this->a_validation[ $s_key ][ 'pattern' ] == 'email' && !$this->service_Security->checkEmail($this->$s_key)) || ($this->a_validation[ $s_key ][ 'pattern' ] == 'url' &&
+          !$this->service_Security->checkURI($this->$s_key)) || (!preg_match("/" . $this->a_validation[ $s_key ][ 'pattern' ] . "/", $this->$s_key)) ){
           $a_error[] = "Field " . $s_key . " does not match pattern " . $this->a_validation[ $s_key ][ 'pattern' ] . ".";
         }
       }
@@ -143,7 +137,7 @@ abstract class Model{
     }
 
     if( count($a_error) > 0 ){
-      throw new ValidationException("Error validating : \n" . implode("\n", $a_error));
+      throw new \ValidationException("Error validating : \n" . implode("\n", $a_error));
     }
   }
 

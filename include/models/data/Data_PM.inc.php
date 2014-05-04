@@ -1,4 +1,5 @@
 <?php
+namespace core\models\data;
 
 /**
  * Personal message data model.  Contains the personal message data
@@ -8,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   10/07/12
+ * @changed   04/05/2014
  *
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
