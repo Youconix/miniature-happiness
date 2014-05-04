@@ -25,7 +25,7 @@ namespace core\models\data;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Data_PM extends Model {
+class Data_PM extends \core\models\Model {
 	private $model_User;
 	private $i_id;
 	private $obj_sender;
@@ -36,12 +36,24 @@ class Data_PM extends Model {
 	private $i_unread;
 
 	/**
-	 * PHP 5 constructor
-	 */
-	public function __construct() {
-		parent::__construct();
+   * PHP5 constructor
+   * 
+   * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @parma \core\services\Security $service_Security The security service
+   * @parma \core\models\User $model_User   The user model
+   */
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,\core\models\User $model_User){
+		parent::__construct($service_QueryBuilder,$service_Security);
 
-		$this->model_User = Memory::models('User');
+		$this->model_User = $model_User;
+    
+    $this->a_validation = array(
+        'i_receiverID'  => array('type'=>'int','required'=>1),
+        's_title' => array('type'=>'string','required'=>1),
+        's_message' => array('type'=>'string','required'=>1),
+        'i_sendTime' => array('type'=>'int','min-value'=>time()),
+        'i_unread' => array('type'=>'enum','set'=>array(0,1))
+    );
 	}
 	/**
 	 * Loads the PM
@@ -50,12 +62,14 @@ class Data_PM extends Model {
 	 * @throws DBException	If the message does not exist
 	 */
 	public function loadData($i_id){
-		$this->service_Database->queryBinded("SELECT * FROM ".DB_PREFIX."pm WHERE id = ? ORDER BY send DESC",'i',$i_id);
-		if( $this->service_Database->num_rows() == 0 ){
-			throw new DBException("Requesting unknown message with id " . $i_id);
+    $this->service_QueryBuilder->select('pm','*')->order('send','DESC')->getWhere()->addAnd('id','i',$i_id);
+    $service_Database = $this->service_QueryBuilder->getResult();
+    
+		if( $service_Database->num_rows() == 0 ){
+			throw new \DBException("Requesting unknown message with id " . $i_id);
 		}
 
-		$a_message	= $this->service_Database->fetch_assoc();
+		$a_message	= $service_Database->fetch_assoc();
 		$this->setData($a_message[0]);
 	}
 
@@ -65,7 +79,7 @@ class Data_PM extends Model {
 	 * @param array $a_message  The message data from the database
 	 */
 	public function setData($a_message) {
-		Memory::type('array',$a_message);
+		\core\Memory::type('array',$a_message);
 
 		$this->i_id = $a_message['id'];
 		$this->obj_sender = $this->model_User->get($a_message['fromUserid']);
@@ -101,7 +115,7 @@ class Data_PM extends Model {
 	 * @throws  DBException If the userid is invalid
 	 */
 	public function setSender($i_sender){
-		Memory::type('int',$i_sender);
+		\core\Memory::type('int',$i_sender);
 
 		$this->obj_sender   = $this->model_User->get($i_sender);
 	}
@@ -113,7 +127,7 @@ class Data_PM extends Model {
 	 * @param int $i_receiver The receiver ID
 	 */
 	public function setReceiver($i_receiver){
-		Memory::type('int',$i_receiver);
+		\core\Memory::type('int',$i_receiver);
 
 		$this->i_receiverID = $i_receiver;
 	}
@@ -142,7 +156,7 @@ class Data_PM extends Model {
 	 * @param string $s_title The message title
 	 */
 	public function setTitle($s_title){
-		Memory::type('string',$s_title);
+		\core\Memory::type('string',$s_title);
 
 		$this->s_title  = $s_title;
 	}
@@ -162,7 +176,7 @@ class Data_PM extends Model {
 	 * @param string $s_message     The message content
 	 */
 	public function setMessage($s_message){
-		Memory::type('string',$s_message);
+		\core\Memory::type('string',$s_message);
 
 		$this->s_message    = $s_message;
 	}
@@ -182,7 +196,7 @@ class Data_PM extends Model {
 	public function setRead(){
 		if( $this->i_unread == 1 ){
 			$this->i_unread   = 0;
-			$this->service_Database->queryBinded("UPDATE ".DB_PREFIX."pm SET unread = '0' WHERE id = ?",array('i'),array($this->i_id));
+      $this->service_QueryBuilder->update('pm','id','i',$this->i_id)->getResult();
 		}
 	}
 
@@ -199,20 +213,24 @@ class Data_PM extends Model {
 	 * Deletes the message
 	 */
 	public function deleteMessage(){
-		$this->service_Database->queryBinded("DELETE FROM ".DB_PREFIX."pm WHERE id = ?",array('i'),array($this->i_id));
+    $this->service_QueryBuilder->delete('pm')->getWhere()->addAnd('id','i',$this->i_id);
+    $this->service_QueryBuilder->getResult();
 	}
 
 	/**
 	 * Saves the new message
 	 */
 	public function save(){
-		if( !is_null($this->i_id) ) return;
+    if( !is_null($this->i_id) ){ return;  }
+    $this->performValidation();
 
 		$this->i_sendTime   = time();
-		$this->service_Database->queryBinded("INSERT INTO ".DB_PREFIX."pm (toUserid,fromUserid,title,message, send)
-            VALUES (?,?,?,?,?)",array('i','i','s','s','i'),array($this->i_receiverID,$this->obj_sender->getID(), $this->s_title,$this->s_message,$this->i_sendTime));
+    $this->service_QueryBuilder->insert('pm',array('toUserid','fromUserid','title','message','send'),array('i','i','s','s','i'),
+      array($this->i_receiverID,$this->obj_sender->getID(), $this->s_title,$this->s_message,$this->i_sendTime));
+    
+    $service_Database = $this->service_QueryBuilder->getResult();
 
-		$this->i_id = (int)$this->service_Database->getId();
+		$this->i_id = (int)$service_Database->getId();
 	}
 }
 ?>

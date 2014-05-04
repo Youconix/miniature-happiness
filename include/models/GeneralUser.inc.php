@@ -26,14 +26,33 @@ namespace core\models;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 abstract class GeneralUser extends Model {
+  protected $service_Hashing;
+  
+    /**
+   * PHP5 constructor
+   * 
+   * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @parma \core\services\Security $service_Security The security service
+   * @param \core\services\Hashing $service_Hashing   The hashing service
+   */
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,\core\services\Hashing $service_Hashing){
+    parent::__construct($service_QueryBuilder,$service_Security);
+    $this->service_Hashing = $service_Hashing;
+  }
+  
     /**
      * Hashes the given password with the set salt and sha1
      *
      * @param      string $s_password  The password
      * @param		string	$s_username	The username
+     * @param   bool  $bo_legancy   Set to true to hash on the V1 way
      * @return     string  The hashed password
      */
-    public function hashPassword($s_password,$s_username){
+    public function hashPassword($s_password,$s_username,$bo_legancy = false){
+        if( !$bo_legancy ){
+          return $this->service_Hashing->hashUserPassword($s_password, $s_username);
+        }
+        
         $service_XmlSettings  = \core\Memory::services('XmlSettings');
         
         $s_salt = $service_XmlSettings->get('settings/main/salt');

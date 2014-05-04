@@ -48,13 +48,14 @@ class Data_User extends \core\models\GeneralUser{
    * PHP5 constructor
    * 
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
-   * @parma \core\services\Security $service_Security The security service
+   * @parma \core\services\Security $service_Security The security service   
+   * @param \core\services\Hashing $service_Hashing   The hashing service
    * @param \core\models\Groups $model_Groups   The groups model
    * @param \core\services\Language $service_Language The language service
    */
-  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security, 
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,\core\services\Hashing $service_Hashing, 
     \core\models\Groups $model_Groups, \core\services\Language $service_Language){
-    parent::__construct($service_QueryBuilder,$service_Security);
+    parent::__construct($service_QueryBuilder,$service_Security,$service_Hashing);
     $this->model_Groups = $model_Groups;
     $this->service_Language = $service_Language;
     

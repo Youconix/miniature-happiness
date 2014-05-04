@@ -272,7 +272,7 @@ class DummyBuilder implements \core\services\Builder {
    * 
    * @return DAL  The DAL
    */
-  public function getDatabase(){ return $this; }
+  public function getDatabase(){ return $this->service_Database; }
 }
 
 class DummyBuilderWhere implements \core\services\Where {

@@ -29,7 +29,7 @@ if( !class_exists('GeneralUser') ){
   require(NIV.'include/models/GeneralUser.inc.php');
 }
 
-class Model_User extends GeneralUser {
+class User extends GeneralUser {
   protected $service_Session;
 	protected $model_Groups;
 	protected $a_userModels;
@@ -39,12 +39,14 @@ class Model_User extends GeneralUser {
    * PHP5 constructor
    * 
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @parma \core\services\Security $service_Security The security service
+   * @param \core\services\Hashing $service_Hashing   The hashing service
    * @param \core\services\Session $service_Session   The session service
    * @param \core\models\Groups $model_Groups   The groups model
    */
-  public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Session $service_Session,
-    \core\models\Groups $model_Groups,\core\models\data\Data_User $model_UserData){
-		parent::__construct($service_QueryBuilder);
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security,\core\services\Hashing $service_Hashing, 
+    \core\services\Session $service_Session,\core\models\Groups $model_Groups,\core\models\data\Data_User $model_UserData){
+		parent::__construct($service_QueryBuilder,$service_Security,$service_Hashing);
 			
 		$this->a_userModels = array();
     $this->model_Groups = $model_Groups;
@@ -98,12 +100,12 @@ class Model_User extends GeneralUser {
 		$i_userid = (int)$this->checkUserid($i_userid);
 
 		if( $i_userid == -1 ){
-			return $this->model_UserData->clone();
+			return $this->model_UserData->cloneModel();
 		}
 
 		if( array_key_exists($i_userid,$this->a_userModels) )   return $this->a_userModels[$i_userid];
 
-		$obj_User   = $this->model_UserData->clone();
+		$obj_User   = $this->model_UserData->cloneModel();
 		$obj_User->loadData($i_userid);
 		$this->a_userModels[$i_userid]  = $obj_User;
 
@@ -138,7 +140,7 @@ class Model_User extends GeneralUser {
 		$a_result   = array('number'=>0,'data'=>array());
 
 		foreach($a_users AS $a_user){
-			$obj_User   = $this->model_UserData->clone();
+			$obj_User   = $this->model_UserData->cloneModel();
 			$obj_User->setData($a_user);
 			$a_result['data'][] = $obj_User;
 		}
@@ -165,7 +167,7 @@ class Model_User extends GeneralUser {
 		$a_result   = array('number'=>0,'data'=>array());
 
 		foreach($a_users AS $a_user){
-			$obj_User   = $this->model_UserData->clone();
+			$obj_User   = $this->model_UserData->cloneModel();
 			$obj_User->setData($a_user);
 			$a_result['data'][] = $obj_User;
 		}
@@ -248,7 +250,7 @@ class Model_User extends GeneralUser {
 	 * @return Data_User    The user object
 	 */
 	public function createUser(){
-		return $this->model_UserData->clone();
+		return $this->model_UserData->cloneModel();
 	}
 
 	/**

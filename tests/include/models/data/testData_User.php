@@ -4,7 +4,7 @@ define('NIV', dirname(__FILE__) . '/../../../../');
 
 require(NIV . 'tests/GeneralTest.php');
 
-class testStats extends GeneralTest{
+class testData_User extends GeneralTest{
 
   private $obj_User;
   private $i_userid;
@@ -20,6 +20,7 @@ class testStats extends GeneralTest{
     $this->loadStub('DummySecurity');
     $this->loadStub('DummyGroups');
     $this->loadStub('DummyLanguage');
+    $this->loadStub('DummyHashing');
   }
 
   public function setUp(){
@@ -30,9 +31,10 @@ class testStats extends GeneralTest{
     $service_Builder = new DummyQueryBuilder($service_Database);
     $model_Groups = new DummyGroups();
     $service_Language = new DummyLanguage();
+    $service_Hashing = new DummyHashing();
 
     $this->i_userid = 0;
-    $this->obj_User = new \core\models\data\Data_User($service_Builder, $service_Security, $model_Groups, $service_Language);
+    $this->obj_User = new \core\models\data\Data_User($service_Builder, $service_Security, $service_Hashing,$model_Groups, $service_Language);
   }
 
   public function tearDown(){
