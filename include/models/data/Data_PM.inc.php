@@ -26,14 +26,14 @@ namespace core\models\data;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Data_PM extends \core\models\Model {
-	private $model_User;
-	private $i_id;
-	private $obj_sender;
-	private $i_receiverID;
-	private $s_title;
-	private $s_message;
-	private $i_sendTime;
-	private $i_unread;
+	protected $model_User;
+	protected $i_id = null;
+	protected $obj_sender;
+	protected $i_receiverID;
+	protected $s_title;
+	protected $s_message;
+	protected $i_sendTime;
+	protected $i_unread = 1;
 
 	/**
    * PHP5 constructor

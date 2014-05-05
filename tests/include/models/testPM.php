@@ -1,112 +1,100 @@
 <?php
-define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+define('NIV', dirname(__FILE__) . '/../../../');
 
-class testModifications extends GeneralTest {
-	private $service_Database;
-	private $model_PM;
-	private $s_title;
-	private $s_message;
-	private $i_sender;
-	private $obj_receiver;
+require(NIV . 'tests/GeneralTest.php');
 
-	public function __construct(){
-		parent::__construct();
+class testPM extends GeneralTest{
 
-		require_once(NIV.'include/models/PM.inc.php');
-		require_once(NIV.'include/models/GeneralUser.inc.php');
-		require_once(NIV.'include/models/data/Data_User.inc.php');
-	}
+  private $model_PM;
+  private $s_title;
+  private $s_message;
+  private $i_sender;
+  private $obj_receiver;
 
-	public function setUp(){
-		parent::setUp();
+  public function __construct(){
+    parent::__construct();
 
-		$this->service_Database = Memory::services('Database');
+    require_once(NIV . 'include/models/PM.inc.php');
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyQueryBuilder');
+    $this->loadStub('DummySecurity');
+    $this->loadStub('DummyModelUser');
+    $this->loadStub('DummyModelPmData');
+    $this->loadStub('DummyModelUserData');
+    $this->loadStub('DummyMailer');
+  }
 
-		$this->s_title = 'test message';
-		$this->s_message	= 'test message';
-		$this->i_sender = 1;
-		$this->obj_receiver	 = new Data_User();
-		$this->obj_receiver->loadData(0);
+  public function setUp(){
+    parent::setUp();
 
-		$this->model_PM = new Model_PM();
-		define('USERID',$this->i_sender);
-	}
+    $this->s_title = 'test message';
+    $this->s_message = 'test message';
+    $this->i_sender = 1;
 
-	public function tearDown(){
-		$this->service_Database	= null;
-		$this->model_PM = null;
+    $service_Database = new DummyDAL();
+    $service_Security = new DummySecurity($service_Database);
+    $service_Builder = new DummyQueryBuilder($service_Database);
+    $this->obj_receiver = new DummyModelUserData();
+    $this->obj_receiver->i_userid = 0;
+    $model_User = new DummyModelUser($this->obj_receiver);
+    $model_PM = new DummyModelPmData($service_Builder,$service_Security, $model_User);
+    $service_Mailer = new DummyMailer();
 
-		parent::tearDown();
-	}
+    $this->model_PM = new \core\models\PM($service_Builder, $service_Security, $model_PM, $service_Mailer);
+    define('USERID', $this->i_sender);
+  }
 
-	/**
-	 * Sends a message from system
-	 *
-	 * @param	Data_User	$obj_receiver	The receiver
-	 * @param	string  $s_title    The title of the message
-	 * @param	string  $s_message  The content of the message
-	 */
-	public function testSendSystemMessage($obj_receiver,$s_title, $s_message){
-		$this->service_Database->transaction();
-		
-		$i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message);
-		$obj_message = $this->model_PM->getMessage($i_id);
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals($obj_message->getTitle(),$this->s_title);
-		$this->assertEquals($obj_message->getMessage(),$this->s_message);
-		$this->assertTrue($obj_message->isUnread());
-	}
+  public function tearDown(){
+    $this->model_PM = null;
+    $this->obj_receiver = null;
 
-	/**
-	 * Sends a message
-	 *
-	 * @param	Data_User	$obj_receiver	The receiver
-	 * @param	string  $s_title    The title of the message
-	 * @param	string  $s_message  The content of the message
-	 */
-	public function testSendMessage($obj_receiver,$s_title, $s_message) {
-		$this->service_Database->transaction();
-		
-		$i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message,$this->i_sender);
-		$obj_message = $this->model_PM->getMessage($i_id);
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals($obj_message->getTitle(),$this->s_title);
-		$this->assertEquals($obj_message->getMessage(),$this->s_message);
-		$this->assertTrue($obj_message->isUnread());
-	}
+    parent::tearDown();
+  }
 
-	/**
-	 * Test of collecting all the messages send to the logged in user
-	 */
-	public function testGetMessages() {
-		$this->assertEquals(array(),$this->model_PM->getMessages());
-	}
+  /**
+   * Sends a message from system
+   *
+   * @test
+   */
+  public function sendSystemMessage(){
+    $i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message);
+    $obj_message = $this->model_PM->getMessage($i_id);
 
-	/**
-	 * Test of deleting the message with the given ID
-	 */
-	public function testDeleteMessage() {
-		$this->service_Database->transaction();
-		
-		$i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message);
-		$this->model_PM->deleteMessage($i_id);
-		
-		try {
-			$this->model_PM->getMessage($i_id);
-		
-			$this->service_Database->rollback();
-			
-			$this->fail("Expected DBException for not existing PM id.");
-		}
-		catch(DBException $e ){
-			$this->service_Database->rollback();
-		}
-	}
+    $this->assertEquals($obj_message->getTitle(), $this->s_title);
+    $this->assertEquals($obj_message->getMessage(), $this->s_message);
+    $this->assertTrue($obj_message->isUnread());
+  }
+
+  /**
+   * Sends a message
+   * 
+   * @test
+   */
+  public function sendMessage(){
+    $i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message, $this->i_sender);
+    $obj_message = $this->model_PM->getMessage($i_id);
+  }
+
+  /**
+   * Test of collecting all the messages send to the logged in user
+   * 
+   * @test
+   */
+  public function getMessages(){
+    $this->assertEquals(array(), $this->model_PM->getMessages());
+  }
+
+  /**
+   * Test of deleting the message with the given ID
+   * 
+   * @test
+   * @expectedException DBException
+   */
+  public function deleteMessage(){
+    $i_id = $this->model_PM->sendSystemMessage($this->obj_receiver, $this->s_title, $this->s_message);
+    $this->model_PM->deleteMessage($i_id);
+    $this->model_PM->getMessage($i_id);
+  }
 }
 ?>

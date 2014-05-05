@@ -30,7 +30,7 @@ class Data_User extends \core\models\GeneralUser{
 
   private $model_Groups;
   private $service_Language;
-  private $i_userid = null;
+  protected $i_userid = null;
   protected $s_username = '';
   protected $s_email = '';
   protected $i_bot = 0;

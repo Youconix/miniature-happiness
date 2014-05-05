@@ -176,6 +176,29 @@ class Mailer extends Service{
 
     return $this->sendMail($obj_mailer);
   }
+  
+  /**
+   * Sends the personal message notification email
+   * 
+   * @param \core\models\data\Data_User $obj_receiver   The receiver
+   * @return Boolean	True if the email is send
+   */
+  public function PM(\core\models\data\Data_User $obj_receiver){
+    $s_email = $obj_receiver->getEmail();
+    $s_username = $obj_receiver->getUsername();
+    
+    $a_mail = $this->getMail('PM');
+    $s_body = $this->service_Language->insert($a_mail[ 'body' ], array( 'username' ), array( $s_username ));
+    $s_bodyAlt = $this->service_Language->insert($a_mail[ 'bodyAlt' ], array( 'username' ), array( $s_username ));
+
+    $obj_mailer = $this->getMailer();
+    $obj_mailer->addAddress($s_email, $s_username);
+    $obj_mailer->setSubject($a_mail[ 'subject' ]);
+    $obj_mailer->setBody($s_body);
+    $obj_mailer->setAltBody($s_bodyAlt);
+
+    return $this->sendMail($obj_mailer);
+  }
 
   /**
    * Collects the email template

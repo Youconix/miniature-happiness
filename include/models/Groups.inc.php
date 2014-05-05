@@ -10,7 +10,7 @@ namespace core\models;
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   10/07/12
+ * @changed   05/05/2014
  * 
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by 
