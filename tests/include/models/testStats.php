@@ -1,26 +1,30 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+require(NIV.'tests/GeneralTest.php');
 
 class testStats extends GeneralTest {
-	private $service_Database;
+	private $service_Builder;
 	private $model_Stats;
-	private $i_month;
 	private $i_date;
 
 	public function __construct(){
 		parent::__construct();
 
 		require_once(NIV.'include/models/Stats.inc.php');
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyQueryBuilder');
+    $this->loadStub('DummySecurity');
 	}
 
 	public function setUp(){
 		parent::setUp();
 
-		$this->service_Database = Memory::services('Database');
+		$service_Database = new DummyDAL();
+    $service_Security = new DummySecurity($service_Database);
+    $this->service_Builder = new DummyQueryBuilder($service_Database);
 
-		$this->model_Stats = new Model_Stats();
+		$this->model_Stats = new \core\models\Stats($this->service_Builder,$service_Security);
 		$this->i_date   = mktime(0,0,0,date("n"),1,date("Y"));
 	}
 
@@ -33,279 +37,162 @@ class testStats extends GeneralTest {
 
     /**
      * Test saving the vistor hits
+     * 
+     * @test
      */
-    public function testSaveIP($s_ip,$s_page){
+    public function saveIP(){
     	$_SERVER['HTTP_HOST']	= 'example.com';
     	$s_ip = '53.2543.536.24';
     	$s_page = 'index.php';
+      
+      $builder = $this->service_Builder->createBuilder();
+            
+      $this->assertTrue($this->model_Stats->saveIP($s_ip, $s_page));  // unique vistor
+      
+      $builder->getDatabase()->i_affectedRows = 1;
     	
-    	$this->service_Database->transaction();
-    	
-    	$this->assertTrue($this->model_Stats->saveIP($s_ip, $s_page));  // unique vistor
-    	$this->assertFalse($this->model_Stats->saveIP($s_ip, $s_page));	// repeating visitor
-    	
-    	$this->service_Database->rollback();
+      $this->model_Stats->saveIP($s_ip, $s_page);	// repeating visitor
+      
+      $this->assertEquals(4,$builder->i_update);
+      $this->assertEquals(4,$builder->i_insert);
+      $this->assertEquals(2,$builder->i_select);
     }
 
     /**
      * Test saving the visitors OS
-     * Shortend version
+     * 
+     * @test
      */
-    public function testSaveOS($s_os,$s_osType){
+    public function saveOS(){
     	$s_os = 'Linux';
     	$s_osType = 'Unknown';
+      
+      $builder = $this->service_Builder->createBuilder();
     	
-    	try {
-	    	$this->service_Database->transaction();
-	    	
-	    	$this->model_Stats->saveOS($s_os, $s_osType);
-	    	
-	    	$a_os	= $this->model_Stats->getOS($this->i_date);
-	    	
-	    	$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-				$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$this->assertTrue(is_array($a_os));
-    	
-    	$this->assertEquals($s_os,$a_os[$s_os]['name']);
-    }
-    
-    /**
-     * Test saving the visitors OS
-     * Long version
-     */
-    public function testGetOSLong(){
-    	$s_os = 'Linux';
-    	$s_osType = 'Unknown';
-    	
-    	try {
-	    	$this->service_Database->transaction();
-	    	
-	    	$this->model_Stats->saveOS($s_os, $s_osType);
-	    	
-	    	$a_os	= $this->model_Stats->getOSLong($this->i_date);
-	    	
-	    	$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-				$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$bo_found = false;
-    	foreach($a_os AS $a_item){
-    		if( $a_item['name'] == $s_os && $a_item['type'] == $s_osType ){
-    			$bo_found = true;
-    			break;
-    		}
-    	}
-    	
-    	$this->assertTrue($bo_found,"Missing OS ".$s_os." with type ".$s_osType.'.');
+    	$this->model_Stats->saveOS($s_os, $s_osType);
+	    $builder->getDatabase()->i_affectedRows = 1;
+      $this->model_Stats->saveOS($s_os, $s_osType);
+            
+    	$this->assertEquals(2,$builder->i_update);
+      $this->assertEquals(1,$builder->i_insert);
     }
 
     /**
      * Test saving the visitors browser
-     * Shortend version
+     * 
+     * @test
      */
-    public function testSaveBrowser(){
+    public function saveBrowser(){
     	$s_browser = 'Firefox';
     	$s_version = '14';
+      
+      $builder = $this->service_Builder->createBuilder();
     	
-    	try {
-    		$this->service_Database->transaction();
+    	$this->model_Stats->saveBrowser($s_browser, $s_version);
+    	$builder->getDatabase()->i_affectedRows = 1;
+      $this->model_Stats->saveBrowser($s_browser, $s_version);
     	
-    		$this->model_Stats->saveBrowser($s_browser, $s_version);
-    		
-    		$a_browser = $this->model_Stats->getBrowsers($this->i_date);
-    		
-    		$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-    		$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());    		
-    	}
-    	
-    	$this->assertTrue(array_key_exists($s_browser,$a_browser));
-    }
-    
-    /**
-     * Test saving the visitors browser
-     * Long version
-     */
-    public function testGetBrowsersLong(){
-    	$s_browser = 'Firefox';
-    	$s_version = '14';
-    	
-    	try {
-    		$this->service_Database->transaction();
-    	
-    		$this->model_Stats->saveBrowser($s_browser, $s_version);
-    		
-    		$a_browsers = $this->model_Stats->getBrowsersLong($this->i_date);
-    		
-    		$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-    		$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());    		
-    	}
-    	
-    	$bo_found = false;
-    	foreach($a_browsers AS $a_browser){
-    		if( $a_browser['name'] == $s_browser && $a_browser['version'] == $s_version ){
-    			$bo_found = true;
-    			break;
-    		}
-    	}
-    	
-    	$this->assertTrue($bo_found,"Missing browser ".$s_browser." with version ".$s_version.'.');
+    	$this->assertEquals(2,$builder->i_update);
+      $this->assertEquals(1,$builder->i_insert);
     }
 
     /**
      * Test of saving the visitors reference
+     * 
+     * @test
      */
-    public function testSaveReference($s_reference){
+    public function saveReference(){
     	$s_reference	= 'example2.com';
+      
+      $builder = $this->service_Builder->createBuilder();
     	
-    	try {
-	    	$this->service_Database->transaction();
-	    	
-	    	$this->model_Stats->saveReference($s_reference);
-	    	
-	    	$a_references	= $this->model_Stats->getReferences($this->i_date);
-	    	
-	    	$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-    		$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
+    	$this->model_Stats->saveReference($s_reference);	    
+      $builder->getDatabase()->i_affectedRows = 1;
+      $this->model_Stats->saveReference($s_reference);
     	
-    	$this->assertTrue(array_key_exists($s_reference,$a_references),'Missing reference '.$s_reference.'.');
-    	$this->assertEquals($s_reference,$a_references[$s_reference]['name']);
+    	$this->assertEquals(2,$builder->i_update);
+      $this->assertEquals(1,$builder->i_insert);
     }
 
     /**
      * Test of saving the visitors screen size	
+     * 
+     * @test
      */
-    public function testSaveScreenSize($i_width,$i_height){
+    public function saveScreenSize(){
     	$i_width  = 1600;
     	$i_height = 1000;
     	
-    	try {
-    		$this->service_Database->transaction();
-    		
-    		$this->model_Stats->saveScreenSize($i_width,$i_height);
-    		
-    		$a_sizes	= $this->model_Stats->getScreenSizes($this->i_date);
-    		
-    		$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-    		$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
+    	$builder = $this->service_Builder->createBuilder();
     	
-    	$bo_found = false;
-    	foreach($a_sizes AS $a_size){
-    		if( $a_size['width'] == $i_width && $a_size['height'] == $i_height ){
-    			$bo_found = true;
-    			break;
-    		}
-    	}
+    	$this->model_Stats->saveScreenSize($i_width,$i_height);
+      $builder->getDatabase()->i_affectedRows = 1;
+      $this->model_Stats->saveScreenSize($i_width,$i_height);
     	
-    	$this->assertTrue($bo_found,"Missing screen size with width ".$i_width." and height ".$i_height.'.');
+    	$this->assertEquals(2,$builder->i_update);
+      $this->assertEquals(1,$builder->i_insert);
     }
 
     /**
      * Test of saving the visitors screen colors
+     * 
+     * @test
      */
-    public function testSaveScreenColors(){
+    public function saveScreenColors(){
     	$s_screenColors = '356';
     	
-    	try {
-    		$this->service_Database->transaction();
-    		
-    		$this->model_Stats->saveScreenColors($s_screenColors);
-    		
-    		$a_colors	= $this->model_Stats->getScreenColors($this->i_date);
-    		
-    		$this->service_Database->rollback();
-    	}
-    	catch(DBException $e){
-    		$this->service_Database->rollback();
-    		
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
+    	$builder = $this->service_Builder->createBuilder();
     	
-    	$this->assertTrue(array_key_exists($s_screenColors,$a_colors),'Missing screen colors '.$s_screenColors.'.');
-    	$this->assertEquals($s_screenColors, $a_colors[$s_screenColors]['name']);
+    	$this->model_Stats->saveScreenColors($s_screenColors);
+      $builder->getDatabase()->i_affectedRows = 1;
+      $this->model_Stats->saveScreenColors($s_screenColors);
+    	
+    	$this->assertEquals(2,$builder->i_update);
+      $this->assertEquals(1,$builder->i_insert);
     }
 
     /**
      * Test of collecting the hits from the given month
+     * 
+     * @test
      */
-    public function testGetHits($i_date){
-    	try {
-    		$a_hits = $this->model_Stats->getHits($this->i_date);
-    	}
-    	catch(DBException $e){
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$this->assertTrue(is_array($a_hits),'Expected that getHits returns an array');
+    public function getHits(){
+    	$this->assertEquals(array(),$this->model_Stats->getHits($this->i_date));
     }
     
     /**
      * Test of collecting the pages from the given month
+     * 
+     * @test
      */
-    public function testGetPages(){
-    	try {
-    		$a_pages = $this->model_Stats->getPages($this->i_date);
-    	}
-    	catch(DBException $e){
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$this->assertTrue(is_array($a_pages),'Expected that getPages returns an array');
+    public function getPages(){
+    	$this->assertEquals(array(),$this->model_Stats->getPages($this->i_date));
     }
     
     /**
      * Test of collecting the unique visitors from the given month
+     * 
+     * @test
      */
-    public function testGetUnique(){
-    	try {
-    		$a_unique = $this->model_Stats->getUnique($this->i_date);
-    	}
-    	catch(DBException $e){
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$this->assertTrue(is_array($a_unique),'Expected that getUnique returns an array');
+    public function getUnique(){
+    	$this->assertEquals(array(),$this->model_Stats->getUnique($this->i_date));
     }
 
     /**
      * Test of returning the lowest date saved as a timestamp
+     * 
+     * @test
      */
-    public function testGetLowestDate(){
-    	try {
-    		$i_date	= $this->model_Stats->getLowestDate();
-    	}
-    	catch(DBException $e){
-    		$this->fail("Exception : ".$e->getMessage());
-    	}
-    	
-    	$this->assertTrue(is_int($i_date),'Expected that getLowestDate returns an int');
+    public function getLowestDate(){
+    	$this->assertEquals(-1,$this->model_Stats->getLowestDate());
+      
+      $i_expected;
+      
+      $builder = $this->service_Builder->createBuilder();
+      $builder->getDatabase()->i_numRows = 1;
+      $builder->getDatabase()->a_data = array(0=>array('date'=>$i_expected));
+      
+      $this->assertEquals($i_expected,$this->model_Stats->getLowestDate());
     }
 }
 ?>

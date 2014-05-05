@@ -12,6 +12,7 @@ Class DummyQueryBuilder extends \core\services\QueryBuilder {
   
   public function __construct($service_Database){
     $this->service_Database = $service_Database;
+    $this->obj_builder    = new DummyBuilder($this->service_Database);
   }
   
   /**
@@ -19,17 +20,17 @@ Class DummyQueryBuilder extends \core\services\QueryBuilder {
    * 
    * @return Builder    The builder
    */
-	public function createBuilder(){
-		if( is_null($this->obj_builder) ){
-			$this->obj_builder    = new DummyBuilder($this->service_Database);
-		}
-		
+	public function createBuilder(){		
 		return $this->obj_builder;
 	}
 }
 
 class DummyBuilder implements \core\services\Builder {
   private $service_Database;
+  public $i_select = 0;
+  public $i_insert = 0;
+  public $i_update = 0;
+  public $i_delete = 0;
   
   /**
    * Creates the builder
@@ -56,7 +57,10 @@ class DummyBuilder implements \core\services\Builder {
 	 * @param		String	$s_table	The table name
 	 * @param		String	$s_fields	The field names sepperated with a ,
 	 */
-  public function select($s_table,$s_fields){ return $this; }
+  public function select($s_table,$s_fields){
+    $this->i_select++;
+    return $this; 
+  }
 	
 	/**
 	 * Creates a insert statement
@@ -66,7 +70,10 @@ class DummyBuilder implements \core\services\Builder {
 	 * @param		array	$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
 	 * @param		array	$a_values		The values, also accepts a single value
 	 */
-  public function insert($s_table,$a_fields,$a_types,$a_values){ return $this; }
+  public function insert($s_table,$a_fields,$a_types,$a_values){ 
+    $this->i_insert++;
+    return $this;
+  }
 	
 	/**
 	 * Creates a update statement
@@ -76,14 +83,20 @@ class DummyBuilder implements \core\services\Builder {
 	 * @param		array		$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
 	 * @param		array		$a_values	The values, also accepts a single value
 	 */
-  public function update($s_table,$a_fields,$a_types,$a_values){ return $this; }
+  public function update($s_table,$a_fields,$a_types,$a_values){ 
+    $this->i_update++;
+    return $this; 
+  }
 	
 	/**
 	 * Creates a delete statement
 	 *
 	 * @param	String	$s_table	The table name
 	 */
-  public function delete($s_table){ return $this; }
+  public function delete($s_table){ 
+    $this->i_delete++;
+    return $this; 
+  }
 	
 	/**
 	 * Returns the create table generation class
@@ -237,7 +250,7 @@ class DummyBuilder implements \core\services\Builder {
 	 * 
 	 * @return DAL		The query result as a database object
 	 */
-  public function getResult(){
+  public function getResult(){    
     return $this->service_Database;
   }
 	

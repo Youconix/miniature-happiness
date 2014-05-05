@@ -8,12 +8,17 @@ if( !interface_exists('DAL') ){
   require(NIV.'include/services/Database.inc.php');
 }
 class DummyDAL implements \core\database\DAL {
+  public $i_numRows = 0;
+  public $i_affectedRows = 0;
+  public $a_data = array();
+  public $i_insertID = 1;
+  
   public function __destruct(){
     
   }
 
   public function affected_rows(){
-    
+    return $this->i_affectedRows;
   }
 
   public function analyse($s_table){
@@ -37,7 +42,7 @@ class DummyDAL implements \core\database\DAL {
   }
 
   public function databaseExists($s_database){
-    
+    return true;
   }
 
   public function defaultConnect(){
@@ -45,39 +50,39 @@ class DummyDAL implements \core\database\DAL {
   }
 
   public function escape_string($s_data){
-    
+    return $s_data;
   }
 
   public function fetch_array(){
-    
+    return $this->a_data;
   }
 
   public function fetch_assoc(){
-    
+    return $this->a_data;
   }
 
   public function fetch_assoc_key($s_key){
-    
+    return $this->a_data;
   }
 
   public function fetch_object(){
-    
+    return $this->a_data;
   }
 
   public function fetch_row(){
-    
+    return $this->a_data;
   }
 
   public function getId(){
-    
+    return $this->i_insertID;
   }
 
   public function isConnected(){
-    
+    return true;
   }
 
   public function num_rows(){
-    
+    return $this->i_numRows;
   }
 
   public function optimize($s_table){
@@ -97,7 +102,7 @@ class DummyDAL implements \core\database\DAL {
   }
 
   public function result($i_row, $s_field){
-    
+    return $this->a_data[$i_row][$s_field];
   }
 
   public function rollback(){
