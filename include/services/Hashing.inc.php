@@ -27,7 +27,6 @@ namespace core\services;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class Hashing extends Service{
 
   private $service_Random;
@@ -41,7 +40,7 @@ class Hashing extends Service{
    * @param \core\services\Settings $service_Settings   The settings service
    * @param \core\services\Random   $service_Random     The random generator
    */
-  public function __construct(\core\services\Logs $service_Logs,\core\services\Settings $service_Settings,  \core\services\Random $service_Random){
+  public function __construct(\core\services\Logs $service_Logs, \core\services\Settings $service_Settings, \core\services\Random $service_Random){
     $this->service_Random = $service_Random;
     if( !function_exists('password_hash') ){
       if( CRYPT_BLOWFISH != 1 ){
@@ -84,9 +83,7 @@ class Hashing extends Service{
   }
 
   public function verifyUserPassword($s_username, $s_password, $s_stored){
-    $s_text = $this->hashUserPassword($s_password, $s_username);
-
-    return $this->obj_hashing->verify($s_text, $s_stored, $this->s_systemSalt);
+    return $this->obj_hashing->verifyUserPassword($s_username, $s_password, $s_stored, $this->s_systemSalt);
   }
 
   public function createSalt(){
@@ -99,12 +96,13 @@ class Hashing extends Service{
 
 }
 
-abstract class HashingParent {
+abstract class HashingParent{
 
   abstract public function hash($s_text, $s_salt);
 
   public function verify($s_text, $s_stored, $s_salt){
     $s_input = $this->hash($s_text, $s_salt);
+
     return $s_input === $s_stored;
   }
 
@@ -122,11 +120,11 @@ abstract class HashingParent {
 
   public function verifyUserPassword($s_username, $s_password, $s_stored, $s_salt){
     $s_text = $this->hashUserPassword($s_username, $s_password, $s_salt);
-    return $this->verify($s_text, $s_stored, $s_salt);
+    return ($s_text === $s_text);
   }
 
   protected function createUserPassword($s_username, $s_password){
-    return substr(md5($s_username), 5, 30) . $s_password;
+    return substr(md5(strtolower($s_username)), 5, 30) . $s_password;
   }
 
 }
@@ -140,10 +138,6 @@ class HashNormal extends HashingParent{
     return $s_hash;
   }
 
-  public function verify($s_text, $s_stored, $s_salt){
-    return password_verify($s_input, $s_stored);
-  }
-
   public function hashUserPassword($s_username, $s_password, $s_salt){
     $a_options = array( 'salt' => $s_salt );
     $s_text = $this->createUserPassword($s_username, $s_password);
@@ -151,12 +145,6 @@ class HashNormal extends HashingParent{
     $s_hash = password_hash($s_text, PASSWORD_BCRYPT, $a_options);
 
     return $s_hash;
-  }
-
-  public function verifyUserPassword($s_username, $s_password, $s_stored, $s_salt){
-    $s_text = $this->createUserPassword($s_username, $s_password);
-
-    return password_verify($s_text, $s_stored);
   }
 
 }
