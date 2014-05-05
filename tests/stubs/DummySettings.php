@@ -22,6 +22,11 @@ class DummySettings extends \core\services\Settings {
   }
   
   private function preparePath($s_path){
+    $i_pos = strpos($s_path,'/');
+    if( ($i_pos === false) || (substr($s_path, 0,$i_pos) != 'settings') ){
+      $s_path = 'settings/'.$s_path;
+    }
+    
     return str_replace('/','_',$s_path);
   }
 }
