@@ -119,6 +119,8 @@ class Memory{
     require_once(Memory::$s_servicePath . 'Logs.inc.php');
     $service_Logs = new \core\services\Logs($service_File,$service_FileData);
     Memory::$a_memory[ 'service' ][ 'Logs' ] = $service_Logs;
+    
+    require_once(Memory::$s_servicePath.'Session.inc.php');
 
     if( !defined('DB_PREFIX') ){
       define('DB_PREFIX', $service_Settings->get('settings/SQL/prefix'));
@@ -603,7 +605,7 @@ class Memory{
    * @return Object	The called object
    */
   private static function injection($s_caller, $s_filename){
-    $ref = new ReflectionClass($s_caller);
+    $ref = new \ReflectionClass($s_caller);
     if( !$ref->isInstantiable() ){
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }

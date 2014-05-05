@@ -1,240 +1,207 @@
 <?php
-define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/include/GeneralTest.php');
+define('NIV', dirname(__FILE__) . '/../../../../');
 
-class testData_Group extends GeneralTest {
-	private $service_Database;
-	private $model_Group;
-	private $i_id;
-	private $s_name;
-	private $i_default;
-	private $s_description;
+require(NIV . 'tests/GeneralTest.php');
 
-	public function __construct(){
-		parent::__construct();
+class testData_Group extends GeneralTest{
 
-		require_once(NIV.'include/models/data/Data_Group.inc.php');
-	}
+  private $model_Group;
 
-	public function setUp(){
-		parent::setUp();
-		
-		$this->service_Database = Memory::services('Database');
+  public function __construct(){
+    parent::__construct();
 
-		$this->i_id = 10000;
-		$this->s_name = 'test group';
-		$this->i_default = 1;
-		$this->s_description = 'test group';
-		
-		$a_data = array('id'=>$this->i_id,'name'=>$this->s_name,'automatic'=>$this->i_default,'description'=>$this->s_description);
-		$this->model_Group = new Data_Group($a_data);
-	}
+    require_once(NIV . 'include/models/data/Data_Group.inc.php');
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyQueryBuilder');
+    $this->loadStub('DummySecurity');
+  }
 
-	public function tearDown(){
-		$this->model_Group = null;
+  public function setUp(){
+    parent::setUp();
 
-		parent::tearDown();
-	}
+    $service_Database = new DummyDAL();
+    $service_Security = new DummySecurity($service_Database);
+    $service_Builder = new DummyQueryBuilder($service_Database);
 
-	/**
-	 * Test of setting the group data
-	 *
-	 * @param array $a_data		The group data
-	 */
-	public function testSetData() {		
-		$this->assertEquals($this->i_id,$this->model_Group->getID());
-		$this->assertEquals($this->s_name,$this->model_Group->getName());
-		$this->assertTrue($this->model_Group->isDefault());
-		$this->assertEquals($this->s_description,$this->model_Group->getDescription());
-	}
+    $this->i_id = 10000;
+    $this->s_name = 'test group';
+    $this->i_default = 1;
+    $this->s_description = 'test group';
 
+    $this->model_Group = new \core\models\data\Data_Group($service_Builder, $service_Security);
+  }
 
-	/**
-	 * Test of setting the name
-	 */
-	public function testSetName() {
-		$s_newName = 'lalala';
-		$this->model_Group->setName($s_newName);
-		$this->assertEquals($s_newName,$this->model_Group->getName());		
-	}
+  public function tearDown(){
+    $this->model_Group = null;
 
-	/**
-	 * Test of setting the description
-	 */
-	public function testSetDescription() {
-		$s_description = 'oke';
-		$this->model_Group->setDescription($s_description);
-		$this->assertEquals($s_description,$this->model_Group->getDescription());
-	}
+    parent::tearDown();
+  }
 
-	/**
-	 * Test of setting the group as not default
-	 */
-	public function testSetDefault() {
-		$this->model_Group->setDefault(false);
-		$this->assertFalse($this->model_Group->isDefault());
-	}
+  /**
+   * Test of setting the group data
+   *
+   * @test
+   */
+  public function setData(){
+    $a_data = array( 'id' => 1, 'name' => 'test name', 'automatic' => 1, 'description' => 'test description' );
+    $this->model_Group->setData($a_data);
 
-	/**
-	 * Test of geting the user access level
-	 * Expected Session::FORBIDDEN (no access)
-	 */
-	public function testGetLevelByGroupID() {
-		Memory::services('Session');
-		$this->assertEquals(Session::FORBIDDEN,$this->model_Group->getLevelByGroupID($this->i_id));
-	}
+    $this->assertEquals($a_data[ 'id' ], $this->model_Group->getID());
+    $this->assertEquals($a_data[ 'name' ], $this->model_Group->getName());
+    $this->assertTrue($this->model_Group->isDefault());
+    $this->assertEquals($a_data[ 'description' ], $this->model_Group->getDescription());
+  }
 
-	/**
-	 * Test of getting all the members from the group
-	 * Expected : empty array
-	 */
-	public function testGetMembersByGroup() {
-		$this->assertEquals(array(),$this->model_Group->getMembersByGroup());
-	}
+  /**
+   * Test of setting the name
+   * 
+   * @test
+   */
+  public function setNames(){
+    $s_newName = 'lalala';
+    $this->model_Group->setName($s_newName);
+    $this->assertEquals($s_newName, $this->model_Group->getName());
+  }
 
-	/**
-	 * Saves the new group
-	 */
-	public function testSave() {
-		$this->service_Database->transaction();
-		
-		$this->addGroup();
-		
-		$this->service_Database->queryBinded("SELECT id FROM ".DB_PREFIX."groups WHERE name = ?",'s',$this->s_name);
-		$i_num = $this->service_Database->num_rows();
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(1,$i_num,'Saving of the group failed');
-	}
+  /**
+   * Test of setting the description
+   * 
+   * @test
+   */
+  public function setDescription(){
+    $s_description = 'oke';
+    $this->model_Group->setDescription($s_description);
+    $this->assertEquals($s_description, $this->model_Group->getDescription());
+  }
 
-	/**
-	 * Test of saving the changed group
-	 */
-	public function testPersist(){
-		$s_newName	= 'newName';
-		
-		$this->service_Database->transaction();
-		
-		$this->addGroup();
-		
-		$this->model_Group->setName($s_newName);
-		
-		$this->model_Group->persist();
-		
-		$this->service_Database->queryBinded("SELECT id FROM ".DB_PREFIX."groups WHERE name = ?",'s',$s_newName);
-		$i_num = $this->service_Database->num_rows();
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(1,$i_num,'Updating of the group failed');
-	}
+  /**
+   * Test of setting the group as not default
+   * 
+   * @test
+   */
+  public function setDefault(){
+    $this->model_Group->setDefault(false);
+    $this->assertFalse($this->model_Group->isDefault());
+  }
 
-	/**
-	 * Deletes the group
-	 */
-	public function testDeleteGroup() {
-		$this->service_Database->transaction();
-		
-		$this->addGroup();
-		
-		$this->model_Group->deleteGroup();
-		
-		$this->service_Database->queryBinded("SELECT id FROM ".DB_PREFIX."groups WHERE name = ?",'s',$this->s_name);
-		$i_num = $this->service_Database->num_rows();
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(0,$i_num,'Removing of the group failed');
-	}
+  /**
+   * Test of geting the user access level
+   * Expected Session::FORBIDDEN (no access)
+   * 
+   * @test
+   */
+  public function getLevelByGroupID(){
+    $this->assertEquals(\core\services\Session::FORBIDDEN, $this->model_Group->getLevelByGroupID($this->i_id));
+  }
 
-	/**
-	 * Test of adding an user to the group
-	 */
-	public function testAddUser(){
-		$this->service_Database->transaction();
-		
-		$this->addUser();
-		
-		$this->service_Database->queryBinded("SELECT id FROM ".DB_PREFIX."group_users WHERE groupID = ? AND userid = ?",array('i','i'),array($this->i_id,-1));
-		$i_num = $this->service_Database->num_rows();
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(1, $i_num,'Adding a user to the group failed');
-	}
+  /**
+   * Test of getting all the members from the group
+   * Expected : empty array
+   * 
+   * @test
+   */
+  public function getMembersByGroup(){
+    $this->assertEquals(array(), $this->model_Group->getMembersByGroup());
+  }
 
-	/**
-	 * Test of editing the users access rights for this group
-	 */
-	public function testEditUser(){
-		$this->service_Database->transaction();
-		
-		$this->addUser();
-		$this->model_Group->editUser(-1,0);
-		
-		$this->service_Database->queryBinded("SELECT level FROM ".DB_PREFIX."group_users WHERE groupID = ? AND userid = ?",array('i','i'),array($this->i_id,-1));
-		$i_num = $this->service_Database->num_rows();
-		( $i_num > 0 )	? $i_level = $this->service_Database->result(0,'level') : $i_level = null; 
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(1, $i_num,'Adding a user to the group failed');
-		$this->assertNotNull($i_level,'Updating the user failed');
-	}
+  /**
+   * Saves the new group
+   * 
+   * @test
+   */
+  public function save(){
+    try{
+      $this->model_Group->save();
+      $this->fail('Expected validation Exception');
+    }
+    catch( ValidationException $ex ){
+      
+    }
+    catch( Exception $ex ){
+      $this->fail('Unexpected exception : ' . $ex->getMessage());
+    }
 
-	/**
-	 * Adds all the users to this group if the group is default
-	 */
-	public function testAddUsersToDefault(){
-		$this->service_Database->transaction();
-		
-		$this->model_Group->addUsersToDefault();
-		
-		$this->service_Database->queryBinded("SELECT id FROM ".DB_PREFIX."group_users WHERE groupID = ?",'i',$this->i_id);
-		$i_num = $this->service_Database->num_rows();
-		
-		$this->service_Database->rollback();
-		
-		$this->assertNotEquals(0, $i_num);
-	}
+    $this->model_Group->setName('test name');
+    $this->model_Group->setDescription('test description');
+    $this->model_Group->setDefault(true);
+    $this->model_Group->save();
+  }
 
-	/**
-	 * Deletes the user from the group
-	 *
-	 * @param int $i_userid	The userid
-	 */
-	public function testDeleteUser(){
-		$this->service_Database->transaction();
-		
-		$this->addUser();
-		$this->model_Group->deleteUser(-1);
-		
-		$this->service_Database->queryBinded("SELECT level FROM ".DB_PREFIX."group_users WHERE groupID = ? AND userid = ?",array('i','i'),array($this->i_id,-1));
-		$i_num = $this->service_Database->num_rows(); 
-		
-		$this->service_Database->rollback();
-		
-		$this->assertEquals(0, $i_num,'Deleting a user to the group failed');
-	}
+  /**
+   * Test of saving the changed group
+   * 
+   * @test
+   */
+  public function persist(){
+    $this->model_Group->setData(array( 'id' => 12121, 'name' => 'newName', 'automatic' => 1, 'description' => '' ));
 
-	/**
-	 * Test of the in use check
-	 */
-	public function testInUse(){
-		$this->assertFalse($this->model_Group->inUse());
-	}
-	
-	private function addGroup(){
-		$a_data = array('id'=>null,'name'=>$this->s_name,'automatic'=>$this->i_default,'description'=>$this->s_description);
-		$this->model_Group = new Data_Group($a_data);
-		
-		$this->model_Group->save();
-	}
-	
-	private function addUser(){
-		$this->model_Group->addUser(-1,2);
-	}
+    try{
+      $this->model_Group->persist();
+      $this->fail('Expected ValidationException');
+    }
+    catch( ValidationException $ex ){}
+    catch( Exception $ex ){
+      $this->fail('Unexpected exception : '.$ex->getMessage());
+    }
+    
+    $this->model_Group->setDescription('test description');
+    $this->model_Group->persist();
+  }
+
+  /**
+   * Deletes the group
+   * 
+   * @test
+   */
+  public function deleteGroup(){
+    $this->model_Group->deleteGroup();
+  }
+
+  /**
+   * Test of adding an user to the group
+   * 
+   * @test
+   */
+  public function addUser(){
+    $this->model_Group->addUser(10, 1);
+    $this->model_Group->addUser(10, -1);
+  }
+
+  /**
+   * Test of editing the users access rights for this group
+   * 
+   * @test
+   */
+  public function editUser(){
+    $this->model_Group->editUser(-1, 0);
+  }
+
+  /**
+   * Adds all the users to this group if the group is default
+   * 
+   * @test
+   */
+  public function addUsersToDefault(){
+    $this->model_Group->addUsersToDefault();
+  }
+
+  /**
+   * Deletes the user from the group
+   *
+   * @test
+   */
+  public function deleteUser(){
+    $this->model_Group->deleteUser(-1);
+  }
+
+  /**
+   * Test of the in use check
+   * 
+   * @test
+   */
+  public function inUse(){
+    $this->assertFalse($this->model_Group->inUse());
+  }
 }
 ?>
