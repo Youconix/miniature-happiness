@@ -29,28 +29,36 @@ namespace core\models;
  * @see		include/models/data/Data_Group.inc.php
  */
 class Groups extends Model{
-
-  protected $a_groups;
   protected $service_Session;
+  protected $model_DataGroup;
+  protected $a_groups;
+  
 
   /**
    * PHP5 constructor
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
+   * @param \core\services\Security $service_Security The security service
    * @param \core\services\Session  $service_Session    The session handler
+   * @param \core\models\data\Data_Group $model_DataGroup   The group data model
    */
-  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Session $service_Session){
-    parent::__construct($service_QueryBuilder);
+  public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,
+    \core\services\Session $service_Session,  \core\models\data\Data_Group $model_DataGroup){
+    parent::__construct($service_QueryBuilder,$service_Security);
 
     $this->service_Session = $service_Session;
-    require_once(NIV . 'include/models/data/Data_Group.inc.php');
+    $this->model_DataGroup  = $model_DataGroup;
 
     $this->a_groups = array();
 
     /* Load group-names */
-    $this->service_Database->query("SELECT * FROM " . DB_PREFIX . "groups ORDER BY id");
-    $a_groups = $this->service_Database->fetch_assoc();
+    $this->service_QueryBuilder->select('groups','*')->order('id');
+    $service_Database = $this->service_QueryBuilder->getResult();
+    
+    $a_groups = $service_Database->fetch_assoc();
     foreach( $a_groups AS $a_group ){
-      $this->a_groups[ $a_group[ 'id' ] ] = new Data_Group($a_group);
+      $model = $this->model_DataGroup->cloneModel();
+      $model->setData($a_group);
+      $this->a_groups[ $a_group[ 'id' ] ] = $model;
 
       $s_name = strtoupper($a_group[ 'name' ]);
       if( !defined('GROUP_' . $s_name) ){
@@ -97,13 +105,15 @@ class Groups extends Model{
     \core\Memory::type('int', $i_userid);
 
     $s_page = \core\Memory::getPage();
-    $this->service_Database->queryBinded("SELECT groupID FROM " . DB_PREFIX . "group_pages WHERE page = ?", array( 's' ), array( $s_page ));
-    if( $this->service_Database->num_rows() > 0 ){
-      $i_groupid = ( int ) $this->service_Database->result(0, 'groupID');
+    $this->service_QueryBuilder->select('group_pages','groupID')->getWhere()->addAnd('page','s',$s_page);
+    $service_Database = $this->service_QueryBuilder->getResult();
+    
+    if( $service_Database->num_rows() > 0 ){
+      $i_groupid = ( int ) $service_Database->result(0, 'groupID');
       return $this->getLevelByGroupID($i_groupid, $i_userid);
     }
 
-    return Session::FORBIDDEN;
+    return \core\services\Session::FORBIDDEN;
   }
 
   /**
@@ -117,12 +127,14 @@ class Groups extends Model{
     \core\Memory::type('int', $i_groupid);
     \core\Memory::type('int', $i_userid);
 
-    $this->service_Database->queryBinded("SELECT level FROM " . DB_PREFIX . "group_users WHERE userid = ? AND groupID = ?", array( 'i', 'i' ), array( $i_userid, $i_groupid ));
-    if( $this->service_Database->num_rows() > 0 ){
-      return $this->service_Database->result(0, 'level');
+    $this->service_QueryBuilder->select('group_users','level')->getWhere()->addAnd(array('userid','groupID'), array( 'i', 'i' ), array( $i_userid, $i_groupid ));
+    $service_Database = $this->service_QueryBuilder->getResult();
+    
+    if( $service_Database->num_rows() > 0 ){
+      return $service_Database->result(0, 'level');
     }
 
-    return Session::FORBIDDEN;
+    return \core\services\Session::FORBIDDEN;
   }
 
   /**
@@ -131,7 +143,7 @@ class Groups extends Model{
    * @return Data_Group	The new group
    */
   public function generateGroup(){
-    return \core\Memory::models('Data_Group',true);
+    return $this->model_DataGroup->cloneModel();
   }
 
   /**
@@ -162,7 +174,7 @@ class Groups extends Model{
     \core\Memory::type('int', $i_level);
 
     foreach( $this->a_groups AS $obj_group ){
-      if( !$obj_group->isDefault() ) continue;
+      if( !$obj_group->isDefault() ){ continue; }
 
       $obj_group->addUser($i_userid, $i_level);
     }
@@ -202,6 +214,5 @@ class Groups extends Model{
       $this->a_groups[ $i_group ]->editUser($i_userid, $i_level);
     }
   }
-
 }
 ?>

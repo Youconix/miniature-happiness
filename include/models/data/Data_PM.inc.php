@@ -39,8 +39,8 @@ class Data_PM extends \core\models\Model {
    * PHP5 constructor
    * 
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
-   * @parma \core\services\Security $service_Security The security service
-   * @parma \core\models\User $model_User   The user model
+   * @param \core\services\Security $service_Security The security service
+   * @param \core\models\User $model_User   The user model
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,\core\models\User $model_User){
 		parent::__construct($service_QueryBuilder,$service_Security);

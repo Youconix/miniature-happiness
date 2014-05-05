@@ -37,7 +37,7 @@ class Data_Group extends \core\models\Model{
    * PHP5 constructor
    * 
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
-   * @parma \core\services\Security $service_Security The security service
+   * @param \core\services\Security $service_Security The security service
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security){
     parent::__construct($service_QueryBuilder,$service_Security);
