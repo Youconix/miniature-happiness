@@ -32,13 +32,12 @@ class Query_main {
 
 	/**
 	 * Includes the correct DAL
+   * 
+   * \core\services\Settings $service_Settings  The settings service
 	 */
-	public function __construct(){
-
-		$service_XmlSettings    = Memory::services('XmlSettings');
-
+	public function __construct(\core\services\Settings $service_Settings){
 		/* databasetype */
-		$this->s_type           = ucfirst($service_XmlSettings->get('settings/SQL/type'));
+		$this->s_type           = ucfirst($service_Settings->get('settings/SQL/type'));
 	}
 
 	/**

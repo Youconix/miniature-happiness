@@ -284,8 +284,7 @@ class Date extends Range {
    * @param String $s_value   The value
    */
 	public function __construct($s_name,$s_value){
-		parent::__construct($s_name,'html5');
-		$this->setValue($s_value);
+		parent::__construct($s_name,$s_value);
 	
 		$this->s_tag = '<input type="date" name="{name}"{min}{max}{between} value="{value}">';
 	}
@@ -301,8 +300,7 @@ class Number extends Range {
    * @param String $s_value   The value
    */
 	public function __construct($s_name,$s_value){
-		parent::__construct($s_name,'html5');
-		$this->setValue($s_value);
+		parent::__construct($s_name,$s_value);
 		
 		$this->s_tag = '<input type="number" name="{name}"{min}{max}{step}{between} value="{value}">';
 	}

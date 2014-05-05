@@ -314,15 +314,16 @@ class Memory{
     else {
       $s_path = Memory::$s_helperPath . $s_name . '.inc.php';
     }
+    
     if( !$service_File->exists($s_path) ){
       return false;
     }
 
     $s_helper = $service_File->readFile($s_path);
-    if( !$bo_data && strpos($s_helper, 'namespace core\models;') !== false ){
+    if( !$bo_data && strpos($s_helper, 'namespace core\helpers;') !== false ){
       return true;
     }
-    if( $bo_data && strpos($s_helper, 'namespace core\models\data;') !== false ){
+    if( $bo_data && strpos($s_helper, 'namespace core\helpers\data;') !== false ){
       return true;
     }
     if( strpos($s_helper, 'class Helper_' . $s_name) !== false ){
@@ -443,6 +444,10 @@ class Memory{
     if( !$bo_data && Memory::checkMemory('service', $s_service) ){
       return Memory::getMemory('service', $s_service);
     }
+    
+    if( $s_service == 'DAL' ){
+      $s_service = 'Database';
+    }
 
     /* Check service */
     $service_File = Memory::getMemory('service', 'File');
@@ -459,12 +464,12 @@ class Memory{
     require_once($s_path);
 
     if( $s_service == 'Database' ){
-      $obj_Query_main = new core\database\Query_main();
+      $obj_Query_main = new \core\database\Query_main();
       $object = $obj_Query_main->loadDatabase();
     }
     else {
-      if( class_exists('core\services\\' . $s_service) ){
-        $s_caller = 'core\services\\' . $s_service;
+      if( class_exists('\core\services\\' . $s_service) ){
+        $s_caller = '\core\services\\' . $s_service;
       }
       else if( class_exists('Service_' . $s_service) ){
         /* Legancy way */
@@ -558,7 +563,7 @@ class Memory{
     require_once($s_path);
 
     if( class_exists('core\models\\' . $s_model) ){
-      $s_caller = 'core\modesl\\' . $s_model;
+      $s_caller = 'core\models\\' . $s_model;
     }
     else if( class_exists('Model_' . $s_model) ){
       /* Legancy way */
@@ -610,7 +615,12 @@ class Memory{
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }
 
-    $s_file = Memory::services('File')->readFile(NIV . $s_filename);
+    if( substr($s_filename, 0,1) == '/' ){
+      $s_file = Memory::services('File')->readFile($s_filename);
+    }
+    else {
+      $s_file = Memory::services('File')->readFile(NIV . $s_filename);
+    }
     preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
     if( count($a_matches) == 0 ){
       /* No arguments */
