@@ -12,13 +12,13 @@ class testQueue extends GeneralTest {
 	public function __construct(){
 		parent::__construct();
 		
-		require_once(NIV.'include/class/Queue.inc.php');
+		require_once(NIV.'include/classes/Queue.inc.php');
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->obj_Queue	= new Queue();
+		$this->obj_Queue	= new \core\classes\Queue();
 		$this->a_data	= array(23,456,1332,42354);
 	}
 	
@@ -36,7 +36,7 @@ class testQueue extends GeneralTest {
 	public function construct(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		
-		$this->obj_Queue	= new Queue($this->a_data);
+		$this->obj_Queue	= new \core\classes\Queue($this->a_data);
 		
 		$this->assertFalse($this->obj_Queue->isEmpty());
 	}
@@ -49,7 +49,7 @@ class testQueue extends GeneralTest {
 	public function addQueue(){
 		$this->assertTrue($this->obj_Queue->isEmpty());
 		
-		$obj_Queue	= new Queue($this->a_data);
+		$obj_Queue	= new \core\classes\Queue($this->a_data);
 		$this->obj_Queue->addQueue($obj_Queue);
 		
 		$this->assertFalse($this->obj_Queue->isEmpty());

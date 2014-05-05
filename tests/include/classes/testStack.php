@@ -12,13 +12,13 @@ class testStack extends GeneralTest {
 	public function __construct(){
 		parent::__construct();
 		
-		require_once(NIV.'include/class/Stack.inc.php');
+		require_once(NIV.'include/classes/Stack.inc.php');
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->obj_Stack	= new Stack();
+		$this->obj_Stack	= new \core\classes\Stack();
 		$this->a_data	= array(23,456,1332,42354);
 	}
 	
@@ -36,7 +36,7 @@ class testStack extends GeneralTest {
 	public function construct(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		
-		$this->obj_Stack	= new Stack($this->a_data);
+		$this->obj_Stack	= new \core\classes\Stack($this->a_data);
 		
 		$this->assertFalse($this->obj_Stack->isEmpty());
 	}
@@ -49,7 +49,7 @@ class testStack extends GeneralTest {
 	public function addStack(){
 		$this->assertTrue($this->obj_Stack->isEmpty());
 		
-		$obj_Queue	= new Stack($this->a_data);
+		$obj_Queue	= new \core\classes\Stack($this->a_data);
 		$this->obj_Stack->addStack($obj_Queue);
 		
 		$this->assertFalse($this->obj_Stack->isEmpty());

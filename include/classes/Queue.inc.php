@@ -1,4 +1,7 @@
 <?php 
+
+namespace core\classes;
+
 /**
  * Queue class.
  * This collection works with the principal first in, first out
@@ -8,7 +11,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed    08/12/10
+ * @changed    05/05/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,7 +51,7 @@ class Queue {
 	 */
 	public function addQueue($obj_Queue){
 		if( !($obj_Queue instanceof Queue) ){
-			throw new Exception("Can only add Queues");
+			throw new \Exception("Can only add Queues");
 		}
 
 		while( !$obj_Queue->isEmpty() ){

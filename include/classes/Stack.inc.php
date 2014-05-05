@@ -1,4 +1,7 @@
 <?php 
+
+namespace core\classes;
+
 /**
  * Stack class.
  * This collection works with the principal first in, last out
@@ -8,7 +11,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed    08/12/10
+ * @changed    05/05/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -83,8 +86,9 @@ class Stack {
 	 * @throws StackException	If the stack is empty
 	 */
 	public function pop(){
-		if( $this->isEmpty() )
+		if( $this->isEmpty() ){
 			throw new StackException("Can not pop from empty stack");
+    }
 
 		$s_content	= $this->a_content[$this->i_counter];
 		$this->a_content[$this->i_counter] = null;
@@ -100,8 +104,9 @@ class Stack {
 	 * @throws StackException	If the stack is empty
 	 */
 	public function peek(){
-		if( $this->isEmpty() )
+		if( $this->isEmpty() ){
 			throw new StackException("Can not peek from empty stack");
+    }
 
 		return $this->a_content[$this->i_counter];
 	}
@@ -115,8 +120,7 @@ class Stack {
 	public function search($search){
 		for($i=0; $i<=$this->i_counter; $i++){
 			if( is_object($this->a_content[$i]) && ($this->a_content[$i] instanceof String) ){
-				if( $this->a_content[$i]->equals($search) )
-					return true;
+        if( $this->a_content[$i]->equals($search) ){  return true;  }
 			}
 			if( $this->a_content[$i] == $search ){
 				return true;
@@ -144,5 +148,5 @@ class Stack {
 	}
 }
 
-class StackException extends Exception {
+class StackException extends \Exception {
 }

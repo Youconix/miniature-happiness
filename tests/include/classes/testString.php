@@ -13,13 +13,13 @@ class testString extends GeneralTest {
 	public function __construct(){
 		parent::__construct();
 		
-		require_once(NIV.'include/class/String.inc.php');
+		require_once(NIV.'include/classes/String.inc.php');
 	}
 
 	public function setUp(){
 		parent::setUp();
 		
-		$this->obj_String	= new String();
+		$this->obj_String	= new \core\classes\String();
 		$this->s_data	= 'sdgfswstrw35trwersdfghdfhgasdfsvddfg';
 		$this->s_data2	= 'QWEfdgsd32q4erdsagfsdesarfsdf';
 	}
@@ -36,7 +36,7 @@ class testString extends GeneralTest {
 	 * @test
 	 */
 	public function construct(){
-		$this->obj_String	= new String($this->s_data);
+		$this->obj_String	= new \core\classes\String($this->s_data);
 		$this->assertEquals($this->s_data,$this->obj_String->value());
 	}
 

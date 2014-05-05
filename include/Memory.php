@@ -93,7 +93,7 @@ class Memory{
     Memory::$s_servicePath = NIV . 'include/services/';
     Memory::$s_modelPath = NIV . 'include/models/';
     Memory::$s_helperPath = NIV . 'include/helpers/';
-    Memory::$s_classPath = NIV . 'include/class/';
+    Memory::$s_classPath = NIV . 'include/classes/';
     Memory::$s_interfacePath = NIV . 'include/interface/';
 
     require_once(Memory::$s_servicePath . 'Service.inc.php');

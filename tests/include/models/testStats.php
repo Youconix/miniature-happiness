@@ -1,7 +1,9 @@
 <?php
 define('NIV',dirname(__FILE__).'/../../../');
 
-require(NIV.'tests/GeneralTest.php');
+if( !class_exists('GeneralTest') ){
+	require(NIV.'tests/GeneralTest.php');
+}
 
 class testStats extends GeneralTest {
 	private $service_Builder;
