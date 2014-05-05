@@ -18,6 +18,7 @@ class testData_User extends GeneralTest{
     $this->loadStub('DummyDAL');
     $this->loadStub('DummyQueryBuilder');
     $this->loadStub('DummySecurity');
+    $this->loadStub('DummyModelGroupData');
     $this->loadStub('DummyGroups');
     $this->loadStub('DummyLanguage');
     $this->loadStub('DummyHashing');
@@ -29,7 +30,8 @@ class testData_User extends GeneralTest{
     $service_Database = new DummyDAL();
     $service_Security = new DummySecurity($service_Database);
     $service_Builder = new DummyQueryBuilder($service_Database);
-    $model_Groups = new DummyGroups();
+    $model_GroupsData = new DummyModelGroupData();
+    $model_Groups = new DummyGroups($model_GroupsData);
     $service_Language = new DummyLanguage();
     $service_Hashing = new DummyHashing();
 

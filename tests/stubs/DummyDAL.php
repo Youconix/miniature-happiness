@@ -101,7 +101,7 @@ class DummyDAL implements \core\database\DAL {
     
   }
 
-  public function result($i_row, $s_field){
+  public function result($i_row, $s_field){    
     return $this->a_data[$i_row][$s_field];
   }
 

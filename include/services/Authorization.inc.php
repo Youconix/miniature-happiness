@@ -234,6 +234,115 @@ class Authorization extends Service{
 
     return $obj_authorization = $this->resendActivationEmail($s_username, $s_email);
   }
+  
+  
+	/**
+	 * Registers the password reset request
+	 *
+	 * @param String $s_email			The email address
+	 * @return int	The status code
+	 * 		0	Email address unknown
+	 * 		-1	OpenID account
+	 * 		1 	Email send
+	 */
+	public function resetPasswordMail($s_email){
+		$this->service_QueryBuilder->select('users','id,loginType,nick')->getWhere()->addAnd(array('active','blocked','email'),array('s','s','s'),array(1,0,$s_email));
+		$service_Database = $this->service_QueryBuilder->getResult();
 
+    if( $service_Database->num_rows() == 0 ){ return 0; }
+
+		$s_username		= $service_Database->result(0,'nick');
+		$i_userid		= $service_Database->result(0,'id');
+		$s_loginType	= $service_Database->result(0,'loginType');
+
+    if( $s_loginType != 'normal' ){ return -1; }
+
+
+		$service_Random	= \core\Memory::services('Random');
+		$s_newPassword	= $service_Random->numberLetter(10,true);
+		$s_hash			= sha1($s_username.$service_Random->numberLetter(20,true).$s_email);
+
+		$s_passwordHash	= $this->hashPassword($s_newPassword,$s_username);
+		$this->service_QueryBuilder->insert('password_codes',array('userid','code','password','expire'),array('i','s','s','i'),array($i_userid,$s_hash,$s_passwordHash,(time() + 86400)))->getResult();
+
+		Memory::services('Mailer')->passwordResetMail($s_username,$s_email,$s_newPassword,$s_hash) ;
+
+
+		return 1;
+	}
+
+	/**
+	 * Resets the password
+	 *
+	 * @param String $s_hash			The reset hash
+	 * @return boolean	True if the hash is correct, otherwise false
+	 */
+	public function resetPassword($s_hash){
+		$this->service_QueryBuilder->select('password_codes','userid,password')->getWhere()->addAnd(array('code','expire'),
+				array('s','i'),array($s_hash,time()),array('=','>'));
+
+		$service_Database = $this->service_QueryBuilder->getResult();
+    if( $service_Database->num_rows() == 0 ){ return false; }
+
+		$i_userid	= $service_Database->result(0,'userid');
+		$s_password	= $service_Database->result(0,'password');
+		try {
+			$this->service_QueryBuilder->transaction();
+
+			$this->service_QueryBuilder->delete('password_codes')->getWhere()->addOr(array('code','expire'),
+					array('s','i'),array($s_hash,time()),array('=','<'));
+			$this->service_QueryBuilder->getResult();
+			
+			$this->service_QueryBuilder->delete('ipban')->getWhere()->addAnd('ip','s',$_SERVER['REMOTE_ADDR']);
+			$this->service_QueryBuilder->getResult();
+			$this->clearLoginTries();
+			
+			$this->service_QueryBuilder->update('users',array('password','active','password_expired'),array('s','s','s'),array($s_password,'1','1'));
+			$this->service_QueryBuilder->getWhere()->addAnd('id','i',$i_userid);
+			$this->service_QueryBuilder->getResult();
+
+			$this->service_QueryBuilder->commit();
+			return true;
+		}
+		catch(\DBException $e){
+			$this->service_QueryBuilder->rollback();
+			Memory::services('ErrorHandler')->error($e);
+			return false;
+		}
+	}
+
+	/**
+	 * Disables the account by the username
+	 * Sends a notification email
+	 *
+	 * @param String $s_username	The username
+	 */
+	public function disableAccount($s_username){
+		\core\Memory::type('string',$s_username);
+
+		try {
+			$this->service_QueryBuilder->select('users','email')->getWhere()->addAnd('nick','s',$s_username);
+			
+			$service_Database = $this->service_QueryBuilder->getResult();
+			if( $service_Database->num_rows() == 0 )
+				return;
+
+			$s_email	= $service_Database->result(0,'email');
+
+			$this->service_QueryBuilder->transaction();
+
+			$this->service_QueryBuilder->update('users','active','s','0')->getWhere()->addAnd('nick','s',$s_username);
+			$this->service_QueryBuilder->getResult();
+
+			/* Send mail to user */
+			Memory::services('Mailer')->accountDisableMail($s_username,$s_email);
+
+			$this->service_QueryBuilder->commit();
+		}
+		catch(Exception $e){
+			$this->service_QueryBuilder->rollback();
+			Memory::services('ErrorHandler')->error($e);
+		}
+	}
 }
 ?>

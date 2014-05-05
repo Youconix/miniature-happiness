@@ -13,7 +13,7 @@ class DummyModelUserData extends \core\models\data\Data_User {
   public function __construct(){  }
   
   public function loadData($i_userid){
-    throw new \DBException("Unknown user with userid " . $i_userid);
+    $this->i_userid = $i_userid;
   }
 
   /**
