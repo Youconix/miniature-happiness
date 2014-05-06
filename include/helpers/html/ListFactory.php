@@ -50,8 +50,9 @@ class ListCollection extends HtmlItem {
      */
     public function addRow($s_row) {
         if (is_object($s_row)) {
-            if( get_class($s_row) != 'ListItem' )
+            if( !( $s_row instanceof ListItem) ){
                 throw new \Exception("Unexpected input in UnList::addRow. Expect string or ListItem");
+            }
 
             $s_row = $s_row->generateItem();
         }
@@ -84,7 +85,7 @@ class ListItem extends HtmlItem {
      * @param String/CoreHtmLItem $s_content		The content
      */
     public function __construct($s_content) {
-        $this->s_tag = "<li {between}>" . $this->parseContent($s_content) . "</li>\n";
+        $this->s_tag = '<li {between}>' . $this->parseContent($s_content) . '</li>';
     }
 }
 ?>

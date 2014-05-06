@@ -83,6 +83,16 @@ class Audio extends HtmlItem {
 			
 		return $this;
 	}
+  
+  /**
+   * Generates the sources
+   */
+  protected function generateSources(){
+    $this->s_value	= '';
+		foreach($this->a_sources AS $a_source){
+			$this->s_value .= '<source src="'.$a_source[0].'" type="audio/'.$a_source[1].'">';
+		}
+  }
 
 	/**
 	 * Generates the (X)HTML-code
@@ -91,18 +101,19 @@ class Audio extends HtmlItem {
 	 * @return  String  The (X)HTML code
 	 */
 	public function generateItem(){
-		/* Generate sources */
-		$this->s_value	= '';
-		foreach($this->a_sources AS $a_source){
-			$this->s_value .= '<source src="'.$a_source[0].'" type="video/'.$a_source[1].'">';
-		}
+    /* Generate sources */
+    if( $this->bo_autoplay ){
+      $this->s_preload = '';
+    }
+    
+		$this->generateSources();
 
 		/* Generate between */
 		if( $this->bo_autoplay )	$this->s_between .= ' autoplay="autoplay"';
 		if( $this->bo_controls )	$this->s_between .= ' controls="controls"';
 		if( $this->bo_loop )		$this->s_between .= ' loop="loop"';
 		if( $this->bo_muted )		$this->s_between .= ' muted="muted"';
-		if( !empty($this->s_preload))	$this->s_between .= ' preload="'.$this->s_poster.'"';
+		if( !empty($this->s_preload))	$this->s_between .= ' preload="'.$this->s_preload.'"';
 		
 		return parent::generateItem();
 	}
@@ -147,6 +158,16 @@ class Video extends Audio {
 			
 		return $this;
 	}
+  
+  /**
+   * Generates the sources
+   */
+  protected function generateSources(){
+    $this->s_value	= '';
+		foreach($this->a_sources AS $a_source){
+			$this->s_value .= '<source src="'.$a_source[0].'" type="video/'.$a_source[1].'">';
+		}
+  }
 
 	/**
 	 * Generates the (X)HTML-code

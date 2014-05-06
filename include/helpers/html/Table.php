@@ -29,14 +29,12 @@ class Table extends HtmlItem {
 	private $obj_header = null;
 	private $a_rows;
 	private $obj_footer = null;
-	private $i_cellspacing = -1;
-	private $i_cellpadding = -1;
 
 	/**
 	 * Generates a new table element
 	 */
 	public function __construct(){
-		$this->s_tag = "<table{cellspacing}{cellpadding} {between}>\n{value}</table>\n";
+		$this->s_tag = "<table {between}>\n{value}</table>\n";
 
 		$this->a_rows = array();
 	}
@@ -47,7 +45,7 @@ class Table extends HtmlItem {
 	 * @param TableRow $obj_row		The row
 	 */
 	public function addHeader($obj_row){
-		if( !($obj_row instanceof core\helpers\html\TableRow) ){
+		if( !($obj_row instanceof TableRow) ){
 			throw new \Exception('Invalid input in Table:addHeader. Only a TableRow is allowed. Found '.get_class($obj_row).'.');
 		}
 		
@@ -94,34 +92,7 @@ class Table extends HtmlItem {
 			throw new \Exception('Invalid input in Table:addFooter. Only a TableRow is allowed. Found '.get_class($obj_row).'.');
 		}
 
-		if( substr($s_cell, 0,3) != '<td' )		$s_cell = '<td>'.$s_cell.'</td>';
-		$this->a_footer[] = $s_cell;
-
-		return $this;
-	}
-
-	/**
-	 * Sets the cell spacing
-	 *
-	 * @param int $i_spacing    The cell spacing
-	 */
-	public function setSpacing($i_spacing){
-		if ($i_spacing >= 0){
-			$this->i_cellspacing = $i_spacing;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Sets the cell padding
-	 *
-	 * @param int $i_padding    The cell padding
-	 */
-	public function setPadding($i_padding){
-		if ($i_padding >= 0){
-			$this->i_cellpadding = $i_padding;
-		}
+		$this->obj_footer = $obj_row;
 
 		return $this;
 	}
@@ -150,11 +121,6 @@ class Table extends HtmlItem {
 			$this->s_value .= "<tfoot>\n".$this->obj_footer->generateItem()."</tfoot>\n";
 		}
 
-		$this->i_cellspacing != -1 ? $s_spacing = ' cellspacing="' . $this->i_cellspacing . '"' : $s_spacing = '';
-		$this->i_cellpadding != -1 ? $s_padding = ' cellpadding="' . $this->i_cellpadding . '"' : $s_padding = '';
-
-		$this->s_tag = str_replace(array('{cellspacing}', '{cellpadding}'), array($s_spacing, $s_padding), $this->s_tag);
-
 		return parent::generateItem();
 	}
 }
@@ -178,7 +144,7 @@ class TableRow extends HtmlItem {
 	 * @throws Exception    If the content is from the wrong type
 	 */
 	public function addCell($obj_cell){
-		if( !($obj_row instanceof core\helpers\html\TableCell) ){
+		if( !($obj_cell instanceof TableCell) ){
 			throw new \Exception('Invalid input in TableRow:addCell. Only a TableCell is allowed. Found '.get_class($obj_cell).'.');
 		}
 

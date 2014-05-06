@@ -408,7 +408,7 @@ class HTML extends Helper {
 	 * HTML 5 only
 	 *
 	 * @param String $s_content		The content
-	 * @return HTML_Nav		The navigation object
+	 * @return Nav		The navigation object
 	 */
 	public function navigation($s_content = ''){
 		if( $this->s_htmlType != 'html5' )
@@ -418,6 +418,38 @@ class HTML extends Helper {
 		 
 		return new Nav($s_content);
 	}
+  
+  /**
+	 * Generates an article object
+	 * HTML 5 only
+	 *
+	 * @param String $s_content		The content
+	 * @return Article		The article object
+	 */
+  public function article($s_content){
+    if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Article is only supported in HTML 5");
+
+		$this->checkClass('Nav','Div');
+		 
+		return new Article($s_content);
+  }
+  
+  /**
+	 * Generates a section object
+	 * HTML 5 only
+	 *
+	 * @param String $s_content		The content
+	 * @return Article		The section object
+	 */
+  public function section($s_content){
+    if( $this->s_htmlType != 'html5' )
+		throw new \Exception("Section is only supported in HTML 5");
+
+		$this->checkClass('Nav','Div');
+		 
+		return new Section($s_content);
+  }
 
 	/**
 	 * Checks if a class is loaded. If not the class is included

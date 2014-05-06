@@ -63,4 +63,30 @@ class Nav extends Div {
 		$this->setContent($s_content);
 	}
 }
+
+class Article extends Div {
+	/**
+	 * Generates a new article element
+	 *
+	 * @param String $s_content		The content
+	 */
+	public function __construct($s_content) {
+		$this->s_tag = "<article {between}>\n{value}\n</article>\n";
+
+		$this->setContent($s_content);
+	}
+}
+
+class Section extends Div {
+	/**
+	 * Generates a new section element
+	 *
+	 * @param String $s_content		The content
+	 */
+	public function __construct($s_content) {
+		$this->s_tag = "<section {between}>\n{value}\n</section>\n";
+
+		$this->setContent($s_content);
+	}
+}
 ?>
