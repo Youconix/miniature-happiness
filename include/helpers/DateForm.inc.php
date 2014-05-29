@@ -1,5 +1,6 @@
 <?php
-/** 
+
+/**
  * Date for generator			                                                
  * Generates a date selection lists                                             
  *                                                                              
@@ -8,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen                                
  * @author    Rachelle Scheijen                                                
  * @since     1.0                                                              
- * @changed    01/06/08                                                         
+ * @changed   06/05/2014                                                    
  *                                                                              
  * Scripthulp framework is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU Lesser General Public License as published by  
@@ -23,174 +24,171 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Helper_DateForm extends Helper {
-	protected $helper_HTML;
-	protected $i_startYear;
-	protected $i_endYear;
-	protected $i_daySelected;
-	protected $i_monthSelected;
-	protected $i_yearSelected;
-	protected $s_scheme;
+class DateForm extends Helper{
 
-	/**
-	 * PHP 5 constructor
-	 */
-	public function __construct() {
-		$this->helper_HTML = Memory::helpers('HTML');
+  protected $helper_HTML;
+  protected $i_startYear;
+  protected $i_endYear;
+  protected $i_daySelected;
+  protected $i_monthSelected;
+  protected $i_yearSelected;
+  protected $s_scheme;
 
-		$this->reset();
-	}
+  /**
+   * PHP 5 constructor
+   * 
+   * @param \core\helpers\html\HTML $helper_HTML  The HTML generator
+   */
+  public function __construct(\core\helpers\html\HTML $helper_HTML){
+    $this->helper_HTML = $helper_HTML;
 
-	/**
-	 * Resets the form
-	 */
-	public function reset(){
-		$this->i_startYear = date('Y');
-		$this->i_endYear = $this->i_startYear+2;
+    $this->reset();
+  }
 
-		$this->i_daySelected = -1;
-		$this->i_monthSelected = -1;
-		$this->i_yearSelected = -1;
-		$this->s_scheme	= 'd-m-y';
-	}
-	
-	/**
-	 * Sets the date scheme :
-	 * d-m-y		(dd-mm-yyyy)
-	 * m-d-y		(mm-dd-yyyy)
-	 * y-m-d		(yyyy-mm-dd)
-	 * 
-	 * The default is d-m-y
-	 * 
-	 * @param string $s_scheme		The scheme
-	 */
-	public function setScheme($s_scheme){
-		if( in_array($s_scheme,array('d-m-y','m-d-y','y-m-d')) ){
-			$this->s_scheme	= $s_scheme;
-		}
-	}
+  /**
+   * Resets the form
+   */
+  public function reset(){
+    $this->i_startYear = date('Y');
+    $this->i_endYear = $this->i_startYear + 2;
 
-	/**
-	 * Sets the end year
-	 * 
-	 * @param int $i_year		The year
-	 * @throws DateException	If the end year is lower then the start year
-	 */
-	public function setEndYear($i_year) {
-		if ($i_year < $this->i_startYear)
-			throw new DateException("Selecting year " . $i_year . " before start year " . $this->i_startYear . ".");
+    $this->i_daySelected = -1;
+    $this->i_monthSelected = -1;
+    $this->i_yearSelected = -1;
+    $this->s_scheme = 'd-m-y';
+  }
 
-		$this->i_endYear = $i_year;
-	}
+  /**
+   * Sets the date scheme :
+   * d-m-y		(dd-mm-yyyy)
+   * m-d-y		(mm-dd-yyyy)
+   * y-m-d		(yyyy-mm-dd)
+   * 
+   * The default is d-m-y
+   * 
+   * @param string $s_scheme		The scheme
+   */
+  public function setScheme($s_scheme){
+    if( in_array($s_scheme, array( 'd-m-y', 'm-d-y', 'y-m-d' )) ){
+      $this->s_scheme = $s_scheme;
+    }
+  }
 
-	/**
-	 * Sets the start year
-	 *
-	 * @param int $i_year		The year
-	 * @throws DateException	If the start year is higer then the end year
-	 */
-	public function setStartYear($i_year) {
-		if ($i_year > $this->i_endYear)
-			throw new DateException("Selecting year " . $i_year . " after end year " . $this->i_startYear . ".");
+  /**
+   * Sets the end year
+   * 
+   * @param int $i_year		The year
+   * @throws \DateException	If the end year is lower then the start year
+   */
+  public function setEndYear($i_year){
+    if( $i_year < $this->i_startYear ) throw new \DateException("Selecting year " . $i_year . " before start year " . $this->i_startYear . ".");
 
-		$this->i_startYear = $i_year;
-	}
+    $this->i_endYear = $i_year;
+  }
 
-	/**
-	 * Sets the selected date
-	 * All the fields can be set on -1 for no value
-	 * 
-	 * @param int $i_day		The day
-     * @param int $i_month		The month
-     * @param int $i_year		The year
-	 * @throws DateException	If the day or month is invalid
-	 */
-	public function setSelected($i_day, $i_month, $i_year){
-		if( $i_day != -1 && ($i_day < 1 || $i_day > 31) )
-			throw new DateException('Selecting invalid day ' . $i_day);
+  /**
+   * Sets the start year
+   *
+   * @param int $i_year		The year
+   * @throws \DateException	If the start year is higer then the end year
+   */
+  public function setStartYear($i_year){
+    if( $i_year > $this->i_endYear ) throw new \DateException("Selecting year " . $i_year . " after end year " . $this->i_startYear . ".");
 
-		if( $i_month != -1 && ($i_month < 1 || $i_month > 12) )
-			throw new DateException('Selecting invalid month ' . $i_month);
+    $this->i_startYear = $i_year;
+  }
 
-		if( $i_year != -1 && ($i_year < $this->i_startYear || $i_year > $this->i_endYear) )
-			throw new DateException('Selecting invalid year ' . $i_year);
+  /**
+   * Sets the selected date
+   * All the fields can be set on -1 for no value
+   * 
+   * @param int $i_day		The day
+   * @param int $i_month		The month
+   * @param int $i_year		The year
+   * @throws \DateException	If the day or month is invalid
+   */
+  public function setSelected($i_day, $i_month, $i_year){
+    if( $i_day != -1 && ($i_day < 1 || $i_day > 31) ) throw new \DateException('Selecting invalid day ' . $i_day);
 
-		$this->i_daySelected = $i_day;
-		$this->i_monthSelected = $i_month;
-		$this->i_yearSelected = $i_year;
-	}
+    if( $i_month != -1 && ($i_month < 1 || $i_month > 12) ) throw new \DateException('Selecting invalid month ' . $i_month);
 
-	/**
-	 * Generates the form
-	 * 
-	 * @param string $s_idDay		The day form name, default day
-	 * @param string $s_idMonth		The month form name, default month
-	 * @param string $s_idYear		The year form name, default year
-	 * @return string	The generated form
-	 */
-	public function generate($s_idDay = 'day',$s_idMonth='month',$s_idYear='year') {
-		/* Generate day list */
-		$obj_day = $this->generateList(1, 31, $this->i_daySelected, $s_idDay);
+    if( $i_year != -1 && ($i_year < $this->i_startYear || $i_year > $this->i_endYear) ) throw new \DateException('Selecting invalid year ' . $i_year);
 
-		/* Generate month list */
-		$obj_month = $this->generateList(1, 12, $this->i_monthSelected, $s_idMonth);
+    $this->i_daySelected = $i_day;
+    $this->i_monthSelected = $i_month;
+    $this->i_yearSelected = $i_year;
+  }
 
-		/* Generate year list */
-		$obj_year = $this->generateList($this->i_startYear, $this->i_endYear, $this->i_yearSelected, $s_idYear);
+  /**
+   * Generates the form
+   * 
+   * @param string $s_idDay		The day form name, default day
+   * @param string $s_idMonth		The month form name, default month
+   * @param string $s_idYear		The year form name, default year
+   * @return string	The generated form
+   */
+  public function generate($s_idDay = 'day', $s_idMonth = 'month', $s_idYear = 'year'){
+    /* Generate day list */
+    $obj_day = $this->generateList(1, 31, $this->i_daySelected, $s_idDay);
 
-		/* Generate widget */
-		$obj_out = $this->helper_HTML->div();
-		$obj_out->setClass('dateForm');
-		
-		if( $this->s_scheme == 'd-m-y' ){
-			$obj_out->setContent($obj_day->generateItem() . ' ' . $obj_month->generateItem() . ' ' . $obj_year->generateItem());
-		}
-		else if( $this->s_scheme == 'm-d-y' ){
-			$obj_out->setContent($obj_month->generateItem() . ' '.$obj_day->generateItem() . ' ' .  $obj_year->generateItem());
-		}
-		else if( $this->s_scheme == 'y-m-d' ){
-			$obj_out->setContent($obj_year->generateItem().' '.$obj_month->generateItem() . ' '.$obj_day->generateItem());
-		}
+    /* Generate month list */
+    $obj_month = $this->generateList(1, 12, $this->i_monthSelected, $s_idMonth);
 
-		return $obj_out->generateItem();
-	}
-	
-	/**
-	 * Returns the year list
-	 *
-	 * @param int $i_start		The start year
-	 * @param int $i_end		The end year
-	 * @param int $i_selected	The selected year
-	 * @param string $s_id		The list name
-	 * @return String The list
-	 *
-	 */
-	public function createYearList($i_startYear,$i_endYear,$i_selected,$s_id){
-		return $this->generateList($i_startYear, $i_endYear, $i_selected, $s_id);
-	}
+    /* Generate year list */
+    $obj_year = $this->generateList($this->i_startYear, $this->i_endYear, $this->i_yearSelected, $s_idYear);
 
-	/**
-	 * Generates a selection list
-	 * 
-	 * @param int $i_start		The start value
-	 * @param int $i_end		The end value
-	 * @param int $i_selected	The selected value
-	 * @param string $s_id		The form name
-	 * @return HTML_Select	The selection list
-	 */
-	protected function generateList($i_start, $i_end, $i_selected, $s_id) {
-		$obj_item = $this->helper_HTML->select($s_id)->setID($s_id);
-		if ($i_selected == -1){
-			$i_selected	= $i_start;
-		}
+    /* Generate widget */
+    $obj_out = $this->helper_HTML->div();
+    $obj_out->setClass('dateForm');
 
-		for ($i = $i_start; $i <= $i_end; $i++) {
-			if ($i == $i_selected)
-				$obj_item->setOption($i, true);
-			else
-				$obj_item->setOption($i, false);
-		}
+    if( $this->s_scheme == 'd-m-y' ){
+      $obj_out->setContent($obj_day->generateItem() . ' ' . $obj_month->generateItem() . ' ' . $obj_year->generateItem());
+    }
+    else if( $this->s_scheme == 'm-d-y' ){
+      $obj_out->setContent($obj_month->generateItem() . ' ' . $obj_day->generateItem() . ' ' . $obj_year->generateItem());
+    }
+    else if( $this->s_scheme == 'y-m-d' ){
+      $obj_out->setContent($obj_year->generateItem() . ' ' . $obj_month->generateItem() . ' ' . $obj_day->generateItem());
+    }
 
-		return $obj_item;
-	}
+    return $obj_out->generateItem();
+  }
+
+  /**
+   * Returns the year list
+   *
+   * @param int $i_start		The start year
+   * @param int $i_end		The end year
+   * @param int $i_selected	The selected year
+   * @param string $s_id		The list name
+   * @return String The list
+   *
+   */
+  public function createYearList($i_startYear, $i_endYear, $i_selected, $s_id){
+    return $this->generateList($i_startYear, $i_endYear, $i_selected, $s_id);
+  }
+
+  /**
+   * Generates a selection list
+   * 
+   * @param int $i_start		The start value
+   * @param int $i_end		The end value
+   * @param int $i_selected	The selected value
+   * @param string $s_id		The form name
+   * @return HTML_Select	The selection list
+   */
+  protected function generateList($i_start, $i_end, $i_selected, $s_id){
+    $obj_item = $this->helper_HTML->select($s_id)->setID($s_id);
+    if( $i_selected == -1 ){
+      $i_selected = $i_start;
+    }
+
+    for( $i = $i_start; $i <= $i_end; $i++ ){
+      if( $i == $i_selected ) $obj_item->setOption($i, true);
+      else $obj_item->setOption($i, false);
+    }
+
+    return $obj_item;
+  }
+
 }

@@ -1,0 +1,5 @@
+RewriteEngine on
+
+RewriteCond %{HTTP:Accept-encoding} gzip
+RewriteRule ^([a-z0-9_\-]+)\.lang$ $1_min.lang.gz [L,NC]
+

@@ -1,5 +1,7 @@
 <?php
 
+namespace \core\helpers;
+
 /**
  * Birthday form widget
  *
@@ -24,11 +26,11 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if( !class_exists('Helper_DateForm') ){
+if( !class_exists('DateForm') ){
 	require(NIV.'include/helpers/DateForm.inc.php');
 }
 
-class Helper_BirthdayForm extends Helper_DateForm {
+class BirthdayForm extends DateForm {
 	private $s_className;
     private $s_callback;
     private $s_dayID;
