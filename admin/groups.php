@@ -1,4 +1,7 @@
 <?php
+
+namespace admin;
+
 /**
  * Admin group configuration class
  *
@@ -26,7 +29,7 @@
 define('NIV', '../');
 include(NIV . 'include/AdminLogicClass.php');
 
-class Groups extends AdminLogicClass {
+class Groups extends \core\AdminLogicClass {
 	private $model_Groups;
 
 	/**
@@ -35,8 +38,7 @@ class Groups extends AdminLogicClass {
 	public function __construct() {
 		$this->init();
 
-		if( !Memory::isAjax() )
-			exit();
+                if( !Memory::isAjax() ){    exit(); }
 
 		if (isset($this->get['command'])) {
 			if ($this->get['command'] == 'getGroup') {
@@ -61,15 +63,6 @@ class Groups extends AdminLogicClass {
 				$this->delete();
 			}
 		}
-	}
-
-	/**
-	 * Destructor
-	 */
-	public function __destruct() {
-		$this->model_Groups = null;
-
-		parent::__destruct();
 	}
 
 	/**
@@ -100,9 +93,9 @@ class Groups extends AdminLogicClass {
 		$this->setHeader();
 		$a_groups = $this->model_Groups->getGroups();
 
-		$this->service_Template->set('groupTitle',$this->service_Language->get('language/admin/groups/groups'));
-		$this->service_Template->set('headerID', $this->service_Language->get('language/admin/groups/id'));
-		$s_viewUsers	= $this->service_Language->get('language/admin/groups/viewUsers');
+		$this->service_Template->set('groupTitle',$this->service_Language->get('admin/groups/groups'));
+		$this->service_Template->set('headerID', $this->service_Language->get('admin/groups/id'));
+		$s_viewUsers	= $this->service_Language->get('admin/groups/viewUsers');
 		
 		foreach ($a_groups AS $obj_group) {
 			$a_data = array(
@@ -119,8 +112,8 @@ class Groups extends AdminLogicClass {
 			}
 		}
 
-		$this->service_Template->set('buttonDelete',$this->service_Language->get('language/buttons/delete'));
-		$this->service_Template->set('addButton',$this->service_Language->get('language/buttons/add'));
+		$this->service_Template->set('buttonDelete',$this->service_Language->get('buttons/delete'));
+		$this->service_Template->set('addButton',$this->service_Language->get('buttons/add'));
 	}
 
 	/**
@@ -143,9 +136,9 @@ class Groups extends AdminLogicClass {
 			$this->service_Template->set('defaultChecked','checked="checked"');
 		$this->service_Template->set('id',$this->get['id']);
 
-		$this->service_Template->set('editTitle', $this->service_Language->get('language/admin/groups/headerEdit'));
-		$this->service_Template->set('buttonCancel',$this->service_Language->get('language/buttons/cancel'));
-		$this->service_Template->set('buttonSubmit',$this->service_Language->get('language/buttons/edit'));
+		$this->service_Template->set('editTitle', $this->service_Language->get('admin/groups/headerEdit'));
+		$this->service_Template->set('buttonCancel',$this->service_Language->get('buttons/cancel'));
+		$this->service_Template->set('buttonSubmit',$this->service_Language->get('buttons/edit'));
 	}
 
 	private function viewUsers(){
@@ -160,15 +153,15 @@ class Groups extends AdminLogicClass {
 					'level'		=> ''
 				);
 				
-				$a_data['rights']	= $this->service_Language->get('language/rights/level_'.$a_user['level']);
+				$a_data['rights']	= $this->service_Language->get('rights/level_'.$a_user['level']);
 				
 				$this->service_Template->setBlock('user',$a_data);
 			}
 			
-			$this->service_Template->set('groupTitle',$this->service_Language->get('language/admin/groups/headerUsers').' '.$obj_Group->getName());
-			$this->service_Template->set('headerUser',$this->service_Language->get('language/admin/groups/user'));
-			$this->service_Template->set('headerRights',$this->service_Language->get('language/admin/groups/rights'));
-			$this->service_Template->set('backButton',$this->service_Language->get('language/buttons/back'));
+			$this->service_Template->set('groupTitle',$this->service_Language->get('admin/groups/headerUsers').' '.$obj_Group->getName());
+			$this->service_Template->set('headerUser',$this->service_Language->get('admin/groups/user'));
+			$this->service_Template->set('headerRights',$this->service_Language->get('admin/groups/rights'));
+			$this->service_Template->set('backButton',$this->service_Language->get('buttons/back'));
 		} catch (Exception $e) {
 			Memory::services('Logs')->securityLog('Call to unknown group '.$this->get['id'].'.');
 			header('location: '.NIV.'logout.php');
@@ -181,9 +174,9 @@ class Groups extends AdminLogicClass {
 	 */
 	private function addScreen(){
 		$this->setHeader();
-		$this->service_Template->set('groupTitle',$this->service_Language->get('language/admin/groups/headerAdd'));
-		$this->service_Template->set('buttonCancel',$this->service_Language->get('language/buttons/cancel'));
-		$this->service_Template->set('buttonSubmit', $this->service_Language->get('language/buttons/save'));
+		$this->service_Template->set('groupTitle',$this->service_Language->get('admin/groups/headerAdd'));
+		$this->service_Template->set('buttonCancel',$this->service_Language->get('buttons/cancel'));
+		$this->service_Template->set('buttonSubmit', $this->service_Language->get('buttons/save'));
 	}
 
 	/**
@@ -260,9 +253,9 @@ class Groups extends AdminLogicClass {
 	 * Sets the headers
 	 */
 	private function setHeader(){
-		$this->service_Template->set('headerName', $this->service_Language->get('language/admin/groups/name'));
-		$this->service_Template->set('headerDescription', $this->service_Language->get('language/admin/groups/description'));
-		$this->service_Template->set('headerAutomatic', $this->service_Language->get('language/admin/groups/standard'));
+		$this->service_Template->set('headerName', $this->service_Language->get('admin/groups/name'));
+		$this->service_Template->set('headerDescription', $this->service_Language->get('admin/groups/description'));
+		$this->service_Template->set('headerAutomatic', $this->service_Language->get('admin/groups/standard'));
 	}
 }
 

@@ -29,17 +29,6 @@ namespace core\services;
  */
 class Security extends Service{
 
-  private $service_Database;
-  
-  /**
-   * PHP 5 constrcutor
-   * 
-   * @param core\database\DAL $service_Database   The DAL
-   */
-  public function __construct(\core\database\DAL $service_Database){
-    $this->service_Database = $service_Database;
-  }
-
   /**
    * Checks for correct boolean value
    *
@@ -125,7 +114,7 @@ class Security extends Service{
    * @return  String  The secured value
    */
   public function secureStringDB($s_input){
-    $s_input = $this->service_Database->escape_string($s_input);
+    $s_input = $this->secureString($s_input);
     $s_input = str_replace(array( '\r\n', '\r', '\n' ), array( "\n", "\n", "\n" ), $s_input);
 
     return $s_input;
@@ -225,8 +214,12 @@ class Security extends Service{
 
     if( is_null($a_source) ) return;
 
-    if( !array_key_exists('command', $a_declared) ){ $a_declared[ 'command' ] = 'string'; }
-    if( !array_key_exists('AJAX', $a_declared) ){ $a_declared[ 'AJAX' ] = 'string'; }
+    if( !array_key_exists('command', $a_declared) ){
+      $a_declared[ 'command' ] = 'string';
+    }
+    if( !array_key_exists('AJAX', $a_declared) ){
+      $a_declared[ 'AJAX' ] = 'string';
+    }
 
     $a_init = array_keys($a_declared);
     $a_keys = array_keys($a_source);

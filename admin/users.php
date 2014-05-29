@@ -1,5 +1,7 @@
 <?php
 
+namespace admin;
+
 /**
  * Admin user configuration class
  *
@@ -26,7 +28,7 @@
 define('NIV', '../');
 include(NIV . 'include/AdminLogicClass.php');
 
-class Users extends AdminLogicClass {
+class Users extends \core\AdminLogicClass {
 	private $model_Groups;
 
 	/**

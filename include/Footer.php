@@ -1,4 +1,7 @@
 <?php
+
+namespace core;
+
 /**
  * Site footer
  *
@@ -23,44 +26,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Footer{
-	private $service_Language;
-	private $service_Template;
-	private $service_XmlSettings = null;
+class Footer {
 
-	/**
-	 * Starts the class footer
-	 */
-	public function __construct(){
-		$this->init();
+    private $service_Language;
+    private $service_Template;
+    private $service_Settings = null;
 
-		$this->createFooter();
-	}
+    /**
+     * Starts the class footer
+     */
+    public function __construct(\core\services\Language $service_Language, \core\services\Template $service_Template, \core\services\Settings $service_Settings) {
+        $this->service_Language = $service_Language;
+        $this->service_Template = $service_Template;
+        $this->service_Settings = $service_Settings;
 
-	/**
-	 * destructor
-	 */
-	public function __destruct(){
-		$this->service_Language     = null;
-		$this->service_Template     = null;
-		$this->service_XmlSettings  = null;
-	}
+        $this->createFooter();
+    }
 
-	/**
-	 * Inits the class footer
-	 */
-	private function init(){
-		$this->service_Language     = Memory::services('Language');
-		$this->service_Template     = Memory::services('Template');
-		$this->service_XmlSettings  = Memory::services('XmlSettings');
-	}
+    /**
+     * Generates the footer
+     */
+    private function createFooter() {
+        $this->service_Template->loadTemplate('footer', 'footer.tpl');
+    }
 
-	/**
-	 * Generates the footer
-	 */
-	private function createFooter(){
-		$this->service_Template->loadTemplate('footer','footer.tpl');
-
-	}
 }
+
 ?>

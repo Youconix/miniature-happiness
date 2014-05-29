@@ -28,6 +28,7 @@ namespace core\database;
  */
 
 class Query_main {
+  private $service_Settings;
 	private $s_type;
 
 	/**
@@ -38,14 +39,7 @@ class Query_main {
 	public function __construct(\core\services\Settings $service_Settings){
 		/* databasetype */
 		$this->s_type           = ucfirst($service_Settings->get('settings/SQL/type'));
-	}
-
-	/**
-	 * Destructor
-	 */
-	public function __destruct(){
-		$this->service_Memory  = null;
-		$this->s_type          = null;
+    $this->service_Settings = $service_Settings;
 	}
 
 	/**
@@ -56,8 +50,8 @@ class Query_main {
 	public function loadDatabase(){
 		require_once(NIV.'include/database/'.$this->s_type.'.inc.php');
 
-		$s_name     = 'Database_'.$this->s_type;
-		$obj_DAL    = new $s_name();
+		$s_name     = '\core\database\Database_'.$this->s_type;
+		$obj_DAL    = new $s_name($this->service_Settings);
 		$obj_DAL->defaultConnect();
 
 		return $obj_DAL;

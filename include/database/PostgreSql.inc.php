@@ -1,4 +1,7 @@
 <?php
+
+namespace core\database;
+
 /**
  * Database connection layer for PostgreSQL
  *
@@ -403,5 +406,26 @@ class Database_PostgreSql implements DAL {
 		$this->query("ROLLBACK");
 		$this->bo_transaction	= false;
 	}
+
+  public function analyse($s_table){
+    
+  }
+
+  public function databaseExists($s_database){
+    
+  }
+
+  public function optimize($s_table){
+    
+  }
+
+  public function repair($s_table){
+    
+  }
+
+  public function useDB($s_database){
+    
+  }
+
 }
 ?>

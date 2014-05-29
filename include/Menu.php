@@ -1,5 +1,8 @@
 <?php
-/** 
+
+namespace core;
+
+/**
  * Site menu
  *                                                                              
  * This file is part of Scripthulp framework  
@@ -23,8 +26,8 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
+class Menu {
 
-class Menu{
     private $service_Template;
     private $service_Language;
     private $obj_User;
@@ -33,72 +36,54 @@ class Menu{
     /**
      * Starts the class menu
      */
-    public function __construct(){
-        $this->init();
+    public function __construct(\core\services\Template $service_Template,  \core\services\Language $service_Language,
+        \core\models\User $model_User,  \core\models\Groups $model_Groups){
+        $this->service_Template = $service_Template;
+        $this->service_Language = $service_Language;
+        $this->obj_User = $model_User->get();
+        $this->model_Groups = $model_Groups;
 
         $this->generateMenu();
     }
 
     /**
-     * Destructor
-     */
-    public function __destruct(){
-        $this->service_Template = null;
-        $this->service_Language	= null;
-        $this->obj_User         = null;
-        $this->model_Groups     = null;
-    }
-
-    /**
-     * Inits the class menu
-     */
-    private function init(){
-        $this->service_Template = Memory::services('Template');
-        $this->service_Language = Memory::services('Language');
-        $this->obj_User         = Memory::models('User')->get();
-        $this->model_Groups     = Memory::models('Groups');
-    }
-
-    /**
      * Generates the menu 
      */
-    private function generateMenu(){
-        $s_language = Memory::services('Language')->getLanguage();
-        
-        if( defined('USERID') ){
-        	$this->loggedIn();
-        	
-        	if( $this->obj_User->isAdmin(GROUP_ADMIN) ){
-        		$this->service_Template->loadTemplate('menu','menu_admin.tpl');
-        			
-        		$this->service_Template->set('adminPanel','<a href="{NIV}admin/"  class="subadmin">'.$this->service_Language->get('language/menu/adminPanel').'</a>');
-    		}
-			else {
-				$this->service_Template->loadTemplate('menu','menu.tpl');
-			}
-        }
-        else {
-			$this->service_Template->loadTemplate('menu','menu.tpl');
+    private function generateMenu() {
+        if (defined('USERID')) {
+            $this->loggedIn();
 
-        	$this->loggedout();
+            if ($this->obj_User->isAdmin(GROUP_ADMIN)) {
+                $this->service_Template->loadTemplate('menu', 'menu_admin.tpl');
+
+                $this->service_Template->set('adminPanel', '<a href="{NIV}admin/"  class="subadmin">' . $this->service_Language->get('menu/adminPanel') . '</a>');
+            } else {
+                $this->service_Template->loadTemplate('menu', 'menu.tpl');
+            }
+        } else {
+            $this->service_Template->loadTemplate('menu', 'menu.tpl');
+
+            $this->loggedout();
         }
-	}
-    
+    }
+
     /**
      * Displays the logged out items
      */
-    private function loggedout(){
-    	$this->service_Template->set('home',$this->service_Language->get('language/menu/home'));
-    	$this->service_Template->set('login','<a href="{NIV}login.php">'.$this->service_Language->get('language/menu/login').'</a>');
-    	$this->service_Template->set('registration',$this->service_Language->get('language/login/registration'));
+    private function loggedout() {
+        $this->service_Template->set('home', $this->service_Language->get('menu/home'));
+        $this->service_Template->set('login', '<a href="{NIV}login.php">' . $this->service_Language->get('menu/login') . '</a>');
+        $this->service_Template->set('registration', $this->service_Language->get('login/registration'));
     }
-    
+
     /**
      * Displays the logged in items
      */
-    private function loggedIn(){
-    	$this->service_Template->set('home',$this->service_Language->get('language/menu/home'));
-    	$this->service_Template->set('logout','<a href="{NIV}logout.php">'.$this->service_Language->get('language/menu/logout').'</a>');
+    private function loggedIn() {
+        $this->service_Template->set('home', $this->service_Language->get('menu/home'));
+        $this->service_Template->set('logout', '<a href="{NIV}logout.php">' . $this->service_Language->get('menu/logout') . '</a>');
     }
+
 }
+
 ?>

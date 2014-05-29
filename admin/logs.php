@@ -1,5 +1,7 @@
 <?php
 
+namespace admin;
+
 /**
  * Admin log management class
  *
@@ -26,7 +28,7 @@
 define('NIV', '../');
 include(NIV . 'include/AdminLogicClass.php');
 
-class Logs extends AdminLogicClass {
+class Logs extends \core\AdminLogicClass {
 	private $service_Logs;
 	private $s_type;
 	private $s_date;
@@ -37,8 +39,7 @@ class Logs extends AdminLogicClass {
 	public function __construct() {
 		$this->init();
 
-		if( !Memory::isAjax() )
-			exit();
+                if( !Memory::isAjax() ){    exit(); }
 
 		if( isset($this->get['command']) ){
 			if( $this->get['command'] == 'index' ){
@@ -56,18 +57,6 @@ class Logs extends AdminLogicClass {
 			}
 		}
 	}
-
-	/**
-	 * Destructor
-	 */
-	public function __destruct() {
-		$this->service_Logs = null;
-		$this->s_type = null;
-		$this->s_date = null;
-
-		parent::__destruct();
-	}
-
 	/**
 	 * Inits the class Logs
 	 */
@@ -91,9 +80,9 @@ class Logs extends AdminLogicClass {
 	private function index() {
 		$a_logsPre = $this->service_Logs->indexLogs();
 
-		$this->service_Template->set('logHeader', $this->service_Language->get('language/admin/logs/title'));
-		$this->service_Template->set('nameHeader', $this->service_Language->get('language/admin/logs/name'));
-		$this->service_Template->set('dateHeader', $this->service_Language->get('language/admin/logs/date'));
+		$this->service_Template->set('logHeader', $this->service_Language->get('admin/logs/title'));
+		$this->service_Template->set('nameHeader', $this->service_Language->get('admin/logs/name'));
+		$this->service_Template->set('dateHeader', $this->service_Language->get('admin/logs/date'));
 		
 		$a_logs = array();
 		foreach ($a_logsPre AS $s_log) {
@@ -130,9 +119,9 @@ class Logs extends AdminLogicClass {
 			}
 		}
 
-		$this->service_Template->set('viewText', $this->service_Language->get('language/buttons/view'));
-		$this->service_Template->set('deleteText', $this->service_Language->get('language/buttons/delete'));
-		$this->service_Template->set('downloadText', $this->service_Language->get('language/admin/logs/download'));
+		$this->service_Template->set('viewText', $this->service_Language->get('buttons/view'));
+		$this->service_Template->set('deleteText', $this->service_Language->get('buttons/delete'));
+		$this->service_Template->set('downloadText', $this->service_Language->get('admin/logs/download'));
 	}
 
 	/**
@@ -151,10 +140,10 @@ class Logs extends AdminLogicClass {
 		$this->service_Template->set('name',$this->get['name']);
 		$this->service_Template->set('log', nl2br($s_log));
 		
-		$this->service_Template->set('backText', $this->service_Language->get('language/buttons/back'));
-		$this->service_Template->set('viewText', $this->service_Language->get('language/buttons/view'));
-		$this->service_Template->set('deleteText', $this->service_Language->get('language/buttons/delete'));
-		$this->service_Template->set('downloadText', $this->service_Language->get('language/admin/logs/download'));
+		$this->service_Template->set('backText', $this->service_Language->get('buttons/back'));
+		$this->service_Template->set('viewText', $this->service_Language->get('buttons/view'));
+		$this->service_Template->set('deleteText', $this->service_Language->get('buttons/delete'));
+		$this->service_Template->set('downloadText', $this->service_Language->get('admin/logs/download'));
 	}
 
 	/**

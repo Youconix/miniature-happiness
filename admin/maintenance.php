@@ -1,4 +1,7 @@
 <?php
+
+namespace admin;
+
 /**
  * Admin maintenance class
  *
@@ -28,7 +31,7 @@ define('NIV','../');
 
 include(NIV.'include/AdminLogicClass.php');
 
-class Maintenance extends AdminLogicClass  {
+class Maintenance extends \core\AdminLogicClass  {
 	private $service_Maintenance;
 
 	/**
@@ -37,8 +40,7 @@ class Maintenance extends AdminLogicClass  {
 	public function __construct(){
 		$this->init();
 
-		if( !Memory::isAjax() )
-			exit();
+                if( !Memory::isAjax() ){    exit(); }
 
 		if( !isset($this->get['action']) && !isset($this->post['action']) ){
 			$this->view();
@@ -71,15 +73,6 @@ class Maintenance extends AdminLogicClass  {
 	}
 
 	/**
-	 * Stops the class Maintenance
-	 */
-	public function __destruct(){
-		$this->service_Maintenance       = null;
-
-		parent::__destruct();
-	}
-
-	/**
 	 * Inits the class Groups
 	 */
 	protected function init(){
@@ -99,15 +92,15 @@ class Maintenance extends AdminLogicClass  {
 	 * Generates the action menu
 	 */
 	private function view(){
-		$this->service_Template->set('compressCSS',$this->service_Language->get('language/admin/maintenance/compressCSS'));
-		$this->service_Template->set('compressJS',$this->service_Language->get('language/admin/maintenance/compressJS'));
-		$this->service_Template->set('checkDatabase',$this->service_Language->get('language/admin/maintenance/checkDatabase'));
-		$this->service_Template->set('optimizeDatabase',$this->service_Language->get('language/admin/maintenance/optimizeDatabase'));
-		$this->service_Template->set('cleanLogs',$this->service_Language->get('language/admin/maintenance/cleanLogs'));
-		$this->service_Template->set('systemUpdate',$this->service_Language->get('language/admin/maintenance/systemUpdate'));
-		$this->service_Template->set('cleanStatsYear',$this->service_Language->get('language/admin/maintenance/cleanStatsYear'));
-		$this->service_Template->set('cleanStatsMonth',$this->service_Language->get('language/admin/maintenance/cleanStatsMonth'));
-		$this->service_Template->set('ready',$this->service_Language->get('language/admin/maintenance/ready'));
+		$this->service_Template->set('compressCSS',$this->service_Language->get('admin/maintenance/compressCSS'));
+		$this->service_Template->set('compressJS',$this->service_Language->get('admin/maintenance/compressJS'));
+		$this->service_Template->set('checkDatabase',$this->service_Language->get('admin/maintenance/checkDatabase'));
+		$this->service_Template->set('optimizeDatabase',$this->service_Language->get('admin/maintenance/optimizeDatabase'));
+		$this->service_Template->set('cleanLogs',$this->service_Language->get('admin/maintenance/cleanLogs'));
+		$this->service_Template->set('systemUpdate',$this->service_Language->get('admin/maintenance/systemUpdate'));
+		$this->service_Template->set('cleanStatsYear',$this->service_Language->get('admin/maintenance/cleanStatsYear'));
+		$this->service_Template->set('cleanStatsMonth',$this->service_Language->get('admin/maintenance/cleanStatsMonth'));
+		$this->service_Template->set('ready',$this->service_Language->get('admin/maintenance/ready'));
 	}
 
 	/**

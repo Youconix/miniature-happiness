@@ -1,5 +1,7 @@
 <?php
 
+namespace core\database;
+
 /**
  * MySQLi Database Access Layer 
  *
@@ -58,7 +60,7 @@ class Database_Mysqli_binded {
     	$query = $link->stmt_init();
     	
     	if ( !$query->prepare($s_query) ) {
-    		throw new DBException("Query failed : " . $link->error. '.\n' . $s_query);
+    		throw new \DBException("Query failed : " . $link->error. '.\n' . $s_query);
     	}
     	
     	if( !is_array($a_types) )       $a_types = array($a_types);
@@ -70,7 +72,7 @@ class Database_Mysqli_binded {
     		$s_type	= $a_types[$i];
     
     		if( !is_string($s_type) || !in_array($s_type,array('i','d','s','b')) )
-    			throw new Exception('Illegal binding type '.$s_type.'  Only i (int), d (double), s (string) and b (blob) is allowed.');
+    			throw new \Exception('Illegal binding type '.$s_type.'  Only i (int), d (double), s (string) and b (blob) is allowed.');
     
     		$a_params[0]	.= $s_type;
     		$a_params[]	= $a_values[$i];
@@ -82,7 +84,7 @@ class Database_Mysqli_binded {
     	$res	= $query->execute();
 
     	if ($res === false) {
-    		throw new DBException("Query failed : " . $link->error. '.\n' . $s_query);
+    		throw new \DBException("Query failed : " . $link->error. '.\n' . $s_query);
     	}
     	
     	$s_command	= strtoupper( trim( substr($s_query, 0,strpos($s_query,' ')) ));
@@ -141,14 +143,14 @@ class Database_Mysqli_binded {
         
         $i_rows = $this->obj_caller->num_rows();
         if( $i_row >= $i_rows ){
-            throw new DBException("Unable to fetch row ".$i_row." Only ".$i_rows." are present");
+            throw new \DBException("Unable to fetch row ".$i_row." Only ".$i_rows." are present");
         }
         
         $this->obj_query->data_seek($i_row);
         $a_data = $this->fetch_assoc();
         
         if( !array_key_exists($s_field, $a_data[0]) ){
-            throw new DBException("Unable to fetch the unknown field ".$s_field);
+            throw new \DBException("Unable to fetch the unknown field ".$s_field);
         }
 
         return $a_data[0][$s_field];

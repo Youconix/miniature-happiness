@@ -29,7 +29,6 @@ namespace core\models;
  * @see		include/models/data/Data_Group.inc.php
  */
 class Groups extends Model{
-  protected $service_Session;
   protected $model_DataGroup;
   protected $a_groups;
   
@@ -38,14 +37,12 @@ class Groups extends Model{
    * PHP5 constructor
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
    * @param \core\services\Security $service_Security The security service
-   * @param \core\services\Session  $service_Session    The session handler
    * @param \core\models\data\Data_Group $model_DataGroup   The group data model
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,
-    \core\services\Session $service_Session,  \core\models\data\Data_Group $model_DataGroup){
+    \core\models\data\Data_Group $model_DataGroup){
     parent::__construct($service_QueryBuilder,$service_Security);
 
-    $this->service_Session = $service_Session;
     $this->model_DataGroup  = $model_DataGroup;
 
     $this->a_groups = array();

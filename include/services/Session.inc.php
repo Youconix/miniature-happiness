@@ -29,8 +29,7 @@ namespace core\services;
  */
 class Session extends Service{
 
-  private $service_Database;
-  private $model_Groups;
+  private $service_QueryBuilder;
   const FORBIDDEN = -1;
   const USER = 0;
   const MODERATOR = 1;
@@ -44,12 +43,10 @@ class Session extends Service{
    * PHP 5 constructor
    * 
    * @param core\services\Settings  $service_Settings   The settings service
-   * @param core\database\DAL       $service_Database   The DAL
-   * @parma core\models\Groups      $model_Groups       The groups model
+   * @param core\services\QueryBuilder  $service_QueryBuilder The query builder
    */
-  public function __construct(\core\services\Settings $service_Settings, \core\database\DAL $service_Database,\core\models\Groups $model_Groups){
-    $this->service_Database = $service_Database;
-    $this->model_Groups = $model_Groups;
+  public function __construct(\core\services\Settings $service_Settings,\core\services\QueryBuilder $service_QueryBuilder){
+    $this->service_QueryBuilder = $service_QueryBuilder;
     $s_sessionSetName = $service_Settings->get('settings/session/sessionName');
     $s_sessionSetPath = $service_Settings->get('settings/session/sessionPath');
     $s_sessionExpire = $service_Settings->get('settings/session/sessionExpire');
@@ -168,7 +165,8 @@ class Session extends Service{
    */
   public function setLogin($i_userid, $s_username, $i_lastLogin){
     /* Get data */
-    $this->service_Database->queryBinded("UPDATE " . DB_PREFIX . "users SET lastLogin = ? WHERE id = ?", array( 'i', 'i' ), array( time(), $i_userid ));
+    $this->service_QueryBuilder->update('users', 'lastLogin','i',time())->getWhere()->addAnd('id','i',$i_userid);
+    $this->service_QueryBuilder->getResult();
 
     session_regenerate_id(true);
     $_SESSION = array();
@@ -190,74 +188,6 @@ class Session extends Service{
     if( $this->exists('fingerprint') ) $this->delete('fingerprint');
     if( $this->exists('lastLogin') ) $this->delete('lastLogin');
     if( $this->exists('type') ) $this->delete('type');
-  }
-
-  /**
-   * Checks or the user is logged in and haves enough rights.
-   * Define the groep and level to overwrite the default rights for the page
-   * 
-   * @param	int	$i_group		The group id, optional
-   * @param	int	$i_level		The minimun level, optional
-   * @throws MemoryException	If the page rights are not defined with arguments or database
-   */
-  public function checkLogin($i_group = -1, $i_level = -1){
-    if( stripos(\core\Memory::getPage(), '/phpunit') !== false ){
-      /* Unit test */
-      return;
-    }
-
-    if( $i_group == -1 || $i_level == -1 ){
-      $this->service_Database->query("SELECT groupID,minLevel FROM " . DB_PREFIX . "group_pages WHERE page = '" . \core\Memory::getPage() . "'");
-      if( $this->service_Database->num_rows() == 0 ){
-        throw new \MemoryException("Unable to get the rights from " . \core\Memory::getPage() . ". Are they defined?");
-      }
-      $i_level = ( int ) $this->service_Database->result(0, 'minLevel');
-      $i_group = ( int ) $this->service_Database->result(0, 'groupID');
-    }
-
-    /* Get redict url */
-    $s_base = \core\Memory::getBase();
-    $s_page = str_replace($s_base, '', $_SERVER[ 'REQUEST_URI' ]);
-
-    if( $i_level == Session::FORBIDDEN ){
-      if( $this->exists('login') ){
-        define('USERID', $this->get('userid'));
-      }
-
-      return;
-    }
-
-    if( !$this->exists('login') ){
-      header('HTTP/1.1 401 Autorisation required');
-      if( !isset($_REQUEST[ 'AJAX' ]) || $_REQUEST[ 'AJAX' ] != true ){
-        $this->set('page', $s_page);
-        header("location: " . NIV . 'login.php');
-      }
-      die();
-    }
-
-    /* Check fingerprint */
-    if( !$this->exists('fingerprint') || ($this->get('fingerprint') != $this->getFingerprint()) ){
-      $this->destroyLogin();
-
-      $this->set('page', $s_page);
-      header('HTTP/1.1 401 Autorisation required');
-      header("location: " . NIV . 'login.php');
-      die();
-    }
-
-    $i_userid = ( int ) $this->get('userid');
-    $i_userLevel = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
-
-    if( ($i_userLevel < $i_level ) ){
-      /* Insuffient rights or no access too the group
-       * No access */
-      header("HTTP/1.1 403 Forbidden");
-      header('location: ' . NIV . 'errors/403.php');
-      exit();
-    }
-
-    define('USERID', $i_userid);
   }
 
   /**

@@ -1,4 +1,7 @@
 <?php
+
+namespace admin;
+
 /** 
  * Admin homepage                                                               
  *                                                                              
@@ -27,7 +30,7 @@ define('NIV','../');
 
 include(NIV.'include/AdminLogicClass.php');
 
-class Index extends AdminLogicClass  {    
+class Index extends \core\AdminLogicClass  {    
 	private $service_Logs;
 	
     /**
@@ -50,15 +53,6 @@ class Index extends AdminLogicClass  {
     }
 
     /**
-     * Destructor
-     */
-    public function __destruct(){
-    	$this->service_Logs	= null;
-    	
-        parent::__destruct();
-    }
-
-    /**
      * Inits the class Index
      */
     protected function init(){
@@ -73,7 +67,7 @@ class Index extends AdminLogicClass  {
      */
     private function title(){
         try {
-            $s_title    = $this->service_Language->get('language/admin/index/title');
+            $s_title    = $this->service_Language->get('admin/index/title');
 
             $this->service_Template->set('title',$s_title);
         }
@@ -89,7 +83,7 @@ class Index extends AdminLogicClass  {
         if( $this->service_Logs->isModifiedSince('security',0) ){
         	$this->service_Template->loadTemplate('securityView','admin/index/security.tpl');
         	
-        	$this->service_Template->set('titleSecurity',$this->service_Language->get('language/admin/index/securityTitle'));
+        	$this->service_Template->set('titleSecurity',$this->service_Language->get('admin/index/securityTitle'));
         	$this->service_Template->set('securityLog',nl2br($this->service_Logs->readLog('security')));
         }
     }
@@ -101,7 +95,7 @@ class Index extends AdminLogicClass  {
     	if( $this->service_Logs->isModifiedSince('error',0) ){
     		$this->service_Template->loadTemplate('errorView','admin/index/error.tpl');
     		
-    		$this->service_Template->set('titleError',$this->service_Language->get('language/admin/index/errorTitle'));
+    		$this->service_Template->set('titleError',$this->service_Language->get('admin/index/errorTitle'));
     		$this->service_Template->set('errorLog',nl2br($this->service_Logs->readLog('error')));
     	}
     }

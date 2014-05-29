@@ -713,7 +713,7 @@ abstract class QueryConditions_Mysqli {
 	}
 }
 
-class Where_Mysqli extends QueryConditions_Mysqli implements Where {
+class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Where {
 	protected $a_builder;
 	
 	/**
@@ -787,7 +787,7 @@ class Where_Mysqli extends QueryConditions_Mysqli implements Where {
 	}
 }
 
-class Having_Mysqli extends QueryConditions_Mysqli implements Having{
+class Having_Mysqli extends QueryConditions_Mysqli implements \core\services\Having{
 	/**
 	 * Starts a sub having part
 	 */
@@ -818,7 +818,7 @@ class Having_Mysqli extends QueryConditions_Mysqli implements Having{
 	}
 }
 
-class Create_Mysqli implements Create {
+class Create_Mysqli implements \core\services\Create {
 	private $s_query;
 	private $a_createRows;
 	private $a_createTypes;

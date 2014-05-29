@@ -1,4 +1,7 @@
 <?php
+
+namespace core;
+
 /**
  * Displays the admin menu
  *
@@ -30,28 +33,13 @@ class MenuAdmin {
     /**
      * Starts the class menuAdmin
      */
-    public function __construct(){
-        $this->init();
+    public function __construct(\core\services\Language $service_Language, \core\services\Template $service_Template){
+        $this->service_Language = $service_Language;
+        $this->service_Template = $service_Template;
 
         $this->createMenu();
         
         $this->text();
-    }
-
-    /**
-     * Stops the class menuAdmin
-     */
-    public function __destruct(){
-        $this->service_Language = null;
-        $this->service_Template = null;
-    }
-
-    /**
-     * Inits the class menuAdmin
-     */
-    private function init(){
-        $this->service_Language = Memory::services('Language');
-        $this->service_Template = Memory::services('Template');
     }
 
     /**
@@ -65,13 +53,13 @@ class MenuAdmin {
      * Displays the text
      */
     private function text(){
-    	$this->service_Template->set('groups',$this->service_Language->get('language/admin/menu/groups'));
-    	$this->service_Template->set('users',$this->service_Language->get('language/admin/menu/users'));
-    	$this->service_Template->set('logs',$this->service_Language->get('language/admin/menu/logs'));
-    	$this->service_Template->set('settings',$this->service_Language->get('language/admin/menu/settings'));
-    	$this->service_Template->set('stats',$this->service_Language->get('language/admin/menu/stats'));
-    	$this->service_Template->set('maintenance',$this->service_Language->get('language/admin/menu/maintenance'));
-    	$this->service_Template->set('logoutAdmin',$this->service_Language->get('language/menu/logout'));
+    	$this->service_Template->set('groups',$this->service_Language->get('admin/menu/groups'));
+    	$this->service_Template->set('users',$this->service_Language->get('admin/menu/users'));
+    	$this->service_Template->set('logs',$this->service_Language->get('admin/menu/logs'));
+    	$this->service_Template->set('settings',$this->service_Language->get('admin/menu/settings'));
+    	$this->service_Template->set('stats',$this->service_Language->get('admin/menu/stats'));
+    	$this->service_Template->set('maintenance',$this->service_Language->get('admin/menu/maintenance'));
+    	$this->service_Template->set('logoutAdmin',$this->service_Language->get('menu/logout'));
     }
 }
 ?>

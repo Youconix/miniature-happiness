@@ -90,6 +90,18 @@ class Language extends Xml{
 
     return $a_languages;
   }
+  
+  public function getLanguageCodes(){
+    return array(
+        'nl_BE' => 'Vlaams','nl_NL'=>'Nederlands',
+        'en_AU' => 'English Australia','en_BW'=>'English (Botswana)','en_CA'=> 'English (Canada)',
+        'en_DK' => 'English (Denmark)', 'en_GB'=>'English (Great Brittan)','en_UK'=>'English (Great Brittan)',
+        'en_HK' => 'English (Hong Kong)', 'en_IE' => 'English (Ireland)','en_IN'=> 'English (India)',
+        'en_NZ' => 'English (New Zealand)', 'en_PH' => 'English (Philippines)','en_SG' => 'English (Singapore)',
+        'en_US' => 'English (United States)', 'en_ZA' => 'English (South Africa)', 'en_ZW' => 'English (Zimbabwe)'
+
+    );
+  }
 
   /**
    * Sets the language

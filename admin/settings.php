@@ -1,4 +1,7 @@
 <?php
+
+namespace admin;
+
 /** 
  * Admin settings configuration class                                           
  *                                                                              
@@ -27,7 +30,7 @@ define('NIV','../');
 
 include(NIV.'include/AdminLogicClass.php');
 
-class Settings extends AdminLogicClass  {
+class Settings extends \core\AdminLogicClass  {
     private $service_XmlSettings;
     private $obj_settingsMain;
     
@@ -51,16 +54,6 @@ class Settings extends AdminLogicClass  {
                 $this->save();
             }
         }
-    }
-
-    /**
-     * Stops the class Settings
-     */
-    public function __destruct(){
-        $this->service_XmlSettings  = null;
-        $this->obj_settingsMain     = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -96,41 +89,41 @@ class Settings extends AdminLogicClass  {
      * Generates the settings view 
      */
     private function view(){
-        $this->service_Template->set('settingsTitle',$this->service_Language->get('language/admin/settings/title'));
-        $this->service_Template->set('basedir',$this->service_Language->get('language/admin/settings/basedir'));
+        $this->service_Template->set('settingsTitle',$this->service_Language->get('admin/settings/title'));
+        $this->service_Template->set('basedir',$this->service_Language->get('admin/settings/basedir'));
         $this->service_Template->set('base',$this->service_XmlSettings->get('settings/main/base'));
         
-        $this->service_Template->set('siteUrl',$this->service_Language->get('language/admin/settings/siteUrl'));
+        $this->service_Template->set('siteUrl',$this->service_Language->get('admin/settings/siteUrl'));
         $this->service_Template->set('url',$this->service_XmlSettings->get('settings/main/url'));
         
-        $this->service_Template->set('timezoneText',$this->service_Language->get('language/admin/settings/timezone'));
+        $this->service_Template->set('timezoneText',$this->service_Language->get('admin/settings/timezone'));
         $this->service_Template->set('timezone',$this->service_XmlSettings->get('settings/main/timeZone'));
         
-        $this->service_Template->set('sessionTitle',$this->service_Language->get('language/admin/settings/sessionTitle'));
-        $this->service_Template->set('sessionNameText',$this->service_Language->get('language/admin/settings/sessionName'));
+        $this->service_Template->set('sessionTitle',$this->service_Language->get('admin/settings/sessionTitle'));
+        $this->service_Template->set('sessionNameText',$this->service_Language->get('admin/settings/sessionName'));
         $this->service_Template->set('sessionName',$this->service_XmlSettings->get('settings/session/sessionName'));
         
-        $this->service_Template->set('sessionPathText',$this->service_Language->get('language/admin/settings/sessionPath'));
+        $this->service_Template->set('sessionPathText',$this->service_Language->get('admin/settings/sessionPath'));
         $this->service_Template->set('sessionPath',$this->service_XmlSettings->get('settings/session/sessionPath'));
         
-        $this->service_Template->set('sessionExpireText',$this->service_Language->get('language/admin/settings/sessionExpire'));
+        $this->service_Template->set('sessionExpireText',$this->service_Language->get('admin/settings/sessionExpire'));
         $this->service_Template->set('sessionExpire',$this->service_XmlSettings->get('settings/session/sessionExpire'));
         
-        $this->service_Template->set('siteSettings',$this->service_Language->get('language/admin/settings/siteSettings'));
-        $this->service_Template->set('defaultLanguage',$this->service_Language->get('language/admin/settings/defaultLanguage'));
+        $this->service_Template->set('siteSettings',$this->service_Language->get('admin/settings/siteSettings'));
+        $this->service_Template->set('defaultLanguage',$this->service_Language->get('admin/settings/defaultLanguage'));
         $this->service_Template->set('posibleLanguages',$this->obj_settingsMain->generateList($this->obj_settingsMain->getLanguages(),$this->service_XmlSettings->get('settings/defaultLanguage') ));
         
-        $this->service_Template->set('templateDir',$this->service_Language->get('language/admin/settings/templateDir'));
+        $this->service_Template->set('templateDir',$this->service_Language->get('admin/settings/templateDir'));
         $this->service_Template->set('templates',$this->obj_settingsMain->generateList($this->obj_settingsMain->getTemplates(),$this->service_XmlSettings->get('settings/templates/dir') ));
         
-        $this->service_Template->set('databaseSettings',$this->service_Language->get('language/admin/settings/databaseSettings'));
-        $this->service_Template->set('username',$this->service_Language->get('language/admin/settings/username'));
-        $this->service_Template->set('password',$this->service_Language->get('language/admin/settings/password'));
-        $this->service_Template->set('database',$this->service_Language->get('language/admin/settings/database'));
-        $this->service_Template->set('host',$this->service_Language->get('language/admin/settings/host'));
-        $this->service_Template->set('port',$this->service_Language->get('language/admin/settings/port'));
-        $this->service_Template->set('type',$this->service_Language->get('language/admin/settings/type'));
-        $this->service_Template->set('disable',$this->service_Language->get('language/admin/settings/disable'));
+        $this->service_Template->set('databaseSettings',$this->service_Language->get('admin/settings/databaseSettings'));
+        $this->service_Template->set('username',$this->service_Language->get('admin/settings/username'));
+        $this->service_Template->set('password',$this->service_Language->get('admin/settings/password'));
+        $this->service_Template->set('database',$this->service_Language->get('admin/settings/database'));
+        $this->service_Template->set('host',$this->service_Language->get('admin/settings/host'));
+        $this->service_Template->set('port',$this->service_Language->get('admin/settings/port'));
+        $this->service_Template->set('type',$this->service_Language->get('admin/settings/type'));
+        $this->service_Template->set('disable',$this->service_Language->get('admin/settings/disable'));
         
         /* SQL */
         $s_type    = $this->service_XmlSettings->get('settings/SQL/type');
@@ -141,7 +134,7 @@ class Settings extends AdminLogicClass  {
         $this->service_Template->set('sqlPort',$this->service_XmlSettings->get('settings/SQL/'.$s_type.'/port'));
         $this->service_Template->set('databases',$this->obj_settingsMain->generateList($this->obj_settingsMain->getDatabases(),$s_type ));
         
-        $this->service_Template->set('buttonSave',$this->service_Language->get('language/buttons/save'));
+        $this->service_Template->set('buttonSave',$this->service_Language->get('buttons/save'));
     }
     
     /**

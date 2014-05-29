@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Base class for the framework.  Use this file as parent
  *
@@ -24,203 +25,193 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
+abstract class BaseClass{
 
-abstract class BaseClass {
-	protected $service_Language;
-	protected $service_ErrorHandler;
-	protected $service_Security;
-	protected $service_Template;
+  protected $service_Language;
+  protected $service_ErrorHandler;
+  protected $service_Security;
+  protected $service_Template;
+  protected $init_post = array();
+  protected $init_get = array();
+  protected $init_request = array();
+  protected $post = array();
+  protected $get = array();
+  protected $request = array();
 
-	protected $init_post    = array();
-	protected $init_get     = array();
-	protected $init_request = array();
-	protected $post         = array();
-	protected $get          = array();
-	protected $request      = array();
+  /**
+   * Destructor
+   */
+  public function __destruct(){
+    if( !is_null($this->service_Template) ) $this->service_Template->set('NIV', LEVEL);
 
-	/**
-	 * Destructor
-	*/
-	public function __destruct(){
-		if( !is_null($this->service_Template) )
-			$this->service_Template->set('NIV',LEVEL);
+    $this->service_Language = null;
+    $this->service_ErrorHandler = null;
+    $this->service_Template = null;
+    $this->service_Security = null;
 
-		$this->service_Language     = null;
-		$this->service_ErrorHandler = null;
-		$this->service_Template     = null;
-		$this->service_Security     = null;
+    $this->init_post = null;
+    $this->init_get = null;
+    $this->init_request = null;
+    $this->post = null;
+    $this->get = null;
+    $this->request = null;
 
-		$this->init_post            = null;
-		$this->init_get             = null;
-		$this->init_request         = null;
-		$this->post                 = null;
-		$this->get                  = null;
-		$this->request              = null;
+    if( class_exists('Memory') ) Memory::endProgram();
+  }
 
-		if( class_exists('Memory') )
-		Memory::endProgram();
-	}
+  /**
+   * Inits the class BaseClass
+   *
+   * @throws  Exception   If loading from the framework failes
+   */
+  protected function init(){
+    require_once(NIV . 'include/Memory.php');
+    \core\Memory::startUp();
 
-	/**
-	 * Inits the class BaseClass
-	 *
-	 * @throws  Exception   If loading from the framework failes
-	 */
-	protected function init(){
-		require_once(NIV.'include/Memory.php');
-		if( isset($_SERVER['SERVER_ADDR']) && 
-					in_array( $_SERVER['SERVER_ADDR'], array('127.0.0.1','::1') )
-					&& !defined('DEBUG') ){
-			define('DEBUG', null);
-		}
+    $this->service_Language = \core\Memory::services('Language');
+    $this->service_ErrorHandler = \core\Memory::services('ErrorHandler');
+    $this->service_Security = \core\Memory::services('Security');
+    
+    /* Check login */
+    \core\Memory::models('Privileges')->checkLogin();
 
-		Memory::startUp();
+    if( !defined("PROCESS") ){
+      $this->service_Template = \core\Memory::services('Template');
 
-		if( (isset($_REQUEST['AJAX']) && $_REQUEST['AJAX'] == true) ){
-			Memory::setAjax();
-		}
+      $s_language = \core\Memory::services('Language')->getLanguage();
+      $this->service_Template->headerLink('<script src="' . NIV . 'js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
 
-		$this->service_Language     = Memory::services('Language');
-		$this->service_ErrorHandler = Memory::services('ErrorHandler');
-		$this->service_Security     = Memory::services('Security');
-		Memory::models('User');
+      if( !\core\Memory::isAjax() ){
+        $this->loadView();
+      }
 
-		if( !defined("PROCESS") ){
-			$this->service_Template     = Memory::services('Template');
-			
-			$s_language	= Memory::services('Language')->getLanguage();
-			$this->service_Template->headerLink('<script src="'.NIV.'js/site.php?lang='.$s_language.'" type="text/javascript"></script>');			
+      /* Call statistics */
+      if( !\core\Memory::isAjax() && stripos($_SERVER[ 'PHP_SELF' ], 'admin/') === false ) require(NIV . 'stats/statsView.php');
+    }
 
-			if( !Memory::isAjax())
-				$this->loadView();
+    /* Secure input */
+    $this->get = $this->service_Security->secureInput('GET', $this->init_get);
+    $this->post = $this->service_Security->secureInput('POST', $this->init_post);
+    $this->request = $this->service_Security->secureInput('REQUEST', $this->init_request);
 
-			/* Call statistics */
-			if( !Memory::isAjax() && stripos($_SERVER['PHP_SELF'],'admin/') === false )
-				require(NIV.'stats/statsView.php');
-		}
+    $this->defineLevel();
+  }
 
-		/* Secure input */
-		$this->get      = $this->service_Security->secureInput('GET', $this->init_get);
-		$this->post     = $this->service_Security->secureInput('POST', $this->init_post);
-		$this->request  = $this->service_Security->secureInput('REQUEST', $this->init_request);
+  /**
+   * Forces the use of SSL/TSL for this page
+   *
+   * Disabled at default install
+   */
+  protected function forceSSL(){
+    return;
+    /* Check SSL/TSL */
+    if( !empty($_SERVER[ 'HTTPS' ]) && $_SERVER[ 'HTTPS' ] !== 'off' || $_SERVER[ 'SERVER_PORT' ] == 443 ){
+      /* SSL do nothing */
+    }
+    else {
+      /* force https */
+      header('location: https://' . $_SERVER[ 'HTTP_HOST' ] . '/' . $_SERVER[ 'REQUEST_URI' ]);
+      exit();
+    }
+  }
 
-		$this->defineLevel();
-	}
+  /**
+   * Loads the view
+   */
+  protected function loadView(){
+    try{
+      /* Set language and encoding */
+      $this->service_Template->set('lang', $this->service_Language->getLanguage());
+      $this->service_Template->set('encoding', $this->service_Language->getEncoding());
+      $this->service_Template->set('mainTitle', $this->service_Language->get('title') . ',  ');
+    }
+    catch( Exception $s_error ){
+      $this->service_ErrorHandler->error($s_error);
 
-	/**
-	 * Forces the use of SSL/TSL for this page
-	 *
-	 * Disabled at default install
-	 */
-	protected function forceSSL(){
-		return;
-		/* Check SSL/TSL */
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
-			/* SSL do nothing */
-		}
-		else {
-			/* force https */
-			header('location: https://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']);
-			exit();
-		}
-	}
+      $this->throwError($s_error);
+    }
+  }
 
-	/**
-	 * Loads the view
-	 */
-	protected function loadView(){
-		try {
-			/* Set language and encoding */
-			$this->service_Template->set('lang',$this->service_Language->getLanguage());
-			$this->service_Template->set('encoding',$this->service_Language->getEncoding());
-			$this->service_Template->set('mainTitle',$this->service_Language->get('language/title').',  ');
-		}
-		catch(Exception $s_error){
-			$this->service_ErrorHandler->error($s_error);
+  /**
+   * Defines the level constant for the GUI
+   */
+  protected function defineLevel(){
+    define('LEVEL', NIV);
+  }
 
-			$this->throwError($s_error);
-		}
-	}
+  /**
+   * API for reporting errors
+   *
+   * @param	Exception $obj_notice   The Exception object
+   * @param  boolean   $bo_fatal     True if the framework should stop executing
+   */
+  protected function throwError(Exception $obj_notice, $bo_fatal = false){
+    /* Display error */
+    header('HTTP/1.1 500 Internal Server Error');
 
-	/**
-	 * Defines the level constant for the GUI
-	 */
-	protected function defineLevel(){
-		define('LEVEL',NIV);
-	}
-
-	/**
-	 * API for reporting errors
-	 *
-	 * @param	Exception $obj_notice   The Exception object
-	 * @param  boolean   $bo_fatal     True if the framework should stop executing
-	 */
-	protected function throwError(Exception $obj_notice,$bo_fatal = false){
-		/* Display error */
-		header('HTTP/1.1 500 Internal Server Error');
-
-		echo('<?xml version="1.0" encoding="UTF-8"?>
+    echo('<?xml version="1.0" encoding="UTF-8"?>
 				<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 				<html xmlns="http://www.w3.org/1999/xhtml">
 				<head>
 				<title>500 Internal Server Error</title>
 				</head>
 				<body>
-				<h2 style="color:red; font-size:25px;">'.$obj_notice->getMessage().'</h2>
+				<h2 style="color:red; font-size:25px;">' . $obj_notice->getMessage() . '</h2>
 				</body>
 				</html>');
-		die();
-	}
+    die();
+  }
 
-	/**
-	 * Formats the given value
-	 *
-	 * @param int $i_value			The unformatted value
-	 * @param int $i_decimals		The number of decimals, default 0
-	 * @return string	The formatted value
-	 */
-	protected function format($i_value,$i_decimals=0){
-		if( $i_value < 10000 )
-			return $i_value;
-			
-		return number_format($i_value,$i_decimals,',','.');
-	}
+  /**
+   * Formats the given value
+   *
+   * @param int $i_value			The unformatted value
+   * @param int $i_decimals		The number of decimals, default 0
+   * @return string	The formatted value
+   */
+  protected function format($i_value, $i_decimals = 0){
+    if( $i_value < 10000 ) return $i_value;
+
+    return number_format($i_value, $i_decimals, ',', '.');
+  }
+
 }
-
 /* Set error catcher */
-function exception_handler($exception) {
-	$s_exception	= $exception->getMessage().'
-			'.		$exception->getTraceAsString();
 
-	if( class_exists('Memory') ){
-		if( !defined('Process') && Memory::isLoaded('service','Template') ){
-			/* Disable output */
-			Memory::delete('service','Template');
-		}
+function exception_handler($exception){
+  $s_exception = $exception->getMessage() . '
+			' . $exception->getTraceAsString();
 
-		try {
-			Memory::services('Logs')->errorLog($s_exception);
-		}
-		catch(Exception $e){
-		}
-	}
+  if( class_exists('Memory') ){
+    if( !defined('Process') && Memory::isLoaded('service', 'Template') ){
+      /* Disable output */
+      Memory::delete('service', 'Template');
+    }
 
-	if( defined('DEBUG') ){
-		echo('Exception with the message "'.$exception->getMessage().'"');
+    try{
+      Memory::services('Logs')->errorLog($s_exception);
+    }
+    catch( Exception $e ){
+      
+    }
+  }
 
-		echo(' at '.$exception->getFile().' at '.$exception->getLine().'.<br/>');
+  if( defined('DEBUG') ){
+    echo('Exception with the message "' . $exception->getMessage() . '"');
 
-		$a_trace = $exception->getTrace();
-		foreach($a_trace AS $a_line){
-			echo($a_line['file'].':'.$a_line['line'].' '.$a_line['class'].'->'.$a_line['function'].'().<br>');
-		}
-		exit();
-	}
+    echo(' at ' . $exception->getFile() . ' at ' . $exception->getLine() . '.<br/>');
 
-	if( stripos($_SERVER["SCRIPT_NAME"],'errors/500.php') === false ){
-		header('location: '.NIV.'errors/500.php');
-		exit();
-	}
+    $a_trace = $exception->getTrace();
+    foreach( $a_trace AS $a_line ){
+      echo($a_line[ 'file' ] . ':' . $a_line[ 'line' ] . ' ' . $a_line[ 'class' ] . '->' . $a_line[ 'function' ] . '().<br>');
+    }
+    exit();
+  }
+
+  if( stripos($_SERVER[ "SCRIPT_NAME" ], 'errors/500.php') === false ){
+    header('location: ' . NIV . 'errors/500.php');
+    exit();
+  }
 }
 
 set_exception_handler('exception_handler');

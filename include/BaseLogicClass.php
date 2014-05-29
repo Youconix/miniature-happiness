@@ -47,9 +47,7 @@ abstract class BaseLogicClass extends BaseClass {
 	 */
     protected function header(){
         /* Call header */
-        include(NIV.'include/Header.php');
-        $obj_header = new Header();
-        unset($obj_header);
+        Memory::loadClass(NIV.'include/Header.php','Header');
     }
 
     /**
@@ -57,9 +55,7 @@ abstract class BaseLogicClass extends BaseClass {
      */
     protected function menu(){
         /* Call Menu */
-        include(NIV.'include/Menu.php');
-        $obj_menu   = new Menu();
-        unset($obj_menu);
+        Memory::loadClass(NIV.'include/Menu.php','Menu');
     }
 
     /**
@@ -67,9 +63,7 @@ abstract class BaseLogicClass extends BaseClass {
      */
     protected function footer(){
         /* Call footer */
-        include(NIV.'include/Footer.php');
-        $obj_footer = new Footer();
-        unset($obj_footer);
+        Memory::loadClass(NIV.'include/Footer.php','Footer');
     }
 }
 

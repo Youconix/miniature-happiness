@@ -62,8 +62,6 @@ class Memory{
     }
 
     Memory::startUp();
-
-    error_reporting(E_ERROR);
   }
 
   /**
@@ -111,17 +109,21 @@ class Memory{
     Memory::$a_memory[ 'service' ][ 'Settings' ] = $service_Settings;
 
     date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
-    
+
     require_once(Memory::$s_servicePath . 'FileData.inc.php');
     $service_FileData = new \core\services\FileData();
     Memory::$a_memory[ 'service' ][ 'FileData' ] = $service_FileData;
 
     require_once(Memory::$s_servicePath . 'Logs.inc.php');
-    $service_Logs = new \core\services\Logs($service_File,$service_FileData);
+    $service_Logs = new \core\services\Logs($service_File, $service_FileData);
     Memory::$a_memory[ 'service' ][ 'Logs' ] = $service_Logs;
-    
-    require_once(Memory::$s_servicePath.'Session.inc.php');
 
+    require_once(Memory::$s_servicePath . 'Session.inc.php');
+
+    Memory::setDefaultValues($service_Settings);
+  }
+
+  private static function setDefaultValues($service_Settings){
     if( !defined('DB_PREFIX') ){
       define('DB_PREFIX', $service_Settings->get('settings/SQL/prefix'));
     }
@@ -155,6 +157,10 @@ class Memory{
 
     /* Get protocol */
     Memory::$s_protocol = ((!empty($_SERVER[ 'HTTPS' ]) && $_SERVER[ 'HTTPS' ] != 'off') || (isset($_SERVER[ 'SERVER_PORT' ]) && $_SERVER[ 'SERVER_PORT' ] == 443) ) ? "https://" : "http://";
+    
+    if( isset($_SERVER[ 'SERVER_ADDR' ]) && in_array($_SERVER[ 'SERVER_ADDR' ], array( '127.0.0.1', '::1' )) && !defined('DEBUG') ){
+      define('DEBUG', null);
+    }
 
     if( defined('DEBUG') ){
       ini_set('display_errors', 'on');
@@ -164,6 +170,10 @@ class Memory{
     }
 
     error_reporting(E_ALL);
+
+    if( (isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true') ){
+      Memory::$bo_ajax = true;
+    }
   }
 
   /**
@@ -194,7 +204,9 @@ class Memory{
   }
 
   /**
-   * Sets the framework in ajax-mode
+   * Sets the framework in ajax-
+   * 
+   * @deprecated since version 2
    */
   public static function setAjax(){
     Memory::$bo_ajax = true;
@@ -314,7 +326,7 @@ class Memory{
     else {
       $s_path = Memory::$s_helperPath . $s_name . '.inc.php';
     }
-    
+
     if( !$service_File->exists($s_path) ){
       return false;
     }
@@ -444,7 +456,7 @@ class Memory{
     if( !$bo_data && Memory::checkMemory('service', $s_service) ){
       return Memory::getMemory('service', $s_service);
     }
-    
+
     if( $s_service == 'DAL' ){
       $s_service = 'Database';
     }
@@ -464,7 +476,8 @@ class Memory{
     require_once($s_path);
 
     if( $s_service == 'Database' ){
-      $obj_Query_main = new \core\database\Query_main();
+      $service_Settings = Memory::services('Settings');
+      $obj_Query_main = new \core\database\Query_main($service_Settings);
       $object = $obj_Query_main->loadDatabase();
     }
     else {
@@ -544,7 +557,7 @@ class Memory{
   public static function models($s_model, $bo_data = false){
     $s_model = ucfirst($s_model);
 
-    if( !bo_data && Memory::checkMemory('model', $s_model) ){
+    if( !$bo_data && Memory::checkMemory('model', $s_model) ){
       return Memory::getMemory('model', $s_model);
     }
 
@@ -562,8 +575,11 @@ class Memory{
 
     require_once($s_path);
 
-    if( class_exists('core\models\\' . $s_model) ){
-      $s_caller = 'core\models\\' . $s_model;
+    if( !$bo_data && class_exists('core\models\\' . $s_model) ){
+      $s_caller = '\core\models\\' . $s_model;
+    }
+    else if( $bo_data && class_exists('core\models\data\\' . $s_model) ){
+      $s_caller = '\core\models\data\\'.$s_model;
     }
     else if( class_exists('Model_' . $s_model) ){
       /* Legancy way */
@@ -602,6 +618,32 @@ class Memory{
   }
 
   /**
+   * Loads a class
+   * 
+   * @param String $s_url     The url
+   * @param String $s_class   The class name
+   * @param String $s_namespace   The namespace, default \core
+   * @return Object   The Object
+   * @throws \MemoryException If $s_url is invalid
+   */
+  public static function loadClass($s_url, $s_class, $s_namespace = '\core'){
+    $s_class = ucfirst($s_class);
+
+    /* Check model */
+    $service_File = Memory::getMemory('service', 'File');
+    if( !$service_File->exists($s_url) ){
+      throw new \MemoryException('Can not find class ' . $s_class);
+    }
+
+    require_once($s_url);
+
+    $s_caller = $s_namespace . '\\' . $s_class;
+
+    $object = Memory::injection($s_caller, $s_url);
+    return $object;
+  }
+
+  /**
    * Performs the dependency injection
    * 
    * @param String $s_caller		The class name
@@ -615,7 +657,7 @@ class Memory{
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }
 
-    if( substr($s_filename, 0,1) == '/' ){
+    if( substr($s_filename, 0, 1) == '/' ){
       $s_file = Memory::services('File')->readFile($s_filename);
     }
     else {
@@ -709,38 +751,31 @@ class Memory{
 
     switch( $s_type ){
       case 'bool':
-        if( !is_bool($value) )
-          $bo_oke = false;
+        if( !is_bool($value) ) $bo_oke = false;
         break;
 
       case 'int':
-        if( !is_int($value) )
-          $bo_oke = false;
+        if( !is_int($value) ) $bo_oke = false;
         break;
 
       case 'float':
-        if( !is_float($value) )
-          $bo_oke = false;
+        if( !is_float($value) ) $bo_oke = false;
         break;
 
       case 'String':
-        if( !is_String($value) )
-          $bo_oke = false;
+        if( !is_String($value) ) $bo_oke = false;
         break;
 
       case 'object':
-        if( !is_object($value) )
-          $bo_oke = false;
+        if( !is_object($value) ) $bo_oke = false;
         break;
 
       case 'array':
-        if( !is_array($value) )
-          $bo_oke = false;
+        if( !is_array($value) ) $bo_oke = false;
         break;
 
       case 'null' :
-        if( !is_null($value) )
-          $bo_oke = false;
+        if( !is_null($value) ) $bo_oke = false;
         break;
     }
 

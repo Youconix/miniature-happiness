@@ -1,5 +1,7 @@
 <?php
 
+namespace core;
+
 /**
  * Site header
  *                                                                              
@@ -24,92 +26,78 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Header {
-    private $service_XmlSettings;
-    private $service_Template;
-    private $service_Language;
-    private $model_User;
+class Header{
 
-    /**
-     * Starts the class header
-     */
-    public function __construct() {
-        $this->init();
+  private $service_Template;
+  private $service_Language;
+  private $model_User;
 
-        $this->createHeader();
+  /**
+   * Starts the class header
+   */
+  public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User){
+    $this->service_Template = $service_Template;
+    $this->service_Language = $service_Language;
+    $this->model_User = $model_User;
+
+    $this->createHeader();
+
+    $this->displayLanguageFlags();
+  }
+
+  /**
+   * Generates the header
+   */
+  private function createHeader(){
+    $this->service_Template->loadTemplate('header', 'header.tpl');
+    $this->service_Template->set('slogan', $this->service_Language->get('slogan'));
+
+    $obj_User = $this->model_User->get();
+    if( is_null($obj_User->getID()) ){
+      return;
     }
 
-    /**
-     * Destructor
-     */
-    public function __destruct() {
-        $this->service_XmlSettings = null;
-        $this->service_Template = null;
-        $this->service_Language = null;
-        $this->model_User = null;
+    if( $obj_User->isAdmin(GROUP_SITE) ){
+      $s_welcome = $this->service_Language->get('header/adminWelcome');
+    }
+    else {
+      $s_welcome = $this->service_Language->get('header/userWelcome');
     }
 
-    /**
-     * Inits the class header
-     */
-    private function init() {
-        $this->service_XmlSettings = Memory::services('XmlSettings');
-        $this->service_Template = Memory::services('Template');
-        $this->service_Language = Memory::services('Language');
-        $this->model_User = Memory::models('User');
+    $this->service_Template->set('welcomeHeader', '<a href="' . NIV . 'profile.php?id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
+  }
+
+  /**
+   * Displays the language change flags
+   */
+  private function displayLanguageFlags(){
+    $a_languages = $this->service_Language->getLanguages(); 
+    $a_languagesCodes = $this->service_Language->getLanguageCodes();
+    
+
+    $s_url = $_SERVER[ 'PHP_SELF' ] . '?';
+    if( !empty($_SERVER[ 'QUERY_STRING' ]) ){
+      $s_url .= $_SERVER[ 'QUERY_STRING' ];
+      $s_url = preg_replace("#lang=(" . implode('|', $a_keys) . ")*#si", '', $s_url);
+      $s_url = str_replace(array( '&&', '?&' ), array( '&', '?' ), $s_url);
+
+      $s_last = substr($s_url, -1);
+      if( strpos($s_url, '?') === false ) $s_url .= '?';
+      else if( $s_last != '&' ) $s_url .= '&';
     }
+    $s_url = str_replace('&', '&amp;', $s_url);
 
-    /**
-     * Generates the header
-     */
-    private function createHeader() {
-        $this->service_Template->loadTemplate('header','header.tpl');
-        $this->service_Template->set('slogan',$this->service_Language->get('language/slogan'));
-        
-        $a_languages = array(
-            'nl' => 'Nederlands',
-            'en' => 'English'
-        );
-
-        $a_keys = array_keys($a_languages);
-
-        $s_url	= $_SERVER['PHP_SELF'].'?';
-        if( !empty($_SERVER['QUERY_STRING']) ){
-        	$s_url .= $_SERVER['QUERY_STRING'];
-        	$s_url = preg_replace("#lang=(" . implode('|', $a_keys) . ")*#si", '', $s_url);
-        	$s_url = str_replace(array('&&','?&'),array('&','?'),$s_url);
-        	
-        	$s_last	= substr($s_url,-1);
-        	if( strpos($s_url,'?') === false )
-        		$s_url .= '?';
-        	else if( $s_last != '&' )
-        		$s_url .= '&';
-        }
-        $s_url	= str_replace('&', '&amp;', $s_url);
-        
-        foreach ($a_keys AS $s_key) {
-        	$a_data	= array(
-        		'url'=>$s_url.'lang='.$s_key,
-        		'language'=>$a_languages[$s_key],
-        		'betweenLanguage' => ' | '
-        	);
-        	$this->service_Template->setBlock('headerLanguage',$a_data);
-        	
-        	$bo_first	= false;
-        }
-        
-        $obj_User = $this->model_User->get();
-        if ( !is_null($obj_User->getID()) ) {
-        	if( $obj_User->isAdmin(GROUP_SITE) ){
-            	$s_welcome = $this->service_Language->get('language/header/adminWelcome');
-        	}
-        	else {
-        		$s_welcome = $this->service_Language->get('language/header/userWelcome');
-        	}
-        	
-            $this->service_Template->set('welcomeHeader','<a href="' .NIV.'profile.php?id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
-        }
+    $s_flags = '';
+    foreach( $a_languages AS $s_code ){
+      $s_language = (array_key_exists($s_language, $a_languagesCodes)) ?  $a_languagesCodes[$s_language] : $s_language;
+     
+      $s_flags .= '<a href="'.$s_url.'lang='.$s_code.'">'.
+        '<img src="{style_dir}/flags/'.$s_code.'.png" alt="'.$s_language.'" title="'.$s_language.
+        '"></a>';
     }
+    
+    $this->service_Template->set('header_languages',$s_flags);
+  }
+
 }
-
 ?>
