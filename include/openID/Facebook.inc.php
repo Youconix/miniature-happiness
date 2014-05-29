@@ -10,6 +10,7 @@
  * @see include/openID/OpenAuth.inc.php
  */
 class Facebook extends OpenAuth {
+  protected $service_Security;
 	protected $bo_sdkLoaded = false;
 	protected $i_appID;
 	protected $s_appSecret;
@@ -20,11 +21,15 @@ class Facebook extends OpenAuth {
 
 	/**
 	 * PHP 5 constructor
+   * 
+   * @param \core\services\Xml $service_XML   The XML service
+   * @param \core\services\Security $service_Security   The security handler
 	 */
-	public function __construct(){
+	public function __construct(\core\services\Xml $service_XML,  \core\services\Security $service_Security){
 		parent::__construct();
 
-		$service_Facebook	= Memory::services('Xml')->cloneService();
+		$service_Facebook	= $service_XML->cloneService();
+    $this->service_Security = $service_Security;
 
 		$service_Facebook->load(DATA_DIR.'settings/facebook.xml');
 
@@ -45,17 +50,15 @@ class Facebook extends OpenAuth {
 	 * @return String	The username, otherwise null
 	 */
 	public function loginConfirm($s_code){
-		$service_Security	= Memory::services('Security');
-
 		$s_token	= $this->obj_SDK->getAccessToken();
 		$this->service_Session->set('token',$s_token);
 
 		$i_user	= $this->obj_SDK->getUser();
 		try {
 			$a_profile	= $this->obj_SDK->api('/me','GET');
-			return $service_Security->secureStringDB($a_profile['name']);
+			return $this->service_Security->secureStringDB($a_profile['name']);
 		}
-		catch(FacebookAPIException $e){
+		catch(\FacebookAPIException $e){
 			return null;
 		}
 	}
@@ -75,8 +78,6 @@ class Facebook extends OpenAuth {
 	 * @return	array	The login data, otherwise null
 	 */
 	public function registrationConfirm($s_code){
-		$service_Security	= Memory::services('Security');
-
 		$s_token	= $this->obj_SDK->getAccessToken();
 		$this->service_Session->set('token',$s_token);
 
@@ -84,9 +85,9 @@ class Facebook extends OpenAuth {
 		try {
 			$a_profile	= $this->obj_SDK->api('/me','GET');
 				
-			return array('username'=>$service_Security->secureStringDB($a_profile['name']),'email'=>$service_Security->secureStringDB($a_profile['mail']));
+			return array('username'=>$this->service_Security->secureStringDB($a_profile['name']),'email'=>$this->service_Security->secureStringDB($a_profile['mail']));
 		}
-		catch(FacebookApiException $e){
+		catch(\FacebookApiException $e){
 			return null;
 		}
 	}
@@ -107,8 +108,6 @@ class Facebook extends OpenAuth {
 	 * Performs the logout
 	 */
 	public function logout(){
-		$s_token	= $this->getToken();
-		$this->service_CurlManager->performGetCall($this->s_logoutUrl.$s_token,array());
 	}
 
 	/**
@@ -118,85 +117,6 @@ class Facebook extends OpenAuth {
 	 */
 	protected function getToken(){
 		return $this->service_Session->get('token');
-	}
-
-
-	/**
-	 * Checks if the SDK is allready loaded
-	 */
-	protected function checkSDK(){
-		if( $this->bo_sdkLoaded )
-		return;
-
-		$s_locale	= Memory::services('Language')->get('language/locale');
-		
-		if( !empty($this->s_permissions) )		$this->s_permissions = ', {scope : \''.$this->s_permissions.'\'}';
-		
-		$s_sdk	= '/* Load namespace */
-		var head	= document.getElementsByTagName("html")[0];
-		head.setAttribute("xmlns:fb","http://ogp.me/ns/fb#");				
-				
-		window.fbAsyncInit = function() {
-			/* Load main tag */
-			var container	= document.getElementsByTagName("body")[0];
-			
-			var fb_root	= document.createElement("div");
-			fb_root.id	= "fb-root";
-		  	container.insertBefore(fb_root,container.firstChild);
-				
-		    // init the FB JS SDK
-    		FB.init({
-		      appId      : "'.$this->i_appID.'", // App ID from the App Dashboard
-		      channelUrl : "https://'.$_SERVER['HTTP_HOST'].'/'.Memory::getBase().'/openID/channelFacebook.php", // Channel File for x-domain communication
-		      status     : true, // check the login status upon init?
-		      cookie     : true, // set sessions cookies to allow your server to access the session?		       
-      		  oauth: true,
-		      xfbml      : true  // parse XFBML tags on this page?
-		  });
-		  
-			FB.getLoginStatus(function(response) {
-	  			if (response.status === "connected" ){
-	  				// logged in
-				    '.implode(";\n",$this->a_loggedIn).'
-	  			} 
-	  			else if (response.status === "not_authorized"){
-				    // 	not_authorized
-				    '.implode(";\n",$this->a_unautorized).'
-	  			}
-	  			else {
-				    // not_logged_in
-				    '.implode(";\n",$this->a_loggedOut).'
-	  			}	
- 			});
-  		};
-  		
-  		function login() {
-		    FB.login(function(response) {
-		        if( response.authResponse ){
-		            '.implode(";\n",$this->a_loggedIn).'
-		        } else {
-		            window.location = "index.php";
-		        }
-		    });
-		}
-
-		  // Load the SDK\'s source Asynchronously
-		  // Note that the debug version is being actively developed and might 
-		  // contain some type checks that are overly strict. 
-		  // Please report such bugs using the bugs tool.
-		  (function(d, debug){
-		     var js, id = "facebook-jssdk", ref = d.getElementsByTagName("script")[0];
-		     if (d.getElementById(id)) {return;}
-		     js = d.createElement("script"); js.id = id; js.async = true;
-		     js.src = "//connect.facebook.net/'.$s_locale.'/all" + (debug ? "/debug" : "") + ".js";
-		     ref.parentNode.insertBefore(js, ref);
-		   }(document, /*debug*/ false));
-   		';
-
-		$obj_sdk	= Memory::helpers('HTML')->javascript($s_sdk);
-		Memory::services('Template')->headerLink($obj_sdk);
-		 
-		$this->bo_sdkLoaded	= true;
 	}
 }
 ?>

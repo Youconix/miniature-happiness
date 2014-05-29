@@ -278,7 +278,7 @@ class Database {
 		$obj_create->addPrimary('id');
 		$this->service_QueryBuilder->getResult();
 
-		foreach($a_countries AS $a_country){
+		foreach($this->a_countries AS $a_country){
 			$a_country = explode(',',$a_country);
 			$i_id	= str_replace('"','',$a_country[0]);
 			$s_country = str_replace('"','',$a_country[1]);
@@ -293,7 +293,7 @@ class Database {
 		$obj_create->addPrimary('id');
 		$this->service_QueryBuilder->getResult();
 
-		foreach($a_nationalities AS $a_nationality){
+		foreach($this->a_nationalities AS $a_nationality){
 			$a_nationality = explode(',',$a_nationality);
 			$i_id	= str_replace('"','',$a_nationality[0]);
 			$s_nationality = str_replace('"','',$a_nationality[1]);

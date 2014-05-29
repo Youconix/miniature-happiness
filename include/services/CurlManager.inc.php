@@ -1,5 +1,7 @@
 <?php
 
+namespace \core\services;
+
 /**
  * Service class for handling GET and POST requests to external sites
  *
@@ -25,7 +27,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Service_CurlManager extends Service {
+class CurlManager extends Service {
     private $i_timeout    = 4000;
     private $s_header;
 

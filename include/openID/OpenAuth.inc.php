@@ -24,9 +24,6 @@
  */
 abstract class OpenAuth{	
 	protected $s_protocol = 'http://';
-	protected $service_CurlManager;
-	protected $service_Session;
-	protected $service_Cookie;
 	protected $s_loginUrl;
 	protected $s_logoutUrl;
 	protected $s_registrationUrl;
@@ -34,11 +31,7 @@ abstract class OpenAuth{
 	/**
 	 * Inits the class OpenAuth
 	 */
-	public function __construct(){
-		$this->service_CurlManager	= Memory::services('CurlManager');
-		$this->service_Session		= Memory::services('Session');
-		$this->service_Cookie		= Memory::services('Cookie');
-		
+	public function __construct(){		
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
 			$this->s_protocol	= 'https://';
 		}

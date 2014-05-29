@@ -1,0 +1,83 @@
+input, select,textarea {
+	border:1px solid #111;
+	-webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    -khtml-border-radius:8px;
+    -ms-border-radius:8px;
+    border-radius:8px;
+}
+
+label.checkbox,label.radio {
+	display: inline-block;
+	cursor: pointer;
+	position: relative;
+	padding-left: 25px;
+	margin-right: 15px;
+	width:20px;
+	height:20px;
+}
+
+input[type=checkbox].animation,input[type=radio].animation {
+	display:none;
+}
+
+label.checkbox:before,label.radio:before {
+	background-color: #aaa;
+	box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+	content: "";
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	position: absolute;
+	left: 0;
+	bottom:1px;
+}
+
+.fake-checkbox, label.checkbox:before {
+	border-radius:5px;
+}
+input[type=checkbox].animation:checked + label.checkbox:before {
+	content: "\2713";
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+	font-size: 15px;
+	color: #f3f3f3;
+	text-align: center;
+    line-height: 15px;
+}
+
+label.radio:before {
+	border-radius: 15px;
+}
+input[type=radio].animation:checked + label.radio:before {
+	content: "\2022";
+    color: #f3f3f3;
+    font-size: 30px;
+    text-align: center;
+    line-height: 18px;
+}
+
+select.animation {
+	background: transparent;
+   padding:0px 15px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 18px;
+   -webkit-appearance: none;
+   appearance: none;
+   color:#FFF;
+}
+div.select {
+   height: 18px;
+   overflow: hidden;
+   background: url(../images/down_arrow_select.jpg) no-repeat right #111;
+   border-color:1px solid #FFF;
+    box-shadow: 4px 4px 4px #907A83 inset;
+   float:left;
+   margin-right:5px;
+   border-radius:5px;
+}
+select.animation option {
+	background-color:#111;
+}

@@ -1,71 +1,63 @@
 <?php
 
 if( !defined('NIV') ){
-  define('NIV', dirname(__FILE__) . '/../../../../');
+  define('NIV', dirname(__FILE__) . '/../../../');
 }
 
 if( !class_exists('GeneralTest') ){
   require(NIV . 'tests/GeneralTest.php');
 }
 
-class testList extends GeneralTest{
-  private $s_content = 'test list cell';
-  private $listFactory;
-
+class testCountries extends GeneralTest{
+  private $helper_countries;
+  private $s_name = 'test country list';
+  private $s_id = 'countryList';
+  
+  private $service_QueryBuilder;
+  private $service_Language;
+  
   public function __construct(){
     parent::__construct();
 
-    require_once(NIV . 'include/helpers/HTML.inc.php');
+    require_once(NIV . 'include/helpers/Countries.inc.php');
 
-    $helper = new core\helpers\html\HTML();
-    $this->listFactory  = $helper->ListFactory();
+    $this->loadStub('DummyDAL');
+    $this->loadStub('DummyQueryBuilder');
+    $this->loadStub('DummyLanguage');
+  }
+  
+  public function setUp(){
+    parent::setUp();
+    
+    $service_Database = new DummyDAL();
+    $this->service_QueryBuilder = new DummyBuilder($service_Database);
+    $this->service_Language = new DummyLanguage();
+  }
+  
+  public function tearDown(){
+    parent::tearDown();
+    
+    $this->helper_countries = null;
+    $this->service_QueryBuilder = null;
+    $this->service_Language = null;
   }
   
   /**
-   * Test of an empty unnumbered list
+   * Tests a empty list
    * 
    * @test
    */
   public function emptyList(){
-    $s_expected = "<ul ></ul>\n";
-    $this->assertEquals($s_expected,$this->listFactory->uNumberedList()->generateItem());
-  }
-  
-  /**
-   * Test of an empty numbered list
-   * 
-   * @test
-   */
-  public function emptyNumberedList(){
-    $s_expected = "<ol ></ol>\n";
-    $this->assertEquals($s_expected,$this->listFactory->numberedList()->generateItem());
-  }
-  
-  /**
-   * Test of generating a list item
-   * 
-   * @test
-   */
-  public function listItem(){
-    $s_expected = '<li >'.$this->s_content.'</li>';
-    $this->assertEquals($s_expected,$this->listFactory->createItem($this->s_content)->generateItem());
-  }
-  
-  /**
-   * Test of a filled list
-   * 
-   * @test
-   */
-  public function filledList(){
-    $s_expected = '<ul >';
+    $this->createHelper();
     
-    $object = $this->listFactory->uNumberedList();
-    for($i=1; $i<=5; $i++){
-      $object->addRow($this->listFactory->createItem($this->s_content));
-      $s_expected .= '<li >'.$this->s_content."</li>\n";
-    }
-      
-    $s_expected .= "</ul>\n";
-    $this->assertEquals($s_expected,$object->generateItem());
+    $s_expected = '<select id="'.$this->s_id.'" name="'.$this->s_name.'">'."\n</select>\n";
+    //$this->assertEquals($s_expected,$this->helper_countries->getList($this->s_name,$this->s_id));
+  }
+  
+  private function createHelper(){
+    echo("test1");
+    $this->helper_countries = new \core\helpers\Countries();
+    echo('test2');
+    exit();
   }
 }

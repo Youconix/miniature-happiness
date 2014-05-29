@@ -1,0 +1,6 @@
+RewriteEngine on
+
+RewriteCond %{HTTP:Accept-encoding} gzip
+RewriteRule ^([a-z/0-9\-_]+)/css/([a-zA-Z/0-9\-_]+)_min\.css$ $1/css/$2.css [L,NC]
+RewriteRule ^([a-z/0-9\-_]+)/css/([a-zA-Z/0-9\-_]+)\.css$ $1/css/$2_min.css.gz [L,NC]
+
