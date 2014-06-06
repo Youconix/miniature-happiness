@@ -39,27 +39,18 @@ class Calender extends Helper{
 
   /**
    * PHP 5 constructor 
+   * 
+   * @param \core\helpers\html\HTML	$helper_HTML		The HTML service
+   * @param \core\services\Language	$service_Language	The language service
    */
-  public function __construct(\core\helpers\html\HTML $helper_HTML){
+  public function __construct(\core\helpers\html\HTML $helper_HTML,\core\services\Language $service_Language){
     $this->i_month = date('n');
     $this->i_year = date('Y');
     $this->i_startDayWeek = 0; //sunday
     $this->helper_HTML  = $helper_HTML;
-    //$this->service_Language = $service_Language;
+    $this->service_Language = $service_Language;
     $this->s_event = '';
     $this->a_items = array();
-  }
-
-  /**
-   * Destructor
-   */
-  public function __destruct(){
-    $this->service_Language = null;
-    $this->i_month = null;
-    $this->i_year = null;
-    $this->i_startDayWeek = null;
-    $this->s_event = null;
-    $this->a_items = null;
   }
 
   /**
@@ -149,10 +140,10 @@ class Calender extends Helper{
     <tr>
     <td colspan="3"><ul>';
     for($i=$this->i_startDayWeek; $i<7; $i++){
-   // $s_view .= '<li class="bold">'.$this->service_Language->get('language/weekdaysShort/day'.$i).'</li>';
+      $s_view .= '<li class="bold">'.$this->service_Language->get('system/weekdaysShort/day'.$i).'</li>';
     }
     for($i=0; $i<$this->i_startDayWeek; $i++){
-    //$s_view .= '<li class="bold">'.$this->service_Language->get('language/weekdaysShort/day'.$i).'</li>';
+     $s_view .= '<li class="bold">'.$this->service_Language->get('system/weekdaysShort/day'.$i).'</li>';
     }
     $s_view .= '</ul></tr>
     </thead>
@@ -172,11 +163,11 @@ class Calender extends Helper{
     calender.setData('.json_encode($this->a_items).');
     calender.setCaller("'.$this->s_event.'");
     calender.display();
+
+    $("head").append(\'<script src="{NIV}js/calender.php"></script>\');
     //-->
     </script>
     ';
-
-    core\Memory::services('Template')->headerLink($this->helper_HTML->javascriptLink('{NIV}js/calender.php'));
 
     return $s_view;
   }

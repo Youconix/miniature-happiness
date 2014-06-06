@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language>
-	<encoding>iso-8859-1</encoding>
-	<locale>en</locale>
-	<noscript>Please activate javascript.</noscript>
-	<sessionExpired>Your session has expired. Relogin.</sessionExpired>
-
+<system>
 	<days>
 		<day0>Sunday</day0>
 		<day1>Monday</day1>
@@ -384,4 +379,4 @@
 			<systemError>Some error has occured on this page. The administrator has been warned.</systemError>
 		</error500>
 	</errors>
-</language>
+</system>

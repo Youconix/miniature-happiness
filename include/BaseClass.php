@@ -1,4 +1,5 @@
 <?php
+define('DEBUG',true);
 
 /**
  * Base class for the framework.  Use this file as parent
@@ -42,7 +43,9 @@ abstract class BaseClass{
    * Destructor
    */
   public function __destruct(){
-    if( !is_null($this->service_Template) ) $this->service_Template->set('NIV', LEVEL);
+    if( !is_null($this->service_Template) ){
+        $this->service_Template->set('NIV', LEVEL);
+    }
 
     $this->service_Language = null;
     $this->service_ErrorHandler = null;
@@ -56,7 +59,9 @@ abstract class BaseClass{
     $this->get = null;
     $this->request = null;
 
-    if( class_exists('Memory') ) Memory::endProgram();
+    if( class_exists('\core\Memory') ){
+	\core\Memory::endProgram();
+    }
   }
 
   /**
@@ -183,15 +188,15 @@ function exception_handler($exception){
 			' . $exception->getTraceAsString();
 
   if( class_exists('Memory') ){
-    if( !defined('Process') && Memory::isLoaded('service', 'Template') ){
+    if( !defined('Process') && \core\Memory::isLoaded('service', 'Template') ){
       /* Disable output */
-      Memory::delete('service', 'Template');
+      \core\Memory::delete('service', 'Template');
     }
 
     try{
-      Memory::services('Logs')->errorLog($s_exception);
+      \core\Memory::services('Logs')->errorLog($s_exception);
     }
-    catch( Exception $e ){
+    catch( \Exception $e ){
       
     }
   }

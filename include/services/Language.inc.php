@@ -32,6 +32,8 @@ class Language extends Xml{
   private $s_language = null;
   private $s_encoding = null;
   private $service_File;
+  private $a_documents  = array();
+  private $bo_fallback = false;
 
   /**
    * PHP 5 constructor
@@ -42,7 +44,7 @@ class Language extends Xml{
    */
   public function __construct(\core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie, \core\services\File $service_File){
     parent::__construct();
-
+    
     /*  Check language */
     $this->service_File = $service_File;
     $a_languages = $this->getLanguages();
@@ -70,6 +72,24 @@ class Language extends Xml{
 
     $this->readLanguage();
   }
+  
+  public function getLanguageFiles(){
+    $a_files = array_keys($this->a_documents);
+    $a_data = array(
+        'language' => $this->s_language,
+        'files' => array()
+    );
+    
+    foreach($a_files AS $s_file){      
+      if( $s_file == 'site' && $this->bo_fallback ){
+        $a_data['files'][$s_file] = '/include/language_'.$this->s_language.'.lang';
+      }
+      else {
+        $a_data['files'][$s_file] = '/include/language/'.$this->s_language.'/'.$s_file.'.lang';
+      }
+    }
+    return $a_data;
+  }
 
   /**
    * Collects the installed languages
@@ -81,12 +101,40 @@ class Language extends Xml{
     $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
 
     foreach( $a_languageFiles AS $s_languageFile ){
+      if( strpos($s_languageFile, 'language_') !== false ){
+        /* Fallback */
+        return $this->getLanguagesOld();
+      }
+      
+      if( $s_languageFile == '..' || $s_languageFile == '.' || strpos($s_languageFile,'.') !== false ){
+        continue;
+      }
+      
+      $a_languages[] = $s_languageFile;
+    }
+
+    return $a_languages;
+  }
+  
+  /**
+   * Collects the installed languages
+   * Old way of storing
+   *
+   * @return array    The installed languages
+   */
+  private function getLanguagesOld(){
+    $a_languages = array();
+    $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
+
+    foreach( $a_languageFiles AS $s_languageFile ){
       if( strpos($s_languageFile, 'language_') === false ) continue;
 
       $s_languageFile = str_replace(array( 'language_', '.lang' ), array( '', '' ), $s_languageFile);
 
       $a_languages[] = $s_languageFile;
     }
+    
+    $this->bo_fallback = true;
 
     return $a_languages;
   }
@@ -118,10 +166,33 @@ class Language extends Xml{
   /**
    * Calls the set language-file and reads it
    * 
-   * @throws	IOException when the file does not exist
+   * @throws	IOException If the system of site language file is missing
    */
   private function readLanguage(){
-    $this->load(NIV . 'include/language/language_' . $this->s_language . '.lang');
+    if( $this->bo_fallback ){
+      if( !$this->service_File->exists(NIV.'include/language/language_'.$this->s_language.'.lang') ){
+        throw new IOException('Missing site language file for language '.$this->s_language.'.');
+      }
+      
+      $this->load(NIV.'include/language/language_'.$this->s_language.'.lang');
+      $this->a_documents['site'] = $this->obj_document;
+      $this->obj_document = null;
+    }
+    
+    /* Get files */
+    $a_files = $this->service_File->readDirectory(NIV . 'include/language/'.$this->s_language);
+    foreach($a_files AS $s_file){
+      if( strpos($s_file,'.lang') === false ){  continue; }
+      
+      $s_name = str_replace('.lang','',$s_file);
+      
+      $this->load(NIV . 'include/language/' . $this->s_language . '/'.$s_file);
+      $this->a_documents[$s_name] = $this->obj_document;
+      $this->obj_document = null;
+    }
+    
+    if( !array_key_exists('system', $this->a_documents) ){  throw new IOException('Missing system language file for language '.$this->s_language.'.'); }
+    if( !array_key_exists('site', $this->a_documents) ){  throw new IOException('Missing site language file for language '.$this->s_language.'.'); }
 
     /* Get encoding */
     $this->s_encoding = $this->get('language/encoding');
@@ -153,9 +224,41 @@ class Language extends Xml{
    * @throws  XMLException when the path does not exist
    */
   public function get($s_path){
-    $s_text = parent::get($s_path);
+    $a_path = explode('/',$s_path);
+    if( !array_key_exists($a_path[0],$this->a_documents) ){
+      $obj_file = $this->a_documents['site'];
+    }
+    else {
+      $obj_file = $this->a_documents[$a_path[0]];
+    }
+    
+    $a_return = $obj_file->query("//" . $s_path);
+
+    if( $a_return->length < 1 ){
+      /* Part not found */
+      throw new \XMLException("Can not find " . $s_path);
+    }
+
+    foreach( $a_return as $entry ){
+      $s_text = $entry->textContent;
+    }
 
     return trim($s_text);
+  }
+  
+  /**
+   * Changes the language-values with the given values
+   * Collects the text from the language file via the path
+   *
+   * @param   String      $s_path      The path to the language-part
+   * @param	array	$a_fields	The fields, accepts also a string
+   * @param	array	$a_values	The values, accepts also a string
+   * @return	string	The changed language-string
+   * @throws  XMLException when the path does not exist
+   */
+  public function insertPath($s_path, $a_fields, $a_values){
+    $s_text = $this->get($s_path);
+    return $this->insert($s_text, $a_fields, $a_values);
   }
 
   /**

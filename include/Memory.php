@@ -10,7 +10,7 @@ namespace core;
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   09/01/2013
+ * @changed   31/05/2014
  *
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
@@ -84,8 +84,11 @@ class Memory{
     /* Prepare cache */
     Memory::$a_memory = array();
     Memory::$a_memory[ 'service' ] = array();
+    Memory::$a_memory[ 'service-data' ] = array();
     Memory::$a_memory[ 'model' ] = array();
+    Memory::$a_memory[ 'model-data' ] = array();
     Memory::$a_memory[ 'helper' ] = array();
+    Memory::$a_memory[ 'helper-data' ] = array();
     Memory::$bo_ajax = false;
 
     Memory::$s_servicePath = NIV . 'include/services/';
@@ -267,7 +270,7 @@ class Memory{
   /**
    * Checks or the given service or model allready is loaded
    *
-   * @param   String  $s_type  The type (model|service)
+   * @param   String  $s_type  The type (helper|helper-data|model|model-data|service|service-data)
    * @param   String  $s_name  The name of the service or model
    * @return  boolean True if the given service or model is allready loaded, otherwise false
    */
@@ -282,7 +285,7 @@ class Memory{
   /**
    * Returns the requested service or model from the memory
    *
-   * @param   String  $s_type  The type (model|service)
+   * @param   String  $s_type  The type (helper|helper-data|model|model-data|service|service-data)
    * @param   String  $s_name  The name of the service or model
    * @return  object  The requested service or model
    */
@@ -293,7 +296,7 @@ class Memory{
   /**
    * Saves the given service or model in the memory
    *
-   * @param   String  $s_type     The type (model|service)
+   * @param   String  $s_type     The type (helper|helper-data|model|model-data|service|service-data)
    * @param   String  $s_name     The name of the service or model
    * @param   object  $obj_value  The service or model
    */
@@ -313,6 +316,9 @@ class Memory{
 
     /* Check or class is in the global memory */
     if( !$bo_data && Memory::checkMemory('helper', $s_name) ){
+      return true;
+    }
+    else if( $bo_data && Memory::checkMemory('helper-data', $s_name) ){
       return true;
     }
 
@@ -356,18 +362,17 @@ class Memory{
   public static function helpers($s_helper, $bo_data = false){
     $s_helper = ucfirst($s_helper);
 
-    if( !$bo_data && Memory::checkMemory('helper', $s_helper) ){
+    if( $bo_data ){
+      return Memory::helpersData($s_helper);
+    }
+
+    if( Memory::checkMemory('helper', $s_helper) ){
       return Memory::getMemory('helper', $s_helper);
     }
 
     /* Check service */
     $service_File = Memory::getMemory('service', 'File');
-    if( $bo_data ){
-      $s_path = Memory::$s_helperPath . 'data/' . $s_helper . '.inc.php';
-    }
-    else {
-      $s_path = Memory::$s_helperPath . $s_helper . '.inc.php';
-    }
+    $s_path = Memory::$s_helperPath . $s_helper . '.inc.php';
 
     if( !$service_File->exists($s_path) ){
       throw new \MemoryException('Can not find helper ' . $s_helper);
@@ -380,7 +385,13 @@ class Memory{
     }
     else {
       if( class_exists('core\helpers\\' . $s_helper) ){
-        $s_caller = 'core\helpers\\' . $s_helper;
+	$s_caller = 'core\helpers\\' . $s_helper;
+
+	$s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+        if( $service_File->exists($s_child) ){
+	    require_once($s_child);
+            $s_caller	= 'core\helpers\\'.$s_helper.'Override';
+	}
       }
       else if( class_exists('HTML_' . $s_helper) ){
         /* Legancy way */
@@ -392,11 +403,50 @@ class Memory{
     }
     $object = Memory::injection($s_caller, $s_path);
 
-    if( !$bo_data ){
-      Memory::setMemory('helper', $s_helper, $object);
-    }
+    Memory::setMemory('helper', $s_helper, $object);
 
     return $object;
+  }
+
+  /**
+   * Loads the requested data helper
+   *
+   * @param   String  $s_helper  The name of the helper
+   * @return  Helper  The requested helper
+   * @throws  Exception If the requested data +helper does not exist
+   */
+  private static function helpersData($s_helper){
+    if( Memory::checkMemory('helper-data', $s_helper) ){
+      return Memory::getMemory('helper-data', $s_helper);
+    }
+
+    /* Check service */
+    $service_File = Memory::getMemory('service', 'File');
+    $s_path = Memory::$s_helperPath . 'data/' . $s_helper . '.inc.php';
+
+    if( !$service_File->exists($s_path) ){
+      throw new \MemoryException('Can not find data helper ' . $s_helper);
+    }
+
+    require_once($s_path);
+
+    if( !class_exists('core\helpers\data\\' . $s_helper) ){
+      throw new \MemoryException('Could not find data helper ' . $s_helper . ' in file ' . $s_path . '.');
+    }
+    $s_caller = 'core\helpers\data\\' . $s_helper;
+
+    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+    if( $service_File->exists($s_child) ){
+      require_once($s_child);
+      $s_caller	= 'core\helpers\data\\'.$s_helper.'Override';
+    }
+
+    $object = Memory::injection($s_caller, $s_path);
+
+    Memory::setMemory('helper-data', $s_helper, $object);
+
+    return $object;
+
   }
 
   /**
@@ -410,7 +460,10 @@ class Memory{
     $s_name = ucfirst($s_name);
 
     /* Check or class is in the global memory */
-    if( Memory::checkMemory('service', $s_name) ){
+    if( !$bo_data && Memory::checkMemory('service', $s_name) ){
+      return true;
+    }
+    if( $bo_data && Memory::checkMemory('service-data', $s_name) ){
       return true;
     }
 
@@ -453,7 +506,11 @@ class Memory{
   public static function services($s_service, $bo_data = false){
     $s_service = ucfirst($s_service);
 
-    if( !$bo_data && Memory::checkMemory('service', $s_service) ){
+    if( $bo_data ){
+      return Memory::servicesData($s_service);
+    }
+
+    if( Memory::checkMemory('service', $s_service) ){
       return Memory::getMemory('service', $s_service);
     }
 
@@ -463,12 +520,7 @@ class Memory{
 
     /* Check service */
     $service_File = Memory::getMemory('service', 'File');
-    if( $bo_data ){
-      $s_path = Memory::$s_servicePath . 'data/' . $s_service . '.inc.php';
-    }
-    else {
-      $s_path = Memory::$s_servicePath . $s_service . '.inc.php';
-    }
+    $s_path = Memory::$s_servicePath . $s_service . '.inc.php';
     if( !$service_File->exists($s_path) ){
       throw new \MemoryException('Can not find service ' . $s_service);
     }
@@ -483,6 +535,12 @@ class Memory{
     else {
       if( class_exists('\core\services\\' . $s_service) ){
         $s_caller = '\core\services\\' . $s_service;
+
+	$s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+        if( $service_File->exists($s_child) ){
+	    require_once($s_child);
+            $s_caller	= 'core\services\\'.$s_service.'Override';
+	}
       }
       else if( class_exists('Service_' . $s_service) ){
         /* Legancy way */
@@ -495,9 +553,46 @@ class Memory{
       $object = Memory::injection($s_caller, $s_path);
     }
 
-    if( !$bo_data ){
-      Memory::setMemory('service', $s_service, $object);
+    Memory::setMemory('service', $s_service, $object);
+
+    return $object;
+  }
+
+  /**
+   * Loads the requested data service
+   *
+   * @param   String  $s_service  The name of the service
+   * @return  Service  The requested service
+   * @throws  Exception If the requested data service does not exist
+   */
+  private static function servicesData($s_service){
+    if( Memory::checkMemory('service-data', $s_service) ){
+      return Memory::getMemory('service-data', $s_service);
     }
+
+    /* Check service */
+    $service_File = Memory::getMemory('service', 'File');
+    $s_path = Memory::$s_servicePath . 'data/' . $s_service . '.inc.php';
+    if( !$service_File->exists($s_path) ){
+      throw new \MemoryException('Can not find service ' . $s_service);
+    }
+
+    require_once($s_path);
+
+    if( !class_exists('\core\services\data\\' . $s_service) ){
+      throw new \MemoryException('Could not find data service ' . $s_service . ' in file ' . $s_path . '.');
+    }
+    $s_caller = '\core\services\data\\' . $s_service;
+
+    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+    if( $service_File->exists($s_child) ){
+      require_once($s_child);
+      $s_caller	= 'core\services\\'.$s_service.'Override';
+    }
+
+    $object = Memory::injection($s_caller, $s_path);
+
+    Memory::setMemory('service-data', $s_service, $object);
 
     return $object;
   }
@@ -514,6 +609,9 @@ class Memory{
 
     /* Check or class is in the global memory */
     if( !$bo_data && Memory::checkMemory('model', $s_name) ){
+      return true;
+    }
+    if( $bo_data && Memory::checkMemory('model-data', $s_name) ){
       return true;
     }
 
@@ -557,29 +655,31 @@ class Memory{
   public static function models($s_model, $bo_data = false){
     $s_model = ucfirst($s_model);
 
-    if( !$bo_data && Memory::checkMemory('model', $s_model) ){
+    if( $bo_data ){
+      return Memory::modelsData($s_model);
+    }
+
+    if( Memory::checkMemory('model', $s_model) ){
       return Memory::getMemory('model', $s_model);
     }
 
     /* Check model */
     $service_File = Memory::getMemory('service', 'File');
-    if( $bo_data ){
-      $s_path = Memory::$s_modelPath . 'data/' . $s_model . '.inc.php';
-    }
-    else {
-      $s_path = Memory::$s_modelPath . $s_model . '.inc.php';
-    }
+    $s_path = Memory::$s_modelPath . $s_model . '.inc.php';
     if( !$service_File->exists($s_path) ){
       throw new \MemoryException('Can not find model ' . $s_model);
     }
 
     require_once($s_path);
 
-    if( !$bo_data && class_exists('core\models\\' . $s_model) ){
+    if( class_exists('core\models\\' . $s_model) ){
       $s_caller = '\core\models\\' . $s_model;
-    }
-    else if( $bo_data && class_exists('core\models\data\\' . $s_model) ){
-      $s_caller = '\core\models\data\\'.$s_model;
+
+      $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+      if( $service_File->exists($s_child) ){
+        require_once($s_child);
+        $s_caller	= 'core\models\\'.$s_service.'Override';
+      }
     }
     else if( class_exists('Model_' . $s_model) ){
       /* Legancy way */
@@ -591,9 +691,48 @@ class Memory{
 
     $object = Memory::injection($s_caller, $s_path);
 
-    if( !$bo_data ){
-      Memory::setMemory('model', $s_model, $object);
+    Memory::setMemory('model', $s_model, $object);
+
+    return $object;
+  }
+
+  /**
+   * Loads the requested data model
+   *
+   * @param   String  $s_model  The name of the model
+   * @return  Model  The requested model
+   * @throws  Exception If the requested data model does not exist
+   */
+  private static function modelsData($s_model){
+    $s_model = ucfirst($s_model);
+
+    if( Memory::checkMemory('model-data', $s_model) ){
+      return Memory::getMemory('model-data', $s_model);
     }
+
+    /* Check model */
+    $service_File = Memory::getMemory('service', 'File');
+    $s_path = Memory::$s_modelPath . 'data/' . $s_model . '.inc.php';
+    if( !$service_File->exists($s_path) ){
+      throw new \MemoryException('Can not find data model ' . $s_model);
+    }
+
+    require_once($s_path);
+
+    if( !class_exists('core\models\data\\' . $s_model) ){
+      throw new \MemoryException('Could not find data model ' . $s_model . ' in file ' . $s_path . '.');
+    }
+    $s_caller = '\core\models\data\\'.$s_model;
+
+    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
+    if( $service_File->exists($s_child) ){
+      require_once($s_child);
+      $s_caller	= 'core\models\data\\'.$s_service.'Override';
+    }
+
+    $object = Memory::injection($s_caller, $s_path);
+
+    Memory::setMemory('model-data', $s_model, $object);
 
     return $object;
   }
@@ -601,7 +740,7 @@ class Memory{
   /**
    * Checks if a helper, service or model is loaded
    *
-   * @param  String 	$s_type     The type (Service|Model|Helper)
+   * @param  String 	$s_type     The type (helper|helper-data|model|model-data|service|service-data)
    * @param  String	$s_name     The name of the object
    * @return boolean	True if the value exists in the memory, false if it does not
    */
@@ -609,12 +748,13 @@ class Memory{
     $s_type = strtolower($s_type);
     $s_name = ucfirst($s_name);
 
+    if( !array_key_exists($s_type, Memory::$a_memory) ){
+      return false;
+    }
     if( array_key_exists($s_name, Memory::$a_memory[ $s_type ]) ){
       return true;
     }
-    else {
-      return false;
-    }
+    return false;
   }
 
   /**
@@ -787,7 +927,7 @@ class Memory{
   /**
    * Removes a value from the global memory
    *
-   * @param	String  $s_type The type (Service|Model|Helper)
+   * @param	String  $s_type The type (helper|helper-data|model|model-data|service|service-data)
    * @param	String  $s_name The name of the data
    */
   public static function delete($s_type, $s_name){
