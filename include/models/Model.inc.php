@@ -65,7 +65,7 @@ abstract class Model{
       $this->performValidation();
       return true;
     }
-    catch( ValidationException $e ){
+    catch( \ValidationException $e ){
       return false;
     }
   }

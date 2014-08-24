@@ -27,18 +27,15 @@ namespace core;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Memory{
-
-  private static $bo_ajax;
+  
   private static $a_memory = null;
-  private static $s_base;
-  private static $s_page;
-  private static $s_protocol;
   private static $bo_testing = false;
   private static $s_servicePath;
   private static $s_modelPath;
   private static $s_helperPath;
   private static $s_classPath;
   private static $s_interfacePath;
+  private static $bo_prettyUrls;
 
   /**
    * Destructor
@@ -89,18 +86,17 @@ class Memory{
     Memory::$a_memory[ 'model-data' ] = array();
     Memory::$a_memory[ 'helper' ] = array();
     Memory::$a_memory[ 'helper-data' ] = array();
-    Memory::$bo_ajax = false;
 
     Memory::$s_servicePath = NIV . 'include/services/';
     Memory::$s_modelPath = NIV . 'include/models/';
     Memory::$s_helperPath = NIV . 'include/helpers/';
-    Memory::$s_classPath = NIV . 'include/classes/';
+    Memory::$s_classPath = NIV . 'include/classes/';    
     Memory::$s_interfacePath = NIV . 'include/interface/';
 
     require_once(Memory::$s_servicePath . 'Service.inc.php');
     require_once(Memory::$s_modelPath . 'Model.inc.php');
     require_once(Memory::$s_helperPath . 'Helper.inc.php');
-
+  
     /* Load standard services */
     require_once(Memory::$s_servicePath . 'File.inc.php');
     $service_File = new \core\services\File();
@@ -122,45 +118,25 @@ class Memory{
     Memory::$a_memory[ 'service' ][ 'Logs' ] = $service_Logs;
 
     require_once(Memory::$s_servicePath . 'Session.inc.php');
+    
+    require_once(Memory::$s_servicePath . 'Security.inc.php');
+    $service_Security = new \core\services\Security();
+    Memory::$a_memory[ 'service' ][ 'Security' ] = $service_Security;
+    
+    require_once(Memory::$s_servicePath . 'Cookie.inc.php');
+    $service_Cookie = new \core\services\Cookie($service_Security);
+    Memory::$a_memory[ 'service' ][ 'Cookie' ] = $service_Cookie;
+    
+    require_once(Memory::$s_modelPath . 'Config.inc.php');
+    $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie);
+    Memory::$a_memory[ 'model' ][ 'Config' ] = $model_Config;
 
-    Memory::setDefaultValues($service_Settings);
+    Memory::setDefaultValues($service_Security,$service_Settings);
   }
 
-  private static function setDefaultValues($service_Settings){
-    if( !defined('DB_PREFIX') ){
-      define('DB_PREFIX', $service_Settings->get('settings/SQL/prefix'));
-    }
-
-    $s_base = $service_Settings->get('settings/main/base');
-    if( substr($s_base, 0, 1) != '/' ){
-      Memory::$s_base = '/' . $s_base;
-    }
-    else {
-      Memory::$s_base = $s_base;
-    }
-
-    if( !defined('BASE') ){
-      define('BASE', NIV);
-    }
-
-    /* Get page */
-    $s_page = $_SERVER[ 'SCRIPT_NAME' ];
-
-    while( substr($s_page, 0, 1) == '/' ){
-      $s_page = substr($s_page, 1);
-    }
-    Memory::$s_page = $s_page;
-
-    if( $s_base == '/' ){
-      Memory::$s_page = substr(Memory::$s_page, 1);
-    }
-    else if( stripos($s_page, $s_base) !== false ){
-      Memory::$s_page = substr(Memory::$s_page, strlen($s_base));
-    }
-
-    /* Get protocol */
-    Memory::$s_protocol = ((!empty($_SERVER[ 'HTTPS' ]) && $_SERVER[ 'HTTPS' ] != 'off') || (isset($_SERVER[ 'SERVER_PORT' ]) && $_SERVER[ 'SERVER_PORT' ] == 443) ) ? "https://" : "http://";
+  private static function setDefaultValues($service_Security,$service_Settings){
     
+      
     if( isset($_SERVER[ 'SERVER_ADDR' ]) && in_array($_SERVER[ 'SERVER_ADDR' ], array( '127.0.0.1', '::1' )) && !defined('DEBUG') ){
       define('DEBUG', null);
     }
@@ -173,9 +149,10 @@ class Memory{
     }
 
     error_reporting(E_ALL);
-
-    if( (isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true') ){
-      Memory::$bo_ajax = true;
+    
+    Memory::$bo_prettyUrls = false;
+    if( $service_Settings->exists('settings/main/pretty_urls') && $service_Settings->get('settings/main/pretty_urls') == 1 ){
+      Memory::$bo_prettyUrls = true;
     }
   }
 
@@ -183,27 +160,30 @@ class Memory{
    * Returns the used protocol
    *
    * @return String	The protocol
+   * @deprecated since version 2.   See include/models/Config:getProtocol
    */
   public static function getProtocol(){
-    return Memory::$s_protocol;
+    return Memory::getMemory('model', 'Config')->getProtocol();
   }
 
   /**
    * Returns the current page
    *
    * @return String	The page
+   * @deprecated since version 2.   See include/models/Config:getPage
    */
   public static function getPage(){
-    return Memory::$s_page;
+    return Memory::getMemory('model', 'Config')->getPage();
   }
 
   /**
    * Checks if ajax-mode is active
    *
    * @return boolean	True if ajax-mode is active
+   * @deprecated since version 2.   See include/models/Config:isAjax
    */
   public static function isAjax(){
-    return Memory::$bo_ajax;
+    return Memory::getMemory('model', 'Config')->isAjax();
   }
 
   /**
@@ -212,7 +192,7 @@ class Memory{
    * @deprecated since version 2
    */
   public static function setAjax(){
-    Memory::$bo_ajax = true;
+    Memory::getMemory('model', 'Config')->setAjax();
   }
 
   /**
@@ -228,9 +208,10 @@ class Memory{
    * Returns the base directory
    *
    * @return String	The directory
+   * @deprecated since version 2.   See include/models/Config:getBase
    */
   public static function getBase(){
-    return Memory::$s_base;
+    return Memory::getMemory('model', 'Config')->getBase();
   }
 
   /**
@@ -304,6 +285,146 @@ class Memory{
     Memory::$a_memory[ $s_type ][ $s_name ] = $obj_value;
   }
 
+  private static function isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback = ''){
+    $s_name = ucfirst($s_name);
+
+    if( (Memory::checkMemory($a_memoryItems[ 0 ], $s_name)) || (isset($a_memoryItems[1]) && Memory::checkMemory($a_memoryItems[ 1 ], $s_name)) ){
+      return true;
+    }
+
+    /* Call class file */
+    $service_File = Memory::getMemory('service', 'File');
+    $s_path = $s_path . '/' . $s_name . '.inc.php';
+
+    if( !$service_File->exists($s_path) ){
+      return false;
+    }
+
+    $s_item = $service_File->readFile($s_path);
+    
+    if( (strpos($s_item, 'namespace ' . $s_namespace . ';') !== false) || (strpos($s_item, 'namespace ' . $s_namespace . '\data;') !== false) ){
+      return true;
+    }
+    
+    if( !empty($s_fallback) && (strpos($s_item, 'class ' . $s_fallback . '_' . $s_name) !== false) ){
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Loads the requested module
+   * Automaticaly overrides the system module with the user defined one
+   *
+   * @param  String  $s_name  The name of the module
+   * @param	 String  $s_memoryType   The memory-type that the data is saved in
+   * @param  String  $s_path         The file path
+   * @param  String  $s_namespace    The namespace
+   * @param  String  $s_fallback     The fallback class type (V1)
+   * @return Object  The module
+   * @throws  MemoryException If the requested module does not exist
+   * @throws  MemoryException If the override module is not a child of the system module
+   */
+  private static function loadModule($s_name, $s_memoryType, $s_path, $s_namespace, $s_fallback = ''){
+    $s_name = ucfirst($s_name);
+
+    if( Memory::checkMemory($s_memoryType, $s_name) ){
+      return Memory::getMemory($s_memoryType, $s_name);
+    }
+
+    /* Check service */
+    $service_File = Memory::getMemory('service', 'File');
+
+    $s_path .= $s_name.'.inc.php';
+    if( !$service_File->exists($s_path) ){
+      throw new \MemoryException('Can not find ' . $s_memoryType . ' ' . $s_name);
+    }
+
+    require_once($s_path);
+
+    if( class_exists($s_namespace .  $s_name) ){
+      $s_caller = $s_namespace .  $s_name;
+
+      $s_child = str_replace('.inc.php', '_override.inc.php', $s_path);
+      if( $service_File->exists($s_child) ){
+        require_once($s_child);
+        $s_callerParent = $s_caller;
+        $s_caller = $s_namespace .  $s_name . 'Override';
+
+        if( !($s_caller instanceof $s_callerParent) ){
+          throw new MemoryException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
+        }
+      }
+    }
+    else if( !empty($s_fallback) && class_exists($s_fallback . '_' . $s_name) ){
+      /* Fallback */
+      $s_caller = $s_fallback . '_' . $s_name;
+    }
+    else {
+      throw new \MemoryException('Class ' . $s_namespace .  $s_name . ' and class ' . $s_fallback . '_' . $s_name . ' not found in ' . $s_path . '.');
+    }
+
+    $object = Memory::injection($s_caller, $s_path);
+
+    Memory::setMemory($s_memoryType, $s_name, $object);
+
+    return $object;
+  }
+
+  /**
+   * Loads the requested data module
+   * Automaticaly overrides the system module with the user defined one
+   *
+   * @param  String  $s_name  The name of the module
+   * @param	 String  $s_memoryType   The memory-type that the data is saved in
+   * @param  String  $s_path         The file path
+   * @param  String  $s_namespace    The namespace
+   * @return Object  The module
+   * @throws  MemoryException If the requested module does not exist
+   * @throws  MemoryException If the override module is not a child of the system module
+   */
+  private static function loadModuleData($s_name, $s_memoryType, $s_path, $s_namespace){
+    $s_name = ucfirst($s_name);
+
+    if( Memory::checkMemory($s_memoryType, $s_name) ){
+      return Memory::getMemory($s_memoryType, $s_name);
+    }
+
+    /* Check service */
+    $service_File = Memory::getMemory('service', 'File');
+
+    $s_path .= $s_name.'.inc.php';
+    if( !$service_File->exists($s_path) ){
+      throw new \MemoryException('Can not find data ' . $s_memoryType . ' ' . $s_name);
+    }
+
+    require_once($s_path);
+
+    if( !class_exists($s_namespace . $s_name) ){
+      throw new \MemoryException('Dataclass ' . $s_namespace . $s_name . ' not found in ' . $s_path . '.');
+    }
+    
+    $s_caller = $s_namespace . $s_name;
+
+    $s_child = str_replace('.inc.php', '_override.inc.php', $s_path);
+    if( $service_File->exists($s_child) ){
+      require_once($s_child);
+      $s_callerParent = $s_caller;
+      $s_caller = $s_namespace .$s_name . 'Override';
+
+      if( !($s_caller instanceof $s_callerParent) ){
+        throw new MemoryException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
+      }
+    }
+
+    $object = Memory::injection($s_caller, $s_path);
+
+    Memory::setMemory($s_memoryType, $s_name, $object);
+
+    return $object;
+  }
+
   /**
    * API for checking or a helper exists
    *
@@ -312,141 +433,43 @@ class Memory{
    * @return  bool	True if the helper exists, otherwise false
    */
   public static function isHelper($s_name, $bo_data = false){
-    $s_name = ucfirst($s_name);
+    $a_memoryItems = array( 'helper', 'helper-data' );
+    $s_fallback = 'Helper';
 
-    /* Check or class is in the global memory */
-    if( !$bo_data && Memory::checkMemory('helper', $s_name) ){
-      return true;
-    }
-    else if( $bo_data && Memory::checkMemory('helper-data', $s_name) ){
-      return true;
-    }
-
-    /* Call class file */
-    $service_File = Memory::getMemory('service', 'File');
-
-    /* Check or the file exists */
     if( $bo_data ){
-      $s_path = Memory::$s_helperPath . 'data/' . $s_name . '.inc.php';
+      $s_path = Memory::$s_helperPath . 'data/';
+      $s_namespace = 'core\helpers\data';
     }
     else {
-      $s_path = Memory::$s_helperPath . $s_name . '.inc.php';
+      $s_path = Memory::$s_helperPath;
+      $s_namespace = 'core\helpers';
     }
 
-    if( !$service_File->exists($s_path) ){
-      return false;
-    }
-
-    $s_helper = $service_File->readFile($s_path);
-    if( !$bo_data && strpos($s_helper, 'namespace core\helpers;') !== false ){
-      return true;
-    }
-    if( $bo_data && strpos($s_helper, 'namespace core\helpers\data;') !== false ){
-      return true;
-    }
-    if( strpos($s_helper, 'class Helper_' . $s_name) !== false ){
-      return true;
-    }
-
-    return false;
+    return Memory::isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback);
   }
 
   /**
    * Loads the requested helper
    *
-   * @param   String  $s_helper  The name of the helper
+   * @param   String  $s_name  The name of the helper
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Helper  The requested helper
    * @throws  Exception If the requested helper does not exist
    */
-  public static function helpers($s_helper, $bo_data = false){
-    $s_helper = ucfirst($s_helper);
-
+  public static function helpers($s_name, $bo_data = false){
     if( $bo_data ){
-      return Memory::helpersData($s_helper);
+      return Memory::loadModuleData($s_name, 'helper-data', Memory::$s_helperPath . 'data/', 'core\helpers\data\\');
     }
 
-    if( Memory::checkMemory('helper', $s_helper) ){
-      return Memory::getMemory('helper', $s_helper);
-    }
-
-    /* Check service */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_helperPath . $s_helper . '.inc.php';
-
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find helper ' . $s_helper);
-    }
-
-    require_once($s_path);
-
-    if( $s_helper == 'HTML' ){
-      $s_caller = 'core\helpers\html\\' . $s_helper;
+    if( $s_name == 'HTML' ){
+      $s_namespace = '\core\helpers\html\\';
     }
     else {
-      if( class_exists('core\helpers\\' . $s_helper) ){
-	$s_caller = 'core\helpers\\' . $s_helper;
-
-	$s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-        if( $service_File->exists($s_child) ){
-	    require_once($s_child);
-            $s_caller	= 'core\helpers\\'.$s_helper.'Override';
-	}
-      }
-      else if( class_exists('HTML_' . $s_helper) ){
-        /* Legancy way */
-        $s_caller = 'Helper_' . $s_helper;
-      }
-      else {
-        throw new \MemoryException('Could not find helper ' . $s_helper . ' in file ' . $s_path . '.');
-      }
-    }
-    $object = Memory::injection($s_caller, $s_path);
-
-    Memory::setMemory('helper', $s_helper, $object);
-
-    return $object;
-  }
-
-  /**
-   * Loads the requested data helper
-   *
-   * @param   String  $s_helper  The name of the helper
-   * @return  Helper  The requested helper
-   * @throws  Exception If the requested data +helper does not exist
-   */
-  private static function helpersData($s_helper){
-    if( Memory::checkMemory('helper-data', $s_helper) ){
-      return Memory::getMemory('helper-data', $s_helper);
+      $s_namespace = '\core\helpers\\';
     }
 
-    /* Check service */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_helperPath . 'data/' . $s_helper . '.inc.php';
 
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find data helper ' . $s_helper);
-    }
-
-    require_once($s_path);
-
-    if( !class_exists('core\helpers\data\\' . $s_helper) ){
-      throw new \MemoryException('Could not find data helper ' . $s_helper . ' in file ' . $s_path . '.');
-    }
-    $s_caller = 'core\helpers\data\\' . $s_helper;
-
-    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-    if( $service_File->exists($s_child) ){
-      require_once($s_child);
-      $s_caller	= 'core\helpers\data\\'.$s_helper.'Override';
-    }
-
-    $object = Memory::injection($s_caller, $s_path);
-
-    Memory::setMemory('helper-data', $s_helper, $object);
-
-    return $object;
-
+    return Memory::loadModule($s_name, 'helper', Memory::$s_helperPath, $s_namespace, 'Helper');
   }
 
   /**
@@ -457,142 +480,55 @@ class Memory{
    * @return  bool	True if the service exists, otherwise false
    */
   public static function isService($s_name, $bo_data = false){
-    $s_name = ucfirst($s_name);
+    $a_memoryItems = array( 'service','service-data' );
+    $s_fallback = 'Service';
 
-    /* Check or class is in the global memory */
-    if( !$bo_data && Memory::checkMemory('service', $s_name) ){
-      return true;
-    }
-    if( $bo_data && Memory::checkMemory('service-data', $s_name) ){
-      return true;
-    }
-
-    /* Call class File */
-    $service_File = Memory::getMemory('service', 'File');
-
-    /* Check or the file exists */
     if( $bo_data ){
-      $s_path = Memory::$s_servicePath . 'data/' . $s_name . '.inc.php';
+      $s_path = Memory::$s_servicePath . 'data/';
+      $s_namespace = 'core\services\data';
     }
     else {
-      $s_path = Memory::$s_servicePath . $s_name . '.inc.php';
-    }
-    if( !$service_File->exists($s_path) ){
-      return false;
+      $s_path = Memory::$s_servicePath;
+      $s_namespace = 'core\services';
     }
 
-    $s_service = $service_File->readFile($s_path);
-    if( !$bo_data && strpos($s_service, 'namespace core\services;') !== false ){
-      return true;
-    }
-    if( $bo_data && strpos($s_service, 'namespace core\services\data;') !== false ){
-      return true;
-    }
-    if( strpos($s_service, 'class Service_' . $s_name) !== false ){
-      return true;
-    }
-
-    return false;
+    return Memory::isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback);
   }
 
   /**
    * Loads the requested service
    *
-   * @param   String  $s_service  The name of the service
+   * @param   String  $s_name  The name of the service
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Service  The requested service
    * @throws  Exception If the requested service does not exist
    */
-  public static function services($s_service, $bo_data = false){
-    $s_service = ucfirst($s_service);
-
+  public static function services($s_name, $bo_data = false){
+    /* Check for DAL */
+    if( $s_name == 'DAL' ){
+      return Memory::loadDAL();      
+    }    
+    
     if( $bo_data ){
-      return Memory::servicesData($s_service);
+      return Memory::loadModuleData($s_name, 'service-data', Memory::$s_servicePath . 'data/', '\core\services\data\\');
     }
 
-    if( Memory::checkMemory('service', $s_service) ){
-      return Memory::getMemory('service', $s_service);
-    }
-
-    if( $s_service == 'DAL' ){
-      $s_service = 'Database';
-    }
-
-    /* Check service */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_servicePath . $s_service . '.inc.php';
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find service ' . $s_service);
-    }
-
-    require_once($s_path);
-
-    if( $s_service == 'Database' ){
-      $service_Settings = Memory::services('Settings');
-      $obj_Query_main = new \core\database\Query_main($service_Settings);
-      $object = $obj_Query_main->loadDatabase();
-    }
-    else {
-      if( class_exists('\core\services\\' . $s_service) ){
-        $s_caller = '\core\services\\' . $s_service;
-
-	$s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-        if( $service_File->exists($s_child) ){
-	    require_once($s_child);
-            $s_caller	= 'core\services\\'.$s_service.'Override';
-	}
-      }
-      else if( class_exists('Service_' . $s_service) ){
-        /* Legancy way */
-        $s_caller = 'Service_' . $s_service;
-      }
-      else {
-        throw new \MemoryException('Could not find service ' . $s_service . ' in file ' . $s_path . '.');
-      }
-
-      $object = Memory::injection($s_caller, $s_path);
-    }
-
-    Memory::setMemory('service', $s_service, $object);
-
-    return $object;
+    return Memory::loadModule($s_name, 'service', Memory::$s_servicePath, '\core\services\\', 'Service');
   }
-
+  
   /**
-   * Loads the requested data service
-   *
-   * @param   String  $s_service  The name of the service
-   * @return  Service  The requested service
-   * @throws  Exception If the requested data service does not exist
+   * Loads the data access layer
+   * @return DAL    The DAL
    */
-  private static function servicesData($s_service){
-    if( Memory::checkMemory('service-data', $s_service) ){
-      return Memory::getMemory('service-data', $s_service);
-    }
+  private static function loadDAL(){
+    $s_name = 'Database';
+      
+    $service_Settings = Memory::services('Settings');
+    require(NIV.'include/services/Database.inc.php');
+    $obj_Query_main = new \core\database\Query_main($service_Settings);
+    $object = $obj_Query_main->loadDatabase();
 
-    /* Check service */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_servicePath . 'data/' . $s_service . '.inc.php';
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find service ' . $s_service);
-    }
-
-    require_once($s_path);
-
-    if( !class_exists('\core\services\data\\' . $s_service) ){
-      throw new \MemoryException('Could not find data service ' . $s_service . ' in file ' . $s_path . '.');
-    }
-    $s_caller = '\core\services\data\\' . $s_service;
-
-    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-    if( $service_File->exists($s_child) ){
-      require_once($s_child);
-      $s_caller	= 'core\services\\'.$s_service.'Override';
-    }
-
-    $object = Memory::injection($s_caller, $s_path);
-
-    Memory::setMemory('service-data', $s_service, $object);
+    Memory::setMemory('service', $s_name, $object);
 
     return $object;
   }
@@ -605,136 +541,35 @@ class Memory{
    * @return  bool	True if the model exists, otherwise false
    */
   public static function isModel($s_name, $bo_data = false){
-    $s_name = ucfirst($s_name);
+    $a_memoryItems = array( 'model','model-data' );
+    $s_fallback = 'Model';
 
-    /* Check or class is in the global memory */
-    if( !$bo_data && Memory::checkMemory('model', $s_name) ){
-      return true;
-    }
-    if( $bo_data && Memory::checkMemory('model-data', $s_name) ){
-      return true;
-    }
-
-    /* Call class File */
-    $service_File = Memory::getMemory('service', 'File');
-
-    /* Check or the file exists */
     if( $bo_data ){
-      $s_path = Memory::$s_modelPath . 'data/' . $s_name . '.inc.php';
+      $s_path = Memory::$s_modelPath . 'data/';
+      $s_namespace = 'core\models\data';
     }
     else {
-      $s_path = Memory::$s_modelPath . $s_name . '.inc.php';
-    }
-    if( !$service_File->exists($s_path) ){
-      return false;
+      $s_path = Memory::$s_modelPath;
+      $s_namespace = 'core\models';
     }
 
-    /* Check or the class exists */
-    $s_model = $service_File->readFile($s_path);
-    if( !$bo_data && strpos($s_model, 'namespace core\models;') !== false ){
-      return true;
-    }
-    if( $bo_data && strpos($s_model, 'namespace core\models\data;') !== false ){
-      return true;
-    }
-    if( strpos($s_model, 'class Model_' . $s_name) !== false ){
-      return true;
-    }
-
-    return false;
+    return Memory::isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback);
   }
 
   /**
    * Loads the requested model
    *
-   * @param   String  $s_model  The name of the model
+   * @param   String  $s_name  The name of the model
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Model  The requested model
    * @throws  Exception If the requested model does not exist
    */
-  public static function models($s_model, $bo_data = false){
-    $s_model = ucfirst($s_model);
-
+  public static function models($s_name, $bo_data = false){
     if( $bo_data ){
-      return Memory::modelsData($s_model);
+      return Memory::loadModuleData($s_name, 'model-data', Memory::$s_modelPath . 'data/', 'core\models\data\\');
     }
 
-    if( Memory::checkMemory('model', $s_model) ){
-      return Memory::getMemory('model', $s_model);
-    }
-
-    /* Check model */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_modelPath . $s_model . '.inc.php';
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find model ' . $s_model);
-    }
-
-    require_once($s_path);
-
-    if( class_exists('core\models\\' . $s_model) ){
-      $s_caller = '\core\models\\' . $s_model;
-
-      $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-      if( $service_File->exists($s_child) ){
-        require_once($s_child);
-        $s_caller	= 'core\models\\'.$s_service.'Override';
-      }
-    }
-    else if( class_exists('Model_' . $s_model) ){
-      /* Legancy way */
-      $s_caller = 'Model_' . $s_model;
-    }
-    else {
-      throw new \MemoryException('Could not find model ' . $s_model . ' in file ' . $s_path . '.');
-    }
-
-    $object = Memory::injection($s_caller, $s_path);
-
-    Memory::setMemory('model', $s_model, $object);
-
-    return $object;
-  }
-
-  /**
-   * Loads the requested data model
-   *
-   * @param   String  $s_model  The name of the model
-   * @return  Model  The requested model
-   * @throws  Exception If the requested data model does not exist
-   */
-  private static function modelsData($s_model){
-    $s_model = ucfirst($s_model);
-
-    if( Memory::checkMemory('model-data', $s_model) ){
-      return Memory::getMemory('model-data', $s_model);
-    }
-
-    /* Check model */
-    $service_File = Memory::getMemory('service', 'File');
-    $s_path = Memory::$s_modelPath . 'data/' . $s_model . '.inc.php';
-    if( !$service_File->exists($s_path) ){
-      throw new \MemoryException('Can not find data model ' . $s_model);
-    }
-
-    require_once($s_path);
-
-    if( !class_exists('core\models\data\\' . $s_model) ){
-      throw new \MemoryException('Could not find data model ' . $s_model . ' in file ' . $s_path . '.');
-    }
-    $s_caller = '\core\models\data\\'.$s_model;
-
-    $s_child = str_replace('.inc.php','_override.inc.php',$s_path);
-    if( $service_File->exists($s_child) ){
-      require_once($s_child);
-      $s_caller	= 'core\models\data\\'.$s_service.'Override';
-    }
-
-    $object = Memory::injection($s_caller, $s_path);
-
-    Memory::setMemory('model-data', $s_model, $object);
-
-    return $object;
+    return Memory::loadModule($s_name, 'model', Memory::$s_modelPath, 'core\models\\', 'Model');
   }
 
   /**
@@ -891,31 +726,31 @@ class Memory{
 
     switch( $s_type ){
       case 'bool':
-        if( !is_bool($value) ) $bo_oke = false;
+        if( !is_bool($value) ){ $bo_oke = false;  }
         break;
 
       case 'int':
-        if( !is_int($value) ) $bo_oke = false;
+        if( !is_int($value) ){ $bo_oke = false; }
         break;
 
       case 'float':
-        if( !is_float($value) ) $bo_oke = false;
+        if( !is_float($value) ){ $bo_oke = false; }
         break;
 
-      case 'String':
-        if( !is_String($value) ) $bo_oke = false;
+      case 'string':
+        if( !is_String($value) ){ $bo_oke = false; }
         break;
 
       case 'object':
-        if( !is_object($value) ) $bo_oke = false;
+        if( !is_object($value) ){ $bo_oke = false; }
         break;
 
       case 'array':
-        if( !is_array($value) ) $bo_oke = false;
+        if( !is_array($value) ){ $bo_oke = false; }
         break;
 
       case 'null' :
-        if( !is_null($value) ) $bo_oke = false;
+        if( !is_null($value) ){ $bo_oke = false; }
         break;
     }
 
@@ -970,6 +805,37 @@ class Memory{
     Memory::$s_helperPath = null;
     Memory::$s_classPath = null;
     Memory::$s_interfacePath = null;
+    Memory::$bo_prettyUrls = null;
+  }
+  
+  /**
+   * Transforms a relative url into a absolute url (site domain only)
+   *
+   * @param   String  $s_url  The relative url
+   * @param   array  $a_payload The fields to send with the url, optional
+   * @return  String The absolute url
+   */
+  public static function parseUrl($s_url,$a_payload = array()){
+    if( substr($s_url, 0,1) != '/' ){ $s_url = '/'.$s_url; }
+        
+    if( Memory::$bo_prettyUrls ){
+      $s_url .= '/';
+      $s_url .= implode('/',$a_payload);
+    }
+    else {
+      if(substr($s_url, -1) == '/'){
+          $s_url .= 'index.php?';
+      }
+      else {
+        $s_url .= '.php?';
+      }
+      $a_items = array();
+      foreach($a_payload AS $s_key => $s_value){
+        $a_items[] = $s_key.'='.$s_value;
+      }
+      $s_url .= implode('&amp;',$a_items);
+    }
+    return $s_url;    
   }
 
   /**
@@ -977,13 +843,22 @@ class Memory{
    *
    * @param   String  $s_url  The relative url
    * @return  String The absolute url
+   * @deprecated See parseUrl
    */
   public static function generateUrl($s_url){
-    $s_url = str_replace('../', '', $s_url);
-    $s_url = str_replace('./', '', $s_url);
-    $s_url = Memory::$s_base . $s_url;
-
-    return $s_url;
+    return Memory::parseUrl($s_url);
+  }
+  
+  /**
+   * Redirects the visitor to the given site url
+   *
+   * @param   String  $s_url  The relative url
+   * @param   array  $a_payload The fields to send with the url, optional
+   */
+  public static function redirect($s_url,$a_payload = array()){
+      $s_url = Memory::parseUrl($s_url,$a_payload);
+      header('location: '.$s_url);
+      exit();
   }
 
 }

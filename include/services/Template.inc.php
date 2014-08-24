@@ -12,7 +12,7 @@ namespace core\services;
  * @version       1.0
  * @since         1.0
  * @date          12/01/2006
- * @changed   		30/03/2014
+ * @changed   		04/07/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,15 +29,12 @@ namespace core\services;
  */
 class Template extends Service{
 
-  private $helper_HTML;
-  private $service_Settings;
+  private $model_Config;
   private $service_File;
   private $s_layout;
-  private $s_view;
   private $s_template;
   private $s_templateDir;
   private $a_blocks;
-  private $a_blockData;
   private $a_parser;
   private $a_headerParser;
   private $a_parts;
@@ -48,40 +45,14 @@ class Template extends Service{
    * PHP 5 constructor
    * 
    * @param core\services\File  $service_File   The File service
-   * @param core\services\Settings  $service_Settings The settings service
-   * @param core\services\Cookie    $service_Cookie   The cookie service
-   * @param core\helpers\html\HTML  $helper_HTML    The HTML generator
+   * @param core\models\Config  $model_Config The configuration model
    * @throws TemplateException if the layout does not exist
    * @throws IOException if the layout is not readable
    */
-  public function __construct(\core\services\File $service_File, \core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie,
-      \core\helpers\html\HTML $helper_HTML){
+  public function __construct(\core\services\File $service_File, \core\models\Config $model_Config){
     $this->service_File = $service_File;
-    $this->service_Settings = $service_Settings;
-    $this->helper_HTML = $helper_HTML;
-
-    /* Load template-dir */
-    $s_templateDir = $this->service_Settings->get('settings/templates/dir');
-
-    if( isset($_GET[ 'private_style_dir' ]) ){
-      $s_styleDir = $this->clearLocation($_GET[ 'private_style_dir' ]);
-      if( $this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts') ){
-        $s_templateDir = $s_styleDir;
-        $service_Cookie->set('private_style_dir', $s_templateDir, '/');
-      }
-      $service_Cookie->delete('private_style_dir', '/');
-    }
-    else if( $service_Cookie->exists('private_style_dir') ){
-      $s_styleDir = $this->clearLocation($service_Cookie->get('private_style_dir'));
-      if( $this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts') ){
-        $s_templateDir = $s_styleDir;
-        $service_Cookie->set('private_style_dir', $s_templateDir, '/');
-      }
-      else {
-        $service_Cookie->delete('private_style_dir', '/');
-      }
-    }
-    $this->s_templateDir = $s_templateDir;
+    $this->model_Config = $model_Config;
+    $this->s_templateDir = $model_Config->getTemplateDir();
 
     $this->a_blocks = array();
     $this->a_parser = array();
@@ -92,13 +63,13 @@ class Template extends Service{
         'js_link' => array(),
         'meta' => array(),
         'css' => array(),
-        'js' => ''
+        'js' => array()
     );
 
-    if( defined('PROCES') || \core\Memory::isTesting() ) return;
+    if( defined('PROCES') || \core\Memory::isTesting() ){ return; }
 
     /* Load layout */
-    if( !\core\Memory::isAjax() ){
+    if( !$this->model_Config->isAjax() ){
       if( defined('LAYOUT') ){
         $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . LAYOUT . '.tpl';
       }
@@ -120,15 +91,23 @@ class Template extends Service{
   }
 
   /**
-   * Clears the location path from evil input 
-   *
-   * @param	String	$s_location	The path
-   * @return	String	The path
+   * Returns the template directory
+   * 
+   * @deprecated    Replaced by include/models/Config:getTemplateDir
+   * @return String The template directory
    */
-  private function clearLocation($s_location){
-    while( (strpos($s_location, './') !== false) || (strpos($s_location, '../') !== false) ){
-      $s_location = str_replace(array( './', '../' ), array( '', '' ), $s_location);
-    }
+  public function getTemplateDir(){
+    return $this->model_Config->getTemplateDir();
+  }
+
+  /**
+   * Returns the loaded template directory
+   *
+   * @deprecated    Replaced by include/models/Config:getStylesDir;
+   * @return String template directory
+   */
+  public function getStylesDir(){
+    return $this->model_Config->getStylesDir();
   }
 
   /**
@@ -136,10 +115,10 @@ class Template extends Service{
    */
   private function compression(){
     /* Check encoding */
-    if( empty($_SERVER[ 'HTTP_ACCEPT_ENCODING' ]) ) return;
+    if( empty($_SERVER[ 'HTTP_ACCEPT_ENCODING' ]) ){ return;  }
 
     /* Check server wide compression */
-    if( (ini_get('zlib.output_compression') == 'On' || ini_get('zlib.output_compression_level') > 0) || ini_get('output_handler') == 'ob_gzhandler' ) return;
+    if( (ini_get('zlib.output_compression') == 'On' || ini_get('zlib.output_compression_level') > 0) || ini_get('output_handler') == 'ob_gzhandler' ){ return;  }
 
     if( extension_loaded('zlib') && (stripos($_SERVER[ 'HTTP_ACCEPT_ENCODING' ], 'gzip') !== FALSE) && !defined('DEBUG') ){
       ob_start('ob_gzhandler');
@@ -148,49 +127,24 @@ class Template extends Service{
   }
 
   /**
-   * Returns the template directory
-   * 
-   * @return String The directory
-   */
-  public function getLocationDir(){
-    return $this->s_templateDir;
-  }
-
-  /**
-   * Returns the loaded template directory
-   *
-   * @return String template directory
-   */
-  public function getStylesDir(){
-    return LEVEL . 'styles/' . $this->s_templateDir . '/';
-  }
-
-  /**
    * Loads the given view into the parser
    *
-   * @param String $s_view
-   *        	The view relative to the template-directory
+   * @param String $s_view  The view relative to the template-directory
    * @throws TemplateException if the view does not exist
    * @throws IOException if the view is not readable
    */
   public function loadView($s_view = ''){
+    \core\Memory::type('string',$s_view);
+    
     /* Check view */
-    if( $s_view == '' ){
-      if( isset($_GET[ 'command' ]) ){
-        $s_view = $_GET[ 'command' ];
-      }
-      else if( isset($_POST[ 'command' ]) ){
-        $s_view = $_POST[ 'command' ];
-      }
-      else {
-        $s_view = 'index';
-      }
+    if( empty($s_view) ){
+      $s_view = $this->model_Config->getCommand();
     }
 
-    if( substr($s_view, - 4) != '.tpl' ) $s_view .= '.tpl';
+    if( substr($s_view, - 4) != '.tpl' ){ $s_view .= '.tpl';  }
 
     $this->s_viewName = preg_replace("#/[a-z0-0_]+\.tpl#si", '', $s_view);
-    $s_view = 'styles/' . $this->s_templateDir . '/templates/' . str_replace('.php', '', \core\Memory::getPage()) . '/' . $s_view;
+    $s_view = 'styles/' . $this->s_templateDir . '/templates/' . str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
 
     if( !$this->service_File->exists(NIV . $s_view) ){
       /* View not found */
@@ -199,7 +153,7 @@ class Template extends Service{
 
     $s_view = $this->service_File->readFile(NIV . $s_view);
 
-    if( !\core\Memory::isAjax() ){
+    if( !$this->model_Config->isAjax() ){
       $this->s_template = str_replace("{body_content}", $s_view, $this->s_layout);
     }
     else {
@@ -208,11 +162,87 @@ class Template extends Service{
   }
 
   /**
+   * Writes a script link to the head
+   * 
+   * @param String $s_link    The link
+   */
+  public function setJavascriptLink($s_link){
+    \core\Memory::type('string', $s_link);
+    
+    $this->a_headerParser[ 'js_link' ][] = $s_link;
+  }
+
+  /**
+   * Writes javascript code to the head
+   * 
+   * @param String $s_javascript    The code
+   */
+  public function setJavascript($s_javascript){
+    \core\Memory::type('string', $s_javascript);
+    
+    if( stripos($s_javascript,'<script') === false ){
+      $s_javascript = '<script type="text/javascript">'
+        . '<!--'
+        . $s_javascript.''
+        . '//-->'
+        . '</script>';
+    }
+
+    $this->a_headerParser[ 'js' ][] = trim($s_javascript);
+  }
+  
+  /**
+   * Writes a stylesheet link to the head
+   * 
+   * @param String $s_link    The link
+   */
+  public function setCssLink($s_link){
+    \core\Memory::type('string', $s_link);
+    
+    $this->a_headerParser[ 'css_link' ][] = $s_link;
+  }
+  
+  /**
+   * Writes CSS code to the head
+   * 
+   * @param String $s_css    The code
+   */
+  public function setCSS($s_css){
+    \core\Memory::type('string', $s_css);
+    
+    if( stripos($s_css,'<style') === false ){
+      $s_css = '<style type="text/css">'
+        . '<!--'
+        . $s_css.''
+        . '//-->'
+        . '</style>';
+    }
+    
+    $this->a_headerParser[ 'css' ][] = $s_css;
+  }
+  
+  /**
+   * Writes a metatag to the head
+   * 
+   * @param String $s_meta    The metatag
+   */
+  public function setMetaLink($s_meta){
+    \core\Memory::type('string', $s_meta);
+    
+    $this->a_headerParser['meta'][] = $s_meta;
+  }
+
+  /**
    * Sets the link to the page-header
    *
-   * @param String/CoreHtmlItem $s_link
-   *        	The link
+   * @param String/CoreHtmlItem $s_link The link
    * @throws Exception if $s_link is not a string and not a subclass of CoreHtmlItem
+   * @deprecated    Use one of the next functions :
+   *  - setJavascriptLink
+   *  - setJavascript
+   *  - setCssLink
+   *  - setCSS
+   *  - setMetaLink
    */
   public function headerLink($s_link){
     if( is_object($s_link) && is_subclass_of($s_link, 'CoreHtmlItem') ){
@@ -223,48 +253,37 @@ class Template extends Service{
     }
 
     if( strpos($s_link, '<link rel') !== false ){
-      /* CSS -link */
-      $this->a_headerParser[ 'css_link' ][] = $s_link;
+      $this->setCssLink($s_link);
     }
     else if( stripos($s_link, '<script') !== false ){
-      if( stripos($s_link, 'src=') !== false ){
-        $this->a_headerParser[ 'js_link' ][] = $s_link;
+      if( stripos($s_link,'src=') !== false ){
+        $this->setJavascript($s_link);
       }
       else {
-        if( strpos($s_link, '<!--') !== false ){
-          $a_link = explode('<!--', $s_link);
-          $a_link = explode('//-->', $a_link[ 1 ]);
-          $s_link = $a_link[ 0 ];
-        }
-
-        if( empty($this->a_headerParser[ 'js' ]) ) $this->a_headerParser[ 'js' ] = trim($s_link);
-        else {
-          $this->a_headerParser[ 'js' ] .= '
-                    
-' . trim($s_link);
-        }
+        $this->setJavascript($s_link);
       }
     }
-    else if( strpos($s_link, '<meta') !== false ){
-      $this->a_headerParser[ 'meta' ][] = $s_link;
+    else if( stripos($s_link, '<meta') !== false ){
+      $this->setMetaLink($s_link);
     }
-    else if( strpos($s_link, '<style') !== false ){
-      $this->a_headerParser[ 'css' ][] = $s_link;
+    else if( stripos($s_link, '<style') !== false ){
+      $this->setCSS($s_link);
     }
   }
 
   /**
    * Loads a subtemplate into the template
    *
-   * @param String $s_key
-   *        	The key in the template
-   * @param String $s_url
-   *        	The URI of the subtemplate
+   * @param String $s_key   The key in the template
+   * @param String $s_url   The URI of the subtemplate
    * @throws TemplateException if the view does not exist
    * @throws IOException if the view is not readable
    */
   public function loadTemplate($s_key, $s_url){
-    if( substr($s_url, - 4) != '.tpl' ) $s_url .= '.tpl';
+    \core\Memory::type('string',$s_key);
+    \core\Memory::type('string',$s_url);
+    
+    if( substr($s_url, - 4) != '.tpl' ){ $s_url .= '.tpl';  }
 
     if( !$this->service_File->exists(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_url) ){
       throw new \TemplateException('Can not find template ' . $s_url);
@@ -278,30 +297,30 @@ class Template extends Service{
   /**
    * Sets a subtemplate into the template
    *
-   * @param String $s_key
-   *        	The key in the template
-   * @param String $s_template
-   *        	The template to add
+   * @param String $s_key       The key in the template
+   * @param String $s_template  The template to add
    */
   public function setTemplate($s_key, $s_template){
+    \core\Memory::type('string',$s_key);
+    \core\Memory::type('string',$s_template);
+    
     $this->s_template = str_replace('{[' . $s_key . ']}', $s_template, $this->s_template);
   }
 
   /**
-   *
-   *
    * Loads a template and returns it as a string
    *
-   * @param String $s_url
-   *        	The URI of the template
-   * @param String $s_dir
-   *        	to search from, optional
+   * @param String $s_url The URI of the template
+   * @param String $s_dir to search from, optional
    * @return String template
    * @throws TemplateException if the view does not exist
    * @throws IOException if the view is not readable
    */
   public function loadTemplateAsString($s_url, $s_dir = ''){
-    if( substr($s_url, - 4) != '.tpl' ) $s_url .= '.tpl';
+    \core\Memory::type('string',$s_url);
+    \core\Memory::type('string',$s_dir);
+    
+    if( substr($s_url, - 4) != '.tpl' ){ $s_url .= '.tpl';  }
 
     if( empty($s_dir) ){
       $s_dir = str_replace('.php', '', \core\Memory::getPage());
@@ -319,14 +338,14 @@ class Template extends Service{
   /**
    * Sets the given value in the template on the given key
    *
-   * @param String $s_key
-   *        	The key in template
-   * @param String/CoreHtmlItem $s_value
-   *        	The value to write in the template
+   * @param String $s_key   The key in template
+   * @param String/CoreHtmlItem $s_value    The value to write in the template
    * @throws TemplateException if no template is loaded yet
    * @throws Exception if $s_value is not a string and not a subclass of CoreHtmlItem
    */
   public function set($s_key, $s_value){
+    \core\Memory::type('string',$s_key);
+    
     if( $this->s_template == null ){
       throw new \TemplateException('No template is loaded for ' . $_SERVER[ 'PHP_SELF' ] . '.');
     }
@@ -344,13 +363,16 @@ class Template extends Service{
   /**
    * Writes a repeating block to the template
    *
-   * @param String $s_key
-   *        	The key in template
-   * @param array $a_data
-   *        	block data
+   * @param String $s_key The key in template
+   * @param array $a_data block data
    */
   public function setBlock($s_key, $a_data){
-    if( !array_key_exists($s_key, $this->a_blocks) ) $this->a_blocks[ $s_key ] = array();
+    \core\Memory::type('string',$s_key);
+    \core\Memory::type('array',$a_data);
+    
+    if( !array_key_exists($s_key, $this->a_blocks) ){
+      $this->a_blocks[ $s_key ] = array();
+    }
 
     $a_keys = array_keys($a_data);
     $i_num = count($a_keys);
@@ -366,10 +388,11 @@ class Template extends Service{
   /**
    * Displays the if part with the given key
    *
-   * @param String $s_key
-   *        	The key in template
+   * @param String $s_key The key in template
    */
   public function displayPart($s_key){
+    \core\Memory::type('string',$s_key);
+    
     $this->a_parts[] = $s_key;
   }
 
@@ -378,14 +401,17 @@ class Template extends Service{
    *
    * @param array $a_keys        	
    * @param array $a_values        	
-   * @param String $s_template
-   *        	to parse
+   * @param String $s_template  The template to parse
    * @return String parsed template
    */
   public function writeTemplate($a_keys, $a_values, $s_template){
+    \core\Memory::type('array',$a_keys);
+    \core\Memory::type('array',$a_values);
+    \core\Memory::type('string',$s_template);
+    
     $i_number = count($a_keys);
     for( $i = 0; $i < $i_number; $i ++ ){
-      if( substr($a_keys[ $i ], 0, 1) != '{' && substr($a_keys[ $i ], - 1) != '}' ) $a_keys[ $i ] = '{' . $a_keys[ $i ] . '}';
+      if( substr($a_keys[ $i ], 0, 1) != '{' && substr($a_keys[ $i ], - 1) != '}' ){ $a_keys[ $i ] = '{' . $a_keys[ $i ] . '}'; }
     }
 
     return str_replace($a_keys, $a_values, $s_template);
@@ -402,13 +428,6 @@ class Template extends Service{
       $s_headblock = '';
       $a_keys = array_keys($this->a_headerParser);
       foreach( $a_keys as $s_headerKey ){
-        if( $s_headerKey == 'js' ){
-          if( trim($this->a_headerParser[ $s_headerKey ]) == '' ) continue;
-
-          $s_headblock .= $this->helper_HTML->javascript(trim($this->a_headerParser[ $s_headerKey ]))->generateItem();
-
-          continue;
-        }
         foreach( $this->a_headerParser[ $s_headerKey ] as $s_item ){
           $s_headblock .= $s_item . '
 	';
@@ -443,6 +462,11 @@ class Template extends Service{
     echo ($this->s_template);
   }
 
+  /**
+   * Writes the blocks
+   * 
+   * @throws \TemplateException   If the blocks are invalid
+   */
   private function writeBlocks(){
     $i_start = preg_match_all('#<block#', $this->s_template, $a_matches);
     $i_end = preg_match_all('#</block>#', $this->s_template, $a_matches);
@@ -459,8 +483,7 @@ class Template extends Service{
   /**
    * Writes the block with the given key
    *
-   * @param String $s_key
-   *        	block key
+   * @param String $s_key The block key
    */
   private function writeBlock($s_key){
     /* Get block */
@@ -505,8 +528,7 @@ class Template extends Service{
   /**
    * Removes the unused blocks
    *
-   * @param int $i_start
-   *        	start position
+   * @param int $i_start  The start position
    */
   private function removeBlocks($s_key, $i_start){
     $i_pos = strpos($this->s_template, '<' . $s_key . ' {', $i_start);
@@ -533,6 +555,7 @@ class Template extends Service{
    * @throws TemplateException
    */
   private function writeIFS(){
+    $a_matches = array();
     $i_start = preg_match_all('#<if#', $this->s_template, $a_matches);
     $i_end = preg_match_all('#</if>#', $this->s_template, $a_matches);
 

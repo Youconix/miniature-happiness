@@ -96,6 +96,18 @@ class Logs extends Service{
   public function errorLog($s_log){
     $this->service_File->writeFirstFile($this->s_errorLog, $s_log, 0666);
   }
+  
+  public function accountBlockLog($s_username,$i_attemps){
+    $s_log = 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after '.$i_attemps.' failed login attempts.\n\n System';
+    
+    $this->setLog('accountBlock', $s_log, date('Ym'));
+  }
+  
+  public function ipBlockLog($i_attemps){
+    $s_log = 'The IP ' . $_SERVER[ 'REMOTE_ADDR' ] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after '.$i_attemps.' failed login attempts. \n\n System';
+    
+    $this->setLog('accountBlock', $s_log, date('Ym'));
+  }
 
   /**
    * Writes the data to the log or makes a new one

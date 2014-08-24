@@ -5,15 +5,15 @@
     <title>{title}</title>
     {headblock}
     <link rel="stylesheet" href="{styledir}css/install.css">
-    <script src="../js/jquery-2.0.3.min.js"></script>
-    <script src="../js/general.js"></script>
-    <script src="../js/install.js"></script>
-    <script src="../js/animation.js"></script>
-    <script src="../js/validation.js"></script>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+    <script src="/js/general.js"></script>
+    <script src="/js/install.js"></script>
+    <script src="/js/animation.js"></script>
+    <script src="/js/validation.js"></script>
 </head>
 <body {autostart} data-styledir="{styledir}">
 <section class="container">
-	<header class="holder">Scripthulp framework</header>
+	<header class="holder">Scripthulp framework {version}</header>
 	
 	<section id="content">
 		<ul id="progressBar">

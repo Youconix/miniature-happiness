@@ -279,7 +279,7 @@ class Stats extends Model{
    * Returns the operating systems from the given month
    * Grouped by operating system
    *
-   * @param   int $i_date The month as timestamp
+   * @param   int $i_month The month as timestamp
    * @return  array   The operating systems
    */
   public function getOS($i_month){
@@ -302,7 +302,7 @@ class Stats extends Model{
   /**
    * Returns the operating systems from the given month
    *
-   * @param   int $i_date The month as timestamp
+   * @param   int $i_month The month as timestamp
    * @return  array   The operating systems
    */
   public function getOSLong($i_month){
@@ -371,12 +371,13 @@ class Stats extends Model{
   /**
    * Returns the screen colors from the given month
    *
-   * @param   int $i_date The month as timestamp
+   * @param   int $i_month The month as timestamp
    * @param   int $i_limit	Set for limiting the amount of data
    * @return  array   The screen colors
    */
   public function getScreenColors($i_month, $i_limit = -1){
     \core\Memory::type('int', $i_month);
+    \core\Memory::type('int', $i_limit);
 
     $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
 
@@ -397,12 +398,13 @@ class Stats extends Model{
   /**
    * Returns the screen sizes from the given month
    *
-   * @param   int $i_date The month as timestamp
+   * @param   int $i_month The month as timestamp
    * @param   int $i_limit	Set for limiting the amount of data
    * @return  array   The screen sizes
    */
   public function getScreenSizes($i_month, $i_limit = -1){
     \core\Memory::type('int', $i_month);
+    \core\Memory::type('int', $i_limit);
 
     $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
 
@@ -424,7 +426,7 @@ class Stats extends Model{
   /**
    * Returns the references from the given month
    *
-   * @param   int $i_date The month as timestamp
+   * @param   int $i_month The month as timestamp
    * @return  array   The references
    */
   public function getReferences($i_month){
@@ -464,30 +466,32 @@ class Stats extends Model{
   /**
    * Cleans the stats from a year old
    *
-   * @return Boolean	True if the stats are cleared
+   * @throws    DBException     If the clearing failes
    */
   public function cleanStatsYear(){
     $i_time = mktime(date("H"), date("i"), date("s"), date("n"), date("j"), date("Y") - 1);
-    return $this->cleanStats($i_time);
+    $this->cleanStats($i_time);
   }
 
   /**
    * Cleans the stats from a month old
    *
-   * @return Boolean	True if the stats are cleared
+   * @throws    DBException     If the clearing failes
    */
   public function cleanStatsMonth(){
     $i_time = mktime(date("H"), date("i"), date("s"), date("n") - 1, date("j"), date("Y"));
-    return $this->cleanStats($i_time);
+    $this->cleanStats($i_time);
   }
 
   /**
    * Deletes the stats older than the given timestamp
    *
    * @param int $i_maxDate	The minimun timestamp to keep data
-   * @return Boolean	True if the stats are cleared
+   * @throws    DBException     If the clearing failes
    */
   private function cleanStats($i_maxDate){
+    \core\Memory::type('int', $i_maxDate);
+      
     try{
       $this->service_QueryBuilder->transaction();
 
@@ -509,12 +513,10 @@ class Stats extends Model{
       $this->service_QueryBuilder->getResult();
 
       $this->service_QueryBuilder->commit();
-      return true;
     }
-    catch( DBException $e ){
+    catch( \DBException $e ){
       $this->service_QueryBuilder->rollback();
-      Memory::services('ErrorHandler')->error($e);
-      return false;
+      throw $e;
     }
   }
 }

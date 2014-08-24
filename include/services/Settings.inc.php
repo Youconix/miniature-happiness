@@ -47,7 +47,7 @@ class Settings extends Xml{
       $this->load($this->s_settingsDir . '/settings.xml');
     }
     else {
-      header('location: ' . NIV . 'install/');
+      \core\Memory::redirect('install/');
       exit();
     }
 

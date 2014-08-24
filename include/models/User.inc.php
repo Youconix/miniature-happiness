@@ -52,9 +52,6 @@ class User extends GeneralUser {
     $this->model_Groups = $model_Groups;
     $this->model_UserData = $model_UserData;
     $this->service_Session  = $service_Session;
-
-		/* Check for login */
-		$service_Session->checkLogin();
 	}
 
 	/**

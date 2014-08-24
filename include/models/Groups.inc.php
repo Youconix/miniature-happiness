@@ -31,19 +31,21 @@ namespace core\models;
 class Groups extends Model{
   protected $model_DataGroup;
   protected $a_groups;
-  
+  protected $model_Config;
 
   /**
    * PHP5 constructor
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
    * @param \core\services\Security $service_Security The security service
    * @param \core\models\data\Data_Group $model_DataGroup   The group data model
+   * @param \core\models\Config $model_Config   The config model
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,
-    \core\models\data\Data_Group $model_DataGroup){
+    \core\models\data\Data_Group $model_DataGroup,\core\models\Config $model_Config){
     parent::__construct($service_QueryBuilder,$service_Security);
 
     $this->model_DataGroup  = $model_DataGroup;
+    $this->model_Config = $model_Config;
 
     $this->a_groups = array();
 
@@ -101,7 +103,7 @@ class Groups extends Model{
   public function getLevel($i_userid){
     \core\Memory::type('int', $i_userid);
 
-    $s_page = \core\Memory::getPage();
+    $s_page = $this->model_Config->getPage();
     $this->service_QueryBuilder->select('group_pages','groupID')->getWhere()->addAnd('page','s',$s_page);
     $service_Database = $this->service_QueryBuilder->getResult();
     

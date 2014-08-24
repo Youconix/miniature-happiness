@@ -32,9 +32,9 @@ class Authorization extends Service{
   protected $service_Cookie;
   protected $service_QueryBuilder;
   protected $service_Logs;
-  protected $service_Session;
-  protected $service_Mailer;
-  protected $service_Random;
+  protected $s_openID_dir;
+  protected $a_authorizationTypes = array();
+  protected $a_openID_types = array();
 
   /**
    * Inits the service Autorization
@@ -42,12 +42,8 @@ class Authorization extends Service{
    * @param \core\services\Cookie       $service_Cookie         The cookie handler
    * @param \core\services\QueryBuilder $service_QueryBuilder   The query builder
    * @param \core\services\Logs         $service_Logs           The log service
-   * @param \core\services\Session       $service_Session       The session service
-   * @param \core\services\Mailer        $service_Mailer        The mailer service
-   * @param \core\services\Random        $service_Random        The random service
    */
-  public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs,
-   \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random){
+  public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs){
     $this->s_openID_dir = NIV . 'include/openID/';
     require_once($this->s_openID_dir . 'OpenAuth.inc.php');
 
@@ -55,60 +51,63 @@ class Authorization extends Service{
     $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
     $this->service_Database = $this->service_QueryBuilder->getDatabase();
     $this->service_Logs = $service_Logs;
-    $this->service_Session  = $service_Session;
-    $this->service_Mailer = $service_Mailer;
-    $this->service_Random = $service_Random;
+    
+    if( !class_exists('\core\interfaces\Authorization') ){
+      require(NIV.'include/interface/Authorization.inc.php');
+    }
+
+    $a_types = array( 'normal', 'Facebook', 'OpenID', 'LDAP' );
+    foreach( $a_types AS $s_type ){
+      try{
+        $this->a_authorizationTypes[ $s_type ] = \core\Memory::services('Authorization' . ucfirst($s_type), true);
+        $this->a_openID_types[] = $s_type;
+      }
+      catch( \MemoryException $ex ){
+        
+      }
+    }
+  }
+
+  /**
+   * Returns the available openID libs
+   * 
+   * @return array	The openID lib names
+   */
+  public function getOpenIDList(){
+    $a_openID = array();
+    foreach( $this->a_openID_types AS $a_type ){
+      $a_openID[] = $a_type[ 0 ];
+    }
+
+    return $a_openID;
+  }
+
+  /**
+   * Returns the authorization object
+   * 
+   * @param String  $s_type   The authorization type (normal|openID|Facebook|LDAP)
+   * @return Authorization    The object
+   * @throws MemoryException  If $s_type does not exist
+   */
+  private function getAuthorization($s_type){
+    if( !array_key_exists($s_type, $this->a_authorizationTypes) ){
+      throw new \MemoryException('Call to unknown authorization protocol ' . $s_type . '.');
+    }
+    return $this->a_authorizationTypes[ $s_type ];
   }
 
   /**
    * Registers the user
    * 
+   * @param String  $s_type   The authorization type (normal|openID|Facebook|LDAP)
    * @param array		$a_data	The form data
    * @param	bool		$bo_skipActivation	Set to true to skip sending the activation email (auto activation)
    * @return bool	True if the user is registrated
-   * @throws Exception  If registrating failes
    */
-  public function register($a_data, $bo_skipActivation = false){
-    $s_username = $a_data[ 'username' ];
-    $s_forname = $a_data[ 'forname' ];
-    $s_nameBetween = $a_data[ 'nameBetween' ];
-    $s_surname = $a_data[ 'surname' ];
-    $s_password = $a_data[ 'password' ];
-    $s_email = $a_data[ 'email' ];
+  public function register($s_type, $a_data, $bo_skipActivation = false){
+    $obj_authorization = $this->getAuthorization($s_type);
 
-    try{
-      $this->service_QueryBuilder->transaction();
-
-      $s_registrationKey = sha1(time() . ' ' . $s_username . ' ' . $s_email);
-
-      $obj_User = $this->model_User->createUser();
-      $obj_User->setUsername($s_username);
-      $obj_User->setName($s_forname);
-      $obj_User->setNameBetween($s_nameBetween);
-      $obj_User->setSurname($s_surname);
-      $obj_User->setEmail($s_email);
-      $obj_User->setPassword($s_password);
-      $obj_User->setActivation($s_registrationKey);
-      $obj_User->setBot(false);
-      $obj_User->save();
-
-      if( !$bo_skipActivation ){
-        $this->sendActivationEmail($s_username, $s_email, $s_registrationKey);
-      }
-
-      $this->service_QueryBuilder->commit();
-
-      if( !$bo_skipActivation ){
-        $this->model_User->activateUser($s_registrationKey);
-      }
-
-      return true;
-    }
-    catch( \Exception $e ){
-      $this->service_QueryBuilder->rollback();
-
-      throw $e;
-    }
+    return $obj_authorization->register($a_data, $bo_skipActivation);
   }
   
   /**
@@ -117,106 +116,38 @@ class Authorization extends Service{
    * 
    * @param String $s_code    The activation code
    * @return boolean    True if the user is activated
-   * @throws Exception  If activating the user failes
    */
   public function activateUser($s_type,$s_code){
-    $this->service_QueryBuilder->select('users','id')->getWhere()->addAnd('activation','s',$s_code);
-		$service_Database = $this->service_QueryBuilder->getResult();
-		if( $service_Database->num_rows() == 0 )
-			return false;
-
-		$i_userid	= $service_Database->result(0,'id');
-
-		try {
-			$this->service_QueryBuilder->transaction();
-
-			$this->service_QueryBuilder->insert('profile','userid','i',$i_userid)->getResult();
-				
-			$this->service_QueryBuilder->update('users',array('activation','active'),array('s','s'),array('','1'));
-			$this->service_QueryBuilder->getWhere()->addAnd('id','i',$i_userid);
-			$this->service_QueryBuilder->getResult();
-
-			define('USERID',$i_userid);
-				
-			$this->service_QueryBuilder->commit();
-
-			return true;
-		}
-		catch( \Exception $e){
-			$this->service_QueryBuilder->rollback();
-			throw $e;
-		}
-	}
-  
-  public function checkAutologin(){
+    $obj_authorization = $this->getAuthorization($s_type);
     
+    return $obj_authorization->activateUser($s_code);
+	}
+
+  /**
+   * Prepares the login 
+   * Only implemented for openID
+   * 
+   * @param String  $s_type   The authorization type (normal|openID|Facebook|LDAP) 
+   */
+  public function loginStart($s_type){
+    $obj_authorization = $this->getAuthorization($s_type);
+
+    $obj_authorization->loginStart();
   }
 
   /**
    * Logs the user in
    *   
+   * @param String  $s_type   The authorization type (normal|openID|Facebook|LDAP) 
    * @param	String	$s_username	The username
    * @param	String	$s_password	The plain text password
    * @param  Boolean	$bo_autologin	Set to true for auto login
    * @return array	The id, username and password_expired if the login is correct, otherwise null
    */
-  public function login($s_username, $s_password, $bo_autologin = false){
-    $s_password = $this->model_User->createUser()->hashPassword($s_password, $s_username);
-    $i_tries = $this->model_User->registerLoginTries();
-    if( $i_tries > 6 ){
-      /* Don't even check data */
-      $this->service_Logs->loginLog($s_username, 'failed', $i_tries);
-      return null;
-    }
+  public function login($s_type, $s_username, $s_password, $bo_autologin = false){
+    $obj_authorization = $this->getAuthorization($s_type);
 
-    $this->service_QueryBuilder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
-    $this->service_QueryBuilder->getWhere()->addAnd(array( 'nick', 'password', 'active', 'loginType' ), array( 's', 's', 's', 's' ), array( $s_username, $s_password, '1', 'normal' ));
-    $service_Database = $this->service_QueryBuilder->getResult();
-
-    if( $service_Database->num_rows() == 0 ){
-      $a_data = null;
-    }
-    else {
-      $a_data = $service_Database->fetch_assoc();
-    }
-
-    if( $a_data[ 0 ][ 'bot' ] == '1' || $a_data[ 0 ][ 'active' ] == '0' || $a_data[ 0 ][ 'blocked' ] == '1' ){
-      $a_data = null;
-    }
-
-    if( is_null($a_data) || $i_tries >= 5 ){
-      if( $i_tries == 5 ){
-        $this->model_User->disableAccount($s_username);        
-        $this->service_Logs->accountBlockLog($s_username,3);
-      }
-      else if( $i_tries == 10 ){
-        $this->service_QueryBuilder->insert('ipban', 'ip', 's', $_SERVER[ 'REMOTE_ADDR' ])->getResult();
-        $this->service_Logs->ipBlockLog(6);
-      }
-
-      $this->service_Logs->loginLog($s_username, 'failed', $i_tries);
-
-      return null;
-    }
-
-    $this->model_User->clearLoginTries();
-    $this->service_Logs->loginLog($s_username, 'success', $i_tries);
-
-    unset($a_data[ 0 ][ 'bot' ]);
-    unset($a_data[ 0 ][ 'active' ]);
-    unset($a_data[ 0 ][ 'blocked' ]);
-
-    if( $bo_autologin ){
-      $this->service_QueryBuilder->delete('autologin')->getWhere()->addAnd('userID', 'i', $a_data[ 0 ][ 'id' ]);
-      $this->service_QueryBuilder->getResult();
-
-      $this->service_QueryBuilder->insert('autologin', array( 'userID', 'username', 'type', 'IP' ), array( 'i', 's', 's', 's' ), array( $a_data[ 0 ][ 'id' ], $a_data[ 0 ][ 'nick' ], $a_data[ 0 ][ 'userType' ], $_SERVER[ 'REMOTE_ADDR' ] ));
-      $service_Database = $this->service_QueryBuilder->getResult();
-
-      $a_data[ 0 ][ 'autologin' ] = $service_Database->getID();
-    }
-
-    return $a_data[ 0 ];
+    return $obj_authorization->login($s_username, $s_password, $bo_autologin);
   }
 
   /**
@@ -253,8 +184,12 @@ class Authorization extends Service{
 
   /**
    * Logs the user out
+   * 
+   * @param String  $s_type   The authorization type (normal|openID|Facebook|LDAP) 
    */
-  public function logout(){
+  public function logout($s_type){
+    $obj_authorization = $this->getAuthorization($s_type);
+
     if( $this->service_Cookie->exists('autologin') ){
       $this->service_Cookie->delete('autologin', '/');
       $this->service_QueryBuilder->delete('autologin')->getWhere()->addAnd('userID', 'i', USERID);
@@ -262,6 +197,31 @@ class Authorization extends Service{
     }
     
     $this->service_Session->destroyLogin();
+
+    $obj_authorization->logout(NIV . 'index.php');
+  }
+
+  /**
+   * Loads the openID class
+   * 
+   * @param String $s_type	The name
+   * @throws Exception	Unknown openID libary
+   * @return OpenAuth		The class
+   */
+  protected function getOpenID($s_type){
+    if( array_key_exists($s_type, $this->a_openID) ){
+      return $this->a_openID[ $s_type ];
+    }
+
+    if( !array_key_exists($s_type, $this->a_openID_types) ){
+      throw new \Exception("Unknown openID libary with name " . $s_type);
+    }
+
+    $a_data = $this->a_openID_types[ $s_type ];
+    require($this->s_openID_dir . $a_data[ 1 ]);
+    $obj_ID = new $s_type();
+    $this->a_openID[ $s_type ] = $obj_ID;
+    return $obj_ID;
   }
 
   /**
@@ -272,25 +232,15 @@ class Authorization extends Service{
    * @return bool   True if the email has been send
    */
   public function resendActivationEmail($s_type, $s_username, $s_email){
-    $this->service_QueryBuilder->select('users', 'nick,email,activation')->getWhere()->addAnd(array( 'nick', 'email', 'activation' ), array( 's', 's', 's' ), array( $s_username, $s_email, '' ), array( '=', '=', '<>' ));
-    $service_Database = $this->service_QueryBuilder->getResult();
-
-    if( $service_Database->num_rows() == 0 ){
-      return false;
+    if( $s_type != 'normal' ){
+      return;
     }
 
-    try{
-      $a_data = $service_Database->fetch_assoc();
-      $this->sendActivationEmail($a_data[ 0 ][ 'nick' ], $a_data[ 0 ][ 'email' ], $a_data[ 0 ][ 'activation' ]);
-
-      return true;
-    }
-    catch( \Exception $e ){
-      throw $e;
-    }
+    return $obj_authorization = $this->resendActivationEmail($s_username, $s_email);
   }
   
-  /**
+  
+	/**
 	 * Registers the password reset request
 	 *
 	 * @param String $s_email			The email address
@@ -312,13 +262,14 @@ class Authorization extends Service{
     if( $s_loginType != 'normal' ){ return -1; }
 
 
-		$s_newPassword	= $this->service_Random->numberLetter(10,true);
-		$s_hash			= sha1($s_username.$this->service_Random->numberLetter(20,true).$s_email);
+		$service_Random	= \core\Memory::services('Random');
+		$s_newPassword	= $service_Random->numberLetter(10,true);
+		$s_hash			= sha1($s_username.$service_Random->numberLetter(20,true).$s_email);
 
 		$s_passwordHash	= $this->hashPassword($s_newPassword,$s_username);
 		$this->service_QueryBuilder->insert('password_codes',array('userid','code','password','expire'),array('i','s','s','i'),array($i_userid,$s_hash,$s_passwordHash,(time() + 86400)))->getResult();
 
-		$this->service_Mailer->passwordResetMail($s_username,$s_email,$s_newPassword,$s_hash) ;
+		Memory::services('Mailer')->passwordResetMail($s_username,$s_email,$s_newPassword,$s_hash) ;
 
 
 		return 1;
@@ -359,7 +310,8 @@ class Authorization extends Service{
 		}
 		catch(\DBException $e){
 			$this->service_QueryBuilder->rollback();
-			throw $e;
+			Memory::services('ErrorHandler')->error($e);
+			return false;
 		}
 	}
 
@@ -387,28 +339,14 @@ class Authorization extends Service{
 			$this->service_QueryBuilder->getResult();
 
 			/* Send mail to user */
-			$this->service_Mailer->accountDisableMail($s_username,$s_email);
+			Memory::services('Mailer')->accountDisableMail($s_username,$s_email);
 
 			$this->service_QueryBuilder->commit();
 		}
-		catch(\Exception $e){
+		catch(Exception $e){
 			$this->service_QueryBuilder->rollback();
-			throw $e;
+			Memory::services('ErrorHandler')->error($e);
 		}
 	}
-  
-  /**
-   * Sends the activation email
-   *
-   * @param String $s_username					The username
-   * @param String $s_email							The email address
-   * @param String $s_registrationKey		The activation code
-   * @throws ErrorException If the sending of the email failes
-   */
-  private function sendActivationEmail($s_username, $s_email, $s_registrationKey){
-    if( !$this->service_Mailer->registrationMail($s_username, $s_email, $s_registrationKey) ){
-      throw new \Exception("Sending registration mail to '.$s_email.' failed.");
-    }
-  }
 }
 ?>

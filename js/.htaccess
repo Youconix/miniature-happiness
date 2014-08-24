@@ -1,5 +1,0 @@
-RewriteEngine on
-
-RewriteCond %{HTTP:Accept-encoding} gzip
-RewriteRule  ^([a-z0-9_\-/]+)_min\.js$ $1.js [L,NC]
-RewriteRule  ^([a-z0-9_\-/]+)\.js$ $1_min.js.gz [L,NC]

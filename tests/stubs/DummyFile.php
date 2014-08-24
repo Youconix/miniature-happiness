@@ -182,16 +182,6 @@ class DummyFile extends \core\services\File{
   }
 
   /**
-   * Checks if the given file or directory exists
-   *
-   * @param     String	$s_file		The file name or directory name
-   * @return   boolean	True if file or directory exists, otherwise false
-   */
-  public function exists($s_file){
-    return false;
-  }
-
-  /**
    * Sets the rights from a file or directory. The rights must be in hexadecimal form (0644)
    *
    * @param  String  $s_file     The file

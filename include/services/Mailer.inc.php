@@ -39,14 +39,15 @@ class Mailer extends Service{
    * Inits the class Mailer
    * 
    * @param core\services\Language  $service_Language   The language service
+   * @param core\services\File      $service_File       The file service
    */
-  public function __construct(\core\services\Language $service_Language){
+  public function __construct(\core\services\Language $service_Language,\core\services\File $service_File){
     require_once(NIV . 'include/mailer/MailWrapper.inc.php');
-    $this->obj_phpMailer = new MailWrapper();
+    $this->obj_phpMailer = new \MailWrapper();
 
     $this->service_Language = $service_Language;
     $this->s_language = $this->service_Language->getLanguage();
-    $this->service_File = Memory::services('File');
+    $this->service_File = $service_File;
 
     $this->s_domain = $_SERVER[ 'HTTP_HOST' ];
     $this->s_domainUrl = \core\Memory::getProtocol() . $this->s_domain . \core\Memory::getBase();

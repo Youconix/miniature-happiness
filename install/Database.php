@@ -50,8 +50,8 @@ class Database {
 	 */
 	public function populateDatabase(){
 		$service_File = Memory::services('File');
-		$this->a_countries	= explode("\n",$service_File->readFile(NIV.'install/countries.cvs'));
-		$this->a_nationalities = explode("\n",$service_File->readFile(NIV.'install/nationality.cvs'));
+		$this->a_countries	= explode("\n",$service_File->readFile(NIV.'install/countries.csv'));
+		$this->a_nationalities = explode("\n",$service_File->readFile(NIV.'install/nationality.csv'));
 		
 		$this->populateFramework();
 		$this->populateSite();

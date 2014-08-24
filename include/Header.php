@@ -50,8 +50,7 @@ class Header{
    */
   private function createHeader(){
     $this->service_Template->loadTemplate('header', 'header.tpl');
-    $this->service_Template->set('slogan', $this->service_Language->get('slogan'));
-
+    
     $obj_User = $this->model_User->get();
     if( is_null($obj_User->getID()) ){
       return;
@@ -89,7 +88,7 @@ class Header{
 
     $s_flags = '';
     foreach( $a_languages AS $s_code ){
-      $s_language = (array_key_exists($s_language, $a_languagesCodes)) ?  $a_languagesCodes[$s_language] : $s_language;
+      $s_language = (array_key_exists($s_code, $a_languagesCodes)) ?  $a_languagesCodes[$s_code] : $s_code;
      
       $s_flags .= '<a href="'.$s_url.'lang='.$s_code.'">'.
         '<img src="{style_dir}/flags/'.$s_code.'.png" alt="'.$s_language.'" title="'.$s_language.

@@ -95,8 +95,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
   public function activateUser($s_code){
     $this->service_QueryBuilder->select('users','id')->getWhere()->addAnd('activation','s',$s_code);
 		$service_Database = $this->service_QueryBuilder->getResult();
-		if( $service_Database->num_rows() == 0 )
-			return false;
+                if( $service_Database->num_rows() == 0 ){ return false; }
 
 		$i_userid	= $service_Database->result(0,'id');
 

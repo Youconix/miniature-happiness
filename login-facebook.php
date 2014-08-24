@@ -7,7 +7,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen                                
  * @author    Rachelle Scheijen                                                
  * @since     1.0                                                              
- * @changed    07/07/2014                                                     
+ * @changed    02/02/13                                                         
  *                                                                              
  * Scripthulp framework is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU Lesser General Public License as published by  
@@ -28,7 +28,6 @@ include(NIV.'include/BaseLogicClass.php');
 class Login extends BaseLogicClass  {
 	private $service_Authorization;
 	private $model_User;
-  private $block_Login;
 
 	/**
 	 * PHP5 constructor
@@ -37,9 +36,19 @@ class Login extends BaseLogicClass  {
 		$this->init();
 
 		if( $_SERVER['REQUEST_METHOD'] != 'POST' ){
-			$this->checkAutologin();
+			if( isset($this->get['command']) && $this->get['command'] == 'openID'){
+				if( isset($this->get['type']) ){
+					$this->openIDScreen();
+				}	
+				else {
+					$this->openIDLogin();
+				}
+			}
+			else {
+				$this->checkAutologin();
 				
-			$this->form();
+				$this->form();
+			}
 		}
 		else if( isset($this->post['command']) && $this->post['command'] == 'expired' ){
 			$this->expired();
@@ -53,6 +62,16 @@ class Login extends BaseLogicClass  {
 		$this->menu();
 
 		$this->footer();
+	}
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct(){
+		$this->service_Authorization   = null;
+		$this->model_User   = null;
+
+		parent::__destruct();
 	}
 
 	/**
@@ -75,21 +94,20 @@ class Login extends BaseLogicClass  {
 		
 		parent::init();
 
-		$this->service_Authorization  = \core\Memory::services("Authorization");
-		$this->model_User   = \core\Memory::models('User');
-    $this->block_Login  = \core\Memory::blocks('Login');
+		$this->service_Authorization  = Memory::services("Authorization");
+		$this->model_User   = Memory::models('User');
 	}
 	
 	/**
 	 * Checks if auto login is enabled
 	 */
 	private function checkAutologin(){
-		$service_Cookie	= \core\Memory::services('Cookie');
+		$service_Cookie	= Memory::services('Cookie');
 		if( !$service_Cookie->exists('autologin') ){
 			return;
 		}
 
-		$s_fingerprint	= \core\Memory::services('Session')->getFingerprint();
+		$s_fingerprint	= Memory::services('Session')->getFingerprint();
 		$a_data	= explode(';',$service_Cookie->get('autologin'));
 			
 		if( $a_data[0] != $s_fingerprint ){
@@ -112,7 +130,18 @@ class Login extends BaseLogicClass  {
 	 * Generates the login form
 	 */
 	private function form(){
-    $this->block_Login->form();
+		$this->service_Template->set('username',$this->service_Language->get('language/login/username'));
+		$this->service_Template->set('password',$this->service_Language->get('language/login/password'));
+		$this->service_Template->set('loginButton',$this->service_Language->get('language/login/button'));
+		$this->service_Template->set('registration',$this->service_Language->get('language/login/registration'));
+		$this->service_Template->set('forgotPassword',$this->service_Language->get('language/login/forgotPassword'));
+		$this->service_Template->set('autologin',$this->service_Language->get('language/login/autologin'));
+		
+		$a_openID	= $this->service_Authorization->getOpenIDList();		
+		$s_login	= $this->service_Language->get('language/login/loginWith');
+		foreach($a_openID AS $s_openID){
+			$this->service_Template->setBlock('openID',array('key'=>$s_openID,'text'=>$s_login.' '.$s_openID));
+		}
 	}
 
 	/**
@@ -132,9 +161,9 @@ class Login extends BaseLogicClass  {
 			return;
 		}
 
-		$service_Cookie	= \core\Memory::services('Cookie');
+		$service_Cookie	= Memory::services('Cookie');
 		if( isset($this->post['autologin']) ){
-			$s_fingerprint	= \core\Memory::services('Session')->getFingerprint();
+			$s_fingerprint	= Memory::services('Session')->getFingerprint();
 			$service_Cookie->set('autologin',$s_fingerprint.';'.$a_login['autologin'],'/');
 		}
 		
@@ -155,6 +184,19 @@ class Login extends BaseLogicClass  {
 	 * @param string $s_notice		The form notice, optional
 	 */
 	private function expiredScreen($s_notice = ''){
+		if( !$this->service_Session->exists('expired') ){
+			header('location: login.php');
+			exit();
+		}
+		
+		$this->service_Template->loadView('expired.tpl');
+		
+		$this->service_Template->set('errorNotice',$s_notice);
+		$this->service_Template->set('expired_title',$this->service_Language->get('language/login/editPassword'));
+		$this->service_Template->set('password',$this->service_Language->get('language/login/currentPassword'));
+		$this->service_Template->set('newPassword',$this->service_Language->get('language/login/newPassword'));
+		$this->service_Template->set('newPassword2',$this->service_Language->get('language/login/newPasswordAgain'));
+		$this->service_Template->set('loginButton',$this->service_Language->get('language/buttons/edit'));
 	}
 	
 	/**
@@ -216,6 +258,38 @@ class Login extends BaseLogicClass  {
 		}
 				
 		return NIV.'index.php';
+	}
+	
+	/**
+	 * Displays the openID screen
+	 */
+	private function openIDScreen(){
+		if( $this->get['type'] == 'Facebook' ){
+			Memory::helpers('Facebook')->loginScreen();
+			return;
+		}
+		
+		try {
+			$this->service_Authorization->loginOpenID($this->get['type']);
+		}
+		catch(Exception $e){
+			Memory::services('Logs')->securityLog("Invalid type ".$this->get['type'].' on login.php:openID.');
+			header('location: '.NIV.'index.php');
+			exit();
+		}		
+	}
+	
+	/**
+	 * Logs the user in with openID
+	 */
+	private function openIDLogin(){
+		$a_data	= $this->service_Authorization->loginOpenIDConfirm($this->get['code']); 
+		if( is_null($a_data) ){
+			header('location: login.php');
+			exit();
+		}
+		
+		$this->setLogin($a_data);
 	}
 }
 

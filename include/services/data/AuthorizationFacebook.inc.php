@@ -109,7 +109,7 @@ class AuthorizationFacebook implements \core\interfaces\Authorization {
     $obj_User->save();
 
     /* Auto login */
-    $this->service_Session->setLogin($obj_User->getID(), $$s_username);
+    $this->service_Session->setLogin($obj_User->getID(), $s_username);
 
     $this->service_Cookie->delete('Facebook', '/');
     $this->service_Cookie->delete('openID_username');

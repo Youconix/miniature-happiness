@@ -39,7 +39,7 @@ abstract class BaseLogicClass extends BaseClass {
 	protected function init(){
 		parent::init();
 		
-		$this->service_Session = Memory::services('Session');
+		$this->service_Session = \core\Memory::services('Session');
 	}
 	
 	/**
@@ -47,7 +47,7 @@ abstract class BaseLogicClass extends BaseClass {
 	 */
     protected function header(){
         /* Call header */
-        Memory::loadClass(NIV.'include/Header.php','Header');
+        \core\Memory::loadClass(NIV.'include/Header.php','Header');
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class BaseLogicClass extends BaseClass {
      */
     protected function menu(){
         /* Call Menu */
-        Memory::loadClass(NIV.'include/Menu.php','Menu');
+        \core\Memory::loadClass(NIV.'include/Menu.php','Menu');
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class BaseLogicClass extends BaseClass {
      */
     protected function footer(){
         /* Call footer */
-        Memory::loadClass(NIV.'include/Footer.php','Footer');
+        \core\Memory::loadClass(NIV.'include/Footer.php','Footer');
     }
 }
 

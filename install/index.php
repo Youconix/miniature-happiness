@@ -37,6 +37,7 @@ class Install extends SettingsMain{
 	private $i_step = 1;
 	private $s_layout;
 	private $bo_error   = false;
+        private $s_version = '2.0';
 	
 	private $a_output;
 
@@ -123,7 +124,7 @@ class Install extends SettingsMain{
 			}
 		}
 
-		$this->s_layout = str_replace(array('{step}','{styledir}'),array($this->i_step,STYLEDIR),$this->s_layout);
+		$this->s_layout = str_replace(array('{step}','{styledir}','{version}'),array($this->i_step,str_replace(NIV,'/',STYLEDIR),$this->s_version),$this->s_layout);
 		$this->s_layout = preg_replace("#{+[a-zA-Z_0-9]+}+#si", "", $this->s_layout);
 		echo($this->s_layout);
 	}

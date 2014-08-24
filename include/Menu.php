@@ -71,9 +71,9 @@ class Menu {
      * Displays the logged out items
      */
     private function loggedout() {
-        $this->service_Template->set('home', $this->service_Language->get('menu/home'));
-        $this->service_Template->set('login', '<a href="{NIV}login.php">' . $this->service_Language->get('menu/login') . '</a>');
-        $this->service_Template->set('registration', $this->service_Language->get('login/registration'));
+        $this->service_Template->set('home', $this->service_Language->get('system/menu/home'));
+        $this->service_Template->set('login', '<a href="{NIV}login.php">' . $this->service_Language->get('system/menu/login') . '</a>');
+        $this->service_Template->set('registration', $this->service_Language->get('system/login/registration'));
     }
 
     /**

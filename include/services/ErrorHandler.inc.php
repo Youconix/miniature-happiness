@@ -28,41 +28,44 @@ namespace core\services;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 class ErrorHandler extends Service {
-	private $service_Logs;
-  
-  /**
-   * PHP 5 constructor
-   * 
-   * @param \core\services\Logs $service_Logs   The logging service
-   */
-  public function __construct(\core\services\Logs $service_Logs){
-    $this->service_Logs = $service_Logs;
-  }
 
-	/**
-	 * Reports the generated error
-	 *
-	 * @param   Exception   $exception   The exception
-	 * @see errorAsString($s_exception)
-	 */
-	public function error($exception){
-		\core\Memory::type('object',$exception);
+    private $service_Logs;
 
-		$s_exception	= $exception->getMessage().'
-'.		$exception->getTraceAsString();
-		
-		$this->errorAsString($s_exception);
-	}
+    /**
+     * PHP 5 constructor
+     * 
+     * @param \core\services\Logs $service_Logs   The logging service
+     */
+    public function __construct(\core\services\Logs $service_Logs) {
+        $this->service_Logs = $service_Logs;
+    }
 
-	/**
-	 * Reports the generated error
-	 *
-	 * @param   String   $s_exception   The exception message
-	 * @see error($exception)
-	 */
-	public function errorAsString($s_exception){
-		$s_exception .= "\n\n";		
-		$this->service_Logs->errorLog($s_exception);
-	}
+    /**
+     * Reports the generated error
+     *
+     * @param   Exception   $exception   The exception
+     * @see errorAsString($s_exception)
+     */
+    public function error($exception) {
+        \core\Memory::type('object', $exception);
+
+        $s_exception = $exception->getMessage() . '
+' . $exception->getTraceAsString();
+
+        $this->errorAsString($s_exception);
+    }
+
+    /**
+     * Reports the generated error
+     *
+     * @param   String   $s_exception   The exception message
+     * @see error($exception)
+     */
+    public function errorAsString($s_exception) {
+        $s_exception .= "\n\n";
+        $this->service_Logs->errorLog($s_exception);
+    }
+
 }
+
 ?>

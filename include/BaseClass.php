@@ -44,7 +44,7 @@ abstract class BaseClass{
    */
   public function __destruct(){
     if( !is_null($this->service_Template) ){
-        $this->service_Template->set('NIV', LEVEL);
+        $this->service_Template->set('NIV', '/');
     }
 
     $this->service_Language = null;
@@ -98,8 +98,6 @@ abstract class BaseClass{
     $this->get = $this->service_Security->secureInput('GET', $this->init_get);
     $this->post = $this->service_Security->secureInput('POST', $this->init_post);
     $this->request = $this->service_Security->secureInput('REQUEST', $this->init_request);
-
-    $this->defineLevel();
   }
 
   /**
@@ -135,13 +133,6 @@ abstract class BaseClass{
 
       $this->throwError($s_error);
     }
-  }
-
-  /**
-   * Defines the level constant for the GUI
-   */
-  protected function defineLevel(){
-    define('LEVEL', NIV);
   }
 
   /**
@@ -208,7 +199,12 @@ function exception_handler($exception){
 
     $a_trace = $exception->getTrace();
     foreach( $a_trace AS $a_line ){
-      echo($a_line[ 'file' ] . ':' . $a_line[ 'line' ] . ' ' . $a_line[ 'class' ] . '->' . $a_line[ 'function' ] . '().<br>');
+      if( array_key_exists('file',$a_line) ){
+        echo($a_line[ 'file' ] . ':' . $a_line[ 'line' ] . ' ' . $a_line[ 'class' ] . '->' . $a_line[ 'function' ] . '().<br>');
+      }
+      else {
+          echo($a_line[ 'class' ] . '->' . $a_line[ 'function' ] . '().<br>');
+      }
     }
     exit();
   }

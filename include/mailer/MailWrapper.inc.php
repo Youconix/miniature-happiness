@@ -1,5 +1,5 @@
 <?php 
-class MailWrapper extends Service {
+class MailWrapper extends \core\services\Service {
 	private $obj_phpMailer;
 	
 	/**
