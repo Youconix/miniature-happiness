@@ -9,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   09/01/2013
+ * @changed   31/08/2014
  *
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
@@ -321,7 +321,7 @@ class FileCheck {
         $i_total = 0;
         $s_output = '';
 
-        $a_files = array('Authorization', 'Cookie', 'CurlManager', 'Database', 'ErrorHandler', 'FacebookAuthorization', 'File', 'FileData', 'FTP', 'Language', 'Logs', 'Mailer', 'Maintenance', 'Random', 'Security', 'Service', 'Session', 'Software', 'Template', 'QueryBuilder', 'Upload', 'Xml', 'Settings');
+        $a_files = array('Authorization', 'Cookie', 'CurlManager', 'Database', 'ErrorHandler', 'AuthorizationFacebook', 'File', 'FileData', 'FTP', 'Language', 'Logs', 'Mailer', 'Maintenance', 'Random', 'Security', 'Service', 'Session', 'Template', 'QueryBuilder', 'Upload', 'Xml', 'Settings');
         $a_filesUser = array();
 
         $a_files = array_merge($a_files, $a_filesUser);

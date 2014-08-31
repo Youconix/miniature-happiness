@@ -86,12 +86,12 @@ class Hashing extends Service{
     return $this->obj_hashing->verifyUserPassword($s_username, $s_password, $s_stored, $this->s_systemSalt);
   }
 
-  public function createSalt(){
+  public static function createSalt($service_Random){
     if( function_exists('openssl_random_pseudo_bytes') ){
       return bin2hex(openssl_random_pseudo_bytes(30));
     }
 
-    return $this->service_Random->randomAll(30);
+    return $service_Random->randomAll(30);
   }
 
 }

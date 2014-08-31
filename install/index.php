@@ -33,7 +33,6 @@ require(NIV.'admin/SettingsMain.php');
 
 class Install extends SettingsMain{
 	private $service_Language;
-	private $obj_settingsMain;
 	private $i_step = 1;
 	private $s_layout;
 	private $bo_error   = false;
@@ -124,7 +123,10 @@ class Install extends SettingsMain{
 			}
 		}
 
-		$this->s_layout = str_replace(array('{step}','{styledir}','{version}'),array($this->i_step,str_replace(NIV,'/',STYLEDIR),$this->s_version),$this->s_layout);
+		$s_dataDir = 'admin/settings/';
+		if( defined('DATA_DIR') ){	$s_dataDir = DATA_DIR.'/settings/'; }
+		
+		$this->s_layout = str_replace(array('{step}','{styledir}','{datadir}','{version}'),array($this->i_step,str_replace(NIV,'/',STYLEDIR),$s_dataDir,$this->s_version),$this->s_layout);
 		$this->s_layout = preg_replace("#{+[a-zA-Z_0-9]+}+#si", "", $this->s_layout);
 		echo($this->s_layout);
 	}
@@ -145,13 +147,13 @@ class Install extends SettingsMain{
 		if( isset($_GET['step']) && $_GET['step'] > 0 && $_GET['step'] <= 6 ){
 			$this->i_step   = $_GET['step'];
 		}
+		else if( isset($_POST['step']) && $_POST['step'] > 0 && $_POST['step'] <= 6 ){
+			$this->i_step   = $_POST['step'];
+		}
 
 		$this->s_layout = $this->readTemplate('layout');
 		require(NIV.'include/language/Install.php');
 		$this->service_Language = new Install_Language();
-
-		require_once(NIV.'admin/SettingsMain.php');
-		$this->obj_settingsMain = new settingsMain();
 		
 		$s_progress = '';
 		for($i=1; $i<=6; $i++){
@@ -293,7 +295,7 @@ class Install extends SettingsMain{
 		/* Generate settings file */
 		require(NIV.'include/services/Hashing.inc.php');
 					
-		$service_Hashing	= new Service_Hashing();
+		$s_salt	= $this->createSalt();
 		$settings     = new DOMDocument('1.0', 'iso-8859-1');
 		// We don't want to bother with white spaces
 		$settings->preserveWhiteSpace = false;
@@ -308,7 +310,7 @@ class Install extends SettingsMain{
 		$main->appendChild($settings->createElement('url',$a_data['url']));
 		$main->appendChild($settings->createElement('base',$a_data['base']));
 		$main->appendChild($settings->createElement('timeZone',$a_data['timezone']));
-		$main->appendChild($settings->createElement('salt',$service_Hashing->createSalt()));
+		$main->appendChild($settings->createElement('salt',$s_salt));
 		$root->appendChild($main);
 		
 		/* Login */
@@ -376,12 +378,12 @@ class Install extends SettingsMain{
 		
 		/* Check access */
 		require_once(NIV.'include/services/CurlManager.inc.php');
-		$service_Curl = new Service_CurlManager();
+		$service_Curl = new \core\services\CurlManager();
 		
-		$s_url = $_SERVER['HTTP_HOST'].'/'.$_POST['base'].'/'.$s_dir.'settings.xml';
+		$s_url = $_SERVER['HTTP_HOST'].'/'.$a_data['base'].'/admin/settings/settings.xml';
 		$service_Curl->performGetCall($s_url,array());
 		if( $service_Curl->getHeader() == 200 ){
-			$this->reportError('The data-directory '.DATA-DIR.' is world readable! Installation canceled.');
+			$this->reportError('The data-directory '.$a_data['base'].'/admin/settings is world readable! Installation canceled.');
 			unlink($s_dir.'/settings.xml');
 			
 			echo('security error');
@@ -544,6 +546,17 @@ class Install extends SettingsMain{
 		}
 		
 		$service_Logs->errorLog($s_error);
+	}
+	
+	private function createSalt(){
+		require_once(NIV.'include/services/Random.inc.php');
+		require_once(NIV.'include/services/Hashing.inc.php');
+		
+		
+		$service_Random = new \core\services\Random();
+		
+		$s_salt = \core\services\Hashing::createSalt($service_Random);
+		return $s_salt;
 	}
 }
 

@@ -110,6 +110,7 @@ class Database_Mysqli implements DAL{
   /**
    * Checks if the given connection-data is correct
    *
+   * @static
    * @param   string  $s_username     The username
    * @param   string  $s_password     The password
    * @param   string  $s_database     The database
@@ -117,13 +118,13 @@ class Database_Mysqli implements DAL{
    * @param   int     $i_port         The port
    * @return  boolean True if the data is correct, otherwise false
    */
-  public function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1){
+  public static function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1){
     if( $i_port == -1 ) $i_port = '';
 
     if( empty($s_username) || empty($s_host) || empty($s_database) ) return false;
 
     /* Check for current settings */
-    if( file_exists(NIV . 'admin/data/settings/settings.xml') && class_exists('Memory') ){
+    if( file_exists(NIV . 'admin/data/settings/settings.xml') && class_exists('\core\Memory') && !is_null($this->service_Settings) ){
       $s_type = $this->service_Settings->get('settings/SQL/type');
 
       if( $s_username == $this->service_Settings->get('settings/SQL/' . $s_type . '/username') && $s_password == $this->service_Settings->get('settings/SQL/' . $s_type . '/password') && $s_database == $this->service_Settings->get('settings/SQL/' . $s_type . '/database') && $s_host == $this->service_Settings->get('settings/SQL/' . $s_type . '/host') && $i_port == $this->service_Settings->get('settings/SQL/' . $s_type . '/port') ){

@@ -1,20 +1,31 @@
+function arraySearch(arrayName, value) {
+	for (i = 0; i < arrayName.length; i++) {
+		if (arrayName[i] == value)
+			return i;
+		else if (arrayName[i].indexOf(value) != -1)
+			return i;
+	}
+
+	return -1;
+}
+
 function Validation(){
 	this.skip	= new Array('button','submit','reset','checkbox','radio');
 }
 Validation.prototype.init	= function(){
 	/* Check for stylesheet */
-	styledir = $('body').data('styledir');
+	var styledir = $('body').data('styledir');
 	if( !styledir ){	styledir = '/styles/default/';	}
 	
-	if( !$("link[href='"+styledir+"css/HTML5_validation.css']").length ){
-	    $('<link href="'+styledir+'css/HTML5_validation.css" rel="stylesheet">').appendTo("head");
+	if( !$("link[href='"+styledir+"css/scripthulp/HTML5_validation.css']").length ){
+	    $('<link href="'+styledir+'css/scripthulp/HTML5_validation.css" rel="stylesheet">').appendTo("head");
 	}
 }
 Validation.prototype.validateEmail	= function(email) {
-	return email.match("^[a-zA-Z0-9!#$%&'*+\-\/=?^_`\{\|\}~\.]{2,64}[@]{1}[a-zA-Z0-9\-\.]{2,255}[\.]{1}[a-zA-Z0-9\-]{2,63}$");
+	return email.match("^[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_`\{\|\}~\.]{2,64}[@]{1}[a-zA-Z0-9\-\.]{2,255}[\.]{1}[a-zA-Z0-9\-]{2,63}$");
 }
 Validation.prototype.validateURI	= function(uri){
-
+  return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(uri);
 }
 Validation.prototype.checkPostalNL	= function(value){
 	if (value == "")
@@ -30,15 +41,16 @@ Validation.prototype.checkPostalBE	= function(value){
 	if (!value.match("^\\d{4}$"))
 		return false;
 
-	postal = parseInt(value);
+	var postal = parseInt(value);
 	if (postal < 1000 || postal > 9999)
 		return false;
 
 	return true;
 }
 Validation.prototype.html5ValidationArray	= function(fields){
-	oke = true;
+	var oke = true;
 	
+  var i;
 	for(i in fields){
 		if( !this.html5Validation(fields[i]) ){
 			oke = false;
@@ -49,11 +61,11 @@ Validation.prototype.html5ValidationArray	= function(fields){
 }
 Validation.prototype.bindAll	= function(){	
 	$('input, textarea').each(function(){
-		type = $(this).prop('type');
+		var type = $(this).prop('type');
 		
 		if( (!type) || (arraySearch(validation.skip,type) == -1) ){
 			$(this).on("blur",function(){
-				item = $(this);
+				var item = $(this);
 				
 				validation.html5Validate(item);
 			})
@@ -61,14 +73,13 @@ Validation.prototype.bindAll	= function(){
 	});
 }
 Validation.prototype.html5ValidationAll	= function(){
-	oke = true;
+	var oke = true;
 	
 	$('input, textarea').each(function(){
-		type = $(this).prop('type');
+		var type = $(this).prop('type');
 		
 		if( (!type) || (arraySearch(validation.skip,type) == -1) ){
-			item = $(this);
-			
+			var item = $(this);			
 			if( !validation.html5Validate(item) ){
 				oke = false;
 			}
@@ -78,62 +89,87 @@ Validation.prototype.html5ValidationAll	= function(){
 	return oke;
 }
 Validation.prototype.html5Validation	= function(id){
-	item = $("#" + id); 
+	var item = $("#" + id); 
 	return this.html5Validate(item);
+}
+Validation.prototype.errorMessage = function(item){
+  if( item.hasClass('valid') ){
+    item.prop('title','');
+    return;
+  }
+  
+  if( item.data().hasOwnProperty('error-message') ){
+    item.prop('title',item.data('error-message'));
+  }
 }
 Validation.prototype.html5Validate	= function(item){
 	$(item).removeClass("invalid valid");
 		
-	required = $(item).prop("required");
-	isRequired = false;
+	var required = $(item).prop("required");
+	var isRequired = false;
 	if( (typeof required !== "undefined" && required !== false) ){
 		isRequired = true;
 	}
 		
-	type = $(item).prop("type");
-	pattern = $(item).prop("pattern");
-	value = $(item).val();
-	
+	var type = $(item).prop("type");
+	var pattern = $(item).prop("pattern");
+	var value = $(item).val();
+  	
 	if( isRequired && $.trim(value) == "" ){
 		$(item).addClass("invalid");
+    this.errorMessage(item);
 		return false;
 	}
 	if( (typeof pattern != "undefined") && pattern != false ){
 		if( value != "" && (value.match(pattern) == null)  ){
 			$(item).addClass("invalid");
+      this.errorMessage(item);
 			return false;
 		}
 	}
 		
 	if( (typeof type === "undefined" || type === false) ){
 		$(item).addClass("valid");
+    this.errorMessage(item);
 		return true;
 	}
 		
 	if( type == "number" || type == "range" ){
 		if( isNaN(value) ){
 			$(item).addClass("invalid");
+      this.errorMessage(item);
 			return false;
 		}
 		
-		min = $(item).prop("min");
-		max = $(item).prop("max");
+		var min = $(item).prop("min");
+		var max = $(item).prop("max");
+    
+    value = parseFloat(value);
 				
-		if( ((typeof min !== "undefined") && min !== false && value < min) || ((typeof max !== "undefined") && max !== false && value > max) ){
-			$(item).addClass("invalid");
+		if( ((typeof min !== "undefined") && min !== false && min !== '' && value < min) || ((typeof max !== "undefined") && max !== '' && max !== false && value > max) ){
+      $(item).addClass("invalid");
+      this.errorMessage(item);
 			return false;
 		}
 	}
 	if( type == "email" && $.trim(value) != "" && !this.validateEmail(value) ){
 		$(item).addClass("invalid");
+    this.errorMessage(item);
 		return false;
 	}
 	if( type == "url" && $.trim(value) != "" && !this.validateURI(value) ){
 		$(item).addClass("invalid");
+    this.errorMessage(item);
 		return false;
 	}
+  if( type == 'date' && isNaN(value) ){
+    $(item).addClass("invalid");
+    this.errorMessage(item);
+		return false;
+  }
 	
 	$(item).addClass("valid");
+  this.errorMessage(item);
 	
 	return true;
 }

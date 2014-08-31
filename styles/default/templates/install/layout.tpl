@@ -11,7 +11,7 @@
     <script src="/js/animation.js"></script>
     <script src="/js/validation.js"></script>
 </head>
-<body {autostart} data-styledir="{styledir}">
+<body {autostart} data-styledir="{styledir}" data-datadir="{datadir}">
 <section class="container">
 	<header class="holder">Scripthulp framework {version}</header>
 	
