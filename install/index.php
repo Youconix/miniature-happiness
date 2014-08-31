@@ -223,7 +223,7 @@ class Install extends SettingsMain{
 		if( count($a_data) == 0 ){
 			$a_data = array(
                 'base'      => substr(str_replace('install/index.php','',$_SERVER['PHP_SELF']),1),
-                'url'       => $_SERVER['HTTP_HOST'], 'timezone'  => date_default_timezone_get(),
+                'url'       => 'http://'.$_SERVER['HTTP_HOST'], 'timezone'  => date_default_timezone_get(),
                 'sessionName'   => '', 'sessionPath' => '','sessionExpire'=>'','language'=>'nl',
                 'template'=>'','sqlUsername'=>'','sqlPassword'=> '','sqlDatabase' => '',
                 'sqlHost' => 'localhost','sqlPort'=>'','databasePrefix'=>'SF_');
@@ -407,6 +407,7 @@ class Install extends SettingsMain{
 			echo('1');
 		}
 		catch(Exception $e){
+			echo($e->getMessage());
 			$this->reportError($e);
 			echo('0');
 		}

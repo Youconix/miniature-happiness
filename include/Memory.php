@@ -632,12 +632,8 @@ class Memory{
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }
 
-    if( substr($s_filename, 0, 1) == '/' ){
-      $s_file = Memory::services('File')->readFile($s_filename);
-    }
-    else {
-      $s_file = Memory::services('File')->readFile(NIV . $s_filename);
-    }
+    $s_file = Memory::services('File')->readFile($s_filename);
+    
     preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
     if( count($a_matches) == 0 ){
       /* No arguments */

@@ -153,7 +153,6 @@ Install.prototype.settingsSave	= function(){
 		"databaseType":$("#databaseType").val(),"databasePrefix":$("#databasePrefix").val() };
 	
 	$.post("index.php",data,function(response){
-		alert(response);
 		if( response == "ok" ){		
 			install.step = 4;
 			install.dispatch();

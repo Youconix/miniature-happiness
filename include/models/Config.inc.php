@@ -81,12 +81,12 @@ class Config extends Model {
         while (substr($s_page, 0, 1) == '/') {
             $s_page = substr($s_page, 1);
         }
-        $this->$s_page = $s_page;
+        $this->s_page = $s_page;
 
         if ($s_base == '/') {
-            $this->$s_page = substr($this->$s_page, 1);
+            $this->s_page = substr($this->s_page, 1);
         } else if (stripos($s_page, $s_base) !== false) {
-            $this->$s_page = substr($this->$s_page, strlen($s_base));
+            $this->s_page = substr($this->s_page, strlen($s_base));
         }
 
         /* Get protocol */
@@ -100,6 +100,7 @@ class Config extends Model {
             define('LEVEL', '/');
         }
 
+        $this->s_command = 'index';
         if (isset($_GET['command'])) {
             $this->s_command = $_GET['command'];
         } else if (isset($_POST['command'])) {
