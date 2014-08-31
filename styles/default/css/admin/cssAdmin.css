@@ -1,0 +1,383 @@
+.systemNotice {
+	font-weight:bold;
+	color:orange;
+}
+.invalid {
+	background-color:red;
+	color:#111;
+	font-weight:bold;
+}
+.tableText {
+	font-weight:bold;
+	width:40%;
+}
+
+/* Index */
+#adminMenu {
+	width:200px;
+	height:auto;
+	margin-left:10px;
+	margin-top:10px;
+	float:left;
+}
+#adminMenu li {
+	width:100%;
+	float:left;
+	list-style-type: none;
+}
+#adminContent {
+	width:70%;
+	float:left;
+	margin-left:30px;
+}
+#adminContent h1 {
+	text-align:center;
+	text-decoration:none;
+}
+.indexItem {
+	width:48%;
+	height:auto;
+	float:left;
+	margin-right:15px;
+}
+.indexItem, .indexItem a {
+	color:#111;
+}
+.indexItem h2 {
+	text-align:center;
+}
+
+#groups>section,#updateScreen, #indexItem>section, #logs>section, #maintenance>section, #settingsView>section,
+	#statsView>section,#users>section.adminPanel {
+	padding:5px;
+	padding-bottom:15px;
+	background-color:#000;
+	/* Safari 5.1, Chrome 10+ */ 
+    background: -webkit-linear-gradient(top, #000, #8a8a8a);
+    /* Firefox 3.6+ */ 
+    background: -moz-linear-gradient(top, #000, #8a8a8a); 
+    /* IE 10 */ 
+    background: -ms-linear-gradient(top, #000, #8a8a8a);
+    /* Opera 11.10+ */ 
+    background: -o-linear-gradient(top, #000, #8a8a8a);
+    background:linear-gradient(top, #000, #8a8a8a);
+	color:#FFF;
+	border:2px outset #000000;
+    border-radius:8px;
+    
+    padding:10px;
+    width:95%;
+}
+.adminPanel a {
+	color:#FFF;
+}
+
+.adminPanel button {
+	color:#FFF;
+}
+
+/* css/admin/general.css */
+.closeButton {
+    float:right;
+    vertical-align: text-top;
+}
+.formField {
+    width:99%;
+}
+.button, .button a {
+	background-color:#111;
+	/* Safari 5.1, Chrome 10+ */ 
+    background: -webkit-linear-gradient(top, #111, #8a8a8a);
+    /* Firefox 3.6+ */ 
+    background: -moz-linear-gradient(top, #111, #8a8a8a); 
+    /* IE 10 */ 
+    background: -ms-linear-gradient(top, #111, #8a8a8a);
+    /* Opera 11.10+ */ 
+    background: -o-linear-gradient(top, #111, #8a8a8a);
+    background:linear-gradient(top, #111, #8a8a8a);
+	color:#FFF;
+	border-right:3px outset #111;
+	border-bottom:3px outset #111;
+    border-radius:8px;
+    text-align:center;
+    width:auto;
+    padding-left:5px;
+    padding-right:5px;
+    font-weight:bold;
+}
+.button:hover, .button a:hover {
+	border-top:3px inset #111;
+	border-left:3px inset #111;
+	border-right:1px solid #111;
+	border-bottom:1px solid #111;
+}
+
+/* css/admin/groups.css */
+#groups, #logs, #maintenance, #statsView, #settingsView , #users, #text{
+    width:98%;
+    height:auto;
+    float:left;
+    color:#FFF;
+}
+#groups h1, #logs h1, #maintenance h1, #statsView, #settingsView h1, #users h1, #text h1 {
+	margin-top:0;
+	color:#111;
+}
+#groups table {
+    width:99%;
+    margin:auto;
+    color:#FFF;
+}
+#groups textarea, .textAdd {
+	width:100%;
+}
+#groupview th {
+    text-align:left;
+    padding-left:5px;
+}
+#groupview td {
+    padding-left:5px;
+}
+#titleHeader {
+    text-align:center;
+}
+#textareaAdd {
+    width:300px;
+    height:75px;
+}
+
+/* css/admin/index.css */
+#stats, #messages, #updates {
+    width:300px;
+    height:300px;
+    float:left;
+    overflow:auto;
+    margin-left:10px;
+}
+#stats h1, #messages h1 , #updates h1 {
+    margin-top:5px;
+    margin-bottom:5px;
+    text-align:center;
+}
+.loadText {
+    text-align:center; 
+    margin-top:40%;
+}
+#groupControls {
+    width:150px;
+    height:auto;
+    _height:100px;
+    left:5px;
+    top:5px;
+    position:relative;
+}
+
+#messagesContent table {
+    width:99%;
+}
+#messagesContent th, #messagesContent td {
+    width:45%;
+    margin-left:2%;
+    text-align:left;
+}
+
+/* css/admin/logs.css */
+#logs {
+    margin-left:5px;
+    margin-top:5px;
+}
+#logs table {
+    margin:auto;
+}
+#logs td, #logs th {
+    text-align:left;
+    padding-right:5px;
+}
+.logItem {
+	width:40%;
+	margin-right:25px;
+	margin-bottom:15px;
+	float:left;
+}
+
+/* css/admin/notices.css */
+#notices {
+    width:500px;
+    height:auto;
+    margin-left:25px;
+    margin-top:15px;
+    float:left;
+	color:#FFF;
+}
+#notices table {
+    margin:auto;
+}
+#messageTitle {
+    font-weight:bold;
+    font-size:1.2em;
+    padding-bottom:5px;
+}
+#messageContent {
+    padding-left:5px;
+    padding-right:5px;
+    padding-bottom:5px;
+}
+#messageDate {
+    font-size:0.8em;
+}
+#buttonDelete {
+    float:left;
+    margin-left:2px;
+}
+#buttonBack {
+    float:right;
+    margin-right:2px;
+}
+
+#notices table {
+    width:99%;
+}
+#notices th, #messagesContent td {
+    width:45%;
+    margin-left:2%;
+    text-align:left;
+}
+
+/* css/admin/users.css */
+#editScreen, #viewScreen {
+    width:600px;
+    height:auto;
+    margin-left:50px;
+    margin-top:15px;
+    float:left;
+    color:#FFF;
+    display:none;
+    margin-bottom:15px;
+}
+#editScreen table , #viewScreen table,#settingsView table, #maintenance table, .logItem table, #settingsView table, #users table{
+    width:99%;
+    margin:auto;
+}
+#editScreen th , #viewScreen th {
+    vertical-align: top;
+}
+#userTable th img, #editScreen th img, #viewScreen th img {
+    float:right;
+}
+#userTable {
+    width:300px;
+    height:auto;
+    margin-left:25px;
+    margin-top:15px;
+    float:left;
+    color:#FFF;
+    margin-bottom:15px;
+}
+#users h1, #settingsView h1,#maintenance h1 {
+    text-align: center;
+}
+#editScreen_profile {
+    height:120px;
+}
+#editScreenTitle, .title {
+    font-size:1.3em;
+}
+
+/* css/admin/maintenance.css */
+#maintenance A, #groupview A, #notices A {
+    color:#FFF;
+}
+#maintenance A { font-weight:bold }
+.maintenanceReady {
+    font-weight:bold;
+    color:#FFF;
+    background-color:green;
+    padding-left:5px;
+    padding-right:5px;
+}
+.maintenancePending {
+    font-weight:bold;
+    color:#FFF;
+    background-color:orange;
+    padding-left:5px;
+    padding-right:5px;
+}
+.maintenanceError {
+    font-weight:bold;
+    color:#FFF;
+    background-color:red;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+/* css/admin/stats.css */
+.statsItem {
+	max-width:300px;
+	min-width:100px;
+	width:auto;
+	height:auto;
+	margin-right:20px;
+	margin-bottom:20px;
+	float:left;
+}
+
+.statsItemHits {
+	min-width:100%;
+	width:auto;
+	height:auto;
+	margin-right:20px;
+	margin-bottom:20px;
+	float:left;
+}
+.statsItemHits table {
+	width:100%;
+}
+.statsItemHits a {
+	color:#FFF;
+}
+.adminButton {
+	width:15px;
+}
+
+/* admin/text */
+#text_tree_holder {
+	width:auto;
+	max-width:70%;
+	float:left;
+	height:auto;
+}
+#text_tree, #text_tree a {
+	color:#FFF;
+}
+#text_tree {
+	margin-top:20px;
+}
+#text_tree ul {
+	display:none;
+}
+#text_tree li ul {
+	margin-left:40px;
+}
+#text_tree li {
+	cursor:pointer;
+}
+#text_field {
+	width:auto;
+	float:left;
+	margin-left:2%;
+}
+#text_field table {
+	width:100%;
+}
+#textValue {
+	width:100%;
+	height:4em;
+}
+
+/* admin/prices.php */
+#pricesAdmin h1 {
+	text-align:left;
+}
+#pricesAdmin table {
+	width:100%;
+}

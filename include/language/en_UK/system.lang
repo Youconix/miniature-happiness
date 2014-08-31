@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<system>
+	<days>
+		<day0>Sunday</day0>
+		<day1>Monday</day1>
+		<day2>Tuesday</day2>
+		<day3>Wednesday</day3>
+		<day4>Thursday</day4>
+		<day5>Friday</day5>
+		<day6>Saturday</day6>
+	</days>
+	
+	<weekdaysShort>
+		<day0>Zo</day0>
+		<day1>Ma</day1>
+		<day2>Di</day2>
+		<day3>Wo</day3>
+		<day4>Do</day4>
+		<day5>Vr</day5>
+		<day6>Za</day6>
+	</weekdaysShort>
+	
+	<months>
+		<month1>January</month1>
+		<month2>February</month2>
+		<month3>March</month3>
+		<month4>April</month4>
+		<month5>May</month5>
+		<month6>June</month6>
+		<month7>July</month7>
+		<month8>August</month8>
+		<month9>September</month9>
+		<month10>October</month10>
+		<month11>November</month11>
+		<month12>December</month12>
+	</months>
+
+	<gender>
+		<male>Male</male>
+		<female>Female</female>
+		<other>Not specified</other>
+	</gender>
+
+	<rights>
+		<level_0>User</level_0>
+		<level_1>Moderator</level_1>
+		<level_2>Administrator</level_2>
+	</rights>
+	
+	<marital>
+		<married>Married</married>
+		<registeredPartner>Registered partner</registeredPartner>
+		<divorced>Divorced</divorced>
+		<unknown>Else</unknown>
+		<single>Single</single>
+		<livingTogetherContract>Living together with a contract</livingTogetherContract>
+		<livingTogether>Living together</livingTogether>
+		<widow>Widow</widow>
+	</marital>
+	
+	<admin>
+		<software>
+			<noContact>Could not connect to the update server.</noContact>
+			<upToDate>System is up to date.</upToDate>
+			<updateAvailable>Updates are available.</updateAvailable>
+			<updateFailure>A error has occurred during updating.</updateFailure>
+			<updateSucceed>The system is fully up to date.</updateSucceed>
+		</software>	
+		<index>
+			<title>Control panel</title>
+			<portletLoading>Loading.....</portletLoading>
+			<securityTitle>Security log</securityTitle>
+			<errorTitle>Error log</errorTitle>
+		</index>
+		<groups>
+			<title>Manage groups</title>
+			<id>ID</id>
+			<name>Name</name>
+			<group>Group</group>
+			<groups>Groups</groups>
+			<viewUsers>View users</viewUsers>
+			<description>Description</description>
+			<standard>Standard</standard>
+			<user>User</user>
+			<rights>Rights</rights>
+			<headerAdd>Add group</headerAdd>
+			<headerEdit>Edit group</headerEdit>
+			<headerUsers>Group users</headerUsers>
+			<js>
+				<nameEmpty>The name is not filled in.</nameEmpty>
+				<descriptionEmpty>The description is not filled in.</descriptionEmpty>
+			</js>
+		</groups>
+		<users>
+			<title>Manage users</title>			
+			<users>Users</users>
+			<user>User</user>
+			<bot>Bot</bot>
+			<username>Nickname</username>
+			<forname>First name</forname>
+			<nameBetween>Name between</nameBetween>
+			<surname>Surname</surname>
+			<email>Email</email>
+			<bot>System bot</bot>
+			<activated>Activated</activated>
+			<blocked>Blocked</blocked>
+			<headerPassword>Reset password</headerPassword>
+			<profile>Profile text</profile>
+			<password>Password</password>
+			<passwordAgain>Repeat password</passwordAgain>
+			<registrated>Registrated on</registrated>
+			<nationality>Nationality</nationality>
+			<telephone>Telephone</telephone>
+			<headerGroups>Groups</headerGroups>
+			<headerAdd>Add user</headerAdd>
+			<headerView>View User</headerView>
+			<headerEdit>Edit user</headerEdit>
+			<headerSearch>Search user</headerSearch>
+			<registratedTrough>This user is registrated via</registratedTrough>
+			<yes>Yes</yes>
+			<no>No</no>
+			<js>
+				<nickNotice>This username is allready in use.</nickNotice>
+				<emailNotice>This email address is allready in use.</emailNotice>
+				<usernameEmpty>The username is not filled in.</usernameEmpty>
+				<passwordEmpty>The password is not filled in.</passwordEmpty>
+				<passwordInvalid>The passwords are not equal.</passwordInvalid>
+				<passwordChanged>The password has been changed.</passwordChanged>
+				<firstNameEmpty>The first name is not filled in.</firstNameEmpty>
+				<surnameEmpty>The surname is not filled in.</surnameEmpty>
+				<nationalityEmpty>The nationality is not filled in.</nationalityEmpty>
+            	<telephoneEmpty>The telephone number is not filled in.</telephoneEmpty>
+				<emailInvalid>The email address is invalid.</emailInvalid>
+				<blockRejected>Are you trying to block yourself?</blockRejected>
+				<blockConfirm>Are you sure to block this user? \nHe/she can not not log in from that moment.</blockConfirm>
+				<deleteRejected>Are you trying to delete yourself?</deleteRejected>
+				<deleteConfirm>Are you sure to permantly delete this user?</deleteConfirm>
+				<groupAdminRejected>You can't remove yourself from the Admin group. You need this group for the control panel.</groupAdminRejected>
+				<groupAdminConfirm>Are you sure to give this user access to the control panel?</groupAdminConfirm>
+			</js>
+		</users>
+		<stats>
+			<title>Statistics</title>
+			<visitors>Visitors</visitors>
+			<uniqueVisitors>Uniqe visitors</uniqueVisitors>
+			<OSses>Operating systems</OSses>
+			<OS>Operating system</OS>
+			<browsers>Browsers</browsers>
+			<browser>Browser</browser>
+			<version>Version</version>
+			<screenColors>Screen colors</screenColors>
+			<colors>Colors</colors>
+			<screenSizes>Screen sizes</screenSizes>
+			<amount>Amount</amount>
+			<size>Size</size>
+			<fullList>Full list</fullList>			
+			<reference>Connection to the site from</reference>
+			<bookmark>Direct address / Bookmarks</bookmark>
+			<pages>Visitors pro page</pages>			
+			<domains>Visitors pro domain</domains>
+		</stats>
+		<messages>
+			<screenTitle>Messages</screenTitle>
+			<noMessages>No messages</noMessages>
+			<title>Title</title>
+			<date>Date</date>
+		</messages>
+		<updates>
+			<title>Updates</title>
+		</updates>
+		<logs>
+			<title>Logbooks</title>				
+			<name>Name</name>
+			<date>Date</date>
+			<download>Download</download>
+			<jsDelete>Are you sure to delete the log "+name+"?</jsDelete>
+		</logs>
+		<maintenance>
+			<compressCSS>Join CSS files</compressCSS>
+			<compressJS>Join Javascript files</compressJS>
+			<checkDatabase><![CDATA[ Check database &amp; repair ]]></checkDatabase>
+			<optimizeDatabase>Optimize database</optimizeDatabase>
+			<cleanLogs>Remove old logs</cleanLogs>
+			<systemUpdate>System update</systemUpdate>
+			<cleanStatsYear>Remove statistics older then a year</cleanStatsYear>
+			<cleanStatsMonth>Remove statistics older then a month</cleanStatsMonth>
+			<ready>Ready</ready>
+			<pending>Pending</pending>
+			<error>Error, see log</error>
+		</maintenance>
+		<notices>
+			<screenTitle>Control parenl : view system notices</screenTitle>
+			<notices>System notices</notices>
+		</notices>
+		<settings>
+			<title>Settings</title>
+			<basedir>Base directory</basedir>
+			<siteUrl>Site url</siteUrl>
+			<timezone>Timezone</timezone>
+			<sessionTitle>Session data (leave empty for default)</sessionTitle>
+			<sessionName>Session name</sessionName>
+			<sessionPath>Session directory</sessionPath>
+			<sessionExpire>Session expire time (seconds)</sessionExpire>
+			<siteSettings>Site settings</siteSettings>
+			<defaultLanguage>Default language</defaultLanguage>
+			<templateDir>Template directory</templateDir>
+			<databaseSettings>Database settings</databaseSettings>
+			<username>Username</username>
+			<password>Password</password>
+			<database>Database</database>
+			<host>Server (host)</host>
+			<port>Port (leave empty for default)</port>
+			<type>Type</type>
+			<ftpSettings>FTP settings</ftpSettings>
+			<disable>Disable</disable>
+		</settings>
+		<menu>
+			<groups>Groups</groups>
+    		<users>Users</users>
+    		<logs>Logs</logs>
+    		<settings>Settings</settings>
+    		<stats>Statistics</stats>
+    		<maintenance>Maintenance</maintenance>
+    	</menu>
+	</admin>
+
+	<bann>
+		<bann1>1 Day</bann1>
+		<bann2>1 Week</bann2>
+		<bann3>1 Month</bann3>
+		<bann4>Permanent</bann4>
+	</bann>
+	
+	<buttons>
+	   <add>Add</add>
+	   <reset>Reset</reset>
+	   <cancel>Cancel</cancel>
+	   <edit>Edit</edit>
+	   <save>Save</save>
+	   <delete>Delete</delete>
+		<back>Back</back>
+		<view>View</view>
+		<send>Send</send>
+		<upload>Upload</upload>
+		<download>Download</download>		
+	   <close>Close</close>
+	</buttons>
+
+	<menu>
+	   <home>Home</home>
+	   <login>Login</login>
+       <logout>Logout</logout>
+       <adminPanel>Controll panel</adminPanel>
+    </menu>
+
+	<header>
+		<userWelcome>Welcome </userWelcome>
+		<adminWelcome>Welcome admin </adminWelcome>
+	</header>
+
+	<login>
+		<title></title>
+		<username>Username </username>
+		<password>Password</password>
+		<button>Login</button>
+		<registration>Registrer</registration>
+		<forgotPassword>Forgot password</forgotPassword>
+		<editPassword>Edit password</editPassword>
+		<currentPassword>Current password</currentPassword>
+		<newPassword>New password</newPassword>
+		<newPasswordAgain>Repeat new password</newPasswordAgain>
+		<currentPasswordIncorrect>The old password is not correct.</currentPasswordIncorrect>
+		<autologin>Remember me</autologin>
+		<loginWith>Login with</loginWith>
+	</login>
+	
+	<logout>
+		<title></title>
+		<logoutSucceed>You are logged out.</logoutSucceed>
+		<logoutFailed>The logging out failed.</logoutFailed>
+	</logout>
+
+	<index>
+		<title>Default index page</title>
+	</index>
+	<registration>
+	    <title>Subscribe now</title>
+		<screenTitle>Registrer</screenTitle>
+		<name>Username</name>
+		<email>E-mail address</email>
+		<password1>Password</password1>
+		<password2>Repeat password</password2>
+		<conditions>I agree with the conditions</conditions>
+		<submitButton>Registrer</submitButton>
+		<passwordIncorrect>The passwords are not equal</passwordIncorrect>
+		<checkConditions>You need to agree with the conditions</checkConditions>
+		<failed>Registrating your account was not posibile. Please try again later.</failed>
+		<emailSend>Your account has been registrated. A activation email was send to [email].</emailSend>
+		<emailFailed>The activation email could not be sended.</emailFailed>
+		<captcha>Repeat the following code as a check.</captcha>
+		<notices>
+            <notices0>The username is not filled in.</notices0>
+            <notices1>The email address is not filled in.</notices1>
+            <notices2>The password is not filled in.</notices2>
+            <conditions>You need to agree with the conditions.</conditions>
+            <emailInvalid>The email address is invalid.</emailInvalid>
+            <passwordInvalid>The passwords are not equal.</passwordInvalid>
+            <codeInvalid>The code is incorrect.</codeInvalid>
+            <usernameTaken>The username is allready in use.</usernameTaken>
+            <usernameTakenOpenID>A account with this username allready exists. Have you not allready registrated?</usernameTakenOpenID>
+            <emailTaken>The E-mail address is already in use.</emailTaken>
+            <emailTakenOpenID>A account with this email allready exists. . Have you not allready registrated?</emailTakenOpenID>
+            <usernameToShort>The username has to be at least 3 characters long.</usernameToShort>
+            <passwordToShort>The password has to be at least 8 characters long.</passwordToShort>
+            <veryStrongPassword>Very strong password</veryStrongPassword>
+            <strongPassword>Strong password</strongPassword>
+            <fairPassword>Fair password</fairPassword>
+            <weakPassword>Weak password</weakPassword>
+		</notices>
+		<registrationVia>Registration via</registrationVia>
+	</registration>
+	<activate>
+	   <accountActivated><![CDATA[ Your account is activated. It is now posible <a href="{NIV}login.php">to log in.</a> ]]></accountActivated>
+	   <accountNotActivated>The activation-link is invalid. Maybe is the account allready activated.</accountNotActivated>
+	</activate>
+	<forgotPassword>
+	   <header>Wachtwoord resetten</header>
+	   <verifyCodeFailed>Het wachtwoord kon niet gereset worden. De reset code is niet geldig.</verifyCodeFailed>
+	   <verifyCodeSuccess><![CDATA[ Het wachtwoord is gereset. Je kan nu <a href="{NIV}login.php">inloggen</a>. ]]></verifyCodeSuccess>
+	   <fieldsEmpty>Je hebt niet alle velden ingevuld.</fieldsEmpty>
+	   <emailError>Het E-mail adres is ongeldig.</emailError>
+       <resetFailed>Onbekende combinatie van gebruikersnaam en E-mail adres.</resetFailed>
+       <resetSuccess>Er is een wachtwoord reset email verstuurd naar [email].</resetSuccess>	
+       <openID>Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk.</openID>   
+	</forgotPassword>
+	
+	<title>Scripthulp framework</title>
+	<slogan>Default slogan</slogan>
+	
+	<messages>
+	    <messages>Messages</messages>
+	    <subject>Subject</subject>
+	    <sender>Sender</sender>
+	    <recipient>Receiver</recipient>
+	    <date>Date</date>
+	    <send>Send</send>
+	    <sendTo>Send to</sendTo>
+	    <new>New message</new>
+	    <form>
+	      <read>Read</read>
+	      <unread>Unread</unread>
+	      <message>Message</message>
+	      <subject>Subject</subject>
+	      <recipient>Receiver</recipient>
+	      <reset>Reset</reset>
+	      <answer>Answer</answer>
+	    </form>
+	    <notices>
+	      <messageSent><![CDATA[<h2 class="Notice">The message is send to [username]!]]></messageSent>
+	      <noSuchUser><![CDATA[<h2 class="errorNotice">This user does not exist!</h2>]]></noSuchUser>
+	      <noReceiver>The receiver is not filled in.</noReceiver>
+	      <noSubject>The subject is not filled in.</noSubject>
+	      <noMessage>The message is not filled in.</noMessage>
+	      <deleteConfirm>Are you sure to delete this message?</deleteConfirm>
+	    </notices>
+	  </messages>
+	
+	<errors>
+		<error403>
+			<accessDenied>Access denied.</accessDenied>
+			<noRights>You do not have the required privileges to view this page.</noRights>
+		</error403>
+		<error404>
+			<notFound>Page not found.</notFound>
+			<pageMissing>The requested page can not be found on this server.</pageMissing>
+		</error404>
+		<error500>
+			<serverError>Oops something went wrong.</serverError>
+			<systemError>Some error has occured on this page. The administrator has been warned.</systemError>
+		</error500>
+	</errors>
+</system>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+	<encoding>iso-8859-1</encoding>
+	<locale>en</locale>
+	<noscript>Please activate javascript.</noscript>
+	<sessionExpired>Your session has expired. Relogin.</sessionExpired>
+  
+</language>
