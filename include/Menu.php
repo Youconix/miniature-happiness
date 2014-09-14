@@ -49,7 +49,7 @@ class Menu {
     /**
      * Generates the menu 
      */
-    private function generateMenu() {
+    protected function generateMenu() {
         if (defined('USERID')) {
             $this->loggedIn();
 
@@ -70,16 +70,16 @@ class Menu {
     /**
      * Displays the logged out items
      */
-    private function loggedout() {
+    protected function loggedout() {
         $this->service_Template->set('home', $this->service_Language->get('system/menu/home'));
-        $this->service_Template->set('login', '<a href="{NIV}login.php">' . $this->service_Language->get('system/menu/login') . '</a>');
+        $this->service_Template->set('login', '<a href="{LEVEL}login">' . $this->service_Language->get('system/menu/login') . '</a>');
         $this->service_Template->set('registration', $this->service_Language->get('system/login/registration'));
     }
 
     /**
      * Displays the logged in items
      */
-    private function loggedIn() {
+    protected function loggedIn() {
         $this->service_Template->set('home', $this->service_Language->get('menu/home'));
         $this->service_Template->set('logout', '<a href="{NIV}logout.php">' . $this->service_Language->get('menu/logout') . '</a>');
     }

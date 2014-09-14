@@ -46,8 +46,8 @@ abstract class BaseLogicClass extends BaseClass {
 	 * Displays the site header
 	 */
     protected function header(){
-        /* Call header */
-        \core\Memory::loadClass(NIV.'include/Header.php','Header');
+    	/* Call header */
+	    \core\Memory::loadClass(NIV.'include/Header.php','Header');
     }
 
     /**

@@ -36,7 +36,7 @@ class Registration extends BaseLogicClass {
 	public function __construct(){
 		$this->init();
 
-		if( Memory::isAjax() ){
+		if( $this->model_Config->isAjax() ){
 			if( $this->get['command'] == 'checkUsername'){
 				if( !$this->checkUsername($this->get['username']) ){
 					$this->service_Template->set('result','0');
@@ -55,8 +55,6 @@ class Registration extends BaseLogicClass {
 			}
 			return;
 		}
-
-		$this->title();
 
 		if( $_SERVER['REQUEST_METHOD'] == 'POST' ){
 			if( isset($this->post['type']) ){
@@ -120,7 +118,7 @@ class Registration extends BaseLogicClass {
         	);
         	$this->s_notice     = '';
 
-        	$this->service_Authorization	= Memory::services('Authorization');
+        	$this->service_Authorization	= \core\Memory::services('Authorization');
 	}
 
 	/**
@@ -136,18 +134,11 @@ class Registration extends BaseLogicClass {
 	}
 
 	/**
-	 * Sets the title to the template-parser
-	 */
-	private function title(){
-		$this->service_Template->set('title',$this->service_Language->get('language/registration/title'));
-	}
-
-	/**
 	 * Displays the openID registration form
 	 */
 	private function openIDForm(){
 		if( $this->get['type'] == 'Facebook' ){
-			Memory::helpers('Facebook')->registrationScreen();
+			\core\Memory::helpers('Facebook')->registrationScreen();
 		}
 			
 		$this->service_Template->set('registration',$this->service_Language->get('language/registration/registrationVia').' '.$this->get['type']);
@@ -174,7 +165,7 @@ class Registration extends BaseLogicClass {
 		$this->service_Template->set('emailText',$this->service_Language->get('language/admin/users/email'));
 		$this->service_Template->set('email',$this->a_data['email']);
 		
-		$this->service_Template->set('passwordForm',Memory::helpers('PasswordForm')->generate());
+		$this->service_Template->set('passwordForm',\core\Memory::helpers('PasswordForm')->generate());
 		
 		$a_openID	= $this->service_Authorization->getOpenIDList();
 		$s_registration	= $this->service_Language->get('language/registration/registrationVia');
@@ -203,7 +194,7 @@ class Registration extends BaseLogicClass {
 	private function processOpenID(){
 		$bo_error       = false;
 			
-		$helper_Captcha	= Memory::helpers('Captcha');
+		$helper_Captcha	= \core\Memory::helpers('Captcha');
 		if( !$helper_Captcha->checkCaptcha($this->post['captcha']) ){
 			$this->s_notice  .= $this->service_Language->get('language/registration/notices/codeInvalid').'<br/>';
 			$bo_error	= true;
@@ -218,13 +209,13 @@ class Registration extends BaseLogicClass {
 			if( $this->post['type'] != 'Facebook' )
 			$this->service_Authorization->registerOpenID($this->post);
 			else {
-				$this->service_Authorization	= Memory::services('FacebookAuthorization');
+				$this->service_Authorization	= \core\Memory::services('FacebookAuthorization');
 				$this->service_Authorization->registerOpenIDConfirm($this->post);
 			}
 
 		}
-		catch(Exception $e){
-			Memory::services('Logs')->securityLog("Invalid type ".$this->post['type'].' on registration:processOpenID().');
+		catch(\Exception $e){
+			\core\Memory::services('Logs')->securityLog("Invalid type ".$this->post['type'].' on registration:processOpenID().');
 		}
 	}
 
@@ -310,7 +301,7 @@ class Registration extends BaseLogicClass {
 			$bo_error	= true;
 		}
 
-		$helper_Captcha	= Memory::helpers('Captcha');
+		$helper_Captcha	= \core\Memory::helpers('Captcha');
 		if( !$helper_Captcha->checkCaptcha($this->post['captcha']) ){
 			$this->s_notice  .= $this->service_Language->get('language/registration/notices/codeInvalid').'<br/>';
 			$bo_error   = true;
@@ -331,7 +322,7 @@ class Registration extends BaseLogicClass {
 	 * @return boolean	True if the username is free, otherwise false
 	 */
 	private function checkUsername($s_username){
-		return Memory::models('User')->checkUsername($s_username);
+		return \core\Memory::models('User')->checkUsername($s_username);
 	}
 
 	/**
@@ -341,7 +332,7 @@ class Registration extends BaseLogicClass {
 	 * @return boolean	True if the email is free, otherwise false
 	 */
 	private function checkEmail($s_email){
-		return Memory::models('User')->checkEmail($s_email);
+		return \core\Memory::models('User')->checkEmail($s_email);
 	}
 }
 

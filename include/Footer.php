@@ -46,8 +46,9 @@ class Footer {
     /**
      * Generates the footer
      */
-    private function createFooter() {
+    protected function createFooter() {
         $this->service_Template->loadTemplate('footer', 'footer.tpl');
+        $this->service_Template->set('version',$this->service_Settings->get('version'));
     }
 
 }

@@ -27,6 +27,11 @@ abstract class GeneralException extends Exception {
     public function __construct($s_message){
         parent::__construct($s_message);
     }
+    
+    public function __toString(){
+    	return 'Thrown '.get_class($this) . " with message '{$this->message}' in {$this->file}({$this->line})\n"
+    	. "{$this->getTraceAsString()}";
+    }
 }
 
 ?>

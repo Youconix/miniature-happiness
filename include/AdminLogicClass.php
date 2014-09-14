@@ -85,7 +85,14 @@ abstract class AdminLogicClass extends BaseClass {
     protected function menu(){
         /* Call Menu's */
     	include(NIV.'include/Menu.php');
-    	$obj_menu   = new Menu();
+    	if( file_exists(NIV.'include/Menu_override.php') ){
+    		include(NIV.'include/Menu_override.php');
+    		$obj_menu   = new MenuOverride();
+    	}
+    	else {
+    		$obj_menu   = new Menu();
+    	}
+    	
     	unset($obj_menu);
     	
         include(NIV.'include/MenuAdmin.php');

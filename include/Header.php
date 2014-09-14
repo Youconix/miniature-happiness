@@ -48,7 +48,7 @@ class Header{
   /**
    * Generates the header
    */
-  private function createHeader(){
+  protected function createHeader(){
     $this->service_Template->loadTemplate('header', 'header.tpl');
     
     $obj_User = $this->model_User->get();
@@ -69,7 +69,7 @@ class Header{
   /**
    * Displays the language change flags
    */
-  private function displayLanguageFlags(){
+  protected function displayLanguageFlags(){
     $a_languages = $this->service_Language->getLanguages(); 
     $a_languagesCodes = $this->service_Language->getLanguageCodes();
     

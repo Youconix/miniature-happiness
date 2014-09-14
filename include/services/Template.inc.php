@@ -350,12 +350,17 @@ class Template extends Service{
       throw new \TemplateException('No template is loaded for ' . $_SERVER[ 'PHP_SELF' ] . '.');
     }
 
-    if( is_object($s_value) && is_subclass_of($s_value, 'CoreHtmlItem') ){
-      $s_value = $s_value->generateItem();
-    }
-    else if( is_object($s_value) ){
-      throw new \Exception("Only types of CoreHTMLItem or strings can be added.");
-    }
+    if( is_object($s_value) ){
+    	if( ($s_value instanceOf \core\helpers\Display )){
+    		$s_value = $s_value->generate();
+    	}
+    	else if( is_subclass_of($s_value, 'CoreHtmlItem') ){
+    		$s_value = $s_value->generateItem();
+    	}
+    	else {
+	      throw new \Exception("Only types of CoreHTMLItem or strings can be added.");
+	    }
+  	}
 
     $this->a_parser[ $s_key ] = $s_value;
   }
@@ -452,6 +457,9 @@ class Template extends Service{
     foreach( $a_keys as $s_key ){
       $this->s_template = str_replace("{" . $s_key . "}", $this->a_parser[ $s_key ], $this->s_template);
     }
+    
+    
+    $this->s_template = str_replace(array('{STYLE_DIR}','{LEVEL}'),array('{LEVEL}styles/' . $this->s_templateDir,$this->model_Config->getBase()),$this->s_template);
 
     /* Delete unused template-variables */
     $this->removeBlocks('block', 0);

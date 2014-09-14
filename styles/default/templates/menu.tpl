@@ -1,6 +1,7 @@
 <nav id="menu">
 	<ul>
-		<li><a href="{NIV}home.php">{home}</a></li>
-		<li><a href="{NIV}registration.php">{registration}</a></li>
+		<li><a href="{LEVEL}">{home}</a></li>
+		<li><a href="{LEVEL}registration">{registration}</a></li>
+		<li>{login}</li>
 	</ul>
 </nav>

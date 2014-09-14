@@ -284,5 +284,30 @@ class Language extends Xml{
     return $s_text;
   }
 
+  /**
+   * Checks of the given part of the loaded file exists
+   *
+   * @param  	String   $s_path   The path to the language-part
+   * @return boolean, true if the part exists otherwise false
+   */
+  public function exists($s_path){
+  	$a_path = explode('/',$s_path);
+    if( !array_key_exists($a_path[0],$this->a_documents) ){
+      $obj_file = $this->a_documents['site'];
+    }
+    else {
+      $obj_file = $this->a_documents[$a_path[0]];
+    }
+
+    $a_return = $obj_file->query("//" . $s_path);
+
+    if( $a_return->length < 1 ){
+      /* Part not found */
+      return false;
+    }
+
+    return true;
+  }
+
 }
 ?>

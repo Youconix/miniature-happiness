@@ -10,6 +10,7 @@
  * @changed		24/09/12
  */
 define('NIV','./');
+use \core\Memory;
 
 include(NIV.'include/BaseLogicClass.php');
 class Index extends BaseLogicClass  { 
@@ -19,8 +20,6 @@ class Index extends BaseLogicClass  {
     public function __construct(){
         $this->init();
 
-        $this->title();
-
         $this->header();
         
         $this->menu();
@@ -29,21 +28,14 @@ class Index extends BaseLogicClass  {
 
         $this->footer();
     }
-
-    /**
-     * Sets the title to the template-parser
-     */
-    private function title(){
-        $s_title    = $this->service_Language->get('language/index/title');
-
-        $this->service_Template->set('title',$s_title);
-    }
     
     /**
      * Sets the index content
      */
     private function content(){
-    	
+    	$this->service_Template->set('content',
+			Memory::helpers('IndexInstall')
+    	);
     }
 }
 

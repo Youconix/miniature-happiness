@@ -9,9 +9,8 @@
     {headblock}
 </head>
 <body {autostart}>
-{statisticsImg}
-{noscript}
-<section id="container">
+<section id="wrapper">
+	{noscript}
     {[header]}
     
     {[menu]}
@@ -21,6 +20,8 @@
     </section>
 
     {[footer]}
+
+    {statisticsImg}
 </section>
 </body>
 </html>

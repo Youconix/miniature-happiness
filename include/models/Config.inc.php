@@ -232,6 +232,16 @@ class Config extends Model {
 	public function getCommand(){
 		return $this->s_command;
 	}
+	
+	/**
+	 * Returns the path to the website root
+	 * This value gets set in {LEVEL}
+	 * 
+	 * @return String	The path
+	 */
+	public function getBase(){
+		return $this->s_base;
+	}
 }
 
 ?>
