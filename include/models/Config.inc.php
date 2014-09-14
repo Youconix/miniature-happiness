@@ -93,7 +93,7 @@ class Config extends Model {
         $this->s_protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ) ? "https://" : "http://";
 
         if ((isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true')) {
-            $this->$bo_ajax = true;
+            $this->bo_ajax = true;
         }
 
         if (!defined('LEVEL')) {

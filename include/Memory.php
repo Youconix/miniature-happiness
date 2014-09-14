@@ -820,7 +820,9 @@ class Memory{
     }
     else {
       if(substr($s_url, -1) == '/'){
-          $s_url .= 'index.php?';
+      	  if( count($a_payload) > 0 ){
+      	  	$s_url .= 'index.php?';
+      	  }
       }
       else {
         $s_url .= '.php?';
@@ -857,7 +859,41 @@ class Memory{
       exit();
   }
 
+  /**
+   * Detects the system base
+   * Should only be used on install (redirection)
+   * 
+   * @throws \MemoryException	If the base could not be found
+   * @return string	The base
+   */
+  public static function detectBase(){
+  	$s_url	= $_SERVER['SCRIPT_NAME'];
+  	if( substr($s_url, 0,1) == '/' ){	$s_url = substr($s_url, 1); } 
+  	$s_url = substr($s_url, 0, strrpos($s_url, '/'));
+  	
+  	
+  	$a_dirs	= explode('/',$s_url);
+  	$s_wwwRoot	= $_SERVER['DOCUMENT_ROOT'];
+  	
+  	/* Seach for Memory */
+  	$s_base = '';
+  	$i_pos = 0;
+  	$i_max = count($a_dirs);
+  	
+  	while( $i_pos <= $i_max ){
+  		if( file_exists($s_wwwRoot.'/'.$s_base.'/include/Memory.php') ){
+  			return '/'.$s_base;
+  		}
+  		
+  		if( !empty($s_base) ){ $s_base .= '/';	}
+  		$s_base .= $a_dirs[$i_pos];
+  		$i_pos++;
+  	}
+  	
+  	throw new \MemoryException('Unable to detect website root for '.$_SERVER['SCRIPT_NAME'].'.');
+  }
 }
+
 if( !function_exists('class_alias') ){
 
   function class_alias($original, $alias){

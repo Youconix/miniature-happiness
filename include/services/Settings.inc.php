@@ -47,8 +47,10 @@ class Settings extends Xml{
       $this->load($this->s_settingsDir . '/settings.xml');
     }
     else {
-      \core\Memory::redirect('install/');
-      exit();
+		$s_base = \core\Memory::detectBase();
+    	
+		\core\Memory::redirect($s_base.'/install/');
+		exit();
     }
 
     $this->s_startTag = 'settings';

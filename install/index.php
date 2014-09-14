@@ -126,7 +126,10 @@ class Install extends SettingsMain{
 		$s_dataDir = 'admin/settings/';
 		if( defined('DATA_DIR') ){	$s_dataDir = DATA_DIR.'/settings/'; }
 		
-		$this->s_layout = str_replace(array('{step}','{styledir}','{datadir}','{version}'),array($this->i_step,str_replace(NIV,'/',STYLEDIR),$s_dataDir,$this->s_version),$this->s_layout);
+		/* Get base */
+		$s_base = $this->getBase();
+		
+		$this->s_layout = str_replace(array('{step}','{styledir}','{datadir}','{version}','{LEVEL}'),array($this->i_step,str_replace(NIV,'/',STYLEDIR),$s_dataDir,$this->s_version,$s_base),$this->s_layout);
 		$this->s_layout = preg_replace("#{+[a-zA-Z_0-9]+}+#si", "", $this->s_layout);
 		echo($this->s_layout);
 	}
@@ -558,6 +561,13 @@ class Install extends SettingsMain{
 		
 		$s_salt = \core\services\Hashing::createSalt($service_Random);
 		return $s_salt;
+	}
+	
+	private function getBase(){
+		if( !class_exists('\core\Memory') ){
+			include(NIV.'include/Memory.php');
+		}
+		return \core\Memory::detectBase();
 	}
 }
 
