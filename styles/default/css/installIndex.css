@@ -7,7 +7,7 @@ h2 { font-size:1.2em; }
 
 #gettingStarted, #maintenance { min-height:40px; }
 
-#gettingStarted { margin-right:2%; width:70%; height:200px;  }
+#gettingStarted { margin-right:1.5%; width:70%; height:200px;  }
 #maintenance { width:25%; float:right; }
 
 #maintenance ul { margin-left:20px; }
