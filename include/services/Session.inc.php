@@ -30,11 +30,13 @@ namespace core\services;
 class Session extends Service{
 
   private $service_QueryBuilder;
-  const FORBIDDEN = -1;
+  const FORBIDDEN = -1; //Stil here for backwards compatibility
+  const ANONYMOUS = -1;
   const USER = 0;
   const MODERATOR = 1;
   const ADMIN = 2;
-  const FORBIDDEN_COLOR = 'grey';
+  const FORBIDDEN_COLOR = 'grey';//Stil here for backwards compatibility
+  const ANONYMOUS_COLOR = 'grey';
   const USER_COLOR = 'black';
   const MODERATOR_COLOR = 'green';
   const ADMIN_COLOR = 'red';

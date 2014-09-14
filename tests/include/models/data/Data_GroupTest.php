@@ -91,12 +91,12 @@ class testData_Group extends GeneralTest{
 
   /**
    * Test of geting the user access level
-   * Expected Session::FORBIDDEN (no access)
+   * Expected Session::ANONYMOUS (no access)
    * 
    * @test
    */
   public function getLevelByGroupID(){
-    $this->assertEquals(\core\services\Session::FORBIDDEN, $this->model_Group->getLevelByGroupID($this->i_id));
+    $this->assertEquals(\core\services\Session::ANONYMOUS, $this->model_Group->getLevelByGroupID($this->i_id));
   }
 
   /**

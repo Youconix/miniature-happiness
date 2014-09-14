@@ -10,7 +10,7 @@ namespace core\models;
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 2.0
- * @changed 02/08/2014
+ * @changed 14/09/2014
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,7 +30,7 @@ class Config extends Model {
 	private $service_File;
 	private $service_Cookie;
 	private $s_templateDir;
-	private $bo_ajax;
+	private $bo_ajax = false;
 	private $s_base;
 	private $s_page;
 	private $s_protocol;
@@ -90,14 +90,7 @@ class Config extends Model {
 		/* Get protocol */
 		$this->s_protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
 		
-		/* Detect AJAX */
-		if( function_exists(apache_request_headers) ){
-			$a_headers = apache_request_headers();
-			$this->bo_ajax(isset($a_headers['X-Requested-With']) && $a_headers['X-Requested-With'] == 'XMLHttpRequest');
-		}
-		else if( (isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true') ){
-			$this->bo_ajax = true;
-		}
+		$this->detectAjax();		
 		
 		if( !defined('LEVEL') ){
 			define('LEVEL', '/');
@@ -109,6 +102,22 @@ class Config extends Model {
 		}
 		else if( isset($_POST['command']) ){
 			$this->s_command = $_POST['command'];
+		}
+	}
+	
+	/**
+	 * Detects an AJAX call
+	 */
+	private function detectAjax(){
+		if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') ){
+			$this->bo_ajax = true;
+		}
+		else if( function_exists('apache_request_headers') ){
+			$a_headers = apache_request_headers();
+			$this->bo_ajax = (isset($a_headers['X-Requested-With']) && $a_headers['X-Requested-With'] == 'XMLHttpRequest');
+		} 
+		else if( (isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true') ){
+			$this->bo_ajax = true;
 		}
 	}
 	
