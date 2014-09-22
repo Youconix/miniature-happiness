@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Youconix framework\n"
 "POT-Creation-Date: 2014-09-15 10:00:00+01000\n"
-"PO-Revision-Date: 2014-09-15 10:00:00+0100\n"
+"PO-Revision-Date: 2014-09-15 11:50+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: NL\n"
+"Language: en_UK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,613 +16,880 @@ msgstr ""
 "X-Poedit-SearchPath-1: themes\n"
 
 msgid "days_day0"
-msgstr ""
+msgstr "Sunday"
+
 msgid "days_day1"
-msgstr ""
+msgstr "Monday"
+
 msgid "days_day2"
-msgstr ""
+msgstr "Tuesday"
+
 msgid "days_day3"
-msgstr ""
+msgstr "Wednesday"
+
 msgid "days_day4"
-msgstr ""
+msgstr "Thursday"
+
 msgid "days_day5"
-msgstr ""
+msgstr "Friday"
+
 msgid "days_day6"
-msgstr ""
+msgstr "Saturday"
 
 msgid "weekdaysShort_day0"
-msgstr ""
-msgid "weekdaysShort_day1"
-msgstr ""
-msgid "weekdaysShort_day2"
-msgstr ""
-msgid "weekdaysShort_day3"
-msgstr ""
-msgid "weekdaysShort_day4"
-msgstr ""
-msgid "weekdaysShort_day5"
-msgstr ""
-msgid "weekdaysShort_day6"
-msgstr ""
+msgstr "Su"
 
-msgid "months_month0"
-msgstr ""
+msgid "weekdaysShort_day1"
+msgstr "Mo"
+
+msgid "weekdaysShort_day2"
+msgstr "Tu"
+
+msgid "weekdaysShort_day3"
+msgstr "We"
+
+msgid "weekdaysShort_day4"
+msgstr "Th"
+
+msgid "weekdaysShort_day5"
+msgstr "Fr"
+
+msgid "weekdaysShort_day6"
+msgstr "Sa"
+
 msgid "months_month1"
-msgstr ""
+msgstr "January"
+
 msgid "months_month2"
-msgstr ""
+msgstr "February"
+
 msgid "months_month3"
-msgstr ""
+msgstr "March"
+
 msgid "months_month4"
-msgstr ""
+msgstr "April"
+
 msgid "months_month5"
-msgstr ""
+msgstr "May"
+
 msgid "months_month6"
-msgstr ""
+msgstr "June"
+
 msgid "months_month7"
-msgstr ""
+msgstr "July"
+
 msgid "months_month8"
-msgstr ""
+msgstr "August"
+
 msgid "months_month9"
-msgstr ""
+msgstr "September"
+
 msgid "months_month10"
-msgstr ""
+msgstr "October"
+
 msgid "months_month11"
-msgstr ""
+msgstr "November"
+
+msgid "months_month12"
+msgstr "December"
 
 msgid "gender_male"
-msgstr ""
+msgstr "Male"
+
 msgid "gender_female"
-msgstr ""
+msgstr "Female"
+
 msgid "gender_other"
-msgstr ""
+msgstr "Not specified"
 
 msgid "rights_level_0"
-msgstr ""
+msgstr "User"
+
 msgid "rights_level_1"
-msgstr ""
+msgstr "Moderator"
+
 msgid "rights_level_2"
-msgstr ""
+msgstr "Administrator"
 
 msgid "marital_married"
-msgstr ""
+msgstr "Married"
+
 msgid "marital_registeredPartner"
-msgstr ""
+msgstr "Registered Partner"
+
 msgid "marital_divorced"
-msgstr ""
+msgstr "Divorced"
+
 msgid "marital_unknown"
-msgstr ""
+msgstr "Else"
+
 msgid "marital_single"
-msgstr ""
+msgstr "Single"
+
 msgid "marital_livingTogetherContract"
-msgstr ""
+msgstr "Living together with a contract"
+
 msgid "marital_livingTogether"
-msgstr ""
+msgstr "Living together"
+
 msgid "marital_widow"
-msgstr ""
+msgstr "Widow/Widower"
 
 msgid "admin_software_noContact"
-msgstr ""
+msgstr "Could not connect to the update server."
+
 msgid "admin_software_upToDate"
-msgstr ""
+msgstr "System is up to date."
+
 msgid "admin_software_updateAvailable"
-msgstr ""
+msgstr "Updates are available."
+
 msgid "admin_software_updateFailure"
-msgstr ""
+msgstr "An error has occurred during updating."
+
 msgid "admin_software_updateSucceed"
-msgstr ""
+msgstr "The system has been updated succesfully."
+
 msgid "admin_index_title"
-msgstr ""
+msgstr "Control panel"
+
 msgid "admin_index_portletLoading"
-msgstr ""
+msgstr "Loading..."
+
 msgid "admin_index_securityTitle"
-msgstr ""
+msgstr "Security log"
+
 msgid "admin_index_errorTitle"
-msgstr ""
+msgstr "Error log"
+
 msgid "admin_groups_title"
-msgstr ""
+msgstr "Manage groups"
+
 msgid "admin_groups_id"
-msgstr ""
+msgstr "ID"
+
 msgid "admin_groups_name"
-msgstr ""
+msgstr "Name"
+
 msgid "admin_groups_group"
-msgstr ""
+msgstr "Group"
+
 msgid "admin_groups_groups"
-msgstr ""
+msgstr "Groups"
+
 msgid "admin_groups_viewUsers"
-msgstr ""
+msgstr "View users"
+
 msgid "admin_groups_description"
-msgstr ""
+msgstr "Description"
+
 msgid "admin_groups_standard"
-msgstr ""
+msgstr "Standard"
+
 msgid "admin_groups_user"
-msgstr ""
+msgstr "User"
+
 msgid "admin_groups_rights"
-msgstr ""
+msgstr "Rights"
+
 msgid "admin_groups_headerAdd"
-msgstr ""
+msgstr "Add group"
+
 msgid "admin_groups_headerEdit"
-msgstr ""
+msgstr "Edit group"
+
 msgid "admin_groups_headerUsers"
-msgstr ""
+msgstr "Group users"
+
 msgid "admin_groups_js_nameEmpty"
-msgstr ""
+msgstr "The name is not filled in."
+
 msgid "admin_groups_js_descriptionEmpty"
-msgstr ""
+msgstr "The description is not filled in."
+
 msgid "admin_users_title"
-msgstr ""
+msgstr "Manage users"
+
 msgid "admin_users_users"
-msgstr ""
+msgstr "Users"
+
 msgid "admin_users_user"
-msgstr ""
+msgstr "User"
+
 msgid "admin_users_username"
-msgstr ""
+msgstr "Nickname"
+
 msgid "admin_users_forname"
-msgstr ""
+msgstr "First name"
+
 msgid "admin_users_nameBetween"
-msgstr ""
+msgstr "Name between"
+
 msgid "admin_users_surname"
-msgstr ""
+msgstr "Surname"
+
 msgid "admin_users_email"
-msgstr ""
+msgstr "Email"
+
 msgid "admin_users_bot"
-msgstr ""
+msgstr "System bot"
+
 msgid "admin_users_activated"
-msgstr ""
+msgstr "Activated"
+
 msgid "admin_users_blocked"
-msgstr ""
+msgstr "Blocked"
+
 msgid "admin_users_headerPassword"
-msgstr ""
+msgstr "Reset password"
+
 msgid "admin_users_profile"
-msgstr ""
+msgstr "Profile text"
+
 msgid "admin_users_password"
-msgstr ""
+msgstr "Password"
+
 msgid "admin_users_passwordAgain"
-msgstr ""
+msgstr "Repeat password"
+
 msgid "admin_users_registrated"
-msgstr ""
-msgid "admin_users_headerGroups"
-msgstr ""
-msgid "admin_users_headerAdd"
-msgstr ""
-msgid "admin_users_headerView"
-msgstr ""
-msgid "admin_users_headerEdit"
-msgstr ""
-msgid "admin_users_headerSearch"
-msgstr ""
-msgid "admin_users_registratedThrough"
-msgstr ""
+msgstr "Registered on"
+
 msgid "admin_users_nationality"
-msgstr ""
+msgstr "Nationality"
+
 msgid "admin_users_telephone"
-msgstr ""
+msgstr "Telephone number"
+
+msgid "admin_users_headerGroups"
+msgstr "Groups"
+
+msgid "admin_users_headerAdd"
+msgstr "Add user"
+
+msgid "admin_users_headerView"
+msgstr "View user"
+
+msgid "admin_users_headerEdit"
+msgstr "Edit user"
+
+msgid "admin_users_headerSearch"
+msgstr "Search user"
+
+msgid "admin_users_registratedThrough"
+msgstr "This user is registered via"
+
 msgid "admin_users_yes"
-msgstr ""
+msgstr "Yes"
+
 msgid "admin_users_no"
-msgstr ""
+msgstr "No"
+
 msgid "admin_users_js_nickNotice"
-msgstr ""
+msgstr "This username is already in use."
+
 msgid "admin_users_js_emailNotice"
-msgstr ""
+msgstr "This email address is already in use."
+
 msgid "admin_users_js_usernameEmpty"
-msgstr ""
+msgstr "The username has not been filled in."
+
 msgid "admin_users_js_passwordEmpty"
-msgstr ""
+msgstr "The  password has not been filled in."
+
 msgid "admin_users_js_passwordInvalid"
-msgstr ""
+msgstr "The passwords do not match."
+
 msgid "admin_users_js_passwordChanged"
-msgstr ""
+msgstr "The password has been changed."
+
 msgid "admin_users_js_firstNameEmpty"
-msgstr ""
+msgstr "The first name has not been filled in."
+
 msgid "admin_users_js_surnameEmpty"
-msgstr ""
+msgstr "The surname has not been filled in."
+
 msgid "admin_users_js_nationalityEmpty"
-msgstr ""
+msgstr "The nationality has not been filled in."
+
 msgid "admin_users_js_telephoneEmpty"
-msgstr ""
+msgstr "The telephone number has not been filled in."
+
 msgid "admin_users_js_emailInvalid"
-msgstr ""
+msgstr "The email address is invalid."
+
 msgid "admin_users_js_blockRejected"
-msgstr ""
+msgstr "Are you attempting to block yourself?"
+
 msgid "admin_users_js_blockConfirm"
-msgstr ""
+msgstr "Are you sure that you want to block this user? \nHe/she can not not log in, from that moment on."
+
 msgid "admin_users_js_deleteRejected"
-msgstr ""
+msgstr "Are you attempting to delete yourself?"
+
 msgid "admin_users_js_deleteConfirm"
-msgstr ""
+msgstr "Are you sure you want to permantly delete this user?"
+
 msgid "admin_users_js_groupAdminRejected"
-msgstr ""
+msgstr "You cannot remove yourself from the Admin group. You need this group for access to the control panel."
+
 msgid "admin_users_js_groupAdminConfirm"
-msgstr ""
+msgstr "Are you sure that you want to give this user access to the control panel?"
+
 msgid "admin_stats_title"
-msgstr ""
+msgstr "Statistics"
+
 msgid "admin_stats_visitors"
-msgstr ""
+msgstr "Visitors"
+
 msgid "admin_stats_uniqueVisitors"
-msgstr ""
+msgstr "Unique visitors"
+
 msgid "admin_stats_OSses"
-msgstr ""
+msgstr "Operating systems"
+
 msgid "admin_stats_OS"
-msgstr ""
+msgstr "Operating system"
+
 msgid "admin_stats_browsers"
-msgstr ""
+msgstr "Browsers"
+
 msgid "admin_stats_browser"
-msgstr ""
+msgstr "Browser"
+
 msgid "admin_stats_version"
-msgstr ""
+msgstr "Version"
+
 msgid "admin_stats_screenColors"
-msgstr ""
+msgstr "Screen colors"
+
 msgid "admin_stats_colors"
-msgstr ""
+msgstr "Colors"
+
 msgid "admin_stats_screenSizes"
-msgstr ""
+msgstr "Screen sizes"
+
 msgid "admin_stats_amount"
-msgstr ""
+msgstr "Amount"
+
 msgid "admin_stats_size"
-msgstr ""
+msgstr "Size"
+
 msgid "admin_stats_fullList"
-msgstr ""
+msgstr "Full list"
+
 msgid "admin_stats_reference"
-msgstr ""
+msgstr "Connection to the site from"
+
 msgid "admin_stats_bookmark"
-msgstr ""
+msgstr "Direct Address / Bookmarks"
+
 msgid "admin_stats_pages"
-msgstr ""
+msgstr "Visitors per page"
+
 msgid "admin_stats_domains"
-msgstr ""
+msgstr "Visitors per domain"
+
 msgid "admin_messages_screenTitle"
-msgstr ""
+msgstr "Messages"
+
 msgid "admin_messages_noMessages"
-msgstr ""
+msgstr "No messages"
+
 msgid "admin_messages_title"
-msgstr ""
+msgstr "Title"
+
 msgid "admin_messages_date"
-msgstr ""
+msgstr "Date"
+
 msgid "admin_updates_title"
-msgstr ""
+msgstr "Updates"
+
 msgid "admin_logs_title"
-msgstr ""
+msgstr "Logbooks"
+
 msgid "admin_logs_name"
-msgstr ""
+msgstr "Name"
+
 msgid "admin_logs_date"
-msgstr ""
+msgstr "Date"
+
 msgid "admin_logs_download"
-msgstr ""
+msgstr "Download"
+
 msgid "admin_logs_jsDelete"
-msgstr ""
+msgstr "Are you sure to delete the log ´+name+´?"
+
 msgid "admin_maintenance_compressCSS"
-msgstr ""
+msgstr "Join CSS files"
+
 msgid "admin_maintenance_compressJS"
-msgstr ""
+msgstr "Join Javascript Files"
+
 msgid "admin_maintenance_checkDatabase"
-msgstr ""
+msgstr "Check database &amp; repair"
+
 msgid "admin_maintenance_optimizeDatabase"
-msgstr ""
+msgstr "Optimize database"
+
 msgid "admin_maintenance_cleanLogs"
-msgstr ""
+msgstr "Remove old logs"
+
 msgid "admin_maintenance_systemUpdate"
-msgstr ""
+msgstr "System update"
+
 msgid "admin_maintenance_cleanStatsYear"
-msgstr ""
+msgstr "Remove statistics older than one year"
+
 msgid "admin_maintenance_cleanStatsMonth"
-msgstr ""
-msgid "admin_maintenance_ready"
-msgstr ""
-msgid "admin_maintenance_pending"
-msgstr ""
-msgid "admin_maintenance_error"
-msgstr ""
+msgstr "Remove stastics older than one month"
+
 msgid "admin_notices_screenTitle"
-msgstr ""
+msgstr "Control panel : view system notices"
+
 msgid "admin_notices_notices"
-msgstr ""
+msgstr "System notices"
+
 msgid "admin_settings_title"
-msgstr ""
+msgstr "Settings"
+
 msgid "admin_settings_basedir"
-msgstr ""
+msgstr "Base directory"
+
 msgid "admin_settings_siteUrl"
-msgstr ""
+msgstr "Site URL"
+
 msgid "admin_settings_timezone"
-msgstr ""
+msgstr "Timezone"
+
 msgid "admin_settings_sessionTitle"
-msgstr ""
+msgstr "Session data (Leave empty for default)"
+
 msgid "admin_settings_sessionName"
-msgstr ""
+msgstr "Session name"
+
 msgid "admin_settings_sessionPath"
-msgstr ""
+msgstr "Session directort"
+
 msgid "admin_settings_sessionExpire"
-msgstr ""
+msgstr "Session expiration time (in seconds)"
+
 msgid "admin_settings_siteSettings"
-msgstr ""
+msgstr "Site settings"
+
 msgid "admin_settings_defaultLanguage"
-msgstr ""
+msgstr "Default language"
+
 msgid "admin_settings_templateDir"
-msgstr ""
+msgstr "Template directory"
+
 msgid "admin_settings_databaseSettings"
-msgstr ""
+msgstr "Database settings"
+
 msgid "admin_settings_username"
-msgstr ""
+msgstr "Username"
+
 msgid "admin_settings_password"
-msgstr ""
+msgstr "Password"
+
 msgid "admin_settings_database"
-msgstr ""
+msgstr "Database"
+
 msgid "admin_settings_host"
-msgstr ""
+msgstr "Server (host)"
+
 msgid "admin_settings_port"
-msgstr ""
+msgstr "Port (Leave empty for default)"
+
 msgid "admin_settings_type"
-msgstr ""
+msgstr "Type"
+
 msgid "admin_settings_ftpSettings"
-msgstr ""
+msgstr "FTP settings"
+
 msgid "admin_settings_disable"
-msgstr ""
+msgstr "Disable"
+
 msgid "admin_settings_js_urlEmpty"
 msgstr ""
+
 msgid "admin_settings_js_timezoneEmpty"
 msgstr ""
+
 msgid "admin_settings_js_timezoneInvalid"
 msgstr ""
+
 msgid "admin_settings_js_sessionInvalid"
 msgstr ""
+
 msgid "admin_settings_js_databaseEmpty"
 msgstr ""
+
 msgid "admin_settings_js_databasePortInvalid"
 msgstr ""
+
 msgid "admin_settings_js_databaseInvalid"
 msgstr ""
+
 msgid "admin_settings_js_ftpEmpty"
 msgstr ""
+
 msgid "admin_settings_js_ftpPortInvalid"
 msgstr ""
+
 msgid "admin_settings_js_ftpInvalid"
 msgstr ""
+
 msgid "admin_settings_js_saved"
 msgstr ""
+
 msgid "admin_menu_groups"
-msgstr ""
+msgstr "Groups"
+
 msgid "admin_users"
-msgstr ""
+msgstr "Users"
+
 msgid "admin_logs"
-msgstr ""
+msgstr "Logs"
+
 msgid "admin_settings"
-msgstr ""
+msgstr "Settings"
+
 msgid "admin_stats"
-msgstr ""
+msgstr "Statistics"
+
 msgid "admin_maintenance"
-msgstr ""
+msgstr "Maintenance"
 
 msgid "bann_bann1"
-msgstr ""
+msgstr "1 Day"
+
 msgid "bann_bann2"
-msgstr ""
+msgstr "1 Week"
+
 msgid "bann_bann3"
-msgstr ""
+msgstr "1 Month"
+
 msgid "bann_bann4"
-msgstr ""
+msgstr "Permanent"
 
 msgid "buttons_add"
-msgstr ""
+msgstr "Add"
+
 msgid "buttons_reset"
-msgstr ""
+msgstr "Reset"
+
 msgid "buttons_cancel"
-msgstr ""
+msgstr "Cancel"
+
 msgid "buttons_edit"
-msgstr ""
+msgstr "Edit"
+
 msgid "buttons_save"
-msgstr ""
+msgstr "Save"
+
 msgid "buttons_delete"
-msgstr ""
+msgstr "Delete"
+
 msgid "buttons_back"
-msgstr ""
+msgstr "Back"
+
 msgid "buttons_view"
-msgstr ""
+msgstr "View"
+
 msgid "buttons_search"
 msgstr ""
+
 msgid "buttons_send"
-msgstr ""
+msgstr "Send"
+
 msgid "buttons_upload"
-msgstr ""
+msgstr "Upload"
+
 msgid "buttons_download"
-msgstr ""
+msgstr "Download"
+
 msgid "buttons_close"
-msgstr ""
+msgstr "Close"
 
 msgid "menu_home"
-msgstr ""
+msgstr "Home"
+
 msgid "menu_login"
-msgstr ""
+msgstr "Login"
+
 msgid "menu_logout"
-msgstr ""
+msgstr "Lougout"
+
 msgid "menu_adminPanel"
-msgstr ""
+msgstr "Control panel"
 
 msgid "header_userWelcome"
-msgstr ""
+msgstr "Welcome "
+
 msgid "header_adminWelcome"
-msgstr ""
+msgstr "Welcome admin "
 
 msgid "login_title"
 msgstr ""
+
 msgid "login_username"
-msgstr ""
+msgstr "Username "
+
 msgid "login_password"
-msgstr ""
+msgstr "Password"
+
 msgid "login_button"
-msgstr ""
+msgstr "Login"
+
 msgid "login_registration"
-msgstr ""
+msgstr "Register"
+
 msgid "login_forgotPassword"
-msgstr ""
+msgstr "Forgot password"
+
 msgid "login_editPassword"
-msgstr ""
+msgstr "Edit password"
+
 msgid "login_currentPassword"
-msgstr ""
+msgstr "Current password"
+
 msgid "login_newPassword"
-msgstr ""
+msgstr "New password"
+
 msgid "login_newPasswordAgain"
-msgstr ""
+msgstr "Repeat new password"
+
 msgid "login_currentPasswordIncorrect"
-msgstr ""
+msgstr "The current password is incorrect."
+
 msgid "login_autologin"
-msgstr ""
+msgstr "Remember me"
+
 msgid "login_loginWith"
-msgstr ""
+msgstr "Login with"
 
 msgid "logout_title"
 msgstr ""
+
 msgid "logout_logoutSucceed"
-msgstr ""
+msgstr "You have just been logged out."
+
 msgid "logout_logoutFailed"
-msgstr ""
+msgstr "Logging out has failed."
 
 msgid "index_title"
-msgstr ""
+msgstr "Default index page"
 
 msgid "registration_title"
-msgstr ""
+msgstr "Subscribe now"
+
 msgid "registration_screenTitle"
-msgstr ""
+msgstr "Register"
+
 msgid "registration_name"
-msgstr ""
+msgstr "Username"
+
 msgid "registration_email"
-msgstr ""
+msgstr "Email address"
+
 msgid "registration_password1"
-msgstr ""
+msgstr "Password"
+
 msgid "registration_password2"
-msgstr ""
+msgstr "Repeat password"
+
 msgid "registration_conditions"
-msgstr ""
+msgstr "I agree with the conditions"
+
 msgid "registration_submitButton"
-msgstr ""
+msgstr "Register"
+
 msgid "registration_passwordIncorrect"
-msgstr ""
+msgstr "The provided passwords do not match."
+
 msgid "registration_checkConditions"
-msgstr ""
+msgstr "You need to agree with the conditions."
+
 msgid "registration_failed"
-msgstr ""
+msgstr "Registering your account was not possible at this time. Please try again later."
+
 msgid "registration_emailSend"
-msgstr ""
+msgstr "Your account has been registered. An activation email was sent to [email]."
+
 msgid "registration_emailFailed"
-msgstr ""
+msgstr "The activation email could not be sent."
+
 msgid "registration_captcha"
-msgstr ""
+msgstr "Repeat the following code as a check."
+
 msgid "registration_notices_notices0"
-msgstr ""
+msgstr "The username has not been filled in."
+
 msgid "registration_notices_notices1"
-msgstr ""
+msgstr "The email address has not been filled in."
+
 msgid "registration_notices_notices2"
-msgstr ""
+msgstr "The password has not been filled in."
+
 msgid "registration_notices_conditions"
-msgstr ""
+msgstr "You need to agree with the conditions."
+
 msgid "registration_notices_emailInvalid"
-msgstr ""
+msgstr "The email address is invalid."
+
 msgid "registration_notices_passwordInvalid"
-msgstr ""
+msgstr "The entered passwords do not match."
+
 msgid "registration_notices_codeInvalid"
-msgstr ""
+msgstr "The entered code is incorrect."
+
 msgid "registration_notices_usernameTaken"
-msgstr ""
+msgstr "The requested username is already in use."
+
 msgid "registration_notices_usernameTakenOpenID"
-msgstr ""
+msgstr "An account with this username already exists. Have you not registered, before?"
+
 msgid "registration_notices_emailTaken"
-msgstr ""
+msgstr "The email address is already in use."
+
 msgid "registration_notices_emailTakenOpenID"
-msgstr ""
+msgstr "An account with this email already exists. Have you not registered, before?"
+
 msgid "registration_notices_usernameToShort"
-msgstr ""
+msgstr "The username has to be at least 3 characters long."
+
 msgid "registration_notices_passwordToShort"
-msgstr ""
+msgstr "The password has to be at least 8 characters long."
+
 msgid "registration_notices_veryStrongPassword"
-msgstr ""
+msgstr "Very strong password"
+
 msgid "registration_notices_strongPassword"
-msgstr ""
+msgstr "Strong password"
+
 msgid "registration_notices_fairPassword"
-msgstr ""
+msgstr "Fair password"
+
 msgid "registration_notices_weakPassword"
-msgstr ""
+msgstr "Weak password"
+
 msgid "registration_registrationVia"
-msgstr ""
+msgstr "Registration via"
 
 msgid "activate_accountActivated"
-msgstr ""
+msgstr "Your account has been activated. It is now posible <a href=´{NIV}login.php´>to log in.</a>"
+
 msgid "activate_accountNotActivated"
-msgstr ""
+msgstr "The activation link is invalid. Maybe the account is already activated?"
 
 msgid "forgotPassword_header"
-msgstr ""
+msgstr "Resetting password"
+
 msgid "forgotPassword_verifyCodeFailed"
-msgstr ""
+msgstr "The password could not be reset. The provided code is invalid."
+
 msgid "forgotPassword_verifyCodeSuccess"
-msgstr ""
+msgstr "The password has been reset. You may now <a href=´{NIV}login.php´>log in</a>."
+
 msgid "forgotPassword_fieldsEmpty"
-msgstr ""
+msgstr "You have not filled in all the fields."
+
 msgid "forgotPassword_emailError"
-msgstr ""
+msgstr "The email address is invalid."
+
 msgid "forgotPassword_resetFailed"
-msgstr ""
+msgstr "The provided combination of username and email address is unknown."
+
 msgid "forgotPassword_resetSuccess"
-msgstr ""
+msgstr "A password reset email has been sent to [email]."
+
 msgid "forgotPassword_openID"
-msgstr ""
+msgstr "This account has been registered through OpenID. Resetting the password is not possible."
 
 msgid "title"
-msgstr ""
+msgstr "Scripthulp framework"
+
 msgid "slogan"
-msgstr ""
+msgstr "Default slogan"
 
 msgid "messages_messages"
-msgstr ""
+msgstr "Messages"
+
 msgid "messages_subject"
-msgstr ""
+msgstr "Subject"
+
 msgid "messages_sender"
-msgstr ""
+msgstr "Sender"
+
 msgid "messages_recipient"
-msgstr ""
+msgstr "Recipient"
+
 msgid "messages_date"
-msgstr ""
+msgstr "Date"
+
 msgid "messages_send"
-msgstr ""
+msgstr "Send"
+
 msgid "messages_sendTo"
-msgstr ""
+msgstr "Send to"
+
 msgid "messages_new"
-msgstr ""
+msgstr "New message"
+
 msgid "messages_form_read"
-msgstr ""
+msgstr "Read"
+
 msgid "messages_form_unread"
-msgstr ""
+msgstr "Unread"
+
 msgid "messages_form_message"
-msgstr ""
+msgstr "Message"
+
 msgid "messages_form_subject"
-msgstr ""
+msgstr "Subject"
+
 msgid "messages_form_recipient"
-msgstr ""
+msgstr "Recipient"
+
 msgid "messages_form_reset"
-msgstr ""
+msgstr "Reset"
+
 msgid "messages_form_answer"
-msgstr ""
+msgstr "Answer"
+
 msgid "messages_notices_messageSent"
-msgstr ""
+msgstr "<h2 class=´Notice´>The message has been sent to [username]."
+
 msgid "messages_notices_noSuchUser"
-msgstr ""
+msgstr "<h2 class="errorNotice">This user does not exist.</h2>"
+
 msgid "messages_notices_noReceiver"
-msgstr ""
+msgstr "The receiver has not been filled in."
+
 msgid "messages_notices_noSubject"
-msgstr ""
+msgstr "The subject has not been filled in."
+
 msgid "messages_notices_noMessage"
-msgstr ""
+msgstr "The message body has not been filled in."
+
 msgid "messages_notices_deleteConfirm"
-msgstr ""
+msgstr "Are you sure that you want to delete this message?"
 
 msgid "errors_error403_accessDenied"
-msgstr ""
+msgstr "Access denied."
+
 msgid "errors_error403_noRights"
-msgstr ""
+msgstr "You do not have the required privileges to view this page."
+
 msgid "errors_error404_notFound"
-msgstr ""
+msgstr "Page not found."
+
 msgid "errors_error404_pageMissing"
-msgstr ""
+msgstr "The requested page cannot be found on this server."
+
 msgid "errors_error500_serverError"
-msgstr ""
+msgstr "Oops, something went wrong."
+
 msgid "errors_error500_systemError"
-msgstr ""
+msgstr "An error has occured on the server. The server´s administrator has been warned."

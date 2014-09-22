@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Youconix framework\n"
 "POT-Creation-Date: 2014-09-15 10:00:00+01000\n"
-"PO-Revision-Date: 2014-09-15 10:00:00+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2014-09-17 18:36+0100\n"
+"Last-Translator: Roxanna Lugtigheid <rlugtigheid@youconix.nl>\n"
 "Language-Team: \n"
-"Language: NL\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,613 +16,907 @@ msgstr ""
 "X-Poedit-SearchPath-1: themes\n"
 
 msgid "days_day0"
-msgstr ""
+msgstr "Zondag"
+
 msgid "days_day1"
-msgstr ""
+msgstr "Maandag"
+
 msgid "days_day2"
-msgstr ""
+msgstr "Dinsdag"
+
 msgid "days_day3"
-msgstr ""
+msgstr "Woensdag"
+
 msgid "days_day4"
-msgstr ""
+msgstr "Donderdag"
+
 msgid "days_day5"
-msgstr ""
+msgstr "Vrijdag"
+
 msgid "days_day6"
-msgstr ""
+msgstr "Zaterdag"
 
 msgid "weekdaysShort_day0"
-msgstr ""
+msgstr "Zo"
+
 msgid "weekdaysShort_day1"
-msgstr ""
+msgstr "Ma"
+
 msgid "weekdaysShort_day2"
-msgstr ""
+msgstr "Di"
+
 msgid "weekdaysShort_day3"
-msgstr ""
+msgstr "Wo"
+
 msgid "weekdaysShort_day4"
-msgstr ""
+msgstr "Do"
+
 msgid "weekdaysShort_day5"
-msgstr ""
+msgstr "Vr"
+
 msgid "weekdaysShort_day6"
-msgstr ""
+msgstr "Za"
 
 msgid "months_month0"
-msgstr ""
+msgstr "Januari"
+
 msgid "months_month1"
-msgstr ""
+msgstr "Februari"
+
 msgid "months_month2"
-msgstr ""
+msgstr "Maart"
+
 msgid "months_month3"
-msgstr ""
+msgstr "April"
+
 msgid "months_month4"
-msgstr ""
+msgstr "Mei"
+
 msgid "months_month5"
-msgstr ""
+msgstr "Juni"
+
 msgid "months_month6"
-msgstr ""
+msgstr "Juli"
+
 msgid "months_month7"
-msgstr ""
+msgstr "Augustus"
+
 msgid "months_month8"
-msgstr ""
+msgstr "September"
+
 msgid "months_month9"
-msgstr ""
+msgstr "Oktober"
+
 msgid "months_month10"
-msgstr ""
+msgstr "November"
+
 msgid "months_month11"
-msgstr ""
+msgstr "December"
 
 msgid "gender_male"
-msgstr ""
+msgstr "Man"
+
 msgid "gender_female"
-msgstr ""
+msgstr "Vrouw"
+
 msgid "gender_other"
-msgstr ""
+msgstr "Niet gespecificeerd"
 
 msgid "rights_level_0"
-msgstr ""
+msgstr "Gebruiker"
+
 msgid "rights_level_1"
-msgstr ""
+msgstr "Moderator"
+
 msgid "rights_level_2"
-msgstr ""
+msgstr "Beheerder"
 
 msgid "marital_married"
-msgstr ""
+msgstr "Getrouwd"
+
 msgid "marital_registeredPartner"
-msgstr ""
+msgstr "Geregistreerd partnerschap"
+
 msgid "marital_divorced"
-msgstr ""
+msgstr "Gescheiden"
+
 msgid "marital_unknown"
-msgstr ""
+msgstr "Anders"
+
 msgid "marital_single"
-msgstr ""
+msgstr "Alleenstaand"
+
 msgid "marital_livingTogetherContract"
-msgstr ""
+msgstr "Samenlevingscontract"
+
 msgid "marital_livingTogether"
-msgstr ""
+msgstr "Samenwonend"
+
 msgid "marital_widow"
-msgstr ""
+msgstr "Weduwe/Weduwnaar"
 
 msgid "admin_software_noContact"
-msgstr ""
+msgstr "Er kan geen contact gemaakt worden met de update server."
+
 msgid "admin_software_upToDate"
-msgstr ""
+msgstr "Systeem is up to date."
+
 msgid "admin_software_updateAvailable"
-msgstr ""
+msgstr "Er zijn updates beschikbaar."
+
 msgid "admin_software_updateFailure"
-msgstr ""
+msgstr "Er is een fout opgetreden tijdens het updaten."
+
 msgid "admin_software_updateSucceed"
-msgstr ""
+msgstr "Het systeem is bijgewerkt."
+
 msgid "admin_index_title"
-msgstr ""
+msgstr "Beheerderspaneel"
+
 msgid "admin_index_portletLoading"
-msgstr ""
+msgstr "Laden..."
+
 msgid "admin_index_securityTitle"
-msgstr ""
+msgstr "Veiligheids-logboek"
+
 msgid "admin_index_errorTitle"
-msgstr ""
+msgstr "Fouten-logboek"
+
 msgid "admin_groups_title"
-msgstr ""
+msgstr "Groepen-beheer"
+
 msgid "admin_groups_id"
-msgstr ""
+msgstr "ID"
+
 msgid "admin_groups_name"
-msgstr ""
+msgstr "Naam"
+
 msgid "admin_groups_group"
-msgstr ""
+msgstr "Groep"
+
 msgid "admin_groups_groups"
-msgstr ""
+msgstr "Groepen"
+
 msgid "admin_groups_viewUsers"
-msgstr ""
+msgstr "Bekijk gebruikers"
+
 msgid "admin_groups_description"
-msgstr ""
+msgstr "Beschrijving"
+
 msgid "admin_groups_standard"
-msgstr ""
+msgstr "Standaard"
+
 msgid "admin_groups_user"
-msgstr ""
+msgstr "Gebruiker"
+
 msgid "admin_groups_rights"
-msgstr ""
+msgstr "Rechten"
+
 msgid "admin_groups_headerAdd"
-msgstr ""
+msgstr "Groep toevoegen"
+
 msgid "admin_groups_headerEdit"
-msgstr ""
+msgstr "Groep bewerken"
+
 msgid "admin_groups_headerUsers"
-msgstr ""
+msgstr "Gebruikers van groep"
+
 msgid "admin_groups_js_nameEmpty"
-msgstr ""
+msgstr "De naam is niet ingevuld."
+
 msgid "admin_groups_js_descriptionEmpty"
-msgstr ""
+msgstr "De beschrijving is niet ingevuld."
+
 msgid "admin_users_title"
-msgstr ""
+msgstr "Gebruikers-beheer"
+
 msgid "admin_users_users"
-msgstr ""
+msgstr "Gebruikers"
+
 msgid "admin_users_user"
-msgstr ""
+msgstr "Gebruiker"
+
 msgid "admin_users_username"
-msgstr ""
+msgstr "Gebruikersnaam"
+
 msgid "admin_users_forname"
-msgstr ""
+msgstr "Voornaam"
+
 msgid "admin_users_nameBetween"
-msgstr ""
+msgstr "Tussenvoegsel"
+
 msgid "admin_users_surname"
-msgstr ""
+msgstr "Achternaam"
+
 msgid "admin_users_email"
-msgstr ""
+msgstr "Email"
+
 msgid "admin_users_bot"
-msgstr ""
+msgstr "Systeem-bot"
+
 msgid "admin_users_activated"
-msgstr ""
+msgstr "Geactiveerd"
+
 msgid "admin_users_blocked"
-msgstr ""
+msgstr "Geblokkeerd"
+
 msgid "admin_users_headerPassword"
-msgstr ""
+msgstr "Wachtwoord opnieuw instellen"
+
 msgid "admin_users_profile"
-msgstr ""
+msgstr "Profieltekst"
+
 msgid "admin_users_password"
-msgstr ""
+msgstr "Wachtwoord"
+
 msgid "admin_users_passwordAgain"
-msgstr ""
+msgstr "Wachtwoord herhalen"
+
 msgid "admin_users_registrated"
-msgstr ""
+msgstr "Geregistreerd op"
+
 msgid "admin_users_headerGroups"
-msgstr ""
+msgstr "Groepen"
+
 msgid "admin_users_headerAdd"
-msgstr ""
+msgstr "Gebruiker toevoegen"
+
 msgid "admin_users_headerView"
-msgstr ""
+msgstr "Gebruiker bekijken"
+
 msgid "admin_users_headerEdit"
-msgstr ""
+msgstr "Gebruiker bewerken"
+
 msgid "admin_users_headerSearch"
-msgstr ""
+msgstr "Gebruiker zoeken"
+
 msgid "admin_users_registratedThrough"
-msgstr ""
+msgstr "Deze gebruikers is geregistreerd via"
+
 msgid "admin_users_nationality"
-msgstr ""
+msgstr "Nationaliteit"
+
 msgid "admin_users_telephone"
-msgstr ""
+msgstr "Telefoon"
+
 msgid "admin_users_yes"
-msgstr ""
+msgstr "Ja"
+
 msgid "admin_users_no"
-msgstr ""
+msgstr "Nee"
+
 msgid "admin_users_js_nickNotice"
-msgstr ""
+msgstr "Deze gebruikersnaam is al in gebruik."
+
 msgid "admin_users_js_emailNotice"
-msgstr ""
+msgstr "Dit emailadres is al in gebruik."
+
 msgid "admin_users_js_usernameEmpty"
-msgstr ""
+msgstr "De gebruikersnaam is niet ingevuld."
+
 msgid "admin_users_js_passwordEmpty"
-msgstr ""
+msgstr "Het wachtwoord is niet ingevuld"
+
 msgid "admin_users_js_passwordInvalid"
-msgstr ""
+msgstr "De wachtwoorden zijn niet gelijk."
+
 msgid "admin_users_js_passwordChanged"
-msgstr ""
+msgstr "Het wachtwoord is veranderd."
+
 msgid "admin_users_js_firstNameEmpty"
-msgstr ""
+msgstr "De voornaam is niet ingevuld"
+
 msgid "admin_users_js_surnameEmpty"
-msgstr ""
+msgstr "De achternaam is niet ingevuld."
+
 msgid "admin_users_js_nationalityEmpty"
-msgstr ""
+msgstr "Je hebt geen nationaliteit ingevuld."
+
 msgid "admin_users_js_telephoneEmpty"
-msgstr ""
+msgstr "Je hebt geen telefoonnummer ingevuld."
+
 msgid "admin_users_js_emailInvalid"
-msgstr ""
+msgstr "Het emailadres is ongeldig."
+
 msgid "admin_users_js_blockRejected"
-msgstr ""
+msgstr "Euhm probeer je nu jezelf te blokkeren?"
+
 msgid "admin_users_js_blockConfirm"
 msgstr ""
+"Weet je zeker dat je deze gebruiker wilt blokkeren? \n"
+"Hij/zij kan dan niet meer inloggen."
+
 msgid "admin_users_js_deleteRejected"
-msgstr ""
+msgstr "Euhm probeer je nu jezelf te verwijderen?"
+
 msgid "admin_users_js_deleteConfirm"
-msgstr ""
+msgstr "Weet u zeker dat u deze gebruiker permanent wilt verwijderen?"
+
 msgid "admin_users_js_groupAdminRejected"
 msgstr ""
+"Je kan jezelf niet uit de Admin groep gooien. Deze heb je nodig voor het "
+"beheerpaneel."
+
 msgid "admin_users_js_groupAdminConfirm"
 msgstr ""
+"Weet je zeker dat je deze gebruiker toegang wilt geven tot het beheerpaneel?"
+
 msgid "admin_stats_title"
-msgstr ""
+msgstr "Statistieken"
+
 msgid "admin_stats_visitors"
-msgstr ""
+msgstr "Bezoekers"
+
 msgid "admin_stats_uniqueVisitors"
-msgstr ""
+msgstr "Unieke bezoekers"
+
 msgid "admin_stats_OSses"
-msgstr ""
+msgstr "Besturingssystemen"
+
 msgid "admin_stats_OS"
-msgstr ""
+msgstr "Besturingssysteem"
+
 msgid "admin_stats_browsers"
-msgstr ""
+msgstr "Browsers"
+
 msgid "admin_stats_browser"
-msgstr ""
+msgstr "Browser"
+
 msgid "admin_stats_version"
-msgstr ""
+msgstr "Versie"
+
 msgid "admin_stats_screenColors"
-msgstr ""
+msgstr "Scherm kleuren"
+
 msgid "admin_stats_colors"
-msgstr ""
+msgstr "Kleuren"
+
 msgid "admin_stats_screenSizes"
-msgstr ""
+msgstr "Scherm afmetingen"
+
 msgid "admin_stats_amount"
-msgstr ""
+msgstr "Aantal"
+
 msgid "admin_stats_size"
-msgstr ""
+msgstr "Afmeting"
+
 msgid "admin_stats_fullList"
-msgstr ""
+msgstr "volledige lijst"
+
 msgid "admin_stats_reference"
-msgstr ""
+msgstr "Verbinding naar site vanaf"
+
 msgid "admin_stats_bookmark"
-msgstr ""
+msgstr "Direkt adres / Bookmarks"
+
 msgid "admin_stats_pages"
-msgstr ""
+msgstr "Bezoekers per pagina"
+
 msgid "admin_stats_domains"
-msgstr ""
+msgstr "Bezoekers per domein"
+
 msgid "admin_messages_screenTitle"
-msgstr ""
+msgstr "Berichten"
+
 msgid "admin_messages_noMessages"
-msgstr ""
+msgstr "Geen berichten"
+
 msgid "admin_messages_title"
-msgstr ""
+msgstr "Titel"
+
 msgid "admin_messages_date"
-msgstr ""
+msgstr "Datum"
+
 msgid "admin_updates_title"
-msgstr ""
+msgstr "Updates"
+
 msgid "admin_logs_title"
-msgstr ""
+msgstr "Logboeken"
+
 msgid "admin_logs_name"
-msgstr ""
+msgstr "Naam"
+
 msgid "admin_logs_date"
-msgstr ""
+msgstr "Datum"
+
 msgid "admin_logs_download"
-msgstr ""
+msgstr "Downloaden"
+
 msgid "admin_logs_jsDelete"
-msgstr ""
+msgstr "Weet je zeker dat je de log [name] wilt verwijderen?"
+
 msgid "admin_maintenance_compressCSS"
-msgstr ""
+msgstr "CSS bestanden samenvoegen"
+
 msgid "admin_maintenance_compressJS"
-msgstr ""
+msgstr "Javascript bestanden samenvoegen"
+
 msgid "admin_maintenance_checkDatabase"
-msgstr ""
+msgstr "Database controleren &amp; repareren"
+
 msgid "admin_maintenance_optimizeDatabase"
-msgstr ""
+msgstr "Database optimaliseren"
+
 msgid "admin_maintenance_cleanLogs"
-msgstr ""
+msgstr "Oude logs opruimen"
+
 msgid "admin_maintenance_systemUpdate"
-msgstr ""
+msgstr "Systeem updaten"
+
 msgid "admin_maintenance_cleanStatsYear"
-msgstr ""
+msgstr "Statistieken ouder dan een jaar verwijderen"
+
 msgid "admin_maintenance_cleanStatsMonth"
-msgstr ""
+msgstr "Statistieken ouder dan een maand verwijderen"
+
 msgid "admin_maintenance_ready"
-msgstr ""
+msgstr "Gereed"
+
 msgid "admin_maintenance_pending"
-msgstr ""
+msgstr "Bezig"
+
 msgid "admin_maintenance_error"
-msgstr ""
+msgstr "Fout, zie log"
+
 msgid "admin_notices_screenTitle"
-msgstr ""
+msgstr "Beheer-paneel: bekijk systeem meldingen"
+
 msgid "admin_notices_notices"
-msgstr ""
+msgstr "Systeem meldingen"
+
 msgid "admin_settings_title"
-msgstr ""
+msgstr "Instellingen"
+
 msgid "admin_settings_basedir"
-msgstr ""
+msgstr "Submap"
+
 msgid "admin_settings_siteUrl"
-msgstr ""
+msgstr "Site url"
+
 msgid "admin_settings_timezone"
-msgstr ""
+msgstr "Tijd zone"
+
 msgid "admin_settings_sessionTitle"
-msgstr ""
+msgstr "Sessie data (laat leeg voor standaard)"
+
 msgid "admin_settings_sessionName"
-msgstr ""
+msgstr "Sessie naam"
+
 msgid "admin_settings_sessionPath"
-msgstr ""
+msgstr "Sessie map"
+
 msgid "admin_settings_sessionExpire"
-msgstr ""
+msgstr "Sessie verloop tijd (seconden)"
+
 msgid "admin_settings_siteSettings"
-msgstr ""
+msgstr "Site instellingen"
+
 msgid "admin_settings_defaultLanguage"
-msgstr ""
+msgstr "Standaard taal"
+
 msgid "admin_settings_templateDir"
-msgstr ""
+msgstr "Template map"
+
 msgid "admin_settings_databaseSettings"
-msgstr ""
+msgstr "Database instellingen"
+
 msgid "admin_settings_username"
-msgstr ""
+msgstr "Gebruikersnaam"
+
 msgid "admin_settings_password"
-msgstr ""
+msgstr "Wachtwoord"
+
 msgid "admin_settings_database"
-msgstr ""
+msgstr "Database"
+
 msgid "admin_settings_host"
-msgstr ""
+msgstr "Server (host)"
+
 msgid "admin_settings_port"
-msgstr ""
+msgstr "Poort (laat leeg voor standaard)"
+
 msgid "admin_settings_type"
-msgstr ""
+msgstr "Type"
+
 msgid "admin_settings_ftpSettings"
-msgstr ""
+msgstr "FTP instellingen"
+
 msgid "admin_settings_disable"
-msgstr ""
+msgstr "Uitschakelen"
+
 msgid "admin_settings_js_urlEmpty"
-msgstr ""
+msgstr "De site url kan niet leeg zijn."
+
 msgid "admin_settings_js_timezoneEmpty"
-msgstr ""
+msgstr "De tijdzone kan niet leeg zijn."
+
 msgid "admin_settings_js_timezoneInvalid"
-msgstr ""
+msgstr "De tijdzone is ongeldig."
+
 msgid "admin_settings_js_sessionInvalid"
-msgstr ""
+msgstr "De sessie verloop tijd is ongeldig."
+
 msgid "admin_settings_js_databaseEmpty"
-msgstr ""
+msgstr "Niet alle database gegevens zijn ingevuld."
+
 msgid "admin_settings_js_databasePortInvalid"
-msgstr ""
+msgstr "De database poort is ongeldig."
+
 msgid "admin_settings_js_databaseInvalid"
-msgstr ""
+msgstr "De database gegevens zijn incorrect."
+
 msgid "admin_settings_js_ftpEmpty"
-msgstr ""
+msgstr "Niet alle FTP gegevens zijn ingevuld."
+
 msgid "admin_settings_js_ftpPortInvalid"
-msgstr ""
+msgstr "De FTP poort is ongeldig."
+
 msgid "admin_settings_js_ftpInvalid"
-msgstr ""
+msgstr "De FTP gegevens zijn incorrect."
+
 msgid "admin_settings_js_saved"
-msgstr ""
+msgstr "De instellingen zijn opgeslagen."
+
 msgid "admin_menu_groups"
-msgstr ""
+msgstr "Groepen"
+
 msgid "admin_users"
-msgstr ""
+msgstr "Gebruikers"
+
 msgid "admin_logs"
-msgstr ""
+msgstr "Logboeken"
+
 msgid "admin_settings"
-msgstr ""
+msgstr "Instellingen"
+
 msgid "admin_stats"
-msgstr ""
+msgstr "Statistieken"
+
 msgid "admin_maintenance"
-msgstr ""
+msgstr "Onderhoud"
 
 msgid "bann_bann1"
-msgstr ""
+msgstr "1 dag"
+
 msgid "bann_bann2"
-msgstr ""
+msgstr "1 week"
+
 msgid "bann_bann3"
-msgstr ""
+msgstr "1 maand"
+
 msgid "bann_bann4"
-msgstr ""
+msgstr "Permanent"
 
 msgid "buttons_add"
-msgstr ""
+msgstr "Toevoegen"
+
 msgid "buttons_reset"
-msgstr ""
+msgstr "Resetten"
+
 msgid "buttons_cancel"
-msgstr ""
+msgstr "Annulleren"
+
 msgid "buttons_edit"
-msgstr ""
+msgstr "Aanpassen"
+
 msgid "buttons_save"
-msgstr ""
+msgstr "Opslaan"
+
 msgid "buttons_delete"
-msgstr ""
+msgstr "Verwijderen"
+
 msgid "buttons_back"
-msgstr ""
+msgstr "Terug"
+
 msgid "buttons_view"
-msgstr ""
+msgstr "Bekijken"
+
 msgid "buttons_search"
-msgstr ""
+msgstr "Zoeken"
+
 msgid "buttons_send"
-msgstr ""
+msgstr "Verzenden"
+
 msgid "buttons_upload"
-msgstr ""
+msgstr "Uploaden"
+
 msgid "buttons_download"
-msgstr ""
+msgstr "Downloaden"
+
 msgid "buttons_close"
-msgstr ""
+msgstr "Sluiten"
 
 msgid "menu_home"
-msgstr ""
+msgstr "Home"
+
 msgid "menu_login"
-msgstr ""
+msgstr "Inloggen"
+
 msgid "menu_logout"
-msgstr ""
+msgstr "Uitloggen"
+
 msgid "menu_adminPanel"
-msgstr ""
+msgstr "Beheer-paneel"
 
 msgid "header_userWelcome"
-msgstr ""
+msgstr "Welkom "
+
 msgid "header_adminWelcome"
-msgstr ""
+msgstr "Welkom admin "
 
 msgid "login_title"
 msgstr ""
+
 msgid "login_username"
-msgstr ""
+msgstr "Gebruikersnaam"
+
 msgid "login_password"
-msgstr ""
+msgstr "Wachtwoord"
+
 msgid "login_button"
-msgstr ""
+msgstr "Inloggen"
+
 msgid "login_registration"
-msgstr ""
+msgstr "Registreren"
+
 msgid "login_forgotPassword"
-msgstr ""
+msgstr "Wachtwoord vergeten"
+
 msgid "login_editPassword"
-msgstr ""
+msgstr "Wachtwoord aanpassen"
+
 msgid "login_currentPassword"
-msgstr ""
+msgstr "Huidige wachtwoord"
+
 msgid "login_newPassword"
-msgstr ""
+msgstr "Nieuwe wachtwoord"
+
 msgid "login_newPasswordAgain"
-msgstr ""
+msgstr "Nieuwe wachtwoord herhalen"
+
 msgid "login_currentPasswordIncorrect"
-msgstr ""
+msgstr "Het oude wachtwoord is incorrect."
+
 msgid "login_autologin"
-msgstr ""
+msgstr "Automatisch inloggen"
+
 msgid "login_loginWith"
-msgstr ""
+msgstr "Inloggen met"
 
 msgid "logout_title"
 msgstr ""
+
 msgid "logout_logoutSucceed"
-msgstr ""
+msgstr "U bent uitgelogd."
+
 msgid "logout_logoutFailed"
-msgstr ""
+msgstr "U kon niet uitgelogd worden."
 
 msgid "index_title"
-msgstr ""
+msgstr "Standaard index pagina"
 
 msgid "registration_title"
-msgstr ""
+msgstr "Meld je nu aan"
+
 msgid "registration_screenTitle"
-msgstr ""
+msgstr "Registreren"
+
 msgid "registration_name"
-msgstr ""
+msgstr "Gebruikersnaam"
+
 msgid "registration_email"
-msgstr ""
+msgstr "Emailadres"
+
 msgid "registration_password1"
-msgstr ""
+msgstr "Wachtwoord"
+
 msgid "registration_password2"
-msgstr ""
+msgstr "Wachtwoord herhalen"
+
 msgid "registration_conditions"
-msgstr ""
+msgstr "Ik ga akkoord met de voorwaarden."
+
 msgid "registration_submitButton"
-msgstr ""
+msgstr "Registreren"
+
 msgid "registration_passwordIncorrect"
-msgstr ""
+msgstr "De wachtwoorden zijn niet gelijk."
+
 msgid "registration_checkConditions"
-msgstr ""
+msgstr "De voorwaarden moeten geaccepteerd worden."
+
 msgid "registration_failed"
 msgstr ""
+"Je account kon niet geregistreerd worden. Probeer het later nog een keer."
+
 msgid "registration_emailSend"
 msgstr ""
+"Je account is geregistreerd. Er is een activeringsmail verzonden naar "
+"[email]."
+
 msgid "registration_emailFailed"
-msgstr ""
+msgstr "De activatie email kon niet verzonden worden."
+
 msgid "registration_captcha"
-msgstr ""
+msgstr "Typ de onderstaande code over als controle."
+
 msgid "registration_notices_notices0"
-msgstr ""
+msgstr "Je hebt geen gebrukersnaam ingevuld."
+
 msgid "registration_notices_notices1"
-msgstr ""
+msgstr "Je hebt geen E-mail adres ingevuld."
+
 msgid "registration_notices_notices2"
-msgstr ""
+msgstr "Je hebt geen wachtwoord ingevuld."
+
 msgid "registration_notices_conditions"
-msgstr ""
+msgstr "Je moet met de voorwaarden akkoord gaan."
+
 msgid "registration_notices_emailInvalid"
-msgstr ""
+msgstr "Je hebt een ongeldig E-mail adres ingevuld."
+
 msgid "registration_notices_passwordInvalid"
-msgstr ""
+msgstr "De wachtwoorden zijn niet gelijk."
+
 msgid "registration_notices_codeInvalid"
-msgstr ""
+msgstr "De code is incorrect."
+
 msgid "registration_notices_usernameTaken"
-msgstr ""
+msgstr "Deze gebruikersnaam is al in gebruik."
+
 msgid "registration_notices_usernameTakenOpenID"
 msgstr ""
+"Er is al een account met deze gebruikersnaam. Heb je niet al een keer "
+"geregistreerd?"
+
 msgid "registration_notices_emailTaken"
-msgstr ""
+msgstr "Het E-mail adres is al in gebruik."
+
 msgid "registration_notices_emailTakenOpenID"
 msgstr ""
+"Er is al een account met dit E-mail adres. Heb je niet al een keer "
+"geregistreerd?"
+
 msgid "registration_notices_usernameToShort"
-msgstr ""
+msgstr "De gebruikersnaam moet minimaal 3 tekens lang zijn."
+
 msgid "registration_notices_passwordToShort"
-msgstr ""
+msgstr "Het wachtwoord moet minimaal 8 tekens lang zijn."
+
 msgid "registration_notices_veryStrongPassword"
-msgstr ""
+msgstr "Erg sterk wachtwoord"
+
 msgid "registration_notices_strongPassword"
-msgstr ""
+msgstr "Sterk wachtwoord"
+
 msgid "registration_notices_fairPassword"
-msgstr ""
+msgstr "Redelijk wachtwoord"
+
 msgid "registration_notices_weakPassword"
-msgstr ""
+msgstr "Zwak wachtwoord"
+
 msgid "registration_registrationVia"
-msgstr ""
+msgstr "Registratie via"
 
 msgid "activate_accountActivated"
 msgstr ""
+"Je account is geactiveerd. Je kan nu <a href='{LEVEL}login'>inloggen.</a>"
+
 msgid "activate_accountNotActivated"
 msgstr ""
+"De activerings-link is ongeldig. Mogelijk is het account al geactiveerd."
 
 msgid "forgotPassword_header"
-msgstr ""
+msgstr "Wachtwoord resetten"
+
 msgid "forgotPassword_verifyCodeFailed"
-msgstr ""
+msgstr "Het wachtwoord kon niet gereset worden. De reset code is niet geldig."
+
 msgid "forgotPassword_verifyCodeSuccess"
 msgstr ""
+"Het wachtwoord is gereset. Je kan nu <a href='{LEVEL}login'>inloggen</a>."
+
 msgid "forgotPassword_fieldsEmpty"
-msgstr ""
+msgstr "Je hebt niet alle velden ingevuld."
+
 msgid "forgotPassword_emailError"
-msgstr ""
+msgstr "Het E-mail adres is ongeldig."
+
 msgid "forgotPassword_resetFailed"
-msgstr ""
+msgstr "Onbekende combinatie van gebruikersnaam en E-mail adres."
+
 msgid "forgotPassword_resetSuccess"
-msgstr ""
+msgstr "Er is een wachtwoord reset email verstuurd naar [email]."
+
 msgid "forgotPassword_openID"
 msgstr ""
+"Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk."
 
 msgid "title"
-msgstr ""
+msgstr "Scripthulp framework"
+
 msgid "slogan"
-msgstr ""
+msgstr "Standaard slogan"
 
 msgid "messages_messages"
-msgstr ""
+msgstr "Berichten"
+
 msgid "messages_subject"
-msgstr ""
+msgstr "Onderwerp"
+
 msgid "messages_sender"
-msgstr ""
+msgstr "Verzender"
+
 msgid "messages_recipient"
-msgstr ""
+msgstr "Ontvanger"
+
 msgid "messages_date"
-msgstr ""
+msgstr "Datum"
+
 msgid "messages_send"
-msgstr ""
+msgstr "Verzonden aan"
+
 msgid "messages_sendTo"
-msgstr ""
+msgstr "Nieuw bericht"
+
 msgid "messages_new"
-msgstr ""
+msgstr "Gelezen"
+
 msgid "messages_form_read"
-msgstr ""
+msgstr "Gelezen"
+
 msgid "messages_form_unread"
-msgstr ""
+msgstr "Ongelezen"
+
 msgid "messages_form_message"
-msgstr ""
+msgstr "Bericht"
+
 msgid "messages_form_subject"
-msgstr ""
+msgstr "Onderwerp"
+
 msgid "messages_form_recipient"
-msgstr ""
+msgstr "Ontvanger"
+
 msgid "messages_form_reset"
-msgstr ""
+msgstr "Opnieuw"
+
 msgid "messages_form_answer"
-msgstr ""
+msgstr "Beantwoorden"
+
 msgid "messages_notices_messageSent"
-msgstr ""
+msgstr "<h2 class='Notice'>Je hebt het bericht naar [username] verzonden!"
+
 msgid "messages_notices_noSuchUser"
-msgstr ""
+msgstr "<h2 class='errorNotice'>Deze gebruiker bestaat niet!</h2>"
+
 msgid "messages_notices_noReceiver"
-msgstr ""
+msgstr "Er is geen ontvanger ingevuld."
+
 msgid "messages_notices_noSubject"
-msgstr ""
+msgstr "Er is geen onderwerp ingevuld."
+
 msgid "messages_notices_noMessage"
-msgstr ""
+msgstr "Er is geen bericht ingevuld."
+
 msgid "messages_notices_deleteConfirm"
-msgstr ""
+msgstr "Weet je zeker dat je dit bericht wilt verwijderen?"
 
 msgid "errors_error403_accessDenied"
-msgstr ""
+msgstr "Verboden toegang."
+
 msgid "errors_error403_noRights"
-msgstr ""
+msgstr "Je hebt niet de benodigde rechten om deze pagina te bekijken."
+
 msgid "errors_error404_notFound"
-msgstr ""
+msgstr "Pagina niet gevonden."
+
 msgid "errors_error404_pageMissing"
-msgstr ""
+msgstr "De opgevraagde pagina is onvindbaar op deze server."
+
 msgid "errors_error500_serverError"
-msgstr ""
+msgstr "Oeps er ging iets fout."
+
 msgid "errors_error500_systemError"
 msgstr ""
+"Er heeft zich een fout voorgedaan op deze pagina. De beheerder is "
+"gewaarschuwd."
