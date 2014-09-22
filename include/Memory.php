@@ -323,8 +323,8 @@ class Memory{
    * @param  String  $s_namespace    The namespace
    * @param  String  $s_fallback     The fallback class type (V1)
    * @return Object  The module
-   * @throws  MemoryException If the requested module does not exist
-   * @throws  MemoryException If the override module is not a child of the system module
+   * @throws  \MemoryException If the requested module does not exist
+   * @throws  \OverrideException If the override module is not a child of the system module
    */
   private static function loadModule($s_name, $s_memoryType, $s_path, $s_namespace, $s_fallback = ''){
     $s_name = ucfirst($s_name);
@@ -353,7 +353,7 @@ class Memory{
         $s_caller = $s_namespace .  $s_name . 'Override';
 
         if( !($s_caller instanceof $s_callerParent) ){
-          throw new MemoryException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
+          throw new \OverrideException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
         }
       }
     }
@@ -381,8 +381,9 @@ class Memory{
    * @param  String  $s_path         The file path
    * @param  String  $s_namespace    The namespace
    * @return Object  The module
-   * @throws  MemoryException If the requested module does not exist
-   * @throws  MemoryException If the override module is not a child of the system module
+   * @throws  \MemoryException If the requested module does not exist
+   * @throws  \MemoryException If the override module is not a child of the system module
+   * @throws  \OverrideException If the override module is not a child of the system module
    */
   private static function loadModuleData($s_name, $s_memoryType, $s_path, $s_namespace){
     $s_name = ucfirst($s_name);
@@ -414,7 +415,7 @@ class Memory{
       $s_caller = $s_namespace .$s_name . 'Override';
 
       if( !($s_caller instanceof $s_callerParent) ){
-        throw new MemoryException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
+        throw new \OverrideException('Override ' . $s_memoryType . ' ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
       }
     }
 
@@ -455,6 +456,7 @@ class Memory{
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Helper  The requested helper
    * @throws  Exception If the requested helper does not exist
+   * @throws  \OverrideException If the override module is not a child of the system module
    */
   public static function helpers($s_name, $bo_data = false){
     if( $bo_data ){
@@ -502,6 +504,7 @@ class Memory{
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Service  The requested service
    * @throws  Exception If the requested service does not exist
+   * @throws  \OverrideException If the override module is not a child of the system module
    */
   public static function services($s_name, $bo_data = false){
     /* Check for DAL */
@@ -563,6 +566,7 @@ class Memory{
    * @param		bool		$bo_data	 Set to true to use the data directory
    * @return  Model  The requested model
    * @throws  Exception If the requested model does not exist
+   * @throws  \OverrideException If the override module is not a child of the system module
    */
   public static function models($s_name, $bo_data = false){
     if( $bo_data ){
@@ -600,6 +604,7 @@ class Memory{
    * @param String $s_namespace   The namespace, default \core
    * @return Object   The Object
    * @throws \MemoryException If $s_url is invalid
+   * @throws \OverrideException	If the override class is not a child of the default class
    */
   public static function loadClass($s_url, $s_class, $s_namespace = '\core'){
     $s_class = ucfirst($s_class);
@@ -611,10 +616,24 @@ class Memory{
     }
 
     require_once($s_url);
-
-    $s_caller = $s_namespace . '\\' . $s_class;
+    
+    $s_overrideUrl = str_replace('.php','_override.php',$s_url);
+    
+    $s_parent = null;
+    if( $service_File->exists($s_overrideUrl) ){
+    	include($s_overrideUrl);
+    	$s_parent = $s_namespace . '\\' . $s_class;
+    	$s_caller = $s_parent.'Override';
+    }
+    else {
+    	$s_caller = $s_namespace . '\\' . $s_class;
+    }
 
     $object = Memory::injection($s_caller, $s_url);
+    
+    if( !is_null($s_parent) && !($object instanceof $s_parent) ){
+		throw new \OverrideException('Override '.$s_caller.' is not a child of '.$s_parent.'.');
+    }
     return $object;
   }
 
@@ -632,12 +651,8 @@ class Memory{
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }
 
-    if( substr($s_filename, 0, 1) == '/' ){
-      $s_file = Memory::services('File')->readFile($s_filename);
-    }
-    else {
-      $s_file = Memory::services('File')->readFile(NIV . $s_filename);
-    }
+    $s_file = Memory::services('File')->readFile($s_filename);
+    
     preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
     if( count($a_matches) == 0 ){
       /* No arguments */
@@ -824,7 +839,9 @@ class Memory{
     }
     else {
       if(substr($s_url, -1) == '/'){
-          $s_url .= 'index.php?';
+      	  if( count($a_payload) > 0 ){
+      	  	$s_url .= 'index.php?';
+      	  }
       }
       else {
         $s_url .= '.php?';
@@ -861,7 +878,41 @@ class Memory{
       exit();
   }
 
+  /**
+   * Detects the system base
+   * Should only be used on install (redirection)
+   * 
+   * @throws \MemoryException	If the base could not be found
+   * @return string	The base
+   */
+  public static function detectBase(){
+  	$s_url	= $_SERVER['SCRIPT_NAME'];
+  	if( substr($s_url, 0,1) == '/' ){	$s_url = substr($s_url, 1); } 
+  	$s_url = substr($s_url, 0, strrpos($s_url, '/'));
+  	
+  	
+  	$a_dirs	= explode('/',$s_url);
+  	$s_wwwRoot	= $_SERVER['DOCUMENT_ROOT'];
+  	
+  	/* Seach for Memory */
+  	$s_base = '';
+  	$i_pos = 0;
+  	$i_max = count($a_dirs);
+  	
+  	while( $i_pos <= $i_max ){
+  		if( file_exists($s_wwwRoot.'/'.$s_base.'/include/Memory.php') ){
+  			return '/'.$s_base;
+  		}
+  		
+  		if( !empty($s_base) ){ $s_base .= '/';	}
+  		$s_base .= $a_dirs[$i_pos];
+  		$i_pos++;
+  	}
+  	
+  	throw new \MemoryException('Unable to detect website root for '.$_SERVER['SCRIPT_NAME'].'.');
+  }
 }
+
 if( !function_exists('class_alias') ){
 
   function class_alias($original, $alias){

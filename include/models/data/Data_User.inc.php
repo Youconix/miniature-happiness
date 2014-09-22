@@ -291,7 +291,7 @@ class Data_User extends \core\models\GeneralUser{
     foreach( $a_groups AS $obj_group ){
       $i_level = $obj_group->getLevelByGroupID($this->i_userid);
 
-      if( $i_level != Session::FORBIDDEN ){
+      if( $i_level != Session::ANONYMOUS ){
         $a_groupsUser[ $obj_group->getID() ] = $i_level;
       }
     }
@@ -306,7 +306,7 @@ class Data_User extends \core\models\GeneralUser{
    */
   public function getLevel(){
     if( !is_null($this->i_level) ){ return $this->i_level;  }
-    if( is_null($this->i_userid) ){ return \core\services\Session::FORBIDDEN;  }
+    if( is_null($this->i_userid) ){ return \core\services\Session::ANONYMOUS;  }
 
     $this->i_level = $this->model_Groups->getLevel($this->i_userid);
     return $this->i_level;
@@ -353,8 +353,8 @@ class Data_User extends \core\models\GeneralUser{
     $i_level = $this->checkGroup($i_groupid);
 
     switch( $this->getLevel($i_level) ){
-      case \core\services\Session::FORBIDDEN :
-        return \core\services\Session::FORBIDDEN_COLOR;
+      case \core\services\Session::ANONYMOUS :
+        return \core\services\Session::ANONYMOUS_COLOR;
 
       case \core\services\Session::USER :
         return \core\services\Session::USER_COLOR;

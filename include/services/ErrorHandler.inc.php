@@ -49,8 +49,7 @@ class ErrorHandler extends Service {
     public function error($exception) {
         \core\Memory::type('object', $exception);
 
-        $s_exception = $exception->getMessage() . '
-' . $exception->getTraceAsString();
+        $s_exception = $exception->__toString();
 
         $this->errorAsString($s_exception);
     }

@@ -1,0 +1,84 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: nl_NL\n"
+
+msgid "days_day0"
+msgstr ""
+
+msgid "days_day1"
+msgstr ""
+
+msgid "days_day2"
+msgstr ""
+
+msgid "days_day3"
+msgstr ""
+
+msgid "days_day4"
+msgstr ""
+
+msgid "days_day5"
+msgstr ""
+
+msgid "days_day6"
+msgstr ""
+
+msgid "weekdaysShort_day0"
+msgstr ""
+
+msgid "weekdaysShort_day1"
+msgstr ""
+
+msgid "weekdaysShort_day2"
+msgstr ""
+
+msgid "weekdaysShort_day3"
+msgstr ""
+
+msgid "weekdaysShort_day4"
+msgstr ""
+
+msgid "weekdaysShort_day5"
+msgstr ""
+
+msgid "weekdaysShort_day6"
+msgstr ""
+
+msgid "months_month0"
+msgstr ""
+
+msgid "months_month1"
+msgstr ""
+
+msgid "months_month2"
+msgstr ""
+
+msgid "months_month3"
+msgstr ""
+
+msgid "months_month4"
+msgstr ""
+
+msgid "months_month5"
+msgstr ""
+
+msgid "months_month6"
+msgstr ""
+
+msgid "gender_male"
+msgstr ""
+
+msgid "gender_female"
+msgstr ""
+
+msgid "gender_other"
+msgstr ""

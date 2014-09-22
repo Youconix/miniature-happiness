@@ -92,6 +92,7 @@ class Database_PostgreSql implements DAL {
 	/**
 	 * Checks if the given connection-data is correct
 	 *
+	 * @static
 	 * @param   String  $s_username     The username
 	 * @param   String  $s_password     The password
 	 * @param   String  $s_database     The database
@@ -99,7 +100,7 @@ class Database_PostgreSql implements DAL {
 	 * @param   int     $i_port         The port
 	 * @return  Boolean True if the data is correct, otherwise false
 	 */
-	public function checkLogin($s_username,$s_password,$s_database,$s_host = '127.0.0.1',$i_port = -1){
+	public static function checkLogin($s_username,$s_password,$s_database,$s_host = '127.0.0.1',$i_port = -1){
 		if( $i_port == -1 ) $i_port = '';
 
 		try {

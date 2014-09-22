@@ -1,4 +1,5 @@
 <?php
+use core\class_alias;
 /** 
  * Shared settings file
  * This file is shared between the installer and the control panel                           
@@ -50,15 +51,23 @@ class SettingsMain {
     public function getLanguages(){
         $a_languages    = array();
         
-        $s_handle = @opendir(NIV.'include/language');
+        $s_dir = NIV.'include/language';
+        $s_handle = @opendir($s_dir);
         if( $s_handle === false )   return $a_languages;
 
         /* read all language files */
         while( false !== ($s_file = readdir($s_handle)) ){
-            if( ($s_file == '.') || ($s_file == '..') || (substr($s_file,-1) == "~") )  continue;
+            if( ($s_file == '.') || ($s_file == '..') || (substr($s_file,-1) == "~") || $s_file == 'Install.php')  continue;
 
             /* check of $file is a directory */
-            if( is_dir($s_file) || stripos($s_file, ".lang") === false )  continue;
+            if( is_dir($s_dir.'/'.$s_file) ){
+            	if( strpos($s_file,'_') === false ){
+            		continue;
+            	}
+            }
+            else if( stripos($s_file, ".lang") === false ){
+            	continue;
+            }
             
             $a_languages[]  = str_replace(array('language_','.lang'),array('',''),$s_file);
         }
@@ -153,24 +162,20 @@ class SettingsMain {
         require_once(NIV.'include/services/Database.inc.php');
         
         switch($a_data['databaseType']){
-            case 'Mysql':
-                require_once(NIV.'include/database/Mysql.inc.php');
-                $obj_database   = new Database_Mysqli();
-            break;
-            
-            case 'Mysqli':
+          	case 'Mysqli':
                 require_once(NIV.'include/database/Mysqli.inc.php');
-                $obj_database   = new Database_Mysqli();
+                $bo_oke = \core\database\Database_Mysqli::checkLogin($a_data['sqlUsername'],$a_data['sqlPassword'],$a_data['sqlDatabase'],
+                	$a_data['sqlHost'],$a_data['sqlPort']);
             break;
         
             case 'PostgreSql' :
                 require_once(NIV.'include/database/PostgreSql.inc.php');
-                $obj_database   = new Database_PostgreSql();
+                $bo_oke = \core\database\Database_PostgreSql::checkLogin($a_data['sqlUsername'],$a_data['sqlPassword'],$a_data['sqlDatabase'],
+                	$a_data['sqlHost'],$a_data['sqlPort']);
             break;
         }
         
-        return $obj_database->checkLogin($a_data['sqlUsername'],$a_data['sqlPassword'],$a_data['sqlDatabase'],
-                $a_data['sqlHost'],$a_data['sqlPort']);
+        return $bo_oke;
     }
     
     /**

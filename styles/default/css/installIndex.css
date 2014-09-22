@@ -1,0 +1,16 @@
+h1,h2 { text-align:center; }
+h2 { font-size:1.2em; }
+
+#installCompleted, #gettingStarted, #maintenance { float:left; border:2px outset black; min-height:20px; border-radius:15px; ms-border-radius:15px; padding:10px; }
+
+#installCompleted  { width:98%; padding:1%; float:left; margin-bottom:20px; }
+
+#gettingStarted, #maintenance { min-height:40px; }
+
+#gettingStarted { margin-right:1.5%; width:70%; height:200px;  }
+#maintenance { width:25%; float:right; }
+
+#maintenance ul { margin-left:20px; }
+#maintenance li { list-style-type:disc}
+
+#maintenance li a,#gettingStarted a { color:#222; text-decoration:underline }

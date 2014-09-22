@@ -34,4 +34,13 @@ abstract class Helper {
         return clone $this;
     }
 }
+
+interface Display{
+	/**
+	 * Generates the HTML code
+	 * 
+	 * @return string	The HTML code
+	 */
+	public function generate();
+}
 ?>

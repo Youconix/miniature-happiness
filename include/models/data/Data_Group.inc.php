@@ -154,7 +154,7 @@ class Data_Group extends \core\models\Model{
 
     if( $service_Database->num_rows() == 0 ){
       /* No record found. Access denied */
-      $this->a_users[ $i_userid ] = \core\services\Session::FORBIDDEN;
+      $this->a_users[ $i_userid ] = \core\services\Session::ANONYMOUS;
     }
     else {
       $this->a_users[ $i_userid ] = $service_Database->result(0, 'level');
@@ -245,7 +245,7 @@ class Data_Group extends \core\models\Model{
 
     if( $i_level < 0 || $i_level > 2 ) $i_level = 0;
 
-    if( $this->getLevelByGroupID($i_userid) == \core\services\Session::FORBIDDEN ){
+    if( $this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS ){
       $this->service_QueryBuilder->insert("group_users", array( 'groupID', 'userid', 'level' ), array( 'i', 'i', 's' ), array( $this->i_id, $i_userid, $i_level ))->getResult();
     }
   }
@@ -266,7 +266,7 @@ class Data_Group extends \core\models\Model{
       $this->service_QueryBuilder->delete("group_users")->getWhere()->addAnd('userid', 'i', $i_userid);
       $this->service_QueryBuilder->getResult();
     }
-    else if( $this->getLevelByGroupID($i_userid) == \core\services\Session::FORBIDDEN ){
+    else if( $this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS ){
       $this->service_QueryBuilder->insert("group_users", array( 'groupID', 'userid', 'level' ), array( 'i', 'i', 's' ), array( $this->i_id, $i_userid, $i_level ))->getResult();
     }
     else {
@@ -305,7 +305,7 @@ class Data_Group extends \core\models\Model{
   public function deleteUser($i_userid){
     \core\Memory::type('int', $i_userid);
 
-    if( $this->getLevelByGroupID($i_userid) != \core\services\Session::FORBIDDEN ){
+    if( $this->getLevelByGroupID($i_userid) != \core\services\Session::ANONYMOUS ){
       $this->service_QueryBuilder->delete('group_users')->getWhere()->addAnd(array( 'groupID', 'userid' ), array( 'i', 'i' ), array( $this->i_id, $i_userid ));
       $this->service_QueryBuilder->getResult();
     }

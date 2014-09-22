@@ -162,7 +162,7 @@ class testData_User extends GeneralTest{
    * @test
    */
   public function getLevel(){
-    $this->assertEquals(Session::FORBIDDEN, $this->obj_User->getLevel());
+    $this->assertEquals(Session::ANONYMOUS, $this->obj_User->getLevel());
   }
 
   /**
@@ -197,7 +197,7 @@ class testData_User extends GeneralTest{
    * @test
    */
   public function getColor(){
-    $this->assertEquals(\core\services\Session::FORBIDDEN_COLOR, $this->obj_User->getColor());
+    $this->assertEquals(\core\services\Session::ANONYMOUS_COLOR, $this->obj_User->getColor());
   }
 
   /**

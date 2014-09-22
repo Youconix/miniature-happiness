@@ -74,10 +74,11 @@ interface DAL {
     /**
      * Checks if the given connection-data is correct
      *
+     * @static
      * @param   array   $a_data The connection data
      * @return  boolean True if the data is correct, otherwise false
      */
-    public function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1);
+    public static function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1);
 
     /**
      * Connects to the set database

@@ -77,7 +77,7 @@ class testGroups extends GeneralTest{
    * @test
    */
   public function getLevel(){
-    $this->assertEquals(\core\services\Session::FORBIDDEN, $this->model_Groups->getLevel($this->i_userid));
+    $this->assertEquals(\core\services\Session::ANONYMOUS, $this->model_Groups->getLevel($this->i_userid));
   }
 
   /**
@@ -86,7 +86,7 @@ class testGroups extends GeneralTest{
    * @test
    */
   public function getLevelByGroupID(){
-    $this->assertEquals(\core\services\Session::FORBIDDEN, $this->model_Groups->getLevelByGroupID(0, 1));
+    $this->assertEquals(\core\services\Session::ANONYMOUS, $this->model_Groups->getLevelByGroupID(0, 1));
   }
 
   /**

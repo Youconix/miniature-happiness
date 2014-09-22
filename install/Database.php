@@ -38,18 +38,18 @@ class Database {
 	 */
 	public function __construct(){
 		require(NIV.'include/Memory.php');
-		Memory::startUp();
+		\core\Memory::startUp();
 
-		$this->service_QueryBuilder	= Memory::services('QueryBuilder')->createBuilder();
-		$this->service_Database	= Memory::services('Database');
-		$this->s_defaultLanguage	= Memory::services('XmlSettings')->get('defaultLanguage');
+		$this->service_QueryBuilder	= \core\Memory::services('QueryBuilder')->createBuilder();
+		$this->service_Database	= \core\Memory::services('Database');
+		$this->s_defaultLanguage	= \core\Memory::services('XmlSettings')->get('defaultLanguage');
 	}
 
 	/**
 	 * Populates the database
 	 */
 	public function populateDatabase(){
-		$service_File = Memory::services('File');
+		$service_File = \core\Memory::services('File');
 		$this->a_countries	= explode("\n",$service_File->readFile(NIV.'install/countries.csv'));
 		$this->a_nationalities = explode("\n",$service_File->readFile(NIV.'install/nationality.csv'));
 		
@@ -324,7 +324,7 @@ class Database {
 		try {
 			$this->service_QueryBuilder->transaction();
 				
-			$obj_User	= Memory::models('User')->createUser();
+			$obj_User	= \core\Memory::models('User')->createUser();
 			$obj_User->setUsername($s_nick);
 			$obj_User->setEmail($s_email);
 			$obj_User->setPassword($s_password);

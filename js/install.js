@@ -105,19 +105,21 @@ Install.prototype.settingsScreen	= function(response){
 	$("#settings_save").on("click",function(){ install.settingsSave(); });
 }
 Install.prototype.settingsSave	= function(){
-	oke1 = validation.html5ValidationAll();
-	oke = true;
+	var fields = new Array('url','timezone','mail_email','sqlUsername','sqlPassword','sqlDatabase','sqlPassword','sqlHost','sqlPort','databasePrefix');
+	var oke1 = validation.html5ValidationArray(fields);
+	
+	var oke = true;
 	/* Login */
-	if( !$("#normalLogin").is("checked") && !$("#openID").is("checked") && !$("#lDAP").is("checked") ){
+	if( !$("#normalLogin").is(":checked") && !$("#openID").is(":checked") && !$("#lDAP").is(":checked") ){
 		oke = false;
 	}
-	else if( $("#lDAP").is("checked") && !this.ldapOK ){
+	else if( $("#lDAP").is(":checked") && !this.ldapOK ){
 		this.checkLDAP();
 		oke = false;
 	}
 	
 	/* SMTP */
-	if( $("#smtp").is("checked") && !this.smtpOK ){
+	if( $("#smtp").is(":checked") && !this.smtpOK ){
 		oke = false;
 		this.checkSmtp();
 	}
@@ -128,14 +130,19 @@ Install.prototype.settingsSave	= function(){
 		this.checkDatabase();
 	}
 	
-	if( !oke1 || !oke ){	return; } 
+	if( !oke1 || !oke ){	return; }
 	
-	normalLogin += $("#normalLogin").is("checked");
-	openID += $("#openID").is("checked");
-	lDAP += $("#lDAP").is("checked");
-	smtp += $("#smtp").is("checked");
+	var normalLogin = 0;
+	var openID = 0 ;
+	var lDAP = 0;
+	var smtp = 0;
 	
-	data = {"step":3,"base" : $("#base").val(),"url":$("#url").val(),"timezone": $("#timezone").val(),
+	if( $("#normalLogin").is(":checked") ) normalLogin = 1;
+	if( $("#openID").is(":checked") ) openID = 1;
+	if( $("#lDAP").is(":checked") ) lDAP = 1;
+	if( $("#smtp").is(":checked") ) smtp = 1;
+	
+	var data = {"step":3,"base" : $("#base").val(),"url":$("#url").val(),"timezone": $("#timezone").val(),
 		"normalLogin":normalLogin,"openID":openID,"lDAP":lDAP,"ldap_server":$("#ldap_server").val(),
 		"ldap_port":$("#ldap_port").val(),"sessionName":$("#sessionName").val(),"sessionPath":$("#sessionPath").val(),
 		"sessionExpire":$("#sessionExpire").val(),"language":$("#language").val(),"template":$("#template").val(),
@@ -333,10 +340,10 @@ Install.prototype.checkDatabase	= function(){
 	password	= $.trim($('#sqlPassword').val());
 	host		= $.trim($('#sqlHost').val());
 	database	= $.trim($('#sqlDatabase').val());
-	type		= $('#sqlType').val();
-	port		= parseInt($('#sqlPort').val());
+	type		= $('#databaseType').val();
+	port		= $('#sqlPort').val();
 	
-	if( username == '' || password == '' || host == '' || database == '' || isNaN(port)){	return; }
+	if( username == '' || password == '' || host == '' || database == '' || (port != '' && isNaN(port)) ){	return; }
 
 	$.post("index.php",{"command":"checkDB","username":username,"password":password,"host":host,
 		"database":database,"type":type,"port":port},function(response){

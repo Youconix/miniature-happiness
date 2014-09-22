@@ -1,6 +1,6 @@
 <?php
 
-namespace \core\services;
+namespace core\services;
 
 /**
  * Service class for handling GET and POST requests to external sites

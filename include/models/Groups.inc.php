@@ -112,7 +112,7 @@ class Groups extends Model{
       return $this->getLevelByGroupID($i_groupid, $i_userid);
     }
 
-    return \core\services\Session::FORBIDDEN;
+    return \core\services\Session::ANONYMOUS;
   }
 
   /**
@@ -133,7 +133,7 @@ class Groups extends Model{
       return $service_Database->result(0, 'level');
     }
 
-    return \core\services\Session::FORBIDDEN;
+    return \core\services\Session::ANONYMOUS;
   }
 
   /**
