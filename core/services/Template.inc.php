@@ -459,7 +459,7 @@ class Template extends Service{
     }
     
     
-    $this->s_template = str_replace(array('{STYLE_DIR}','{LEVEL}'),array('{LEVEL}styles/' . $this->s_templateDir,$this->model_Config->getBase()),$this->s_template);
+    $this->s_template = str_replace(array('{STYLE_DIR}','{LEVEL}'),array('{LEVEL}styles/' . $this->s_templateDir,$this->model_Config->getBase()."/"),$this->s_template);
 
     /* Delete unused template-variables */
     $this->removeBlocks('block', 0);
