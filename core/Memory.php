@@ -394,7 +394,7 @@ class Memory{
 
     	require_once($a_data['userPath'].$s_name.'.inc.php');
     }
-    if( $service_File->exists($a_data['systemPath'].$s_name.'.inc.php') ){
+    elseif( $service_File->exists($a_data['systemPath'].$s_name.'.inc.php') ){
     	require_once($a_data['systemPath'].$s_name.'.inc.php');
     	$s_caller = $a_data['systemNamespace'].$s_name;
     	$s_path = $a_data['systemPath'].$s_name.'.inc.php';
@@ -409,7 +409,7 @@ class Memory{
       $s_caller = $s_fallback . '_' . $s_name;
     }
     else {
-      throw new \MemoryException('Class '.$s_name . ' and class ' . $s_fallback . '_' . $s_name . ' not found in ' . $a_data['userPath'] . ' and in '.$a_data['systemPath'].'.
+      throw new \MemoryException('Class '.$s_name . ' and class '.$s_memoryType . $s_fallback . '_' . $s_name . ' not found in ' . $a_data['userPath'] . ' and in '.$a_data['systemPath'].'.
       		Namespaces '.$a_data['userNamespace'].' and '.$a_data['systemNamespace'].'.');
     }
 
@@ -666,8 +666,8 @@ class Memory{
     }
 
     $s_file = Memory::services('File')->readFile($s_filename);
-    
     preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
+    
     if( count($a_matches) == 0 ){
       /* No arguments */
       return new $s_caller();
