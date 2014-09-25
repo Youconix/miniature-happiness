@@ -24,9 +24,9 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 define('NIV','./');
-require(NIV.'include/BaseLogicClass.php');
+require(NIV.'core/BaseLogicClass.php');
 
-class ForgotPassword extends BaseLogicClass {
+class ForgotPassword extends \core\BaseLogicClass {
 	/**
 	 * PHP 5 constructor
 	 */

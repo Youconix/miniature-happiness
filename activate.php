@@ -12,9 +12,9 @@
  */
 
 define('NIV','./');
-include(NIV.'include/BaseLogicClass.php');
+include(NIV.'core/BaseLogicClass.php');
 
-class Activation extends BaseLogicClass {
+class Activation extends \core\BaseLogicClass {
     private $model_User;
 
     /**
