@@ -458,8 +458,9 @@ class Template extends Service{
       $this->s_template = str_replace("{" . $s_key . "}", $this->a_parser[ $s_key ], $this->s_template);
     }
     
-    
-    $this->s_template = str_replace(array('{STYLE_DIR}','{LEVEL}'),array('{LEVEL}styles/' . $this->s_templateDir,$this->model_Config->getBase()."/"),$this->s_template);
+    $s_level = $this->model_Config->getBase();
+    if( !empty($s_level) && substr($s_level,-1) != '/' ){	$s_level .= '/'; }
+    $this->s_template = str_replace(array('{STYLE_DIR}','{LEVEL}'),array('{LEVEL}styles/' . $this->s_templateDir,$s_level),$this->s_template);
 
     /* Delete unused template-variables */
     $this->removeBlocks('block', 0);
