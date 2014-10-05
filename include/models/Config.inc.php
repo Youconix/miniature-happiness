@@ -76,8 +76,11 @@ class Config extends Model {
 		}
 		
 		/* Get page */
-		$s_page = $_SERVER['SCRIPT_NAME'];
-		
+		$s_page = $_SERVER['SCRIPT_NAME'];		
+		while( substr($s_page, 0, 1) == '/' ){
+			$s_page = substr($s_page, 1);
+		}
+
 		if( stripos($s_page, $s_base) !== false ){
 			$s_page = substr($s_page, strlen($s_base));
 		}
