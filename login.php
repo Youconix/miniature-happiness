@@ -23,9 +23,9 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 define('NIV','./');
-include(NIV.'include/BaseLogicClass.php');
+include(NIV.'core/BaseLogicClass.php');
 
-class Login extends BaseLogicClass  {
+class Login extends \core\BaseLogicClass  {
 	private $service_Authorization;
 	private $model_User;
   private $block_Login;

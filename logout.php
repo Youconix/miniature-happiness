@@ -26,9 +26,9 @@ define('NIV','./');
 define('SH','1');
 define('PROCESS','1');
 
-include(NIV.'include/BaseClass.php');
+include(NIV.'core/BaseClass.php');
 
-class Logout extends BaseClass  {
+class Logout extends \core\BaseClass  {
 
     /**
      * Starts the class Logout

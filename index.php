@@ -12,8 +12,8 @@
 define('NIV','./');
 use \core\Memory;
 
-include(NIV.'include/BaseLogicClass.php');
-class Index extends BaseLogicClass  { 
+include(NIV.'core/BaseLogicClass.php');
+class Index extends \core\BaseLogicClass  { 
     /**
      * PHP 5 constructor
      */
