@@ -2,6 +2,8 @@ Options +FollowSymLinks -MultiViews
 RewriteEngine on
 RewriteBase /
 
+RewriteRule "^(.*/)?\.git/" - [F,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !/$
 RewriteRule ^(.*?)/$ /$1/index.php [L]

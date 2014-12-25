@@ -4,6 +4,58 @@
 	<locale>nl_NL</locale>
 	<noscript>Activeer AUB javascript.</noscript>
 	<sessionExpired>Uw sessie is verlopen. Opnieuw inloggen.</sessionExpired>
-  <title></title>
-	
+	<title></title>
+	  
+	<registration>
+		<title>Meld je nu aan</title>
+		<screenTitle>Registreren</screenTitle>
+		<name>Gebruikernaam</name>
+		<email>E-mail adres</email>
+		<password1>Wachtwoord</password1>
+		<password2>Wachtwoord herhalen</password2>
+		<conditions>Ik ga akkoord met de voorwaarden</conditions>
+		<submitButton>Registreren</submitButton>
+		<passwordIncorrect>De wachtwoorden zijn niet gelijk</passwordIncorrect>
+		<checkConditions>De voorwaarden moeten geaccepteerd worden</checkConditions>
+		<failed>Je account kon niet geregistreerd worden. Probeer het later nog een keer.</failed>
+		<emailSend>Je account is geregistreerd. Er is een activeringsmail verzonden naar [email].</emailSend>
+		<emailFailed>De activatie email kon niet verzonden worden.</emailFailed>
+		<captcha>Type de onderstaande code over als controle.</captcha>
+		<notices>
+  	        	<notices0>Je hebt geen gebruikersnaam ingevuld.</notices0>
+  	        	<notices1>Je hebt geen E-mail adres ingevuld.</notices1>
+	   	        <notices2>Je hebt geen wachtwoord ingevuld.</notices2>
+   	        	<conditions>Je moet wel met de voorwaarden akkoord gaan.</conditions>
+            		<emailInvalid>Je hebt een ongeldig E-mail adres ingevuld.</emailInvalid>
+     		       	<passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
+    		        <codeInvalid>De code is incorrect.</codeInvalid>
+   		        <usernameTaken>De gebruikersnaam is al in gebruik.</usernameTaken>
+    		        <usernameTakenOpenID>Er is al een account met deze gebruikersnaam. Heb je niet al een keer geregistreerd?</usernameTakenOpenID>
+    		        <emailTaken>Het E-mail adres is al in gebruik.</emailTaken>
+     		      	<emailTakenOpenID>Er is al een account met dit E-mail adres. Heb je niet al een keer geregistreerd?</emailTakenOpenID>
+       		     	<usernameToShort>De gebruikernaam moet minimaal 3 tekens lang zijn.</usernameToShort>
+    		        <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
+   		        <veryStrongPassword>Erg sterk wachtwoord</veryStrongPassword>
+     		      	<strongPassword>Sterk wachtwoord</strongPassword>
+    		       	<fairPassword>Redelijk wachtwoord</fairPassword>
+  		        <weakPassword>Zwak wachtwoord</weakPassword>
+		</notices>
+		<registrationVia>Registratie via</registrationVia>
+		<registration_openID>Registratie via OpenID</registration_openID>
+		<registration_facebook>Registratie via Facebook</registration_facebook>
+	</registration>
+	<activate>
+	   <accountActivated><![CDATA[ Je account is geactiveerd. Je kan nu <a href="{LEVEL}login">inloggen.</a> ]]></accountActivated>
+	   <accountNotActivated>De activerings-link is ongeldig. Mogelijk is het account al geactiveerd.</accountNotActivated>
+	</activate>
+	<forgotPassword>
+		<header>Wachtwoord resetten</header>
+		<verifyCodeFailed>Het wachtwoord kon niet gereset worden. De reset code is niet geldig.</verifyCodeFailed>
+		<verifyCodeSuccess><![CDATA[ Het wachtwoord is gereset. Je kan nu <a href="{LEVEL}login">inloggen</a>. ]]></verifyCodeSuccess>
+		<fieldsEmpty>Je hebt niet alle velden ingevuld.</fieldsEmpty>
+		<emailError>Het E-mail adres is ongeldig.</emailError>
+		<resetFailed>Onbekende combinatie van gebruikersnaam en E-mail adres.</resetFailed>
+		<resetSuccess>Er is een wachtwoord reset email verstuurd naar [email].</resetSuccess>	
+       		<openID>Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk.</openID>   
+	</forgotPassword>
 </language>

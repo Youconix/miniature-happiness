@@ -28,28 +28,40 @@ namespace core\classes;
  */
 class Header{
 
-  private $service_Template;
-  private $service_Language;
-  private $model_User;
+  protected $service_Template;
+  protected $service_Language;
+  protected $model_User;
+  protected $model_Config;
+  protected $s_template;
 
   /**
    * Starts the class header
    */
-  public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User){
+  public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User,\core\models\Config $model_Config){
     $this->service_Template = $service_Template;
     $this->service_Language = $service_Language;
     $this->model_User = $model_User;
+    $this->model_Config = $model_Config;
+    
+    $this->setTemplate();
 
     $this->createHeader();
 
     $this->displayLanguageFlags();
+  }
+  
+  /**
+   * Sets the template
+   */
+  protected function setTemplate(){
+  	$this->s_template= 'header.tpl';
   }
 
   /**
    * Generates the header
    */
   protected function createHeader(){
-    $this->service_Template->loadTemplate('header', 'header.tpl');
+    $this->service_Template->loadTemplate('header', $this->s_template);
     
     $obj_User = $this->model_User->get();
     if( is_null($obj_User->getID()) ){
@@ -73,25 +85,20 @@ class Header{
     $a_languages = $this->service_Language->getLanguages(); 
     $a_languagesCodes = $this->service_Language->getLanguageCodes();
     
-
-    $s_url = $_SERVER[ 'PHP_SELF' ] . '?';
-    if( !empty($_SERVER[ 'QUERY_STRING' ]) ){
-      $s_url .= $_SERVER[ 'QUERY_STRING' ];
-      $s_url = preg_replace("#lang=(" . implode('|', $a_keys) . ")*#si", '', $s_url);
-      $s_url = str_replace(array( '&&', '?&' ), array( '&', '?' ), $s_url);
-
-      $s_last = substr($s_url, -1);
-      if( strpos($s_url, '?') === false ) $s_url .= '?';
-      else if( $s_last != '&' ) $s_url .= '&';
+    $s_flags = '<script>
+    <!--
+    function switchLanguage(language){
+    	$.get("{LEVEL}index.php?lang="+language,function(){
+    		location.reload();
+    	});
     }
-    $s_url = str_replace('&', '&amp;', $s_url);
-
-    $s_flags = '';
+    //-->
+    </script>';
     foreach( $a_languages AS $s_code ){
       $s_language = (array_key_exists($s_code, $a_languagesCodes)) ?  $a_languagesCodes[$s_code] : $s_code;
-     
-      $s_flags .= '<a href="'.$s_url.'lang='.$s_code.'">'.
-        '<img src="{style_dir}/flags/'.$s_code.'.png" alt="'.$s_language.'" title="'.$s_language.
+      
+      $s_flags .= '<a href="javascript:switchLanguage(\''.$s_code.'\')">'.
+        '<img src="{style_dir}/images/flags/'.$s_code.'.png" alt="'.$s_language.'" title="'.$s_language.
         '"></a>';
     }
     

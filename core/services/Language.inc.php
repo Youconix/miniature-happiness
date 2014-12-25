@@ -36,6 +36,7 @@ class Language extends Xml{
   private $a_documents  = array();
   private $bo_fallback = false;
   private $obj_parser;
+  private static $_instance;
 
   /**
    * PHP 5 constructor
@@ -244,5 +245,12 @@ class Language extends Xml{
   	return $this->obj_parser->exists($s_path);
   }
 
+  public static function text($s_key){
+    if( is_null(Language::$_instance) ){
+      Language::$_instance = \core\Memory::services('Language');
+    }
+    
+    return Language::$_instance->get($s_key);
+  }
 }
 ?>

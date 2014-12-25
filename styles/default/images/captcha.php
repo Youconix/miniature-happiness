@@ -1,16 +1,16 @@
 <?php
 define('NIV','../../../');
 define('PROCESS','1');
-require(NIV.'include/BaseClass.php');
+require(NIV.'core/BaseClass.php');
 
-class Captcha extends BaseClass {
+class Captcha extends \core\BaseClass {
 	public function __construct(){
 		$this->init();
 		$this->displayCaptcha();
 	}
 	
 	private function displayCaptcha(){
-		$helper_Captcha = Memory::helpers('Captcha');
+		$helper_Captcha = \core\Memory::helpers('Captcha');
 		$helper_Captcha->generateCapcha();
 	}
 }

@@ -32,7 +32,7 @@
 					<label><a href="{NIV}conditions.php" target="_new">{conditionsText}</a></label></td>
 			</tr>
 			<tr>
-				<td colspan="2"><input type="hidden" name="command" value="result/><br /></td>
+				<td colspan="2"><input type="hidden" name="command" value="result"/><br /></td>
 			</tr>
 			<tr>
 				<td colspan="2"><input type="submit" value="{buttonRegister}"></td>
@@ -42,7 +42,7 @@
 			</tr>
 			<block {openID}>
 			<tr>
-				<td colspan="2"><a href="registration.php?command=openID&type={key}"><img src="{style_dir}images/icons/{image}.png" alt="{key}"> {text}</a></td>
+				<td colspan="2"><a href="{LEVEL}authorization/registration_{key}.php"><img src="{style_dir}images/icons/{image}.png" alt="{key}" title="{key}">{text}</a></td>
 			</tr>
 			</block>
 			</tbody>

@@ -28,9 +28,9 @@ namespace core\classes;
  */
 class Footer {
 
-    private $service_Language;
-    private $service_Template;
-    private $service_Settings = null;
+    protected $service_Language;
+    protected $service_Template;
+    protected $service_Settings = null;
 
     /**
      * Starts the class footer

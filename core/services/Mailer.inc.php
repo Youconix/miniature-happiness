@@ -42,7 +42,7 @@ class Mailer extends Service{
    * @param core\services\File      $service_File       The file service
    */
   public function __construct(\core\services\Language $service_Language,\core\services\File $service_File){
-    require_once(NIV . 'include/mailer/MailWrapper.inc.php');
+    require_once(NIV . 'core/mailer/MailWrapper.inc.php');
     $this->obj_phpMailer = new \MailWrapper();
 
     $this->service_Language = $service_Language;

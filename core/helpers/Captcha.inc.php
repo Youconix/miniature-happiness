@@ -1,6 +1,5 @@
 <?php
-
-namespace \core\helpers;
+namespace core\helpers;
 
 /**
  * Helper for generating capchas                           
@@ -95,6 +94,7 @@ class Captcha extends Helper{
       imagettftext($s_image, $i_size, $i_angle, $i_left1, $i_up1, $s_text, $a_fonts[ $i_random_font ], $s_code[ $i ]);
     }
 
+    ob_clean();
     /* Write image */
     header("Expires: Mon, 26 Jul 1990 05:00:00 GMT");
     header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -138,6 +138,5 @@ class Captcha extends Helper{
     $this->service_Session->delete('capcha');
     return true;
   }
-
 }
 ?>

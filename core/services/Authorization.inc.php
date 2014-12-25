@@ -48,7 +48,7 @@ class Authorization extends Service{
    */
   public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs,
    \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random){
-    $this->s_openID_dir = NIV . 'include/openID/';
+    $this->s_openID_dir = NIV . 'core/openID/';
     require_once($this->s_openID_dir . 'OpenAuth.inc.php');
 
     $this->service_Cookie = $service_Cookie;

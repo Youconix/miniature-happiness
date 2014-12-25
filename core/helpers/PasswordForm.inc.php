@@ -1,11 +1,13 @@
 <?php
-class Helper_PasswordForm extends Helper {
+namespace core\helpers;
+
+class PasswordForm extends Helper {
 	private $service_Language;
 	
-	public function __construct(){
-		$this->service_Language = Memory::services('Language');
+	public function __construct(\core\services\Language $service_Language,\core\services\Template $service_Template){
+		$this->service_Language = $service_Language;
 		
-		Memory::services('Template')->headerLink('<script src="{NIV}js/widgets/password_check.php?lang='.$this->service_Language->getLanguage().'"></script>');
+		$service_Template->headerLink('<script src="{NIV}js/widgets/password_check.php?lang='.$this->service_Language->getLanguage().'"></script>');
 	}
 	
 	public function generate(){
@@ -13,12 +15,12 @@ class Helper_PasswordForm extends Helper {
 		<table>
 		<tbody>
 			<tr>
-				<td><label>'.$this->service_Language->get('language/admin/users/password').'</label></td>
+				<td><label>'.$this->service_Language->get('system/admin/users/password').'</label></td>
 				<td><input type="password" name="password" id="password1" required></td>
 				<td id="passwordStrength"></td>
 			</tr>
 			<tr>
-				<td><label>'.$this->service_Language->get('language/admin/users/passwordAgain').'</label></td>
+				<td><label>'.$this->service_Language->get('system/admin/users/passwordAgain').'</label></td>
 				<td><input type="password" id="password2" required></td>
 				<td id="passwordStrengthText"></td>
 			</tr>

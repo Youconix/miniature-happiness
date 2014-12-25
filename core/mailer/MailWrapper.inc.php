@@ -6,12 +6,12 @@ class MailWrapper extends \core\services\Service {
 	 * Initializes the wrapper
 	 */
 	public function __construct(){		
-		require_once(NIV.'include/mailer/class.phpmailer.php');
+		require_once(NIV.'core/mailer/class.phpmailer.php');
 		$this->obj_phpMailer  = new PHPMailer();
 	}
 	
 	public function checkSmtpDetails($s_host,$i_port,$s_username,$s_password){
-		require_once(NIV.'include/mailer/class.smtp.php');
+		require_once(NIV.'core/mailer/class.smtp.php');
 		$obj_SMTP = new SMTP();
 		
 		if( !$obj_SMTP->Connect($s_host, $i_port) ){

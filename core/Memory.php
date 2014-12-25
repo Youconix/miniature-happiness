@@ -388,8 +388,11 @@ class Memory{
 		$s_path = $a_data['userPath'].$s_name.'.inc.php';
     	
     	if( $service_File->exists($a_data['systemPath'].$s_name.'.inc.php') ){
-    		require_once($a_data['systemPath'].$s_name.'.inc.php');
     		$s_callerParent = $a_data['systemNamespace'].$s_name;
+    		
+    		if( !class_exists($s_callerParent) ){
+    			require($a_data['systemPath'].$s_name.'.inc.php');
+    		}
     	}
 
     	require_once($a_data['userPath'].$s_name.'.inc.php');
@@ -602,14 +605,18 @@ class Memory{
     $s_callerParent = '';
     
     if( $service_File->exists(Memory::$a_class['userPath'].$s_class.'.inc.php') ){
-    	require_once(Memory::$a_class['userPath'].$s_class.'.inc.php');
-    	$s_path = Memory::$a_class['userPath'].$s_class.'.inc.php';
-    	$s_caller = Memory::$a_class['userNamespace'].$s_class;
-    	
     	if( $service_File->exists(Memory::$a_class['systemPath'].$s_class.'.inc.php') ){
     		$bo_override = true;
     		$s_callerParent = Memory::$a_class['systemNamespace'].$s_class;
+    		
+    		if( !class_exists($s_callerParent) ){
+    			require(Memory::$a_class['systemPath'].$s_class.'.inc.php');
+    		}
     	}
+    	
+    	require_once(Memory::$a_class['userPath'].$s_class.'.inc.php');
+    	$s_path = Memory::$a_class['userPath'].$s_class.'.inc.php';
+    	$s_caller = Memory::$a_class['userNamespace'].$s_class;
     }
     else if( $service_File->exists(Memory::$a_class['systemPath'].$s_class.'.inc.php') ){
     	require_once(Memory::$a_class['systemPath'].$s_class.'.inc.php');    	
@@ -665,8 +672,7 @@ class Memory{
       throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
     }
 
-    $s_file = Memory::services('File')->readFile($s_filename);
-    preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
+    $a_matches = Memory::getConstructor($s_filename);
     
     if( count($a_matches) == 0 ){
       /* No arguments */
@@ -731,6 +737,49 @@ class Memory{
     }
 
     return $ref->newInstanceArgs($a_arguments);
+  }
+  
+  /**
+   * Gets the constructor parameters
+   * 
+   * @param String	$s_filename	The file name
+   * @return array	The parameters 
+   */
+  private static function getConstructor($s_filename){
+  	$s_file = Memory::services('File')->readFile($s_filename);
+  	if( stripos($s_file,'__construct') === false ){
+  		/* Check if file has parent */
+  		preg_match('#class\\s+[a-zA-Z0-9\-_]+\\s+extends\\s+([\\\a-zA-Z0-9_\-]+)#si',$s_file,$a_matches);
+  		if( count($a_matches) == 0 ){
+  			return array();
+  		} 
+  		
+  		switch( $a_matches[1] ){
+  			case '\core\models\Model':
+  			case 'Model':
+  				$s_filename = NIV.'core/models/Model.inc.php';
+  				break;
+  			
+  			case '\core\services\Service':
+  			case 'Service' :
+  				$s_filename = NIV.'core/services/Service.inc.php';
+  				break;
+  				
+  			case '\core\helpers\Helper':
+  			case 'Helper' :
+  				$s_filename = NIV.'core/helpers/Helper.inc.php';
+  				break;
+  				
+  			default :
+  			$s_filename = NIV.str_replace('\\','/',$a_matches[1]).'.inc.php';  		
+  		}
+  		
+  		return Memory::getConstructor($s_filename);
+  	}
+  	
+  	preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
+  	
+  	return $a_matches;
   }
 
   /**
