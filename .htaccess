@@ -4,10 +4,8 @@ RewriteBase /
 
 RewriteRule "^(.*/)?\.git/" - [F,L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} !/$
-RewriteRule ^(.*?)/$ /$1/index.php [L]
+RewriteRule ^index.php$ /router.php?router=index/view [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*?)$ /$1.php [L]
+RewriteRule ^([a-zA-Z0-9\-_/]+)/details/(.*?)$ /router.php?router=$1&query=$2 [L]
+RewriteRule ^([a-zA-Z0-9\-_/]+)$ /router.php?router=$1& [L]
