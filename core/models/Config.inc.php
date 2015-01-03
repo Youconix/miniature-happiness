@@ -188,7 +188,7 @@ class Config extends Model {
 	 * @return String template directory
 	 */
 	public function getStylesDir(){
-		return '/styles/' . $this->s_templateDir . '/';
+		return 'styles/' . $this->s_templateDir . '/';
 	}
 	
 	/**

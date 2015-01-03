@@ -871,18 +871,17 @@ class Memory{
   }
 
   public static function reset(){
-    Memory::$bo_ajax = null;
     Memory::$a_memory = null;
-    Memory::$s_base = null;
-    Memory::$s_page = null;
-    Memory::$s_protocol = null;
     Memory::$bo_testing = null;
 
-    Memory::$s_servicePath = null;
-    Memory::$s_modelPath = null;
-    Memory::$s_helperPath = null;
-    Memory::$s_classPath = null;
-    Memory::$s_interfacePath = null;
+    Memory::$a_service = null;
+    Memory::$a_serviceData = null;
+    Memory::$a_model = null;
+    Memory::$a_modelData = null;
+    Memory::$a_helper = null;
+    Memory::$a_helperData = null;
+    Memory::$a_class = null;
+    Memory::$a_interface = null;
     Memory::$bo_prettyUrls = null;
   }
   

@@ -138,13 +138,23 @@ class Template extends Service{
     
     /* Check view */
     if( empty($s_view) ){
-      $s_view = $this->model_Config->getCommand();
+      if( !defined('TEMPLATE') ){
+	$s_view = $this->model_Config->getCommand();	
+	
+	$s_template = str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
+      }
+      else {
+	$a_template = explode('/',TEMPLATE);
+	$s_view = end($a_template);
+	
+	$s_template = TEMPLATE;
+      }
     }
-
-    if( substr($s_view, - 4) != '.tpl' ){ $s_view .= '.tpl';  }
+    
+    if( substr($s_template, - 4) != '.tpl' ){ $s_template .= '.tpl';  }
 
     $this->s_viewName = preg_replace("#/[a-z0-0_]+\.tpl#si", '', $s_view);
-    $s_view = 'styles/' . $this->s_templateDir . '/templates/' . str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
+    $s_view = 'styles/' . $this->s_templateDir . '/templates/' . $s_template;
 
     if( !$this->service_File->exists(NIV . $s_view) ){
       /* View not found */
@@ -426,7 +436,8 @@ class Template extends Service{
    * Prints the page to the screen and pushes it to the visitor
    */
   public function printToScreen(){
-    $this->set('style_dir', NIV . 'styles/' . $this->s_templateDir . '/');
+    $this->set('style_dir', $this->model_Config->getStylesDir());
+    $this->set('NIV',$this->model_Config->getBase());
 
     if( !\core\Memory::isAjax() ){
       /* Write header-blok to template */

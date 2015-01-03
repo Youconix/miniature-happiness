@@ -30,8 +30,28 @@ namespace core;
  */
 include(NIV.'core/BaseClass.php');
 
-abstract class BaseLogicClass extends BaseClass {
+abstract class BaseLogicClass extends BaseClass implements \Routable {
 	protected $service_Session;
+	
+	public function __construct(){
+	  $this->init();
+	  
+	  $this->header();
+	  
+	  $this->menu();
+	  
+	  $this->footer();
+	}
+	
+	public function route($s_command){
+		if( !method_exists($this,$s_command) ){
+			$_SESSION['error'] = 'missing method '.$s_command;
+			include(NIV.'errors/500.php');
+			exit();
+		}
+	  
+		$this->$s_command();
+	}
 	
 	/**
 	 * Inits the class BaseLogicClass

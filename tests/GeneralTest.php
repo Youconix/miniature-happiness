@@ -4,7 +4,7 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase {
   protected $s_temp;
   
 	public function __construct(){
-		require_once(NIV.'include/Memory.php');
+		require_once(NIV.'core/Memory.php');
 				
 		parent::__construct();
 		

@@ -11,10 +11,13 @@
  * @date made:		01-05-2010
  * @date last changed:	02-05-2010
  */
-define('NIV','../');
-require(NIV.'include/BaseLogicClass.php');
+if( !defined('NIV') ){
+  define('NIV','../');
+}
+define('TEMPLATE','errors/404/index');
+require(NIV.'includes/BaseLogicClass.php');
 
-class Error404 extends BaseLogicClass {
+class Error404 extends \includes\BaseLogicClass {
 	/**
 	 * Starts the class Error504
 	 */
@@ -30,31 +33,10 @@ class Error404 extends BaseLogicClass {
 		$this->footer();
 	}
 
-	/**
-	 * Defines the level constant for the GUI
-	 */
-	protected function defineLevel(){
-		$s_page = str_replace(Memory::getBase(), '', $_SERVER['REQUEST_URI']);
-		if( substr($s_page,0,1) == '/' )	$s_page = substr($s_page,1);
-
-		$i_number = count(explode('/', $s_page));
-
-		if ($i_number == 1) {
-			$s_level = './';
-		} else {
-			$s_level = '';
-			for ($i = 1; $i < $i_number; $i++) {
-				$s_level .= '../';
-			}
-		}
-
-		define('LEVEL',$s_level);
-	}
-
 	private function displayError(){
 		header("HTTP/1.1 404 Not found");
 
-		$service_Language	= Memory::services('Language');
+		$service_Language	= \core\Memory::services('Language');
 
 		$this->service_Template->set('title',$service_Language->get('language/errors/error404/notFound'));
 
