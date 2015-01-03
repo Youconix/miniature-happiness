@@ -24,7 +24,8 @@ function translate($s_router){
 	$a_router	= explode('/',$s_router);
 
 	$s_command	= end($a_router);
-	$s_page		= str_replace('/'.$s_command,'',$s_router);
+	$i_end		= (strlen($s_router) - strlen('/'.$s_command));	
+	$s_page		= substr($s_router, 0,$i_end);
 
 
 	if( array_key_exists('query',$_GET) ){
@@ -65,6 +66,7 @@ $s_command = $a_data['command'];
 unset($_GET['router']);
 
 if( !file_exists($s_page.'.php') ){
+	@session_start();
 	$_SESSION['error'] = 'can not find page '.$s_page;
 	include('errors/404.php');
 	exit();
@@ -81,6 +83,7 @@ $a_class = explode('/',$s_page);
 $s_className = UCfirst(end($a_class));
 
 if( !class_exists($s_className) ){
+	@session_start();
 	$_SESSION['error'] = 'class '.$s_className.' not found.';
 	include('errors/400.php');
 	exit();

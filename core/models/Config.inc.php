@@ -245,6 +245,84 @@ class Config extends Model {
 	public function getBase(){
 		return $this->s_base;
 	}
+	
+	public function getLoginRedirect(){
+	 $s_page = $this->getBase().'index/view';
+	 
+	 if( $this->service_Settings->exists('main/login') ){
+	  $s_page = $this->getBase().$this->service_Settings->get('main/login');
+	 }
+	 
+	 return $s_page;
+	}
+	
+	public function getLogoutRedirect(){
+	 $s_page = $this->getBase().'index/view';
+	
+	 if( $this->service_Settings->exists('main/logout') ){
+	  $s_page = $this->getBase().$this->service_Settings->get('main/logout');
+	 }
+	
+	 return $s_page;
+	}
+	
+	public function getRegistrationRedirect(){
+	 $s_page = $this->getBase().'index/view';
+	
+	 if( $this->service_Settings->exists('main/registration') ){
+	  $s_page = $this->getBase().$this->service_Settings->get('main/registration');
+	 }
+	
+	 return $s_page;
+	}
+	
+	/**
+	 * Returns if the normal login is activated
+	 * 
+	 * @return boolean True if the normal login is activated
+	 */
+	public function isNormalLogin(){
+	 if( !$this->service_Settings->exists('login/normalLogin') || $this->service_Settings->get('login/normalLogin') != 1 ){
+	  return false;
+	 }
+	 return true;
+	}
+	
+	/**
+	 * Returns if the facebook login is activated
+	 *
+	 * @return boolean True if the facebook login is activated
+	 */
+	public function isFacebookLogin(){
+	 if( !$this->service_Settings->exists('login/facebook') || $this->service_Settings->get('login/facebook') != 1 ){
+	  return false;
+	 }
+	 return true;
+	}
+	
+	/**
+	 * Returns if the openOD login is activated
+	 *
+	 * @return boolean True if the openID login is activated
+	 */
+	public function isOpenIDLogin(){
+	 if( !$this->service_Settings->exists('login/openID') || $this->service_Settings->get('login/openID') != 1 ){
+	  return false;
+	 }
+	 return true;
+	}
+	
+	/**
+	 * Returns if the LDAP login is activated
+	 *
+	 * @return boolean True if the LDAP login is activated
+	 */
+	public function isLDAPLogin(){
+	 if( !$this->service_Settings->exists('login/ldap') || $this->service_Settings->get('login/ldap') != 1 ){
+	  return false;
+	 }
+	 return true;
+	}
 }
 
 ?>

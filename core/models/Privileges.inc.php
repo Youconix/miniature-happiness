@@ -26,6 +26,7 @@ namespace core\models;
  * along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
  */
 class Privileges {
+	private $service_Headers;
 	private $model_Config;
 	private $service_QueryBuilder;
 	private $service_Session;
@@ -34,12 +35,14 @@ class Privileges {
 	/**
 	 * PHP 5 constructor
 	 *
+	 * @param core\services\Headers		 $service_Headers		The header service
 	 * @param core\services\QueryBuilder $service_QueryBuilder The query builder
 	 * @param core\models\Groups $model_Groups The groups model
 	 * @param core\services\Session $service_Session The session service
 	 * @param core\models\Config $model_Config The config model
 	 */
-	public function __construct( \core\services\QueryBuilder $service_QueryBuilder, \core\models\Groups $model_Groups, \core\services\Session $service_Session, \core\models\Config $model_Config ){
+	public function __construct(\core\services\Headers $service_Headers,\core\services\QueryBuilder $service_QueryBuilder, \core\models\Groups $model_Groups, \core\services\Session $service_Session, \core\models\Config $model_Config ){
+		$this->service_Headers = $service_Headers;
 		$this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
 		$this->model_Groups = $model_Groups;
 		$this->service_Session = $service_Session;
@@ -94,14 +97,17 @@ class Privileges {
 		$this->checkFingerprint($s_page);
 		
 		/* Check fingerprint */		
+		$i_userid = $this->service_Session->get('userid');
 		$i_userLevel = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
 		
 		if( ($i_userLevel < $i_level) ){
 			/*
 			 * Insuffient rights or no access too the group No access
 			 */
-			header("HTTP/1.1 403 Forbidden");
-			\core\Memory::redirect('errors/403.php');
+			$this->service_Headers->http403();
+			$this->service_Headers->printHeaders();
+			include(NIV.'errors/403.php');
+			exit();
 		}
 		
 		$this->checkCommand($i_commandLevel, $i_userid);
@@ -115,14 +121,19 @@ class Privileges {
 	 * @param String $s_page The current page
 	 */
 	private function checkloginStatus( $s_page ){
-		if( !$this->service_Session->exists('login') ){
-			header('HTTP/1.1 401 Autorisation required');
-			if( !isset($_REQUEST['AJAX']) || $_REQUEST['AJAX'] != true ){
-				$this->set('page', $s_page);
-				\core\Memory::redirect('login');
-			}
-			die();
+		if( $this->service_Session->exists('login') ){
+			return;
 		}
+
+		$this->service_Headers->http401();
+			
+		if( $this->model_Config->isAjax() ){
+			$this->service_Headers->printHeaders();
+			die();			
+		}
+				
+		$this->service_Session->set('page', $s_page);
+		$this->service_Headers->redirect($this->model_Config->getBase().'authorization/login/index');
 	}
 	
 	/**
@@ -135,8 +146,8 @@ class Privileges {
 			$this->service_Session->destroyLogin();
 			
 			$this->set('page', $s_page);
-			header('HTTP/1.1 401 Autorisation required');
-			\core\Memory::redirect('login');
+			$this->service_Headers->http401();
+			$this->service_Headers->redirect($this->model_Config->getBase().'authorization/login/index');
 		}
 	}
 	
@@ -160,19 +171,21 @@ class Privileges {
 			));
 			$service_Database = $this->service_QueryBuilder->getResult();
 			if( $service_Database->num_rows() > 0 ){
-				$i_level = (int) $service_Database->result(0, 'minLevel');
+				$i_commandLevel = (int) $service_Database->result(0, 'minLevel');
 				$i_group = (int) $service_Database->result(0, 'groupID');
 				
-				$i_commandLevel = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
+				$i_level = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
 			}
 		}
 		
-		if( $i_commandLevel < $i_level ){
+		if( ($i_commandLevel != -1) && ($i_level < $i_commandLevel) ){
 			/*
 			 * Insuffient rights No access
 			 */
-			header("HTTP/1.1 403 Forbidden");
-			\core\Memory::redirect('errors/403.php');
+			$this->service_Headers->http403();
+			$this->service_Headers->printHeaders();
+			require(NIV.'errors/403.php');
+			exit();
 		}
 	}
 }

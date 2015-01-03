@@ -3,3 +3,5 @@
 <h2>{titles}</h2>
 
 <p>{notice}</p>
+
+<p>{debug_notice}</p>

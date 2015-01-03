@@ -48,7 +48,7 @@ class Session extends Service{
    * @param core\services\QueryBuilder  $service_QueryBuilder The query builder
    */
   public function __construct(\core\services\Settings $service_Settings,\core\services\QueryBuilder $service_QueryBuilder){
-    $this->service_QueryBuilder = $service_QueryBuilder;
+    $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
     $s_sessionSetName = $service_Settings->get('settings/session/sessionName');
     $s_sessionSetPath = $service_Settings->get('settings/session/sessionPath');
     $s_sessionExpire = $service_Settings->get('settings/session/sessionExpire');

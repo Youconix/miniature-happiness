@@ -173,48 +173,7 @@ class User extends GeneralUser {
 
 		return $a_result;
 	}
-
-	/**
-	 * Registers the login try
-	 *
-	 * @return int	The number of tries done including this one
-	 */
-	public function registerLoginTries(){
-		$s_fingerprint	= $this->service_Session->getFingerprint();
-			
-		$this->service_QueryBuilder->select('login_tries','tries')->getWhere()->addAnd('hash','s',$s_fingerprint);
-		$service_Database = $this->service_QueryBuilder->getResult();
-
-		if( $service_Database->num_rows() == 0 ){
-			$i_tries	= 1;
-			$this->service_QueryBuilder->select('login_tries','tries')->getWhere()->addAnd(array('ip','timestamp'),array('s','i','i'),array($_SERVER['REMOTE_ADDR'],time(),(time()-3)),array('=','BETWEEN'));
-			$service_Database = $this->service_QueryBuilder->getResult();
-			if( $service_Database->num_rows() > 10 ){
-				$i_tries	= 6; //reject login to be sure
-      }
-
-			$this->service_QueryBuilder->insert('login_tries', array('hash','ip','tries','timestamp'),array('s','s','i','i'),array($s_fingerprint,$_SERVER['REMOTE_ADDR'],1,time()))->getResult();
-
-			return $i_tries;
-		}
-		else {
-			$i_tries	= ($service_Database->result(0,'tries')+1);
-			$this->service_QueryBuilder->update('login_tries','tries','l','tries + 1')->getWhere()->addAnd('hash','s',$s_fingerprint);
-			$this->service_QueryBuilder->getResult();
-			return $i_tries;
-		}
-	}
-
-	/**
-	 * Clears the login tries
-	 */
-	public function clearLoginTries(){
-		$s_fingerprint	= $this->service_Session->getFingerprint();
-
-		$this->service_QueryBuilder->delete('login_tries')->getWhere()->addAnd('hash','s',$s_fingerprint);
-		$this->service_QueryBuilder->getResult();
-	}
-
+	
 	/**
 	 * Changes the saved password
 	 *

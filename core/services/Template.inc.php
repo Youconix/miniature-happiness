@@ -77,12 +77,11 @@ class Template extends Service{
         $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/default.tpl';
       }
 
-      if( $this->service_File->exists(NIV . $s_url) ){
-        $this->s_layout = $this->service_File->readFile(NIV . $s_url);
+      if( !$this->service_File->exists(NIV . $s_url) ){
+       throw new \TemplateException('Can not load layout ' . $s_url);
       }
-      else {
-        throw new \TemplateException('Can not load layout ' . $s_url);
-      }
+      
+      $this->s_layout = $this->service_File->readFile(NIV . $s_url);
     }
 
     $this->loadView();
@@ -149,6 +148,9 @@ class Template extends Service{
 	
 	$s_template = TEMPLATE;
       }
+    }
+    else {
+     $s_template = str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
     }
     
     if( substr($s_template, - 4) != '.tpl' ){ $s_template .= '.tpl';  }

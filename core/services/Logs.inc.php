@@ -118,8 +118,8 @@ class Logs extends Service{
    * @throws	Exception when the log can not be written
    */
   public function setLog($s_name, $s_log, $s_date = ''){
-    Memory::type('string', $s_name);
-    Memory::type('string', $s_log);
+    \core\Memory::type('string', $s_name);
+    \core\Memory::type('string', $s_log);
 
     if( $s_name == 'error' ){
       $this->errorLog($s_log);
@@ -147,8 +147,8 @@ class Logs extends Service{
    * @throws IOException when the log does not exist or is not readable
    */
   public function readLog($s_name, $s_date = ''){
-    Memory::type('string', $s_name);
-    Memory::type('string', $s_date);
+    \core\Memory::type('string', $s_name);
+    \core\Memory::type('string', $s_date);
 
     $s_address = $this->makeAddress($s_name, $s_date);
 
@@ -167,8 +167,8 @@ class Logs extends Service{
    * @throws IOException when the log does not exist
    */
   public function deleteLog($s_name, $s_date = ''){
-    Memory::type('string', $s_name);
-    Memory::type('string', $s_date);
+    \core\Memory::type('string', $s_name);
+    \core\Memory::type('string', $s_date);
 
     $s_address = $this->makeAddress($s_name, $s_date);
 
@@ -187,8 +187,8 @@ class Logs extends Service{
    * @throws IOException when the log does not exist
    */
   public function downloadLog($s_name, $s_date = ''){
-    Memory::type('string', $s_name);
-    Memory::type('string', $s_date);
+    \core\Memory::type('string', $s_name);
+    \core\Memory::type('string', $s_date);
 
     $s_address = $this->makeAddress($s_name, $s_date);
 
@@ -234,8 +234,8 @@ class Logs extends Service{
    * @return boolean True if the log exists, otherwise false
    */
   public function checkLog($s_name, $s_date = ''){
-    Memory::type('string', $s_name);
-    Memory::type('string', $s_date);
+    \core\Memory::type('string', $s_name);
+    \core\Memory::type('string', $s_date);
 
     $s_address = $this->makeAddress($s_name, $s_date);
 

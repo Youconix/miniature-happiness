@@ -35,6 +35,7 @@ class Authorization extends Service{
   protected $service_Session;
   protected $service_Mailer;
   protected $service_Random;
+  protected $service_Headers;
 
   /**
    * Inits the service Autorization
@@ -45,9 +46,10 @@ class Authorization extends Service{
    * @param \core\services\Session       $service_Session       The session service
    * @param \core\services\Mailer        $service_Mailer        The mailer service
    * @param \core\services\Random        $service_Random        The random service
+   * @param \core\services\Headers       $service_Headers       The headers service
    */
   public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs,
-   \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random){
+   \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random,\core\services\Headers $service_Headers){
     $this->s_openID_dir = NIV . 'core/openID/';
     require_once($this->s_openID_dir . 'OpenAuth.inc.php');
 
@@ -58,6 +60,7 @@ class Authorization extends Service{
     $this->service_Session  = $service_Session;
     $this->service_Mailer = $service_Mailer;
     $this->service_Random = $service_Random;
+    $this->service_Headers = $service_Headers;
   }
 
   /**
@@ -147,10 +150,6 @@ class Authorization extends Service{
 			throw $e;
 		}
 	}
-  
-  public function checkAutologin(){
-    
-  }
 
   /**
    * Logs the user in
@@ -213,10 +212,55 @@ class Authorization extends Service{
       $this->service_QueryBuilder->insert('autologin', array( 'userID', 'username', 'type', 'IP' ), array( 'i', 's', 's', 's' ), array( $a_data[ 0 ][ 'id' ], $a_data[ 0 ][ 'nick' ], $a_data[ 0 ][ 'userType' ], $_SERVER[ 'REMOTE_ADDR' ] ));
       $service_Database = $this->service_QueryBuilder->getResult();
 
-      $a_data[ 0 ][ 'autologin' ] = $service_Database->getID();
+      $s_fingerprint = $this->service_Session->getFingerprint();
+      $this->service_Cookie->set('autologin', $s_fingerprint . ';' . $service_Database->getID(), '/');
+    }
+    
+    if( $a_data[0]['expired'] == 1 ){
+     $this->service_Session->set('expired', $a_data[0]);
+     $this->service_Headers->redirect('/authorisation/login/expired');
     }
 
-    return $a_data[ 0 ];
+    $this->setLogin($a_data[0]);
+  }
+
+  public function checkAutologin(){
+   if( !$this->service_Cookie->exists('autologin') ){
+    return;
+   }
+    
+   $s_fingerprint = $this->service_Session->getFingerprint();
+   $a_data = explode(';', $this->service_Cookie->get('autologin'));
+    
+   if( $a_data[0] != $s_fingerprint ){
+    $this->service_Cookie->delete('autologin', '/');
+    return;
+   }
+    
+   /* Check auto login */
+   $a_login = $this->performAutoLogin($a_data[1]);
+   if( is_null($a_login) ){
+    $this->service_Cookie->delete('autologin', '/');
+    return;
+   }
+    
+   $this->service_Cookie->set('autologin', implode(';', $a_data), '/');
+   $this->setLogin($a_login);
+  }
+  
+  private function setLogin($a_login){
+   $s_redirection = '/';
+   
+   if( $this->service_Session->exists('page') ){
+    if( $this->service_Session->get('page') != 'logout.php' )
+     $s_redirection = $this->service_Session->get('page');
+     
+    $this->service_Session->delete('page');
+   }
+   
+   $this->service_Session->setLogin($a_data['id'], $a_data['nick'], $a_data['lastLogin']);
+   
+   header('location: ' . $s_page);
   }
 
   /**
