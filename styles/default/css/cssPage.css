@@ -9,9 +9,22 @@ body {
 	background: o-gradient(#e5e5e5,#FFF);
 	background: ms-linear-gradient(#e5e5e5,#FFF);
 	background: linear-gradient(#e5e5e5,#FFF);	
+	
+	color: #111;
+}
+a {
+	color: #111;
+	text-decoration: underline;
 }
 
 table { border-collapse:collapse }
+
+input[type=text], input[type=email], input[type=url],
+	input[type=date], input[type=password], textarea {
+		border-radius: 5px;
+		display: inline-block;
+		margin-bottom: 2px;
+}
 
 .notice {
 	color:green;
@@ -67,12 +80,8 @@ nav li {
 nav li:hover {
 	border:2px inset  #e8cbcb;
 }
-nav li a, footer a { color:#efecec; font-weight:bold; }
-nav li a:hover { color:#111;}
+nav li a, footer a { color:#111; font-weight:bold;  text-decoration: none;}
 #content { min-height:400px; height:auto; margin-bottom:20px; }
-a {
-	text-decoration:none;
-}
 li {
 	list-style-type:none;
 }
@@ -138,3 +147,20 @@ noscript {
 	font-weight:bold;
 }
 .textRight { text-align:right; }
+
+#registration {
+	margin-left: 2em;
+	width: 90%;
+}
+
+
+#registration tr td:first-child {
+	width:200px;
+	padding-left:1em;
+}
+
+.icon {
+	width: 25px;
+	height: 25px;
+	padding-right: 5px;
+}

@@ -3,12 +3,12 @@
 	
 	<h2 id="errorNotice" class="errorNotice">{errorNotice}</h2>
 
-	<form action="registration.php" method="post" onsubmit="return site.checkRegistration()">
+	<form action="{NIV}authorization/registration/save" method="post" onsubmit="return site.checkRegistration()">
 		<table id="registrationForm">
 		<tbody>
 			<tr>
 				<td><label>{nickText} *</label></td>
-				<td><input type="text" name="nick" id="reg_nick" value="{nick}" onblur="site.checkUsername(this.value)" required></td>
+				<td><input type="text" name="nick" id="reg_nick" value="{nick}" required data-error-message="De gebruikersnaam is niet ingevuld"></td>
 			</tr>
 			<tr>
 				<td><label>{emailText} *</label></td>
@@ -42,7 +42,8 @@
 			</tr>
 			<block {openID}>
 			<tr>
-				<td colspan="2"><a href="{NIV}authorization/registration_{key}.php"><img src="{NIV}{style_dir}images/icons/{image}.png" alt="{key}" title="{key}">{text}</a></td>
+				<td colspan="2"><a href="{NIV}authorization/registration_{key}.php">
+				<img class="icon" src="{NIV}{style_dir}images/icons/{image}.png" alt="{key}" title="{key}">{text}</a></td>
 			</tr>
 			</block>
 			</tbody>
