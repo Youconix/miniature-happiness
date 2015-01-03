@@ -22,15 +22,9 @@ class Error404 extends \includes\BaseLogicClass {
 	 * Starts the class Error504
 	 */
 	public function __construct(){
-		$this->init();
-		 
+		parent::__construct();
+		
 		$this->displayError();
-		 
-		$this->header();
-		 
-		$this->menu();
-		 
-		$this->footer();
 	}
 
 	private function displayError(){
@@ -41,6 +35,14 @@ class Error404 extends \includes\BaseLogicClass {
 		$this->service_Template->set('title',$service_Language->get('language/errors/error404/notFound'));
 
 		$this->service_Template->set('notice',$service_Language->get('language/errors/error404/pageMissing'));
+		
+		if( defined('DEBUG') ){
+			echo('tester');
+			print_r($_SESSION);
+		}
+		if( defined('DEBUG') && isset($_SESSION['error']) ){
+			$this->service_Template->set('debug_notice',$_SESSION['error']);
+		}
 	}
 }
 

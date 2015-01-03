@@ -11,10 +11,11 @@
  * @date made:		01-05-2010
  * @date last changed:	02-05-2010
  */
-define('NIV','../');
-require(NIV.'include/BaseLogicClass.php');
+if( !class_exists('\includes\BaseLogicClass') ){
+	require(NIV.'includes/BaseLogicClass.php');
+}
 
-class Error500 extends BaseLogicClass { 	
+class Error500 extends \includes\BaseLogicClass { 	
     /**
      * Starts the class Error504
      */
@@ -34,7 +35,7 @@ class Error500 extends BaseLogicClass {
 	 * Defines the level constant for the GUI
 	 */
 	protected function defineLevel(){
-		$s_page = str_replace(Memory::getBase(), '', $_SERVER['REQUEST_URI']);
+		$s_page = str_replace(\core\Memory::getBase(), '', $_SERVER['REQUEST_URI']);
 		if( substr($s_page,0,1) == '/' )	$s_page = substr($s_page,1);
 
 		$i_number = count(explode('/', $s_page));
@@ -54,11 +55,11 @@ class Error500 extends BaseLogicClass {
     private function displayError(){
         header("HTTP/1.1 500 Internal Server Error");
         
-        $service_Language	= Memory::services('Language');
+        $service_Language	= \core\Memory::services('Language');
 
         $this->service_Template->set('title',$service_Language->get('language/errors/error500/serverError'));
 
-        $this->service_Template->set('notice',$service_Language->get('language/errors/error500/systemError'));        
+        $this->service_Template->set('notice',$service_Language->get('language/errors/error500/systemError'));
     }
 }
 
