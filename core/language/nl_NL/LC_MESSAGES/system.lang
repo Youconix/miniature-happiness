@@ -261,32 +261,15 @@
 	</buttons>
 	
 	<menu>
-		<home>Home</home>
-       		<login>Inloggen</login>
-       		<logout>Uitloggen</logout>
-       		<adminPanel>Beheer paneel</adminPanel>
-    	</menu>
+		<adminPanel>Beheer paneel</adminPanel>
+    </menu>
 
 	<header>
 		<userWelcome>Welkom </userWelcome>
 		<adminWelcome>Welkom admin </adminWelcome>
 	</header>
 
-	<login>
-		<title></title>
-		<username>Gebruikersnaam </username>
-		<password>Wachtwoord</password>
-		<button>Inloggen</button>
-		<registration>Registreren</registration>
-		<forgotPassword>Wachtwoord vergeten</forgotPassword>
-		<editPassword>Wachtwoord aanpassen</editPassword>
-		<currentPassword>Huidige wachtwoord</currentPassword>
-		<newPassword>Nieuwe wachtwoord</newPassword>
-		<newPasswordAgain>Nieuwe wachtwoord herhalen</newPasswordAgain>
-		<currentPasswordIncorrect>Het oude wachtwoord is incorrect.</currentPasswordIncorrect>
-		<autologin>Automatisch inloggen</autologin>
-		<loginWith>Inloggen met</loginWith>
-	</login>
+	
 	<logout>
 		<title></title>
 		<logoutSucceed>U Bent uitgelogd.</logoutSucceed>
@@ -327,19 +310,4 @@
       <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
     </notices>
   </messages>
-	
-	<errors>
-		<error403>
-			<accessDenied>Verboden toegang.</accessDenied>
-			<noRights>Je hebt niet de benodigde rechten om deze pagina te bekijken.</noRights>
-		</error403>
-		<error404>
-			<notFound>Pagina niet gevonden.</notFound>
-			<pageMissing>De opgevraagde pagina is onvindbaar op deze server.</pageMissing>
-		</error404>
-		<error500>
-			<serverError>Oeps er ging iets fout.</serverError>
-			<systemError>Er heeft zich een fout voorgedaan op deze pagina. De administrator is gewaarschuwd.</systemError>
-		</error500>
-	</errors>
 </system>

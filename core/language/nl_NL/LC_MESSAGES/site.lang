@@ -58,4 +58,38 @@
 		<resetSuccess>Er is een wachtwoord reset email verstuurd naar [email].</resetSuccess>	
        		<openID>Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk.</openID>   
 	</forgotPassword>
+	<login>
+        <title></title>
+        <button>Inloggen</button>
+        <registration>Registreren</registration>
+        <forgotPassword>Wachtwoord vergeten</forgotPassword>
+        <editPassword>Wachtwoord aanpassen</editPassword>
+        <currentPassword>Huidige wachtwoord</currentPassword>
+        <newPassword>Nieuwe wachtwoord</newPassword>
+        <newPasswordAgain>Nieuwe wachtwoord herhalen</newPasswordAgain>
+        <currentPasswordIncorrect>Het oude wachtwoord is incorrect.</currentPasswordIncorrect>
+        <autologin>Automatisch inloggen</autologin>
+        <loginFacebook>Inloggen met Facebook</loginFacebook>
+        <loginOpenID>Inloggen met openID</loginOpenID>
+    </login>
+    <menu>
+        <home>Home</home>
+        <registration>Registreren</registration>
+        <login>Inloggen</login>
+        <logout>Uitloggen</logout>
+    </menu>
+	<errors>
+        <error403>
+            <accessDenied>Verboden toegang.</accessDenied>
+            <noRights>Je hebt niet de benodigde rechten om deze pagina te bekijken.</noRights>
+        </error403>
+        <error404>
+            <notFound>Pagina niet gevonden.</notFound>
+            <pageMissing>De opgevraagde pagina is onvindbaar op deze server.</pageMissing>
+        </error404>
+        <error500>
+            <serverError>Oeps er ging iets fout.</serverError>
+            <systemError>Er heeft zich een fout voorgedaan op deze pagina. De administrator is gewaarschuwd.</systemError>
+        </error500>
+    </errors>
 </language>
