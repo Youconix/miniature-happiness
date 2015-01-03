@@ -4,6 +4,9 @@ RewriteBase /
 
 RewriteRule "^(.*/)?\.git/" - [F,L]
 
+RedirectMatch seeother ^/login(\.php)? /authorization/login/index
+RedirectMatch seeother ^/registration(\.php)? /authorization/registration/index
+
 RewriteRule ^index.php$ /router.php?router=index/view [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f

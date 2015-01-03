@@ -83,7 +83,7 @@ abstract class BaseClass {
 			$this->service_Template = Memory::services('Template');
 			
 			$s_language = Memory::services('Language')->getLanguage();
-			$this->service_Template->headerLink('<script src="' . NIV . 'js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
+			$this->service_Template->headerLink('<script src="{NIV}js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
 			
 			if( !Memory::isAjax() ){
 				$this->loadView();
@@ -193,7 +193,7 @@ function exception_handler( $exception ){
 	}
 	
 	if( defined('DEBUG') ){
-		header('HTTP/1.1 503 Internal Server Error');
+		header('HTTP/1.1 500 Internal Server Error');
 		echo ('<!DOCTYPE html>
 		<html>
 		<head>
@@ -216,8 +216,8 @@ function exception_handler( $exception ){
 	}
 	
 	if( stripos($_SERVER["SCRIPT_NAME"], 'errors/500.php') === false ){
-		header('location: ' . NIV . 'errors/500.php');
-		exit();
+		//header('location: ' . NIV . 'errors/500.php');
+		//exit();
 	}
 }
 

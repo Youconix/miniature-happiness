@@ -22,7 +22,9 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV','./');
+if (! defined('NIV')) {
+define('NIV','../');
+}
 include(NIV.'core/BaseLogicClass.php');
 
 class Login extends \core\BaseLogicClass  {

@@ -51,7 +51,7 @@ function populateQuery($s_query){
 define('NIV','./');
 
 $s_router	= $_GET['router'];
-if( substr($s_router,-1) == '/' ){
+while( substr($s_router,-1) == '/' ){
   $s_router = substr($s_router,0,-1);
 }
 
