@@ -57,7 +57,7 @@ class Header{
       $s_welcome = $this->service_Language->get('system/header/adminWelcome');
     }
     else {
-      $s_welcome = $this->service_Language->get('header/userWelcome');
+      $s_welcome = $this->service_Language->get('system/header/userWelcome');
     }
 
     $this->service_Template->set('welcomeHeader', '<a href="{NIV}profile/view/details/id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
