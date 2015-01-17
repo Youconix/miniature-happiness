@@ -71,15 +71,14 @@ class Mailer extends Service{
    * Sends the registration activation email
    *
    * @param String $s_username			The username
-   * @param String $s_password			The plain text password
    * @param String $s_email				The email address
    * @param String $s_registrationKey		The activation code
    * @return Boolean	True if the email is send
    */
-  public function registrationMail($s_username, $s_password, $s_email, $s_registrationKey){
+  public function registrationMail($s_username, $s_email, $s_registrationKey){
     $a_mail = $this->getMail('registration');
-    $s_body = $this->service_Language->insert($a_mail[ 'body' ], array( 'username', 'password', 'code' ), array( $s_username, $s_password, $s_registrationKey ));
-    $s_bodyAlt = $this->service_Language->insert($a_mail[ 'bodyAlt' ], array( 'username', 'password', 'code' ), array( $s_username, $s_password, $s_registrationKey ));
+    $s_body = $this->service_Language->insert($a_mail[ 'body' ], array( 'username', 'code' ), array( $s_username, $s_registrationKey ));
+    $s_bodyAlt = $this->service_Language->insert($a_mail[ 'bodyAlt' ], array( 'username', 'code' ), array( $s_username, $s_registrationKey ));
 
     $obj_mailer = $this->getMailer();
     $obj_mailer->addAddress($s_email, $s_username);
@@ -213,7 +212,7 @@ class Mailer extends Service{
     if( empty($s_language) ) $s_language = $this->s_language;
 
     if( !$this->service_File->exists(NIV . 'emails/' . $s_language . '/' . $s_code . '.tpl') ){
-      throw new Exception("Can not find the email template " . $s_code . " for language " . $this->s_language);
+      throw new \Exception("Can not find the email template " . $s_code . " for language " . $this->s_language);
     }
 
     $a_file = explode('<==========>', $this->service_File->readFile(NIV . 'emails/' . $s_language . '/' . $s_code . '.tpl'));

@@ -151,7 +151,7 @@ class Privileges {
 		if( !$this->service_Session->exists('fingerprint') || ($this->service_Session->get('fingerprint') != $this->service_Session->getFingerprint()) ){
 			$this->service_Session->destroyLogin();
 			
-			$this->set('page', $s_page);
+			$this->service_Session->set('page', $s_page);
 			$this->service_Headers->http401();
 			$this->service_Headers->redirect('authorization/login/index');
 		}

@@ -42,7 +42,7 @@ class Data_User extends \core\models\GeneralUser{
   protected $s_activation = '';
   protected $i_level;
   protected $s_loginType;
-  protected $s_language;
+  protected $s_language = '';
 
   /**
    * PHP5 constructor
@@ -69,9 +69,8 @@ class Data_User extends \core\models\GeneralUser{
         's_password' => array('type'=>'string','required'=>1),
         's_profile' => array('type'=>'string'),
         's_activation' => array('type'=>'string'),
-        'i_level' => array('type'=>'enum','set'=>array(0,1,2)),
         's_loginType' => array('type'=>'string','required'=>1),
-        's_language' => array('type'=> 'string','required'=>1)
+        's_language' => array('type'=> 'string')
     );
   }
 

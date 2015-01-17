@@ -21,7 +21,7 @@ class PasswordForm extends Helper {
 			</tr>
 			<tr>
 				<td><label>'.$this->service_Language->get('system/admin/users/passwordAgain').'</label></td>
-				<td><input type="password" id="password2" required></td>
+				<td><input type="password" name="password2" id="password2" required></td>
 				<td id="passwordStrengthText"></td>
 			</tr>
 		</tbody>

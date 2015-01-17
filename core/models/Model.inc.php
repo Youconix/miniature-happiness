@@ -120,9 +120,19 @@ abstract class Model{
         $a_error[] = 'Required field ' . $s_key . ' is not filled in.';
       }
 
-      if( array_key_exists('pattern', $this->a_validation[ $s_key ]) && !is_null($this->s_key) && trim($this->s_key) != '' ){
-        if( ($this->a_validation[ $s_key ][ 'pattern' ] == 'email' && !$this->service_Security->checkEmail($this->$s_key)) || ($this->a_validation[ $s_key ][ 'pattern' ] == 'url' &&
-          !$this->service_Security->checkURI($this->$s_key)) || (!preg_match("/" . $this->a_validation[ $s_key ][ 'pattern' ] . "/", $this->$s_key)) ){
+      if( array_key_exists('pattern', $this->a_validation[ $s_key ]) && !is_null($this->$s_key) && trim($this->$s_key) != '' ){
+        $bo_pattern = true;
+        if( !in_array($this->a_validation[$s_key]['pattern'],array('email','url')) &&  !preg_match("/" . $this->a_validation[ $s_key ][ 'pattern' ] . "/", $this->$s_key) ){
+            $bo_pattern = false;
+        }
+        else if( ($this->a_validation[ $s_key ][ 'pattern' ] == 'email' && !$this->service_Security->checkEmail($this->$s_key)) ){
+            $bo_pattern = false;
+        } 
+         else if(  $this->a_validation[ $s_key ][ 'pattern' ] == 'url' &&  !$this->service_Security->checkURI($this->$s_key)) {
+             $bo_pattern = false;
+         }
+         
+         if( !$bo_pattern ){   
           $a_error[] = "Field " . $s_key . " does not match pattern " . $this->a_validation[ $s_key ][ 'pattern' ] . ".";
         }
       }

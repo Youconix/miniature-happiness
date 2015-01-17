@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * Registration page
  *
@@ -29,7 +29,7 @@ include(NIV.'includes/BaseLogicClass.php');
 use \core\services\Language;
 
 class Registration extends \core\BaseLogicClass {
-	private $service_Authorization;
+	private $model_registration;
 	private $a_data;
 	private $s_notice;
 
@@ -65,12 +65,6 @@ class Registration extends \core\BaseLogicClass {
 		else {
 			$this->form();
 		}
-
-		$this->header();
-
-		$this->menu();
-
-		$this->footer();
 	}
 
 	/**
@@ -108,7 +102,9 @@ class Registration extends \core\BaseLogicClass {
         	);
         	$this->s_notice     = '';
 
-        	$this->service_Authorization	= \core\Memory::services('Authorization');
+        	$this->model_registration	= \core\Memory::models('Registration');
+        	
+        	$this->service_Template->setJavascriptLink('<script src="{NIV}/js/registration.js"></script>');
 	}
 
 	/**
@@ -158,7 +154,7 @@ class Registration extends \core\BaseLogicClass {
 
 		/* Register user */
 		$this->a_data['username']	= $this->a_data['nick'];
-		if( !$this->service_Authorization->registerNormal($this->a_data) ){
+		if( !$this->model_registration->register($this->a_data) ){
 			$this->service_Template->set('errorNotice',$this->service_Language->get('language/registration/failed'));
 		}
 		else {

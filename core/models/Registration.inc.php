@@ -1,6 +1,6 @@
 <?php
 
-namespace core\services;
+namespace core\models;
 
 /**
  * Account authorization service
@@ -27,7 +27,7 @@ namespace core\services;
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Authorization extends Service{
+class Registration extends Model {
 
   protected $service_Cookie;
   protected $service_QueryBuilder;
@@ -36,6 +36,7 @@ class Authorization extends Service{
   protected $service_Mailer;
   protected $service_Random;
   protected $service_Headers;
+  protected $model_User;
 
   /**
    * Inits the service Autorization
@@ -49,7 +50,8 @@ class Authorization extends Service{
    * @param \core\services\Headers       $service_Headers       The headers service
    */
   public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs,
-   \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random,\core\services\Headers $service_Headers){
+   \core\services\Session $service_Session,\core\services\Mailer $service_Mailer,\core\services\Random $service_Random,\core\services\Headers $service_Headers,
+     \core\models\User $model_User){
     $this->s_openID_dir = NIV . 'core/openID/';
     require_once($this->s_openID_dir . 'OpenAuth.inc.php');
 
@@ -61,6 +63,7 @@ class Authorization extends Service{
     $this->service_Mailer = $service_Mailer;
     $this->service_Random = $service_Random;
     $this->service_Headers = $service_Headers;
+    $this->model_User = $model_User;
   }
 
   /**
@@ -73,9 +76,6 @@ class Authorization extends Service{
    */
   public function register($a_data, $bo_skipActivation = false){
     $s_username = $a_data[ 'username' ];
-    $s_forname = $a_data[ 'forname' ];
-    $s_nameBetween = $a_data[ 'nameBetween' ];
-    $s_surname = $a_data[ 'surname' ];
     $s_password = $a_data[ 'password' ];
     $s_email = $a_data[ 'email' ];
 
@@ -86,12 +86,10 @@ class Authorization extends Service{
 
       $obj_User = $this->model_User->createUser();
       $obj_User->setUsername($s_username);
-      $obj_User->setName($s_forname);
-      $obj_User->setNameBetween($s_nameBetween);
-      $obj_User->setSurname($s_surname);
-      $obj_User->setEmail($s_email);
+       $obj_User->setEmail($s_email);
       $obj_User->setPassword($s_password);
       $obj_User->setActivation($s_registrationKey);
+      $obj_User->setLoginType('normal');
       $obj_User->setBot(false);
       $obj_User->save();
 
