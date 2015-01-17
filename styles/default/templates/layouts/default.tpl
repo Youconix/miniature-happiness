@@ -11,15 +11,15 @@
 <body {autostart}>
 <section id="wrapper">
 	{noscript}
-    {[header]}
+    <include src="header.tpl">
     
-    {[menu]}
+    <include src="menu.tpl">
 
     <section id="content">
 	        {body_content}
     </section>
 
-    {[footer]}
+    <include src="footer.tpl">
 
     {statisticsImg}
 </section>

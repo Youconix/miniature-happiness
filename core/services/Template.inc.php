@@ -53,7 +53,25 @@ class Template extends Service{
     $this->service_File = $service_File;
     $this->model_Config = $model_Config;
     $this->s_templateDir = $model_Config->getTemplateDir();
-
+    
+    $this->model_Config->addObserver($this);
+    
+    $this->load();
+  }
+  
+  /**
+   * React on config change
+   */
+  public function update($model_Config){
+   $this->load();
+  }
+  
+  /**
+   * (re)loads the template parser
+   * 
+   * @throws \TemplateException  If the layout of view could not be loaded
+   */
+  private function load(){
     $this->a_blocks = array();
     $this->a_parser = array();
     $this->a_parts = array();
@@ -70,12 +88,7 @@ class Template extends Service{
 
     /* Load layout */
     if( !$this->model_Config->isAjax() ){
-      if( defined('LAYOUT') ){
-        $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . LAYOUT . '.tpl';
-      }
-      else {
-        $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/default.tpl';
-      }
+      $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/'.$this->model_Config->getLayout().'.tpl';
 
       if( !$this->service_File->exists(NIV . $s_url) ){
        throw new \TemplateException('Can not load layout ' . $s_url);
@@ -171,6 +184,29 @@ class Template extends Service{
     else {
       $this->s_template = $s_view;
     }
+    
+    $this->parse();
+  }
+  
+  /**
+   * Parses the template
+   * 
+   * @throws \TemplateException If the included templates could not be found
+   */
+  private function parse(){
+   preg_match_all('/\<include src="([a-zA-Z\-_\.]+)"\>/',$this->s_template,$a_matches);
+   if( array_key_exists(1, $a_matches) ){
+    $s_dir = NIV.'styles/' . $this->s_templateDir . '/templates/';
+    
+    foreach( $a_matches[1] AS $s_include ){
+     if( !$this->service_File->exists($s_dir.$s_include) ){
+      throw new \TemplateException('Can not find included template '.$s_dir.$s_include.'.');
+     }
+     
+     $s_template = $this->service_File->readFile($s_dir.$s_include);
+     $this->s_template = str_replace('<include src="'.$s_include.'">', $s_template, $this->s_template);
+    }
+   }
   }
 
   /**
@@ -570,13 +606,107 @@ class Template extends Service{
       $i_pos = strpos($this->s_template, '<' . $s_key . ' {', $i_start);
     }
   }
+  
+  /**
+   * Writes the if blocks
+   *
+   * @throws TemplateException If the template is invalid
+   */
+  private function writeIFS(){
+   $i_start = preg_match_all('#<if#', $this->s_template, $a_matches);
+   $i_end = preg_match_all('#</if>#', $this->s_template, $a_matches);
+   
+   if( $i_start > $i_end ){
+    throw new \TemplateException("Template validation error : number of &lt;if&gt; is bigger than the number of &lt;/if>.");
+   }
+   else if( $i_end > $i_start ){
+    throw new \TemplateException("Template validation error : number of &lt;/if&gt; is bigger than the number of &lt;if&gt;.");
+   }
+   else if( $i_start == 0 ) return;
+   
+   /* Write parts to template */
+   foreach( $this->a_parts AS $s_part ){    
+    $i_start = strpos($this->s_template,'<if {'.$s_part.'}>',0);
+    while( $i_start  !== false ){
+     $this->s_template = substr_replace($this->s_template,'',$i_start,strlen('<if {'.$s_part.'}>'));
+     
+     $i_end = $this->findIfEnd($i_start);     
+     $this->s_template = substr_replace($this->s_template, '', $i_end,5);
+     
+     /* Check for matching else */
+     $this->removeElse(($i_end-5));
+     
+     $i_start = strpos($this->s_template,'<if {'.$s_part.'}>',$i_start);
+    }
+   }
+   
+   /* Check remaining parts for else items */
+   $i_start = strpos($this->s_template,'<else>',0);
+   while( $i_start !== false ){
+    $this->s_template = substr_replace($this->s_template, '', $i_start,6);    
+    $i_end = $this->findIfEnd($i_start,'else');
+    $this->s_template = substr_replace($this->s_template, '', $i_end,7);
+    
+    $i_start = strpos($this->s_template,'<else>',$i_start);
+   }
+   
+   
+   /* Remove unused if blocks */
+   $i_start = strpos($this->s_template,'<if',0);
+   while( $i_start !== false ){
+    $i_end = $this->findIfEnd($i_start);
+    $i_length = (($i_end+5) - $i_start);
+    
+    $this->s_template = substr_replace($this->s_template, '', $i_start,$i_length);
+    
+    $i_start = strpos($this->s_template,'<if',$i_start);
+   }
+  }
+  
+  private function removeElse($i_start){
+   $i_else = strpos($this->s_template, '<else>',$i_start);
+   if( $i_else === false ){ return; }
+   
+   /* find next if */
+   $i_nextIf = strpos($this->s_template,'<if',$i_start);
+   while( ($i_nextIf !== false) && ($i_nextIf  < $i_else) ){
+    $i_else = strpos($this->s_template, '<else>',$i_nextIf);
+    if( $i_else === false ){ return; }
+    
+    $i_nextIf = strpos($this->s_template,'<if',($i_nextIf+1));
+   }
+   
+   /* Remove else part */
+   $i_length = ($this->findIfEnd($i_else,'else')-$i_else+7);
+   $this->s_template = substr_replace($this->s_template,'', $i_else,$i_length);
+  }
+  
+  /**
+   * Finds the matching end-tag
+   * 
+   * @param int $i_start The position to start searching on
+   * @param string $s_key  The key to search on, default if
+   * @return The start position if the end tag, -1 if not found
+   */
+  private function findIfEnd($i_start,$s_key = 'if'){
+   $i_end = strpos($this->s_template,'</'.$s_key.'>',$i_start);
+   if( $i_end === false ){ return -1; }
+   
+   $i_nextIf = strpos($this->s_template,'<if {',($i_start+1));
+   while( ($i_nextIf !== false) && ($i_end > $i_nextIf) ){
+    $i_end = strpos($this->s_template,'</'.$s_key.'>',($i_end+1));
+    $i_nextIf = strpos($this->s_template,'<if {',($i_nextIf+1));
+   }
+   
+   return $i_end;
+  }
 
   /**
    * Writes the if blocks
    * 
    * @throws TemplateException
    */
-  private function writeIFS(){
+  private function writeIFSOld(){
     $a_matches = array();
     $i_start = preg_match_all('#<if#', $this->s_template, $a_matches);
     $i_end = preg_match_all('#</if>#', $this->s_template, $a_matches);
@@ -606,6 +736,14 @@ class Template extends Service{
         $this->a_partsUsed[] = $s_key;
       }
       else {
+        /* Check for else block */
+        $i_else = strpos($this->s_template,'<else>',$i_start);
+        $i_nextIf =  strrpos($this->s_template, '<if',$i_start);
+        
+        if( $i_else < $i_nextIf ){
+         echo('else found');
+        }
+       
         $this->s_template = substr_replace($this->s_template, '', $i_start, ($i_end - $i_start + 5));
       }
 

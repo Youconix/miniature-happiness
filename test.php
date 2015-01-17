@@ -1,17 +1,13 @@
+
 <?php
-define('NIV','./');
-define('PROCESS','true');
-define('DEBUG','true');
+$s_username = 'rachelle';
+$s_password = 'crazyrambo';
+$s_salt = 'fcc8fb01dc800fa60d3eebbb9685c587dcd465853aaa05677a74cd7bf133';
 
-class Test {
-	
-	public function __construct(){
-		require(NIV.'include/Memory.php');
-		\core\Memory::startUp();
-		
-		$helper_Calender = \core\Memory::helpers('Calender');
-		echo( $helper_Calender->generateCalender() );
-	}
-}
+$s_text = substr(md5(strtolower($s_username)), 5, 30) . $s_password;
 
-$obj_test = new Test();
+$a_options = array( 'salt' => $s_salt );
+
+$s_hash = password_hash($s_text, PASSWORD_BCRYPT, $a_options);
+echo($s_hash);
+?>

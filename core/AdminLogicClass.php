@@ -1,4 +1,6 @@
 <?php
+namespace core;
+
 /**
  * General admin GUI parent class
  * This class is abstract and should be inheritanced by every admin controller with a gui
@@ -26,25 +28,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once(NIV.'include/BaseClass.php');
+include_once(NIV.'core/BaseClass.php');
 
 abstract class AdminLogicClass extends BaseClass {
     protected $service_Security;
     protected $service_Session;
     protected $model_User;
     protected $s_language;
-
+    
+    public function __construct(){
+     $this->init();
+     
+     $this->checkAjax();
+    }
+    
+    protected function checkAjax(){
+     if( !\Core\Memory::models('Config')->isAjax() ){
+      exit();
+     }
+    }
+    
     /**
-     * Destructor
-     * 
-     * @see BaseClass::__destruct()
+     * Routes the controller
+     *
+     * @see Routable::route()
      */
-    public function __destruct(){
-        $this->service_Session  = null;
-        $this->model_User       = null;
-        $this->s_language       = null;
-
-        parent::__destruct();
+    public function route( $s_command ){
+     if( !method_exists($this, $s_command) ){
+      $_SESSION['error'] = 'missing method ' . $s_command;
+      include (NIV . 'errors/500.php');
+      exit();
+     }
+     
+     $this->$s_command();
+     
+     /* Call header */
+     Memory::loadClass('Header');
+     
+     /* Call Menus */
+     Memory::loadClass('Menu');
+     Memory::loadClass('MenuAdmin');
+     
+     /* Call footer */
+     Memory::loadClass('Footer');
     }
     
     /**
@@ -63,51 +89,10 @@ abstract class AdminLogicClass extends BaseClass {
         $this->model_User       = Memory::models('User');
         
         $this->s_language   = $this->service_Language->getLanguage();        
-        $this->service_Template->headerLink('<link rel="stylesheet" href="{style_dir}css/admin/cssAdmin.css"/>');
+        $this->service_Template->headerLink('<link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css"/>');
         $this->service_Template->headerLink('<script src="{NIV}js/admin/admin.php" type="text/javascript"></script>');
         if( !Memory::isAjax() )
         	$this->service_Template->set('noscript','<noscript>'.$this->service_Language->get('language/noscript').'</noscript>');
-    }
-
-    /**
-     * Displays the site header
-     */
-    protected function header(){
-        /* Call header */
-        include(NIV.'include/Header.php');
-        $obj_header = new Header();
-        unset($obj_header);
-    }
-
-    /**
-     * Displays the site and admin menu
-     */
-    protected function menu(){
-        /* Call Menu's */
-    	include(NIV.'include/Menu.php');
-    	if( file_exists(NIV.'include/Menu_override.php') ){
-    		include(NIV.'include/Menu_override.php');
-    		$obj_menu   = new MenuOverride();
-    	}
-    	else {
-    		$obj_menu   = new Menu();
-    	}
-    	
-    	unset($obj_menu);
-    	
-        include(NIV.'include/MenuAdmin.php');
-        $obj_menu   = new MenuAdmin();
-        unset($obj_menu);
-    }
-
-    /**
-     * Displays the site footer
-     */
-    protected function footer(){
-        /* Call footer */
-        include(NIV.'include/Footer.php');
-        $obj_footer = new Footer();
-        unset($obj_footer);
     }
 }
 

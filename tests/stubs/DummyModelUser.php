@@ -62,20 +62,6 @@ class DummyModelUser extends \core\models\User {
 	}
 
 	/**
-	 * Registers the login try
-	 *
-	 * @return int	The number of tries done including this one
-	 */
-	public function registerLoginTries(){
-	}
-
-	/**
-	 * Clears the login tries
-	 */
-	public function clearLoginTries(){
-	}
-
-	/**
 	 * Changes the saved password
 	 *
 	 * @param int		$i_userid		The user ID

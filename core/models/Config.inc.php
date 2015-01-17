@@ -35,6 +35,8 @@ class Config extends Model {
 	private $s_page;
 	private $s_protocol;
 	private $s_command = 'view';
+	private $s_layout = 'default';
+	private $a_observers = array();
 	
 	/**
 	 * PHP 5 constructor
@@ -51,6 +53,18 @@ class Config extends Model {
 		$this->loadTemplateDir();
 		
 		$this->setDefaultValues($service_Settings);
+	}
+	
+	public function addObserver($observer){
+	 $this->a_observers[] = $observer;
+	}
+	
+	private function notifyObservers(){
+	 foreach( $this->a_observers AS $observer ){
+	  if( !is_null($observer) ){
+	   $observer->update($this);
+	  }
+	 }
 	}
 	
 	/**
@@ -151,6 +165,10 @@ class Config extends Model {
 			}
 		}
 		$this->s_templateDir = $s_templateDir;
+		
+		if( defined('LAYOUT') ){
+		 $this->s_layout = LAYOUT;
+		}
 	}
 	
 	/**
@@ -192,6 +210,15 @@ class Config extends Model {
 	}
 	
 	/**
+	 * Returns the main template layout
+	 * 
+	 * @return String The layout
+	 */
+	public function getLayout(){
+	 return $this->s_layout;
+	}
+	
+	/**
 	 * Returns the used protocol
 	 *
 	 * @return String protocol
@@ -201,12 +228,36 @@ class Config extends Model {
 	}
 	
 	/**
+	 * Checks if the connection is via SSL/TSL
+	 * 
+	 * @return bool True if the connection is encrypted
+	 */
+	public function isSLL(){
+	 return ($this->getProtocol() == 'https://');
+	}
+	
+	/**
 	 * Returns the current page
 	 *
 	 * @return String page
 	 */
 	public function getPage(){
-		return $this->s_page;
+	  return $this->s_page;
+	}
+	
+	/**
+	 * Sets the current page
+	 * 
+	 * @param String $s_page The new page
+	 * @param String $s_command The new command
+	 * @parma String $s_layout  The new layout
+	 */
+	public function setPage($s_page,$s_command,$s_layout = 'default'){
+	  $this->s_page = $s_page;
+	  $this->s_command = $s_command;
+	  $this->s_layout = $s_layout;
+	  
+	  $this->notifyObservers();
 	}
 	
 	/**
@@ -234,6 +285,15 @@ class Config extends Model {
 	 */
 	public function getCommand(){
 		return $this->s_command;
+	}
+	
+	/**
+	 * Returns the server host
+	 * 
+	 * @return String The host
+	 */
+	public function getHost(){
+	 return $_SERVER['HTTP_HOST'];
 	}
 	
 	/**

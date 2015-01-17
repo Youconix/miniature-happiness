@@ -67,7 +67,7 @@ unset($_GET['router']);
 
 if( !file_exists($s_page.'.php') ){
 	@session_start();
-	$_SESSION['error'] = 'can not find page '.$s_page;
+	$_SESSION['error'] = 'HTTP 404 : can not find page '.$s_page;
 	include('errors/404.php');
 	exit();
 }
@@ -84,18 +84,38 @@ $s_className = UCfirst(end($a_class));
 
 if( !class_exists($s_className) ){
 	@session_start();
-	$_SESSION['error'] = 'class '.$s_className.' not found.';
-	include('errors/400.php');
+	$_SESSION['error'] = 'HTTP 500 : class '.$s_className.' not found.';
+	include('errors/404.php');
 	exit();
 }
 
-$obj_class = new $s_className();
-
-if( !is_subclass_of($obj_class,'Routable') ){
-	$_SESSION['error'] = 'class '.$s_className.' is not routable';
-	include('errors/500.php');
-	exit();
+try {
+ $obj_class = new $s_className();
+ 
+ if( !is_subclass_of($obj_class,'Routable') ){
+ 	$_SESSION['error'] = 'HTTP 500 : class '.$s_className.' is not routable';
+ 	include('errors/404.php');
+ 	exit();
+ }
+ 
+ if( !method_exists($obj_class, $s_command) ){
+    $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command;
+    include (NIV . 'errors/404.php');
+    exit();
+   }
+ 
+ $obj_class->route($s_command);
 }
-
-$obj_class->route($s_command);
+catch(TemplateException $e){
+ $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command.' on page '.$s_page.'.';
+ include (NIV . 'errors/404.php');
+ exit();
+}
+catch(Exception $e){
+ $_SESSION['error'] = $e->getMessage();
+ $_SESSION['errorObject'] = $e;
+ 
+ include(NIV.'errors/500.php');
+ exit();
+}
 ?>

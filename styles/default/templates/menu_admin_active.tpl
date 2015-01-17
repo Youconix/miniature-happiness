@@ -6,6 +6,5 @@
 		<li><a href="javascript:adminSettings.view()">{settings}</a></li>
 		<li><a href="javascript:adminStats.view()">{stats}</a></li>
 		<li><a href="javascript:adminMaintenance.view()">{maintenance}</a></li>
-		<li>{logout}</li>
         </ul>
 </nav>

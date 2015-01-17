@@ -39,15 +39,12 @@ class Footer {
         $this->service_Language = $service_Language;
         $this->service_Template = $service_Template;
         $this->service_Settings = $service_Settings;
-
-        $this->createFooter();
     }
 
     /**
      * Generates the footer
      */
-    protected function createFooter() {
-        $this->service_Template->loadTemplate('footer', 'footer.tpl');
+    public function createFooter() {
         $this->service_Template->set('version',$this->service_Settings->get('version'));
     }
 

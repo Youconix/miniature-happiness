@@ -26,35 +26,15 @@ namespace admin;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-define('NIV','../');
+if( !defined('NIV') ){
+ define('NIV','../');
+}
 
-include(NIV.'include/AdminLogicClass.php');
+include(NIV.'core/AdminLogicClass.php');
 
 class Settings extends \core\AdminLogicClass  {
     private $service_XmlSettings;
     private $obj_settingsMain;
-    
-    /**
-     * Starts the class Settings
-     */
-    public function __construct(){
-        $this->init();
-        
-        if( !Memory::isAjax() )
-        	exit();
-        
-        if( isset($this->get['command']) && $this->get['command'] == 'index' ){
-            $this->view();            
-        }
-        else if( isset($this->post['command']) ){
-            if( $this->post['command'] == 'checkSQL'){
-                $this->checkSQL();
-            }
-            else {
-                $this->save();
-            }
-        }
-    }
 
     /**
      * Inits the class Settings
@@ -80,15 +60,15 @@ class Settings extends \core\AdminLogicClass  {
         parent::init();
 
         require_once(NIV.'admin/SettingsMain.php');
-        $this->obj_settingsMain = new settingsMain();
+        $this->obj_settingsMain = new \settingsMain();
         
-        $this->service_XmlSettings  = Memory::services('XmlSettings');
+        $this->service_XmlSettings  = \core\Memory::services('XmlSettings');
     }
     
     /**
      * Generates the settings view 
      */
-    private function view(){
+    protected function index(){
         $this->service_Template->set('settingsTitle',$this->service_Language->get('admin/settings/title'));
         $this->service_Template->set('basedir',$this->service_Language->get('admin/settings/basedir'));
         $this->service_Template->set('base',$this->service_XmlSettings->get('settings/main/base'));

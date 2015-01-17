@@ -1,6 +1,8 @@
 <?php
 namespace includes;
-require(NIV.'core/BaseLogicClass.php');
+if( !class_exists('\core\BaseLogicClass') ){
+ require(NIV.'core/BaseLogicClass.php');
+}
 
 class BaseLogicClass extends \core\BaseLogicClass {
 }

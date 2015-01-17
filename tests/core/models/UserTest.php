@@ -120,31 +120,6 @@ class testUser extends GeneralTest{
   }
 
   /**
-   * Registers the login try
-   *
-   * @test
-   */
-  public function registerLoginTries(){
-    $_SERVER[ 'REMOTE_ADDR' ] = '::1';
-
-    $i_run1 = $this->model_User->registerLoginTries();
-
-    $this->assertEquals(1, $i_run1);
-  }
-
-  /**
-   * Clears the login tries
-   * 
-   * @test
-   */
-  public function clearLoginTries(){
-    $_SERVER[ 'REMOTE_ADDR' ] = '::1';
-
-    $this->model_User->clearLoginTries();
-    $this->assertEquals(1,$this->service_Builder->createBuilder()->i_delete);
-  }
-
-  /**
    * Test of chaning the saved password with known current password
    * 
    * @test

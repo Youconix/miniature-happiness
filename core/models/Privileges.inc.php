@@ -73,6 +73,7 @@ class Privileges {
 			$service_Database = $this->service_QueryBuilder->getResult();
 			
 			$i_group = 1;
+			$i_level = \core\services\Session::ANONYMOUS;
 			
 			if( $service_Database->num_rows() > 0 ){
 				$i_level = (int) $service_Database->result(0, 'minLevel');
@@ -126,14 +127,19 @@ class Privileges {
 		}
 
 		$this->service_Headers->http401();
+		$this->service_Headers->printHeaders();
 			
-		if( $this->model_Config->isAjax() ){
-			$this->service_Headers->printHeaders();
+		if( $this->model_Config->isAjax() ){			
 			die();			
 		}
 				
 		$this->service_Session->set('page', $s_page);
-		$this->service_Headers->redirect($this->model_Config->getBase().'authorization/login/index');
+		$this->model_Config->setPage('authorization/login','index');
+		
+		require(NIV.'authorization/login.php');
+   		$obj_login = new \Login();
+   		$obj_login->route('index');
+		exit();
 	}
 	
 	/**
@@ -147,7 +153,7 @@ class Privileges {
 			
 			$this->set('page', $s_page);
 			$this->service_Headers->http401();
-			$this->service_Headers->redirect($this->model_Config->getBase().'authorization/login/index');
+			$this->service_Headers->redirect('authorization/login/index');
 		}
 	}
 	

@@ -42,40 +42,25 @@ class Header{
     $this->service_Language = $service_Language;
     $this->model_User = $model_User;
     $this->model_Config = $model_Config;
-    
-    $this->setTemplate();
-
-    $this->createHeader();
-
-    $this->displayLanguageFlags();
-  }
-  
-  /**
-   * Sets the template
-   */
-  protected function setTemplate(){
-  	$this->s_template= 'header.tpl';
   }
 
   /**
    * Generates the header
    */
-  protected function createHeader(){
-    $this->service_Template->loadTemplate('header', $this->s_template);
-    
+  public function createHeader(){    
     $obj_User = $this->model_User->get();
     if( is_null($obj_User->getID()) ){
       return;
     }
 
     if( $obj_User->isAdmin(GROUP_SITE) ){
-      $s_welcome = $this->service_Language->get('header/adminWelcome');
+      $s_welcome = $this->service_Language->get('system/header/adminWelcome');
     }
     else {
       $s_welcome = $this->service_Language->get('header/userWelcome');
     }
 
-    $this->service_Template->set('welcomeHeader', '<a href="' . NIV . 'profile.php?id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
+    $this->service_Template->set('welcomeHeader', '<a href="{NIV}profile/view/details/id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
   }
 
   /**
