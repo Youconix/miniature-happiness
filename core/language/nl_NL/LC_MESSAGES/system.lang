@@ -58,7 +58,42 @@
 		<widow>Weduwe</widow>
 	</marital>
 	
+	<menu>
+	   <adminPanel>Beheer paneel</adminPanel>
+	   <general>Algemeen</general>
+	   <settings>Instellingen</settings>
+	   <statistics>Statistieken</statistics>
+	</menu>
+	
 	<admin>
+	   <general>
+	       <users>Gebruikers</users>
+	       <groups>Groepen</groups>
+	       <page_rights>Pagina rechten</page_rights>
+	       <logs>Logs</logs>
+	       <updates>Updates</updates>
+	       <backup>Backup</backup>
+	       <maintenance>Onderhoud</maintenance>
+	       <cache>Cache</cache>
+	   </general>
+	   <settings>
+	       <email>Email</email>
+	       <smtp>SMTP</smtp>
+	       <general>Algemeen</general>
+	       <login>Inloggen</login>
+	       <sessions>Sessies</sessions>
+	       <templates>Templates</templates>
+	   </settings>
+	   <statistics>
+	       <hits>Bezoekers</hits>
+	       <visitors>Unieke bezoekers</visitors>
+	       <os>Besturingssystemen</os>
+	       <browsers>Browsers</browsers>
+	       <screen_colors>Scherm kleuren</screen_colors>
+	       <references>Afkomstig van</references>
+	       <pages>Pagina's</pages>
+	   </statistics>
+	   
 		<software>
 			<noContact>Er kan geen contact gemaakt worden met de update server.</noContact>
 			<upToDate>Systeem is up to date.</upToDate>
@@ -259,10 +294,6 @@
 	   <download>Downloaden</download>
 	   <close>Sluiten</close>
 	</buttons>
-	
-	<menu>
-		<adminPanel>Beheer paneel</adminPanel>
-    </menu>
 
 	<header>
 		<userWelcome>Welkom </userWelcome>
@@ -281,33 +312,4 @@
 	
 	<title>Scripthulp framework</title>
 	<slogan>Standaard slogan</slogan>
-	
-	
-  <messages>
-    <messages>Berichten</messages>
-    <subject>Onderwerp</subject>
-    <sender>Verzender</sender>
-    <recipient>Ontvanger</recipient>
-    <date>Datum</date>
-    <send>Verzonden</send>
-    <sendTo>Verzonden aan</sendTo>
-    <new>Nieuw bericht</new>
-    <form>
-      <read>Gelezen</read>
-      <unread>Ongelezen</unread>
-      <message>Bericht</message>
-      <subject>Onderwerp</subject>
-      <recipient>Ontvanger</recipient>
-      <reset>Opnieuw</reset>
-      <answer>Beantwoorden</answer>
-    </form>
-    <notices>
-      <messageSent><![CDATA[<h2 class="Notice">Je hebt het bericht naar [username] verzonden!]]></messageSent>
-      <noSuchUser><![CDATA[<h2 class="errorNotice">Deze gebruiker bestaat niet!</h2>]]></noSuchUser>
-      <noReceiver>Er is geen ontvanger ingevuld.</noReceiver>
-      <noSubject>Er is geen onderwerp ingevuld.</noSubject>
-      <noMessage>Er is geen bericht ingevuld.</noMessage>
-      <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
-    </notices>
-  </messages>
 </system>

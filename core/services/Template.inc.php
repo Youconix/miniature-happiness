@@ -40,6 +40,7 @@ class Template extends Service{
   private $a_parts;
   private $bo_compression = false;
   private $a_partsUsed = array();
+  private $bo_loaded = false;
 
   /**
    * PHP 5 constructor
@@ -100,6 +101,8 @@ class Template extends Service{
     $this->loadView();
 
     $this->compression();
+    
+    $this->bo_loaded = true;
   }
 
   /**
@@ -230,9 +233,9 @@ class Template extends Service{
     
     if( stripos($s_javascript,'<script') === false ){
       $s_javascript = '<script type="text/javascript">'
-        . '<!--'
-        . $s_javascript.''
-        . '//-->'
+        . '<!--
+        '. $s_javascript.'
+        //-->'
         . '</script>';
     }
 
@@ -260,9 +263,9 @@ class Template extends Service{
     
     if( stripos($s_css,'<style') === false ){
       $s_css = '<style type="text/css">'
-        . '<!--'
-        . $s_css.''
-        . '//-->'
+        . '<!--
+        '. $s_css.'
+        //-->'
         . '</style>';
     }
     
@@ -474,6 +477,8 @@ class Template extends Service{
    * Prints the page to the screen and pushes it to the visitor
    */
   public function printToScreen(){
+   if( !$this->bo_loaded ){ return; }
+   
     $this->set('style_dir', $this->model_Config->getStylesDir());
     $this->set('NIV',$this->model_Config->getBase());
 
@@ -518,6 +523,8 @@ class Template extends Service{
     $this->s_template = preg_replace("#{\[+[a-zA-Z_0-9/]+\]}+#si", "", $this->s_template);
 
     echo ($this->s_template);
+    
+    $this->bo_loaded = false;
   }
 
   /**

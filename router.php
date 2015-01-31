@@ -51,6 +51,8 @@ function populateQuery($s_query){
 
 define('NIV','./');
 
+require(NIV.'core/exceptions/CoreException.inc.php');
+
 $s_router	= $_GET['router'];
 while( substr($s_router,-1) == '/' ){
   $s_router = substr($s_router,0,-1);
@@ -82,18 +84,26 @@ require($s_page.'.php');
 $a_class = explode('/',$s_page);
 $s_className = UCfirst(end($a_class));
 
+$s_namespace = '\\'.str_replace('/','\\',$s_page);
+$s_namespace = str_replace('\\'.end($a_class),'\\'.$s_className,$s_namespace);
+
 if( !class_exists($s_className) ){
+  if( class_exists($s_namespace) ){
+   $s_className = $s_namespace;
+  }
+  else {
 	@session_start();
 	$_SESSION['error'] = 'HTTP 500 : class '.$s_className.' not found.';
 	include('errors/404.php');
 	exit();
+  }
 }
 
 try {
  $obj_class = new $s_className();
  
  if( !is_subclass_of($obj_class,'Routable') ){
- 	$_SESSION['error'] = 'HTTP 500 : class '.$s_className.' is not routable';
+  	$_SESSION['error'] = 'HTTP 500 : class '.$s_className.' is not routable';
  	include('errors/404.php');
  	exit();
  }
@@ -104,16 +114,52 @@ try {
     exit();
    }
  
- $obj_class->route($s_command);
+  $obj_class->route($s_command);
 }
 catch(TemplateException $e){
  $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command.' on page '.$s_page.'.';
  include (NIV . 'errors/404.php');
  exit();
 }
+catch(CoreException $e ){
+ header('HTTP/1.1 500 Internal Server Error');
+ echo ('<!DOCTYPE html>
+	<html>
+	<head>
+		<title>500 Internal Server Error</title>
+        <style>
+        body {
+          background-color:black;
+          color:#23c44d;
+          margin:5%;
+          font-family:Lucida Console, monospace;
+        }
+        </style>
+	</head>
+	<body>
+	<section id="container">
+  		<h1>500 Internal Server Error</h1>
+  	
+  		<h3>Whoops something went wrong</h3>
+  	
+  		<h5>Whoops? What whoops?<br/> Computer deactivate the [fill in what you want]</h5>
+   
+        <h3>System failed to start</h3>
+  	
+	    <p>' . nl2br($e->__toString()) . '</p>
+	</section>
+	</body>
+	</html>
+  	');
+ exit();
+}
 catch(Exception $e){
- $_SESSION['error'] = $e->getMessage();
+ @ob_clean();
+ 
+ $_SESSION['error'] = $e->getMessage().'</p><p>'.nl2br($e->getTraceAsString()).'</p>';
  $_SESSION['errorObject'] = $e;
+ 
+ \Core\Memory::models('Config')->setPage('errors/500','index','default');
  
  include(NIV.'errors/500.php');
  exit();

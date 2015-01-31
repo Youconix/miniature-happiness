@@ -21,10 +21,20 @@ class Error500 extends \includes\BaseLogicClass {
  public function __construct(){
   $this->init();
   
+  \Core\Memory::services('Template')->setCss('body {
+          background-color:black;
+          color:#23c44d;
+          font-family:Lucida Console, monospace;
+          background: linear-gradient(#111, #111) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        }
+        #content { margin:5%; }');
+  
   $this->displayError();
   
   $this->showLayout();
  }
+ 
+ 
  private function displayError(){
   header("HTTP/1.1 500 Internal Server Error");
   
@@ -36,10 +46,10 @@ class Error500 extends \includes\BaseLogicClass {
   
   if( isset($_SESSION['error']) ){
    if( isset($_SESSION['errorObject']) ){
-    Memory::services('ErrorHandler')->error($_SESSION['errorObject']);
+    \core\Memory::services('ErrorHandler')->error($_SESSION['errorObject']);
    }
    else{
-    Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
+    \core\Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
    }
    
    if( defined('DEBUG') ){

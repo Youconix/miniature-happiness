@@ -6,10 +6,10 @@ class Site extends GeneralJS {
 	private $s_language;
 	
 	public function __construct(){
-		require(NIV.'include/Memory.php');
-		Memory::startUp();
+		require(NIV.'core/Memory.php');
+		\core\Memory::startUp();
 		
-		$this->service_Language	= Memory::services('Language');
+		$this->service_Language	= \core\Memory::services('Language');
 		$this->s_language	= $this->service_Language->getLanguage();
 		$this->sendHeaders();
 		
@@ -51,9 +51,6 @@ class Site extends GeneralJS {
 		}
 		
 		var site	= new Site();
-		$(document).ready(function() {
-        	site.show();
-        });
         
         /* Check session status */
 		$(document).ready(function() {
@@ -66,7 +63,7 @@ class Site extends GeneralJS {
 						.appendTo($("body"));
 				}
 				else if( jqxhr.status == 403 ){
-                    window.location.href = "'.Memory::getBase().'errors/403.php";
+                    window.location.href = "'.\core\Memory::getBase().'errors/403.php";
                 }
 			});
         });
@@ -74,7 +71,7 @@ class Site extends GeneralJS {
         function removeAuthButton(){
         	if( $("#ajaxLoginBox").length > 0 ){
         		$("#ajaxLoginBox").remove();
-        		window.open("'.Memory::getBase().'login.php?ajaxLogin=true", "session", config="height=350,width=1100,toolbar=no,menubar=no,location=no,directories=no,status=no,left:40%,top:40%");
+        		window.open("'.\core\Memory::getBase().'login.php?ajaxLogin=true", "session", config="height=350,width=1100,toolbar=no,menubar=no,location=no,directories=no,status=no,left:40%,top:40%");
         	}        	        	
         }
         ';

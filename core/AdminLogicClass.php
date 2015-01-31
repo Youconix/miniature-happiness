@@ -30,7 +30,7 @@ namespace core;
  */
 include_once(NIV.'core/BaseClass.php');
 
-abstract class AdminLogicClass extends BaseClass {
+abstract class AdminLogicClass extends BaseClass  {
     protected $service_Security;
     protected $service_Session;
     protected $model_User;
@@ -46,31 +46,6 @@ abstract class AdminLogicClass extends BaseClass {
      if( !\Core\Memory::models('Config')->isAjax() ){
       exit();
      }
-    }
-    
-    /**
-     * Routes the controller
-     *
-     * @see Routable::route()
-     */
-    public function route( $s_command ){
-     if( !method_exists($this, $s_command) ){
-      $_SESSION['error'] = 'missing method ' . $s_command;
-      include (NIV . 'errors/500.php');
-      exit();
-     }
-     
-     $this->$s_command();
-     
-     /* Call header */
-     Memory::loadClass('Header');
-     
-     /* Call Menus */
-     Memory::loadClass('Menu');
-     Memory::loadClass('MenuAdmin');
-     
-     /* Call footer */
-     Memory::loadClass('Footer');
     }
     
     /**
@@ -90,7 +65,6 @@ abstract class AdminLogicClass extends BaseClass {
         
         $this->s_language   = $this->service_Language->getLanguage();        
         $this->service_Template->headerLink('<link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css"/>');
-        $this->service_Template->headerLink('<script src="{NIV}js/admin/admin.php" type="text/javascript"></script>');
         if( !Memory::isAjax() )
         	$this->service_Template->set('noscript','<noscript>'.$this->service_Language->get('language/noscript').'</noscript>');
     }

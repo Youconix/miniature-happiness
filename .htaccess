@@ -8,6 +8,8 @@ RedirectMatch seeother ^/login(\.php)? /authorization/login/index
 RedirectMatch seeother ^/registration(\.php)? /authorization/registration/index
 
 RewriteRule ^index.php$ /router.php?router=index/view [L]
+RewriteRule ^admin/?$ /router.php?router=admin/index/view [L]
+RewriteRule ^admin/index.php$ /router.php?router=admin/index/view [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([a-zA-Z0-9\-_/]+)/details/(.*?)$ /router.php?router=$1&query=$2 [L]

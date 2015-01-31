@@ -25,8 +25,8 @@ namespace admin;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV', '../');
-include(NIV . 'include/AdminLogicClass.php');
+define('NIV', '../../../');
+include(NIV . 'core/AdminLogicClass.php');
 
 class Users extends \core\AdminLogicClass {
 	private $model_Groups;
@@ -37,7 +37,7 @@ class Users extends \core\AdminLogicClass {
 	public function __construct() {
 		$this->init();
 
-		if( !Memory::isAjax() )
+		if( !\core\Memory::isAjax() )
 			exit();
 
 		if (isset($this->get['command'])) {
@@ -88,15 +88,6 @@ class Users extends \core\AdminLogicClass {
 	}
 
 	/**
-	 * Stops the class Users
-	 */
-	public function __destruct() {
-		$this->model_Groups = null;
-
-		parent::__destruct();
-	}
-
-	/**
 	 * Inits the class Users
 	 */
 	protected function init() {
@@ -126,7 +117,7 @@ class Users extends \core\AdminLogicClass {
 
 		parent::init();
 
-		$this->model_Groups = Memory::models('Groups');
+		$this->model_Groups = \core\Memory::models('Groups');
 	}
 
 	/**
@@ -145,7 +136,7 @@ class Users extends \core\AdminLogicClass {
 
 		$this->userView($a_users);
 		
-		$helper_Nav	= Memory::helpers('PageNavigation');
+		$helper_Nav	= \core\Memory::helpers('PageNavigation');
 		$helper_Nav->setAmount($a_users['number'])->setPage($i_page)->setUrl('javascript:adminUsers.view({page})');
 		$this->service_Template->set('nav',$helper_Nav->generateCode());
 	}
@@ -205,7 +196,7 @@ class Users extends \core\AdminLogicClass {
 			$obj_User = $this->model_User->get($this->get['userid']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown user '.$this->get['userid']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown user '.$this->get['userid']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}
@@ -246,7 +237,7 @@ class Users extends \core\AdminLogicClass {
 			$obj_User = $this->model_User->get($this->get['userid']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown user '.$this->get['userid']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown user '.$this->get['userid']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}
@@ -387,7 +378,7 @@ class Users extends \core\AdminLogicClass {
 			$obj_User = $this->model_User->get($this->post['userid']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}
@@ -433,7 +424,7 @@ class Users extends \core\AdminLogicClass {
 
 			
 		/* Send notification email */
-		Memory::services('Mailer')->adminAdd($this->post['username'],$this->post['password'],$this->post['email']);
+		\core\Memory::services('Mailer')->adminAdd($this->post['username'],$this->post['password'],$this->post['email']);
 	}
 
 	/**
@@ -448,7 +439,7 @@ class Users extends \core\AdminLogicClass {
 			$obj_group->editUser($this->post['userid'],$this->post['level']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown group '.$this->post['groupID']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown group '.$this->post['groupID']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}
@@ -465,7 +456,7 @@ class Users extends \core\AdminLogicClass {
 			$obj_User = $this->model_User->get($this->post['userid']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}
@@ -488,10 +479,10 @@ class Users extends \core\AdminLogicClass {
 			$obj_User->enableAccount();
 			$obj_User->persist();
 
-			Memory::services('Mailer')->adminPasswordReset($obj_User->getUsername(),$obj_User->getEmail(),$this->post['password']);
+			\core\Memory::services('Mailer')->adminPasswordReset($obj_User->getUsername(),$obj_User->getEmail(),$this->post['password']);
 		}
 		catch(Exception $e){
-			Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
+			\core\Memory::services('Logs')->securityLog('Call to unknown user '.$this->post['userid']);
 			$this->service_Session->destroyLogin();
 			exit();
 		}

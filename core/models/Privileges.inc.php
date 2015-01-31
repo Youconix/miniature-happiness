@@ -10,20 +10,20 @@ namespace core\models;
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 2.0
- * @changed 14/09/2014
- *
- * Scripthulp framework is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Scripthulp framework is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        @changed 14/09/2014
+ *       
+ *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        it under the terms of the GNU Lesser General Public License as published by
+ *        the Free Software Foundation, either version 3 of the License, or
+ *        (at your option) any later version.
+ *       
+ *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *        GNU General Public License for more details.
+ *       
+ *        You should have received a copy of the GNU Lesser General Public License
+ *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
  */
 class Privileges {
 	private $service_Headers;
@@ -83,7 +83,9 @@ class Privileges {
 		
 		if( $i_level == \core\services\Session::ANONYMOUS ){
 			if( ($this->service_Session->exists('login')) && ($this->service_Session->exists('userid')) ){
+			    if( !defined('USERID') ){
 				define('USERID', $this->service_Session->get('userid'));
+			    }
 			}
 			
 			return;

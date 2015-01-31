@@ -162,7 +162,7 @@ Validation.prototype.html5Validate	= function(item){
     this.errorMessage(item);
 		return false;
 	}
-  if( type == 'date' && isNaN(value) ){
+  if( type == 'date' && value == '' ){
     $(item).addClass("invalid");
     this.errorMessage(item);
 		return false;

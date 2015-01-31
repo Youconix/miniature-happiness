@@ -26,64 +26,45 @@ namespace admin;
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if( !defined('NIV') ){
-	define('NIV','../');
-}
+include(NIV.'core/BaseLogicClass.php');
 
-include(NIV.'core/AdminLogicClass.php');
-
-class Index extends \core\AdminLogicClass  {    
+class Index extends \core\BaseLogicClass  {    
 	private $service_Logs;
 	
-    /**
-     * PHP 5 constructor
-     */
-    public function __construct(){
-        parent::__construct();
-
-        $this->security();
-        
-        $this->errors();
-    }
-    
-    protected function checkAjax(){}
-
-    /**
-     * Inits the class Index
-     */
-    protected function init(){
-        parent::init();
-
-        $this->service_Logs	= \core\Memory::services('Logs');
-        
-        $this->service_Template->set('title', $this->service_Language->get('system/admin/index/title') );
-    }
-    
-    /**
-     * Displays the security log
-     */
-    private function security(){
-        if( $this->service_Logs->isModifiedSince('security',0) ){
-        	$this->service_Template->loadTemplate('securityView','admin/index/security.tpl');
-        	
-        	$this->service_Template->set('titleSecurity',$this->service_Language->get('system/admin/index/securityTitle'));
-        	$this->service_Template->set('securityLog',nl2br($this->service_Logs->readLog('security')));
-        }
-    }
-    
-    /**
-     * Displays the error log
-     */
-    private function errors(){
-    	if( $this->service_Logs->isModifiedSince('error',0) ){
-    		$this->service_Template->loadTemplate('errorView','admin/index/error.tpl');
-    		
-    		$this->service_Template->set('titleError',$this->service_Language->get('system/admin/index/errorTitle'));
-    		$this->service_Template->set('errorLog',nl2br($this->service_Logs->readLog('error')));
-    	}
-    }
+    protected function view(){     
+     
+   }
+   
+   /**
+    * Routes the controller
+    *
+    * @see Routable::route()
+    */
+   public function route( $s_command ){
+    $this->$s_command();
+     
+    \core\Memory::loadClass('MenuAdmin');
+   }
+   
+   /**
+    * Inits the class AdminLogicClass
+    *
+    * @see BaseClass::init()
+    */
+   protected function init(){
+    define('LAYOUT','admin');
+     
+    $this->forceSSL();
+     
+    parent::init();
+   
+    $this->service_Session  = \core\Memory::services('Session');
+    $this->model_User       = \core\Memory::models('User');
+   
+    $this->s_language   = $this->service_Language->getLanguage();
+    $this->service_Template->headerLink('<link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css"/>');
+    if( !\core\Memory::isAjax() )
+     $this->service_Template->set('noscript','<noscript>'.$this->service_Language->get('language/noscript').'</noscript>');
+   }
 }
-
-$obj_index = new Index();
-unset($obj_index);
 ?>

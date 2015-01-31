@@ -92,4 +92,32 @@
             <systemError>Er heeft zich een fout voorgedaan op deze pagina. De administrator is gewaarschuwd.</systemError>
         </error500>
     </errors>
+    
+    <messages>
+    <messages>Berichten</messages>
+    <subject>Onderwerp</subject>
+    <sender>Verzender</sender>
+    <recipient>Ontvanger</recipient>
+    <date>Datum</date>
+    <send>Verzonden</send>
+    <sendTo>Verzonden aan</sendTo>
+    <new>Nieuw bericht</new>
+    <form>
+      <read>Gelezen</read>
+      <unread>Ongelezen</unread>
+      <message>Bericht</message>
+      <subject>Onderwerp</subject>
+      <recipient>Ontvanger</recipient>
+      <reset>Opnieuw</reset>
+      <answer>Beantwoorden</answer>
+    </form>
+    <notices>
+      <messageSent><![CDATA[<h2 class="Notice">Je hebt het bericht naar [username] verzonden!]]></messageSent>
+      <noSuchUser><![CDATA[<h2 class="errorNotice">Deze gebruiker bestaat niet!</h2>]]></noSuchUser>
+      <noReceiver>Er is geen ontvanger ingevuld.</noReceiver>
+      <noSubject>Er is geen onderwerp ingevuld.</noSubject>
+      <noMessage>Er is geen bericht ingevuld.</noMessage>
+      <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
+    </notices>
+  </messages>
 </language>

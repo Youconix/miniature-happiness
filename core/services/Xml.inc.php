@@ -106,6 +106,31 @@ class Xml extends Service{
 
     return $s_return;
   }
+  
+  /**
+   * Gives the asked block of the loaded file
+   * 
+   * @param   String      $s_path      The path to the language-part
+   * @return  String       The content of the requested part
+   * @throws  XMLException when the path does not exist
+   * @return DOMNodeList  The block
+   */
+  public function getBlock($s_path){
+   $s_path = $this->getRealPath($s_path);
+   
+   if( is_null($this->obj_document) ){
+    throw new \XMLException("No document loaded.");
+   }
+   
+   $a_return = $this->obj_document->query("//" . $s_path);
+   
+   if( $a_return->length < 1 ){
+    /* Part not found */
+    throw new \XMLException("Can not find " . $s_path);
+   }
+   
+   return $a_return;
+  }
 
   /**
    * Saves the value at the given place

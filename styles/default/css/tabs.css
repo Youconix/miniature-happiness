@@ -1,0 +1,37 @@
+.tab_header, .tab_content {
+	width:99%;
+	float:left;
+}
+
+.tab_header div{ 
+	border:1px solid black;  
+	width:auto; 
+	margin-right:5px; 
+	border-top-left-radius:20px; 
+	border-top-right-radius:20px; 
+	border-bottom:0px;
+	heigth:30px; 
+	font-weight:bold; 
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:3px;
+	padding-bottom:3px;
+	float:left;
+    cursor:pointer;
+    background-color:black;
+    color:white;	
+}
+.tab_header div:hover, .tab_header div.tab_header_active {
+	background-color:white;
+	color:black;
+}
+.tab_content article {
+	width:99%;
+	heigth:auto;
+    padding:5px;
+    float:left;
+    display:none;
+    border:1px solid black;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;	
+}
