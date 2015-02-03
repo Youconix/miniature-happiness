@@ -75,6 +75,7 @@
 	       <backup>Backup</backup>
 	       <maintenance>Onderhoud</maintenance>
 	       <cache>Cache</cache>
+	       <modules>Modules</modules>
 	   </general>
 	   <settings>
 	       <email>Email</email>
@@ -127,11 +128,14 @@
 			</js>
 		</groups>
 		<users>
+		    <searchText>Zoek op gebruikersnaam, email of groep</searchText>
+		    <id>ID</id>
 			<title>Gebruiker beheer</title>
 			<users>Gebruikers</users>
 			<user>Gebruiker</user>
 			<bot>Bot</bot>
 			<username>Gebruikersnaam</username>
+			<loggedIn>Laatst ingelogd</loggedIn>
 			<forname>Voornaam</forname>
 			<nameBetween>Tussenvoegsel</nameBetween>
 			<surname>Achternaam</surname>

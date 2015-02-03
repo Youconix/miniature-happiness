@@ -52,7 +52,7 @@ class LanguageMO extends \core\services\service {
 	 * Loads the language files
 	 */
 	private function readLanguages(){
-		$a_files = $this->service_File->readDirectory(NIV . 'core/language/' . $this->s_language . '/LC_MESSAGES');
+		$a_files = $this->service_File->readDirectory(NIV . 'language/' . $this->s_language . '/LC_MESSAGES');
 		foreach( $a_files as $s_file ){
 			if( $s_file == '.' || $s_file == '..' || substr($s_file, -3) != '.mo' ){
 				continue;
@@ -61,7 +61,7 @@ class LanguageMO extends \core\services\service {
 			$s_name = substr($s_file, 0, -3);
 			$this->a_documents[] = $s_name;
 			
-			bindtextdomain($s_name, NIV . 'core/language');
+			bindtextdomain($s_name, NIV . 'language');
 		}
 		
 		if( !in_array('system', $this->a_documents) ){

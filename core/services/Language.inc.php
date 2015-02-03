@@ -88,6 +88,8 @@ class Language extends Xml{
   		}
   		$this->obj_parser = new \core\services\data\LanguageXML($this->service_File,$this->s_language,$this->bo_fallback);
   	}
+  	
+  	require(NIV.'core/services/data/languageShortcut.php');
   }
   
   public function getLanguageFiles(){
@@ -99,10 +101,10 @@ class Language extends Xml{
     
     foreach($a_files AS $s_file){      
       if( $s_file == 'site' && $this->bo_fallback ){
-        $a_data['files'][$s_file] = 'core/language/language_'.$this->s_language.'.lang';
+        $a_data['files'][$s_file] = 'language/language_'.$this->s_language.'.lang';
       }
       else {
-        $a_data['files'][$s_file] = 'core/language/'.$this->s_language.'/'.$s_file.'.lang';
+        $a_data['files'][$s_file] = 'language/'.$this->s_language.'/'.$s_file.'.lang';
       }
     }
     return $a_data;
@@ -115,7 +117,7 @@ class Language extends Xml{
    */
   public function getLanguages(){
     $a_languages = array();
-    $a_languageFiles = $this->service_File->readDirectory(NIV . 'core/language');
+    $a_languageFiles = $this->service_File->readDirectory(NIV . 'language');
 
     foreach( $a_languageFiles AS $s_languageFile ){
       if( strpos($s_languageFile, 'language_') !== false ){

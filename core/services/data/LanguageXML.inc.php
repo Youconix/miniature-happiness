@@ -59,23 +59,23 @@ class LanguageXML extends \core\services\Xml{
 	 */
 	private function readLanguage(){
 		if( $this->bo_fallback ){
-			if( !$this->service_File->exists(NIV.'core/language/language_'.$this->s_language.'.lang') ){
+			if( !$this->service_File->exists(NIV.'language/language_'.$this->s_language.'.lang') ){
 				throw new IOException('Missing site language file for language '.$this->s_language.'.');
 			}
 
-			$this->load(NIV.'core/language/language_'.$this->s_language.'.lang');
+			$this->load(NIV.'language/language_'.$this->s_language.'.lang');
 			$this->a_documents['site'] = $this->obj_document;
 			$this->obj_document = null;
 		}
 
 		/* Get files */
-		$a_files = $this->service_File->readDirectory(NIV . 'core/language/'.$this->s_language.'/LC_MESSAGES');
+		$a_files = $this->service_File->readDirectory(NIV . 'language/'.$this->s_language.'/LC_MESSAGES');
 		foreach($a_files AS $s_file){
 			if( strpos($s_file,'.lang') === false ){  continue; }
 
 			$s_name = str_replace('.lang','',$s_file);
 
-			$this->load(NIV . 'core/language/' . $this->s_language . '/LC_MESSAGES/'.$s_file);
+			$this->load(NIV . 'language/' . $this->s_language . '/LC_MESSAGES/'.$s_file);
 			$this->a_documents[$s_name] = $this->obj_document;
 			$this->obj_document = null;
 		}
