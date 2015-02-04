@@ -60,11 +60,6 @@ class Index extends \core\BaseLogicClass  {
    
     $this->service_Session  = \core\Memory::services('Session');
     $this->model_User       = \core\Memory::models('User');
-   
-    $this->s_language   = $this->service_Language->getLanguage();
-    $this->service_Template->headerLink('<link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css"/>');
-    if( !\core\Memory::isAjax() )
-     $this->service_Template->set('noscript','<noscript>'.$this->service_Language->get('language/noscript').'</noscript>');
    }
 }
 ?>

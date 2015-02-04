@@ -1,0 +1,51 @@
+    <section class="item_header">
+	   <h1>{headerText}</h1>
+	   
+	   <nav>
+            <ul>
+                <li id="users_back">{buttonBack}</li>
+            </ul>
+        </nav>
+    </section>
+    
+	<section class="item_body">
+		<table>
+		<tbody>
+		<tr>
+			<td><label>{usernameHeader}</label></td>
+			<td><input type="text" id="username" data-error-message="De gebruikersnaam is niet ingevuld" required></td>
+		</tr>
+		<tr>
+			<td><label>{emailHeader}</label></td>
+			<td><input type="email" id="email" data-error-message="Het E-mail adres is niet ingevuld of ongeldig" required></td>
+		</tr>
+		<tr>
+			<td><label>{botHeader}</label></td>
+			<td><input type="radio" id="bot_0" value="0" checked="checked"><label>{no}</label>
+                <input type="radio" id="bot_1" value="1"><label>{yes}</label></td>
+		</tr>
+		</tbody>
+		</table>
+		
+		<h2>Wachtwoorden</h2>
+        
+        <table>
+        <tbody>
+        <tr>
+            <td><label>Wachtwoord</label></td>
+            <td><input type="password" id="password1" data-error-message="Het wachtwoord is niet ingevuld" required></td>
+        </tr>
+        <tr>
+            <td><label>Wachtwoord herhalen</label></td>
+            <td><input type="password" id="password2" data-error-message="Het wachtwoord is niet ingevuld" required></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Opslaan" id="userSaveButton">
+                <input type="hidden" id="usernameOK" value="0">
+                <input type="hidden" id="emailOK" value="0">
+            </td>
+        </tr>
+        </tbody>
+        </table>
+	</section>

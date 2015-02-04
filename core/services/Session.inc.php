@@ -160,9 +160,10 @@ class Session extends Service{
 
   /**
    * Logges the user in and sets the login-session
+   * Destroys the current session array
    *
    * @param	int		$i_userid		The userid of the user
-   * @param	String		$s_username		The username of the user
+   * @param	String	$s_username		The username of the user
    * @param	int		$i_lastLogin	The last login as a timestamp
    */
   public function setLogin($i_userid, $s_username, $i_lastLogin){
@@ -179,6 +180,26 @@ class Session extends Service{
     $this->set('fingerprint', $this->getFingerprint());
     $this->set('lastLogin', $i_lastLogin);
   }
+  
+  /**
+   * Logs the admin in with the given userid and username
+   * Admin session wil be restored at logout
+   * Destroys the current session array
+   * 
+   * @param	int		$i_userid		The userid of the user
+   * @param	String	$s_username		The username of the user
+   * @param	int		$i_lastLogin	The last login as a timestamp
+   */
+  public function setLoginTakeover($i_userid, $s_username, $i_lastLogin){
+   $a_lastLogin = array(
+     'userid'=>$this->get('userid'),
+     'username'=>$this->get('username'),
+     'lastLogin'=>$this->get('lastLogin')
+   );
+   
+   $this->setLogin($i_userid, $s_username, $i_lastLogin);
+   $this->set('last_login', $a_lastLogin);
+  }
 
   /**
    * Destroys the users login session
@@ -190,6 +211,11 @@ class Session extends Service{
     if( $this->exists('fingerprint') ) $this->delete('fingerprint');
     if( $this->exists('lastLogin') ) $this->delete('lastLogin');
     if( $this->exists('type') ) $this->delete('type');
+    
+    if( $this->exists('last_login') ){
+     $a_login = $this->get('last_login');
+     $this->setLogin($a_login['userid'], $a_login['username'], $a_login['lastLogin']);
+    }
   }
 
   /**

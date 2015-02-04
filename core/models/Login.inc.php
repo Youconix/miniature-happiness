@@ -212,6 +212,9 @@ class Login extends Model {
    $this->service_Session->delete('page');
   }
   
+  $this->service_QueryBuilder->update('users', 'lastLogin', 'i', time())->getWhere()->addAnd('id','i',$a_login['id']);
+  $this->service_QueryBuilder->getResult();
+  
   $this->service_Session->setLogin($a_login['id'], $a_login['nick'], $a_login['lastLogin']);
   
   $this->service_Headers->redirect($s_redirection);
@@ -504,6 +507,25 @@ class Login extends Model {
   
   $this->service_QueryBuilder->delete('login_tries')->getWhere()->addAnd('hash', 's', $s_fingerprint);
   $this->service_QueryBuilder->getResult();
+ }
+ 
+ /**
+  * Logs the user in as the given user
+  * Control panel only function
+  * 
+  * @param int $i_userid The user ID
+  */
+ public function loginAs($i_userid){
+  $this->service_QueryBuilder->select('users', 'id, nick,lastLogin')->getWhere()->addAnd('id','i',$i_userid);
+  $service_Database = $this->service_QueryBuilder->getResult();
+  
+  if( $service_Database->num_rows() == 0 ){
+   return;
+  }
+  
+  $a_data = $service_Database->fetch_assoc();
+  
+  $this->service_Session->setLoginTakeover($a_data[0]['id'], $a_data[0]['nick'], $a_data[0]['lastLogin']);
  }
 }
 ?>

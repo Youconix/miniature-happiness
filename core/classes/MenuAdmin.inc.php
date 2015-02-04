@@ -50,12 +50,16 @@ class MenuAdmin {
   * Displays the text
   */
  private function text(){}
+ 
+ /**
+  * Displays the modules
+  */
  private function modules(){
   $s_dir = NIV . 'admin/modules';
   $a_directory = $this->service_File->readDirectory($s_dir);
   
   $i = 1;
-  $s_js = '';
+  $a_js = array();
   foreach( $a_directory as $s_module ){
    if( !$this->service_File->exists($s_dir . '/' . $s_module . '/settings.xml') ){
     continue;
@@ -68,12 +72,8 @@ class MenuAdmin {
    $s_jsLink = $obj_settings->get('module/js');
    $s_css = $obj_settings->get('module/css');
    
-   if( !empty($s_jsLink) ){
-    $this->service_Template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . $s_jsLink . '"></script>');
-   }
-   if( !empty($s_css) ){
-    $this->service_Template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
-   }
+   $this->setJS($s_module, $s_jsLink);
+   $this->setCSS($s_module,$s_css);
    
    ($i == 1) ? $s_class = 'tab_header_active' : $s_class = '';
    $this->service_Template->setBlock('menu_tab_header', array( 
@@ -101,22 +101,44 @@ class MenuAdmin {
      }
     } 
     if( array_key_exists('id', $a_data) ){
-     if( array_key_exists('click', $a_data) && !empty($a_data['click'])  ){
-      $s_js .= "$('#" . $a_data['id'] . " h2').click(function(){ " . $a_data['click'] . " });\n";
-     }
-     
      $a_data['item_id'] = $a_data['id'];
     }
      
-    $this->service_Template->setBlock('tab_' . $i, $a_data);
+    $this->service_Template->setBlock('tab_' . $i, $a_data);    
     }
+    
     $i++;
    }
-   
-   $s_js = '$(document).ready(function(){
-      '.$s_js.'
-   });';
-   $this->service_Template->setJavascript($s_js);
+ }
+ 
+ /**
+  * Sets the javascript links
+  * 
+  * @param string $s_module The module name
+  * @param string $s_jsLink The JS links, seperated with a comma
+  */
+ private function setJS($s_module,$s_jsLink){
+  if( empty($s_jsLink) ){ return; }
+  
+  $a_js = explode(',',$s_jsLink);
+  foreach( $a_js AS $s_jsLink ){
+   $this->service_Template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . trim($s_jsLink) . '"></script>');
+  }  
+ }
+ 
+ /**
+  * Sets the css links
+  *
+  * @param string $s_module The module name
+  * @param string $s_css The CSS links, seperated with a comma
+  */
+ private function setCSS($s_module,$s_css){
+  if( empty($s_css) ){ return; }
+  
+  $a_css = explode(',',$s_css);
+  foreach( $a_css AS $s_css ){
+   $this->service_Template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
+  }
  }
 }
 ?>

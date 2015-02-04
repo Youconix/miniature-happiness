@@ -133,7 +133,7 @@ class Config extends Model {
 			$a_headers = apache_request_headers();
 			$this->bo_ajax = (isset($a_headers['X-Requested-With']) && $a_headers['X-Requested-With'] == 'XMLHttpRequest');
 		} 
-		else if( (isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true') ){
+		if( !$this->bo_ajax && ((isset($_GET['AJAX']) && $_GET['AJAX'] == 'true') || (isset($_POST['AJAX']) && $_POST['AJAX'] == 'true')) ){
 			$this->bo_ajax = true;
 		}
 	}

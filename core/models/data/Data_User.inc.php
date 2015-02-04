@@ -35,6 +35,7 @@ class Data_User extends \core\models\GeneralUser{
   protected $s_email = '';
   protected $i_bot = 0;
   protected $i_registrated = 0;
+  protected $i_loggedIn = 0;
   protected $i_active = 0;
   protected $i_blocked = 0;
   protected $s_password;
@@ -109,6 +110,7 @@ class Data_User extends \core\models\GeneralUser{
     $this->s_profile = $a_data[ 'profile' ];
     $this->i_bot = ( int ) $a_data[ 'bot' ];
     $this->i_registrated = ( int ) $a_data[ 'registrated' ];
+    $this->i_loggedIn = (int) $a_data['lastLogin'];
     $this->i_active = ( int ) $a_data[ 'active' ];
     $this->i_blocked = ( int ) $a_data[ 'blocked' ];
     $this->s_loginType = $a_data[ 'loginType' ];
@@ -230,6 +232,15 @@ class Data_User extends \core\models\GeneralUser{
   public function getRegistrated(){
     return $this->i_registrated;
   }
+  
+  /**
+   * Returns the last login date
+   * 
+   * @return int The logged in date as a timestamp
+   */
+  public function lastLoggedIn(){
+   return $this->i_loggedIn;
+  }
 
   /**
    * Checks if the account is blocked
@@ -290,7 +301,7 @@ class Data_User extends \core\models\GeneralUser{
     foreach( $a_groups AS $obj_group ){
       $i_level = $obj_group->getLevelByGroupID($this->i_userid);
 
-      if( $i_level != Session::ANONYMOUS ){
+      if( $i_level != \core\services\Session::ANONYMOUS ){
         $a_groupsUser[ $obj_group->getID() ] = $i_level;
       }
     }
@@ -452,9 +463,9 @@ class Data_User extends \core\models\GeneralUser{
 
     $this->i_registrated = time();
 
-    $this->service_QueryBuilder->insert('users', array( 'nick', 'email', 'password', 'bot', 'registrated', 'active', 'activation', 'profile', 'loginType' )
-      , array( 's', 's', 's', 's', 'i', 's', 's', 's', 's' ), array( $this->s_username, $this->s_email, $this->s_password, $this->i_bot, $this->i_registrated,
-        $this->i_active, $this->s_activation, $this->s_profile, $this->s_loginType ));
+    $this->service_QueryBuilder->insert('users', array( 'nick', 'email', 'password', 'bot', 'registrated','lastLogin', 'active', 'activation', 'profile', 'loginType' )
+      , array( 's', 's', 's', 's', 'i','i', 's', 's', 's', 's' ), array( $this->s_username, $this->s_email, $this->s_password, $this->i_bot, $this->i_registrated,
+        $this->i_loggedIn, $this->i_active, $this->s_activation, $this->s_profile, $this->s_loginType ));
 
     $this->i_userid = ( int ) $this->service_QueryBuilder->getResult()->getId();
 

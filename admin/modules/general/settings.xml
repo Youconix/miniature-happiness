@@ -1,46 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
     <title>system/menu/general</title>
-    <js>general.js</js>
+    <js>js/general.js, js/users.js, js/groups.js, js/page_rights.js, js/logs.js</js>
     <css>general.css</css>
     <block>
         <title>system/admin/general/users</title>
         <id>admin_general_users</id>
-        <click>general.show('users')</click>
     </block>    
     <block>
         <title>system/admin/general/groups</title>
         <id>admin_general_groups</id>
-        <click>general.show('groups')</click>
     </block>
     <block>
         <title>system/admin/general/page_rights</title>
         <id>admin_general_page_rights</id>
-        <click>general.show('page_right')</click>
     </block>    
     <block>
         <title>system/admin/general/logs</title>
         <id>admin_general_logs</id>
-        <click>general.show('logs')</click>
     </block>
     <block>
         <title>system/admin/general/updates</title>
         <id>admin_general_updates</id>
-        <click>general.show('updates')</click>
     </block>
     <block>
         <title>system/admin/general/backup</title>
         <id>admin_general_backup</id>
-        <click>general.show('backup')</click>
     </block>
     <block>
         <title>system/admin/general/maintenance</title>
         <id>admin_general_maintenance</id>
-        <click>general.show('maintenance')</click>
     </block>
     <block>
         <title>system/admin/general/cache</title>
         <id>admin_general_cache</id>
-        <click>general.show('cache')</click>
+    </block>
+    <block>
+        <title>system/admin/general/modules</title>
+        <id>admin_general_modules</id>
     </block>
 </module>

@@ -64,7 +64,6 @@ abstract class AdminLogicClass extends BaseClass  {
         $this->model_User       = Memory::models('User');
         
         $this->s_language   = $this->service_Language->getLanguage();        
-        $this->service_Template->headerLink('<link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css"/>');
         if( !Memory::isAjax() )
         	$this->service_Template->set('noscript','<noscript>'.$this->service_Language->get('language/noscript').'</noscript>');
     }

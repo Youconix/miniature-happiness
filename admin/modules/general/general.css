@@ -1,0 +1,5 @@
+/* Users */
+#searchUsername {
+	width:90%;
+}
+#users fieldset label.label { display:inline-block;  width:20%; margin-right:5px; text-align:right}

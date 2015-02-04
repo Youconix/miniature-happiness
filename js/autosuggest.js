@@ -30,7 +30,7 @@ function Autosuggest(){
     this.callback = callback || null;
 				
 		if( document.getElementById(id) == null ){
-			setTimeout(_this.init(file,id),100);
+			setTimeout(_this.init(file,id,local),100);
 			return;
 		}
 		
@@ -50,7 +50,7 @@ function Autosuggest(){
     });
 		
 		/* Set default values */
-		this.parameters.minchars = 1;
+		this.parameters.minchars = 3;
 		this.parameters.method = "get";
 		this.parameters.className = "autosuggest";
 		this.parameters.timeout = 2500;
@@ -156,10 +156,15 @@ function Autosuggest(){
 	}
 	
 	Autosuggest.prototype.setSuggestions	= function(results){
+		if( results.results ){
+			results = results.results;
+		}
+		
 		this.suggestions	= [];
 		
-		for(i=0; i<results.results.length; i++){
-			this.suggestions.push( {'id':results.results[i].id, 'value':results.results[i].value, 'info':results.results[i].info}  );
+		var i;
+		for( i in results ){
+			this.suggestions.push( {'id':results[i].id, 'value':results[i].value, 'info':results[i].info}  );
 		}
 		
 		this.idAs = "as_"+this.field.id;
@@ -168,19 +173,15 @@ function Autosuggest(){
 	
 	Autosuggest.prototype.createList = function(data){
 		var _this = this;		
-		
-    $("#"+this.idAs).remove();
+		console.log('running');
+		$("#"+this.idAs).remove();
 		clearTimeout(this.currentRequest);
 		
 		if( data.length == 0 ){
 			return;
 		}
-		
+	
 		var div = this.createElement("div", {id:this.idAs, className:this.parameters.className});			
-		var hcorner = this.createElement("div", {className:"as_corner"});
-		var hbar = this.createElement("div", {className:"as_bar"});
-		//header.appendChild(hcorner);
-		//header.appendChild(hbar);
 		
 		var ul = this.createElement("ul", {id:this.idAs});
 		
@@ -222,25 +223,20 @@ function Autosuggest(){
 		
 		div.appendChild(ul);		
 		
-		var fcorner = this.createElement("div", {className:"as_corner"});
-		var fbar = this.createElement("div", {className:"as_bar"});
-		//footer.appendChild(fcorner);
-		//footer.appendChild(fbar);
-
 		var pos = this.getPosition(this.field);
 		
 		div.style.left 		= pos.x + "px";
 		div.style.top 		= ( pos.y + this.field.offsetHeight + this.parameters.offsety ) + "px";
 		div.style.width 	= this.field.offsetWidth + "px";
-		
+		console.log(div);
 		document.getElementsByTagName("body")[0].appendChild(div);
 		this.highlighted = 0;
     
-    var _this = this;
-    $("#"+this.idAs+' a').click(function(e){
-      var pos = $(this).attr('name');
-      _this.handleClick(pos);
-    });
+	    var _this = this;
+	    $("#"+this.idAs+' a').click(function(e){
+	      var pos = $(this).attr('name');
+	      _this.handleClick(pos);
+	    });
 	}
 	
 	Autosuggest.prototype.createElement = function(type, attributes, content, html){
@@ -364,6 +360,6 @@ function Autosuggest(){
 	}
 	
 	Autosuggest.prototype.clearSuggestions = function (){
-		$("#"+this.idAs).remove();
+		//$("#"+this.idAs).remove();
 	}
 }

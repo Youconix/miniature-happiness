@@ -17,8 +17,8 @@ Validation.prototype.init	= function(){
 	var styledir = $('body').data('styledir');
 	if( !styledir ){	styledir = '/styles/default/';	}
 	
-	if( !$("link[href='"+styledir+"css/scripthulp/HTML5_validation.css']").length ){
-	    $('<link href="'+styledir+'css/scripthulp/HTML5_validation.css" rel="stylesheet">').appendTo("head");
+	if( !$("link[href='"+styledir+"css/HTML5_validation.css']").length ){
+	    $('<link href="'+styledir+'css/HTML5_validation.css" rel="stylesheet">').appendTo("head");
 	}
 }
 Validation.prototype.validateEmail	= function(email) {
@@ -98,8 +98,8 @@ Validation.prototype.errorMessage = function(item){
     return;
   }
   
-  if( item.data().hasOwnProperty('error-message') ){
-    item.prop('title',item.data('error-message'));
+  if( item.data().hasOwnProperty('error-message') || item.attr('data-error-message') ){
+	item.prop('title',item.data('error-message'));
   }
 }
 Validation.prototype.html5Validate	= function(item){

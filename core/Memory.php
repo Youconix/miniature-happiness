@@ -789,7 +789,14 @@ class Memory {
     break;
     
     default:
-     $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
+     /* Check for namespace */
+     preg_match('#namespace\\s+([\\a-z-_0-9]+);#',$s_file,$a_namespaces);
+     if( count($a_namespaces) > 0 ){
+      $s_filename = NIV.str_replace('\\','/',$a_namespaces[1].'/'.$a_matches[1]).'.inc.php';
+     }
+     else {
+      $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
+     }
    }
    
    return Memory::getConstructor($s_filename);

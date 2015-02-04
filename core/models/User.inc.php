@@ -160,7 +160,8 @@ class User extends GeneralUser {
 	public function searchUser($s_username){
 		\core\Memory::type('string',$s_username);
 
-		$this->service_QueryBuilder->select('users','*')->order('nick','ASC')->limit(25)->getWhere()->addAnd('nick','s','%'.$s_username.'%','LIKE');
+		$this->service_QueryBuilder->select('users','*')->order('nick','ASC')->limit(25)->getWhere()->addOr(array('nick','email'),
+		  array('s','s'),array($s_username,$s_username),array('LIKE','LIKE'));
 
 		$a_users    = $this->service_QueryBuilder->getResult()->fetch_assoc();
 		$a_result   = array('number'=>0,'data'=>array());

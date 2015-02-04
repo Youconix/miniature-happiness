@@ -1,4 +1,6 @@
 <?php
+namespace core\helpers;
+
 /** 
  * Helper for generating page navigation                           
  *                                                                              
@@ -22,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Helper_PageNavigation extends Helper{
+class PageNavigation extends Helper{
 		private $s_class;
 		private $i_itemsProPage;
 		private $i_items;

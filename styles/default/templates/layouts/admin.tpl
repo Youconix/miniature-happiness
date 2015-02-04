@@ -6,19 +6,26 @@
     <link rel="stylesheet" href="{NIV}{style_dir}css/cssPage.css" media="screen">
     <link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css" media="screen">
     <link rel="stylesheet" href="{NIV}{style_dir}css/tabs.css" media="screen">
+    <link rel="stylesheet" href="{NIV}{style_dir}css/HTML5_validation.css" media="screen">
     <script src="{NIV}js/jquery-2.0.3.min.js"></script>
+    <script src="{NIV}js/admin/admin.js"></script>
     <script src="{NIV}js/general.js"></script>
     <script src="{NIV}js/tabs.js"></script>
+    <script src="{NIV}js/validation.js"></script>
     {headblock}
 </head>
 <body {autostart}>
 <section id="wrapper">
     {noscript}
-    <include src="menu_admin.tpl">
+    <include src="header_admin.tpl">
     
     <section id="content">
             {body_content}
     </section>
+</section>
+
+<section id="menu_wrapper">
+    <include src="menu_admin.tpl">
 </section>
 </body>
 </html>
