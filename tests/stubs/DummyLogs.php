@@ -158,25 +158,6 @@ class DummyLogs extends \core\services\Logs {
 
     return true;
   }
-
-  /**
-   * Removes all the old logs
-   * 
-   * @return boolean	True if the logs are removed
-   */
-  public function clean(){
-  }
-
-  /**
-   * Checks if the log is modified since the given time
-   * 
-   * @param	String  $s_name The name of the log
-   * @param	int	    $i_timestamp	The timestamp to check
-   * @return boolean	True if the log is modified	
-   */
-  public function isModifiedSince($s_name, $i_timestamp){
-    return time();
-  }
 }
 ?>
 

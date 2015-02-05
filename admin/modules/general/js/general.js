@@ -16,7 +16,7 @@ General.prototype.showUsers = function(){
   admin.show(this.address+'users.php?command=index',users.init);
 }
 General.prototype.showGroups = function(){
-  admin.show(this.address+'groups.php');
+  admin.show(this.address+'groups.php',groups.init);
 }
 General.prototype.showPageRights = function(){
   admin.show(this.address+'pages.php');

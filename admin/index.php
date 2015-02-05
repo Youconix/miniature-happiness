@@ -55,11 +55,13 @@ class Index extends \core\BaseLogicClass  {
     define('LAYOUT','admin');
      
     $this->forceSSL();
-     
+
     parent::init();
    
     $this->service_Session  = \core\Memory::services('Session');
     $this->model_User       = \core\Memory::models('User');
+    
+    $this->service_Template->setJavascriptLink('<script src="{NIV}js/admin/language.php?lang='.$this->service_Language->getLanguage().'"></script>');
    }
 }
 ?>

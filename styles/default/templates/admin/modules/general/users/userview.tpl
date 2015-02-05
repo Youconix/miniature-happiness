@@ -3,10 +3,10 @@
         
         <nav>
             <ul>
-                <li id="users_back">{buttonBack}</li>
-                <li id="users_edit" data-id="{id}">{edit}</li>
-                <li id="users_delete" data-id="{id}" data-username="{username}" data-userid="{userid}" {deleteRejected}>{delete}</li>
                 <li id="user_login_as" data-id="{id}" data-username="{username}" data-userid="{userid}" {deleteRejected}>{loginAss}</li>
+                <li id="users_delete" data-id="{id}" data-username="{username}" data-userid="{userid}" {deleteRejected}>{delete}</li>
+                <li id="users_edit" data-id="{id}">{edit}</li>
+                <li id="users_back">{buttonBack}</li>
             </ul>
         </nav>
     </section>

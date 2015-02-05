@@ -54,7 +54,7 @@ Users.prototype.showUserEvents = function(){
 		 
 		 if( id == userid ){ return; }
 		 
-		 if( confirm('Weet u zeker dat u '+username+' wilt verwijderen?') ){
+		 if( confirm(languageAdmin.users_delete.replace('[username]',username)) ){
 			 $.post(users.url,{'command':'delete','userid':id});
 			 
 			 general.showUsers();
@@ -68,7 +68,7 @@ Users.prototype.showUserEvents = function(){
 		 
 		 if( id == userid ){ return; }
 		 
-		 if( confirm('Weet u zeker dat u wilt inloggen als '+username+'?\nDit beeindigd uw admin sessie.') ){
+		 if( confirm(languageAdmin.login_as.replace('[username]',username)) ){
 			 $.post(users.url,{'command':'login','userid':id},function(response){
 				 location.href = "/";
 			 });
@@ -80,8 +80,8 @@ Users.prototype.editUserScreen = function(){
 	$('#newGroup').on('change',function(){ users.addGroup(); });
 	$('#newLevel').on('change',function(){ users.addGroup(); });
 	
-	this.setGrouplistEvents();
-	this.showUserEvents();
+	users.setGrouplistEvents();
+	users.showUserEvents();
 }
 Users.prototype.addGroup	= function(){
 	var group = $('#newGroup').val();
@@ -103,9 +103,10 @@ Users.prototype.removeGroup	= function(item){
 	var group = item.data('group');
 	var level = item.data('level');
 	var userid = item.data('id');
-	var text = item.html().split(' - ');
 	
-	if( confirm('Weet u zeker dat u '+text[0]+' wilt verwijderen?') ){
+	var text = item.parent().html().split(' - ');
+	
+	if( confirm(languageAdmin.users_delete_group.replace('[name]',text[0]) ) ){
 		$('#newGroup').append('<option value="'+group+'">'+text[0]+'</option>');
 		item.remove();
 		
@@ -113,7 +114,7 @@ Users.prototype.removeGroup	= function(item){
 	}
 }
 Users.prototype.setGrouplistEvents = function(){
-	$('#groupslist fieldlist img').each(function(){
+	$('#groupslist fieldset img').each(function(){
 		$(this).off('click');
 		
 		$(this).click(function(){
@@ -163,6 +164,7 @@ Users.prototype.addUserScreen = function(){
 		return;
 	}
 	
+	$('#users_back').click(function(){ general.showUsers(); });
 	$('#username').on('blur',function(){ users.checkUsername(); });
 	$('#email').on('blur',function(){ users.checkEmail(); });
 	$('#userSaveButton').click(function(){ users.add(); });
@@ -178,7 +180,7 @@ Users.prototype.checkUsername = function(){
 		$.get(users.url+'?command=checkUsername&username='+username,function(response){
 			if( response != '1' ){
 				$('#username').addClass('invalid');
-				$('#email').title('De gebruikersnaam is al in gebruik.');
+				$('#email').title(languageAdmin.users_username_taken);
 			}
 			else {
 				$('#usernameOK').val(1);
@@ -194,7 +196,7 @@ Users.prototype.checkEmail = function(){
 		$.get(users.url+'?command=checkEmail&email='+email,function(response){
 			if( response != '1' ){
 				$('#email').addClass('invalid');
-				$('#email').title('Het E-mail adres is al in gebruik.');
+				$('#email').title(languageAdmin.users_email_taken);
 			}
 			else {
 				$('#emailOK').val(1);
@@ -223,9 +225,9 @@ Users.prototype.add = function(){
 	
 	if( password1 != password2 ){
 		$('#password1').removeClass('valid').addClass('invalid');
-		$('#password1').title('De wachtwoorden zijn niet gelijk');
+		$('#password1').title(languageAdmin.users_password_invalid);
 		$('#password2').removeClass('valid').addClass('invalid');
-		$('#password2').title('De wachtwoorden zijn niet gelijk');
+		$('#password2').title(languageAdmin.users_password_invalid);
 		
 		return;
 	}

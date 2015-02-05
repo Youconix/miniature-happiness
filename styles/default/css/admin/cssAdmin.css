@@ -4,8 +4,9 @@
 #header_admin { border:1px solid black; border-bottom-left-radius:5px; border-bottom-right-radius:5px; background-color:#b49fb3; height:4em; margin-bottom:10px; }
 #header_admin h1, .item_header h1 { display:inline-block; width:25%; margin-top:0.8em; color:#fff }
 #header_admin nav, .item_header nav { display:inline-block; width:60%; float:right; margin-top:0.8em; }
-#header_admin nav li, .item_header nav li { background-color:inherit; border:0px; padding-right:15px; border-radius:0; border-right:2px dashed black; color:#fff; cursor:pointer }
-#header_admin nav li:first-child, .item_header nav li:first-child { border-left:2px dashed black; }
+#header_admin nav li, .item_header nav li { background-color:inherit; border:0px; padding-right:15px; border-radius:0; 
+border-right:2px dashed black; color:#fff; cursor:pointer; float:right; }
+#header_admin nav li:last-child, .item_header nav li:last-child { border-left:2px dashed black; }
 #header_admin nav li a, .item_header nav li a { font-weight:normal; color:#fff; text-decoration:none; }
 
 #menu_wrapper { height: auto; margin: 0 auto; max-width: 1600px; min-width: 800px; width: auto; top:4.5em; position:absolute;}

@@ -4,10 +4,10 @@ abstract class GeneralJS {
 	protected $s_styleDir;
 	
 	public function __construct(){
-		require(NIV.'include/Memory.php');
-		Memory::startUp();
+		require(NIV.'core/Memory.php');
+		\core\Memory::startUp();
 		
-		$this->service_Language	= Memory::services('Language');
+		$this->service_Language	= \core\Memory::services('Language');
 		
 		$this->getStyleDir();
 		
@@ -17,8 +17,8 @@ abstract class GeneralJS {
 	}
 	
 	protected function getStyleDir(){
-		$s_templateDir = Memory::services('Settings')->get('settings/templates/dir');
-		$service_Cookie = Memory::services('Cookie');
+		$s_templateDir = \core\Memory::models('Config')->getStylesDir();
+		$service_Cookie = \core\Memory::services('Cookie');
 		if( $service_Cookie->exists('private_style_dir') ){
 			$s_styleDir = $this->clearLocation($service_Cookie->get('private_style_dir'));
 			if( $this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts') ){
