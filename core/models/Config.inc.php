@@ -37,6 +37,7 @@ class Config extends Model {
 	private $s_command = 'view';
 	private $s_layout = 'default';
 	private $a_observers = array();
+	const LOG_MAX_SIZE = 10000000;
 	
 	/**
 	 * PHP 5 constructor
@@ -382,6 +383,48 @@ class Config extends Model {
 	  return false;
 	 }
 	 return true;
+	}
+	
+	/**
+	 * Returns the logging setting
+	 * 
+	 * @return string  The log setting
+	 *      default    Create log files in the given location (see getLogLocation)
+	 *      error_log  Use the webserver error log
+	 *      sys_log    Use the system log
+	 */
+	public function logging(){
+	 if( !$this->service_Settings->exists('main/logs') ){
+	  return 'default';
+	 }
+	 
+	 return $this->service_Settings->get('main/logs');
+	}
+	
+	/**
+	 * Returns the log location  (default admin/data/logs/)
+	 * 
+	 * @return string The location
+	 */
+	public function getLogLocation(){
+	 if( !$this->service_Settings->exists('main/log_location') ){
+	  return DATA_DIR.'logs/';
+	 }
+	 
+	 return $this->service_Settings->get('main/log_location');
+	}
+	
+	/**
+	 * Returns the maximun log file size
+	 * 
+	 * @return int The maximun size in bytes
+	 */
+	public function getLogfileMaxSize(){
+	 if( !$this->service_Settings->exists('main/log_max_size') ){
+	  return Config::LOG_MAX_SIZE;
+	 }
+	 
+	 return $this->service_Settings->get('main/log_max_size');
 	}
 }
 

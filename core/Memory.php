@@ -163,10 +163,6 @@ class Memory {
    $service_FileData = new \core\services\FileData();
    Memory::$a_memory['service']['FileData'] = $service_FileData;
    
-   require_once (Memory::$a_service['systemPath'] . 'Logs.inc.php');
-   $service_Logs = new \core\services\Logs($service_File, $service_FileData);
-   Memory::$a_memory['service']['Logs'] = $service_Logs;
-   
    require_once (Memory::$a_service['systemPath'] . 'Session.inc.php');
    
    require_once (Memory::$a_service['systemPath'] . 'Security.inc.php');
@@ -180,6 +176,10 @@ class Memory {
    require_once (Memory::$a_model['systemPath'] . 'Config.inc.php');
    $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie);
    Memory::$a_memory['model']['Config'] = $model_Config;
+   
+   require_once (Memory::$a_service['systemPath'] . 'Logs.inc.php');
+   $service_Logs = new \core\services\Logs($service_File, $service_FileData,$model_Config);
+   Memory::$a_memory['service']['Logs'] = $service_Logs;
    
    Memory::setDefaultValues($service_Security, $service_Settings);
   }
