@@ -113,13 +113,13 @@
 			<id>ID</id>
 			<name>Naam</name>
 			<group>Groep</group>
-			<groups>Groepen</groups>
+			<groups>Groepen bekijken</groups>
 			<viewUsers>Bekijk gebruikers</viewUsers>
 			<description>Beschrijving</description>
 			<standard>Standaard</standard>
 			<user>Gebruiker</user>
 			<rights>Rechten</rights>
-			<headerAdd>Toevoegen groep</headerAdd>
+			<headerAdd>Groep toevoegen</headerAdd>
 			<headerEdit>Groep bewerken</headerEdit>
 			<headerUsers>Gebruikers van groep</headerUsers>
 			<js>
@@ -131,7 +131,7 @@
 		    <searchText>Zoek op gebruikersnaam, email of groep</searchText>
 		    <id>ID</id>
 			<title>Gebruiker beheer</title>
-			<users>Gebruikers</users>
+			<users>Gebruikers zoeken</users>
 			<user>Gebruiker</user>
 			<bot>Bot</bot>
 			<username>Gebruikersnaam</username>

@@ -2,8 +2,12 @@ function General(){
 	this.address	= '../../admin/modules/general/';
 }
 General.prototype.init	= function(){  
-  $('#admin_general_users h2').click(function(){ general.showUsers() } );
-  $('#admin_general_groups h2').click(function(){ general.showGroups() } );
+  $('#admin_general_users h2, #admin_general_users2').click(function(){ general.showUsers() } );
+  $('#admin_general_add_user').click(function(){ admin.show(users.url+"?command=addScreen",users.addUserScreen()); });
+  
+  $('#admin_general_groups h2, #admin_general_groups2').click(function(){ general.showGroups() } );
+  $('#admin_general_group_add').click(function(){  admin.show(groups.url+'?command=addScreen',groups.addScreen);  });
+  
   $('#admin_general_page_rights h2').click(function(){ general.showPageRights() } );
   $('#admin_general_logs h2').click(function(){ general.showLogs() } );
   $('#admin_general_updates h2').click(function(){ general.showUpdates() } );
@@ -19,7 +23,7 @@ General.prototype.showGroups = function(){
   admin.show(this.address+'groups.php',groups.init);
 }
 General.prototype.showPageRights = function(){
-  admin.show(this.address+'pages.php');
+  admin.show(this.address+'pages.php',pageRights.init);
 }
 General.prototype.showLogs = function(){
   admin.show(this.address+'logs.php');

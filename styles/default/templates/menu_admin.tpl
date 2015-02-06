@@ -13,6 +13,14 @@
                     <block {tab_{id}}>
                         <div class="menu_item" id="{item_id}">
                             <h2>{title}</h2>
+                            
+                            <nav>
+                                <ul>
+                                <block {links_{link_block}}>
+                                <li class="menu_link" id="{link_id}">{link_title}</li>
+                                </block>
+                                </ul>
+                            </nav>
                         </div>
                     </block>
                 </article>

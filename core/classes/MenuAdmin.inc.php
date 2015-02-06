@@ -10,7 +10,7 @@ namespace core\classes;
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 1.0
- *        @changed 09/01/2013
+ * @changed 06/02/2015
  *       
  *       
  *        Scripthulp framework is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ class MenuAdmin {
    $s_css = $obj_settings->get('module/css');
    
    $this->setJS($s_module, $s_jsLink);
-   $this->setCSS($s_module,$s_css);
+   $this->setCSS($s_module, $s_css);
    
    ($i == 1) ? $s_class = 'tab_header_active' : $s_class = '';
    $this->service_Template->setBlock('menu_tab_header', array( 
@@ -92,38 +92,77 @@ class MenuAdmin {
       'id' => $i 
     );
     
+    $a_links = array();
+    
     foreach( $block->childNodes as $item ){
-     if( $item->tagName == 'title' ){
-      $a_data['title'] = $this->service_Language->get($item->nodeValue);
+     if( $item->tagName == 'link' ){
+      $a_links[] = $item;
+      continue;
+     }
+     else if( $item->tagName == 'title' ){
+      $a_data['title'] = $item->nodeValue;
+      if( $this->service_Language->exists($item->nodeValue) ){
+       $a_data['title'] = $this->service_Language->get($item->nodeValue);
+      }
      }
      else{
       $a_data[$item->tagName] = $item->nodeValue;
      }
-    } 
-    if( array_key_exists('id', $a_data) ){
-     $a_data['item_id'] = $a_data['id'];
     }
-     
-    $this->service_Template->setBlock('tab_' . $i, $a_data);    
-    }
+    $a_data['item_id'] = $a_data['id'];
     
-    $i++;
+    if( count($a_links) > 0 ){
+     $a_data['link_block'] = $a_data['id'];
+    }
+    $this->service_Template->setBlock('tab_' . $i, $a_data);
+    
+    $this->addLinks($a_data['id'], $a_links);
    }
+   
+   $i++;
+  }
+ }
+ 
+ /**
+  * Adds the links for the block
+  * 
+  * @param int $i_id       The block ID
+  * @param array $a_links  The XML elements
+  */
+ private function addLinks( $i_id, $a_links ){
+  foreach( $a_links AS $link ){
+   $a_data = array();
+   foreach( $link->childNodes AS $item ){
+    if( $item->tagName == 'title' ){
+     $a_data[ 'link_'.$item->tagName ] = $item->nodeValue;
+     if( $this->service_Language->exists($item->nodeValue) ){
+      $a_data[ 'link_'.$item->tagName ] = $this->service_Language->get($item->nodeValue);
+     }
+    }
+    else {
+     $a_data[ 'link_'.$item->tagName ] = $item->nodeValue;
+    }
+   }
+   
+   $this->service_Template->setBlock('links_'.$i_id,$a_data);
+  }
  }
  
  /**
   * Sets the javascript links
-  * 
+  *
   * @param string $s_module The module name
   * @param string $s_jsLink The JS links, seperated with a comma
   */
- private function setJS($s_module,$s_jsLink){
-  if( empty($s_jsLink) ){ return; }
+ private function setJS( $s_module, $s_jsLink ){
+  if( empty($s_jsLink) ){
+   return;
+  }
   
-  $a_js = explode(',',$s_jsLink);
-  foreach( $a_js AS $s_jsLink ){
+  $a_js = explode(',', $s_jsLink);
+  foreach( $a_js as $s_jsLink ){
    $this->service_Template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . trim($s_jsLink) . '"></script>');
-  }  
+  }
  }
  
  /**
@@ -132,11 +171,13 @@ class MenuAdmin {
   * @param string $s_module The module name
   * @param string $s_css The CSS links, seperated with a comma
   */
- private function setCSS($s_module,$s_css){
-  if( empty($s_css) ){ return; }
+ private function setCSS( $s_module, $s_css ){
+  if( empty($s_css) ){
+   return;
+  }
   
-  $a_css = explode(',',$s_css);
-  foreach( $a_css AS $s_css ){
+  $a_css = explode(',', $s_css);
+  foreach( $a_css as $s_css ){
    $this->service_Template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
   }
  }
