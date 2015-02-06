@@ -11,7 +11,10 @@
  *        @date made:		01-05-2010
  *        @date last changed:	02-05-2010
  */
-define('NIV', '../');
+
+if( !defined('NIV') ){
+ define('NIV', '../');
+}
 if( !class_exists('\includes\BaseLogicClass') ){
  require (NIV . 'includes/BaseLogicClass.php');
 }
@@ -29,7 +32,7 @@ class Error403 extends \includes\BaseLogicClass {
  private function displayError(){
   header("HTTP/1.1 403 Forbidden");
   
-  $service_Language = Memory::services('Language');
+  $service_Language = \core\Memory::services('Language');
   
   $this->service_Template->set('title', $service_Language->get('language/errors/error403/accessDenied'));
   
@@ -37,10 +40,10 @@ class Error403 extends \includes\BaseLogicClass {
   
   if( isset($_SESSION['error']) ){
    if( isset($_SESSION['errorObject']) ){
-    Memory::services('ErrorHandler')->error($_SESSION['errorObject']);
+    \core\Memory::services('ErrorHandler')->error($_SESSION['errorObject']);
    }
    else{
-    Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
+    \core\Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
    }
    
    if( defined('DEBUG') ){
