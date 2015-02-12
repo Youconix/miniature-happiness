@@ -56,8 +56,8 @@ class Logs extends Service{
      /* Get error log location */
      $this->s_errorLog = realpath($this->s_directory.'error.log');
      if( !$this->s_errorLog ){
-      touch($s_address);
-      $this->s_errorLog = realpath($s_address);
+      touch($this->s_errorLog);
+      $this->s_errorLog = realpath($this->s_errorLog);
      }
     }
   }

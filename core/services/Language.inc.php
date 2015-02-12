@@ -77,16 +77,10 @@ class Language extends Xml{
   
   private function loadLanguageParser(){
   	if( $this->service_Settings->exists('language/type') && $this->service_Settings->get('language/type') == 'mo' ){
-  		if( !class_exists('\core\services\data\LanguageMO') ){  		
-  			require(NIV.'core/services/data/LanguageMO.inc.php');
-  		}
-  		$this->obj_parser = new \core\services\data\LanguageMO($this->service_File,$this->s_language);
+  		$this->obj_parser =  \Loader::Inject('\core\services\data\LanguageMO',array($this->s_language));
   	}
   	else {
-  		if( !class_exists('\core\services\data\LanguageXML') ){
-  			require(NIV.'core/services/data/LanguageXML.inc.php');
-  		}
-  		$this->obj_parser = new \core\services\data\LanguageXML($this->service_File,$this->s_language,$this->bo_fallback);
+  		$this->obj_parser =  \Loader::Inject('\core\services\data\LanguageXML',array($this->s_language,$this->bo_fallback));
   	}
   	
   	require(NIV.'core/services/data/languageShortcut.php');

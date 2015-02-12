@@ -37,11 +37,11 @@ class Groups extends Model{
    * PHP5 constructor
    * @param \core\services\QueryBuilder $service_QueryBuilder The query builder
    * @param \core\services\Security $service_Security The security service
-   * @param \core\models\data\Data_Group $model_DataGroup   The group data model
+   * @param \core\models\data\DataGroup $model_DataGroup   The group data model
    * @param \core\models\Config $model_Config   The config model
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder,\core\services\Security $service_Security,
-    \core\models\data\Data_Group $model_DataGroup,\core\models\Config $model_Config){
+    \core\models\data\DataGroup $model_DataGroup,\core\models\Config $model_Config){
     parent::__construct($service_QueryBuilder,$service_Security);
 
     $this->model_DataGroup  = $model_DataGroup;

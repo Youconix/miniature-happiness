@@ -8,7 +8,7 @@ if( !class_exists('GeneralTest') ){
 	require(NIV.'tests/GeneralTest.php');
 }
 
-class testData_User extends GeneralTest{
+class testDataUser extends GeneralTest{
 
   private $obj_User;
   private $i_userid;
@@ -17,7 +17,7 @@ class testData_User extends GeneralTest{
     parent::__construct();
 
     require_once(NIV . 'include/models/GeneralUser.inc.php');
-    require_once(NIV . 'include/models/data/Data_User.inc.php');
+    require_once(NIV . 'include/models/data/DataUser.inc.php');
 
     $this->loadStub('DummyDAL');
     $this->loadStub('DummyQueryBuilder');
@@ -40,7 +40,7 @@ class testData_User extends GeneralTest{
     $service_Hashing = new DummyHashing();
 
     $this->i_userid = 0;
-    $this->obj_User = new \core\models\data\Data_User($service_Builder, $service_Security, $service_Hashing,$model_Groups, $service_Language);
+    $this->obj_User = new \core\models\data\DataUser($service_Builder, $service_Security, $service_Hashing,$model_Groups, $service_Language);
   }
 
   public function tearDown(){

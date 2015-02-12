@@ -10,6 +10,10 @@
  * @changed		24/09/12
  */
 use \core\Memory;
+if ( ! defined('NIV') )
+{
+    define('NIV', './');
+}
 
 include(NIV.'core/BaseLogicClass.php');
 class Index extends \core\BaseLogicClass  {     

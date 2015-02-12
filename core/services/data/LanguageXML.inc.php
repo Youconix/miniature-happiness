@@ -45,7 +45,7 @@ class LanguageXML extends \core\services\Xml{
 		parent::__construct();
 
 		$this->service_File = $service_File;
-		$this->s_startTag = 'language';
+		$this->s_startTag = 'language';		
 		$this->s_language = $s_language;
 		$this->bo_fallback = $bo_fallback;
 

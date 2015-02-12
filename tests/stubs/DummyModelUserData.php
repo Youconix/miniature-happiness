@@ -1,13 +1,13 @@
 <?php
-if( !class_exists('\core\models\data\Data_User') ){
+if( !class_exists('\core\models\data\DataUser') ){
   if( !class_exists('\core\models\GeneralUser') ){
     require(NIV.'include/models/GeneralUser');
   }
   
-  require(NIV.'include/models/data/Data_User.inc.php');
+  require(NIV.'include/models/data/DataUser.inc.php');
 }
 
-class DummyModelUserData extends \core\models\data\Data_User {
+class DummyModelUserData extends \core\models\data\DataUser {
   public $i_userid;
   
   public function __construct(){  }

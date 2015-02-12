@@ -102,7 +102,7 @@ class Data_PM extends \core\models\Model {
 	/**
 	 * Returns the sender
 	 *
-	 * @return Data_User    The sender
+	 * @return DataUser    The sender
 	 */
 	public function getSender(){
 		return $this->obj_sender;

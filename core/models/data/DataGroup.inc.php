@@ -25,7 +25,7 @@ namespace core\models\data;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Data_Group extends \core\models\Model{
+class DataGroup extends \core\models\Model{
 
   private $i_id;
   protected $s_name;

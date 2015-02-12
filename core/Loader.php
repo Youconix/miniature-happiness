@@ -1,0 +1,217 @@
+<?php
+
+/**
+ * 
+ * @author Roxanna Lugtigheid
+ * @link        http://www.php-fig.org/psr/psr-4/
+ */
+class Loader
+{
+
+    private static function getFileName($s_className)
+    {
+        $s_className = ltrim($s_className, '\\');
+        $s_fileName = '';
+        $s_namespace = '';
+        if ($i_lastNsPos = strrpos($s_className, '\\')) {
+            $s_namespace = substr($s_className, 0, $i_lastNsPos);
+            $s_className = substr($s_className, $i_lastNsPos + 1);
+            $s_fileName = str_replace('\\', DIRECTORY_SEPARATOR, $s_namespace) . DIRECTORY_SEPARATOR;
+        }
+        $s_fileName .= str_replace('_', DIRECTORY_SEPARATOR, $s_className) . '.php';
+        
+        if (file_exists(NIV . 'lib' . DIRECTORY_SEPARATOR . $s_fileName)) {
+            return 'lib' . DIRECTORY_SEPARATOR . $s_fileName;
+        }
+        
+        if (file_exists(NIV . $s_fileName)) {
+            return $s_fileName;
+        }
+        
+        $s_fileName = str_replace('.php', '.inc.php', $s_fileName);
+        if (file_exists(NIV . $s_fileName)) {
+            return $s_fileName;
+        }
+        
+        return null;
+    }
+
+    public static function autoload($s_className)
+    {
+        $s_fileName = Loader::getFileName($s_className);
+        
+        if (! is_null($s_fileName)) {
+            require NIV . $s_fileName;
+        }
+    }
+
+    public static function Inject($s_className, $a_arguments = array())
+    {
+        $s_fileName = Loader::getFileName($s_className);
+        
+        if (is_null($s_fileName)) {
+            return null;
+        }
+        
+        $s_caller = $s_className;
+        
+        if (strpos($s_fileName, 'core' . DIRECTORY_SEPARATOR) !== false) {
+            // Check for override.
+            $s_fileNameChild = str_replace('core' . DIRECTORY_SEPARATOR, 'includes' . DIRECTORY_SEPARATOR, $s_fileName);
+            
+            if (file_exists(NIV . $s_fileNameChild)) {
+                $s_fileName = $s_fileNameChild;
+                
+                $s_caller = str_replace('core\\', 'includes\\', $s_className);
+            }
+        }
+        
+        if (substr($s_caller, 0, 1) != '\\') {
+            $s_caller = '\\' . $s_caller;
+        }
+        
+        return Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
+    }
+
+    /**
+     * Performs the dependency injection
+     *
+     * @param String $s_caller
+     *            class name
+     * @param String $s_filename
+     *            source file name
+     * @throws MemoryException the object is not instantiable.
+     * @return Object called object
+     */
+    private static function injection($s_caller, $s_filename, $a_argumentsGiven)
+    {
+        $ref = new \ReflectionClass($s_caller);
+        if (! $ref->isInstantiable()) {
+            throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
+        }
+        
+        $a_matches = Loader::getConstructor($s_filename);
+        
+        if (count($a_matches) == 0) {
+            /* No arguments */
+            return new $s_caller();
+        }
+        $a_argumentNamesPre = explode(',', $a_matches[1]);
+        
+        $a_argumentNames = array();
+        $a_arguments = array();
+        foreach ($a_argumentNamesPre as $s_name) {
+            $s_name = trim($s_name);
+            if (strpos($s_name, ' ') === false) {
+                continue;
+            }
+            if (substr($s_name, 0, 1) == '\\') {
+                $s_name = substr($s_name, 1);
+            }
+            
+            $a_item = explode(' ', $s_name);
+            $a_argumentNames[] = $a_item[0];
+        }
+        
+        foreach ($a_argumentNames as $s_name) {
+            $a_path = explode('\\', $s_name);
+            
+            if (count($a_path) == 1) {
+                /* No namespace */
+                if (strpos($s_name, 'Helper_') !== false) {
+                    $s_name = str_replace('Helper_', '', $s_name);
+                    $a_arguments[] = \core\Memory::helpers($s_name);
+                } else 
+                    if (strpos($s_name, 'Service_') !== false) {
+                        $s_name = str_replace('Service_', '', $s_name);
+                        $a_arguments[] = \core\Memory::services($s_name);
+                    } else 
+                        if (strpos($s_name, 'Model_') !== false) {
+                            $s_name = str_replace('Model_', '', $s_name);
+                            $a_arguments[] = \core\Memory::models($s_name);
+                        } else {
+                            /* Try to load object */
+                            $a_arguments[] = Loader::injection($s_caller);
+                        }
+            } else {
+                $s_name = end($a_path);
+                $bo_data = false;
+                if ($a_path[2] == 'data') {
+                    $bo_data = true;
+                }
+                
+                if (($a_path[1] == 'helpers') || ($a_path[1] == 'html')) {
+                    $a_arguments[] = \core\Memory::helpers($s_name, $bo_data);
+                } else 
+                    if (($a_path[1] == 'services') || ($a_path[1] == 'database')) {
+                        $a_arguments[] = \core\Memory::services($s_name, $bo_data);
+                    } else 
+                        if ($a_path[1] == 'models') {
+                            $a_arguments[] = \core\Memory::models($s_name, $bo_data);
+                        }
+            }
+        }
+        
+        $a_arguments = array_merge($a_arguments, $a_argumentsGiven);
+        
+        return $ref->newInstanceArgs($a_arguments);
+    }
+
+    /**
+     * Gets the constructor parameters
+     *
+     * @param String $s_filename
+     *            name
+     * @return array parameters
+     */
+    private static function getConstructor($s_filename)
+    {
+        $s_file = \core\Memory::services('File')->readFile($s_filename);
+        if (stripos($s_file, '__construct') === false) {
+            /* Check if file has parent */
+            preg_match('#class\\s+[a-zA-Z0-9\-_]+\\s+extends\\s+([\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches);
+            if (count($a_matches) == 0) {
+                return array();
+            }
+            
+            switch ($a_matches[1]) {
+                case '\core\models\Model':
+                case 'Model':
+                    $s_filename = NIV . 'core/models/Model.inc.php';
+                    break;
+                
+                case '\core\services\Service':
+                case 'Service':
+                    $s_filename = NIV . 'core/services/Service.inc.php';
+                    break;
+                
+                case '\core\helpers\Helper':
+                case 'Helper':
+                    $s_filename = NIV . 'core/helpers/Helper.inc.php';
+                    break;
+                
+                default:
+                    /* Check for namespace */
+                    preg_match('#namespace\\s+([\\a-z-_0-9]+);#', $s_file, $a_namespaces);
+                    if (count($a_namespaces) > 0) {
+                        $s_filename = NIV . str_replace('\\', '/', $a_namespaces[1] . '/' . $a_matches[1]) . '.inc.php';
+                    } else {
+                        $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
+                    }
+            }
+            
+            return Loader::getConstructor($s_filename);
+        }
+        
+        preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
+        
+        return $a_matches;
+    }
+}
+
+function loaderWrapper($s_className)
+{
+    Loader::autoload($s_className);
+}
+
+spl_autoload_register('loaderWrapper');

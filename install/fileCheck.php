@@ -293,7 +293,7 @@ class FileCheck {
             }
         }
 
-        $a_files = array('Data_Group', 'Data_PM', 'Data_User');
+        $a_files = array('DataGroup', 'DataPM', 'DataUser');
         $a_filesUser = array();
 
         $a_files = array_merge($a_files, $a_filesUser);

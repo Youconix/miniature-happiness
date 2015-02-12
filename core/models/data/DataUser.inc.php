@@ -26,7 +26,7 @@ namespace core\models\data;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Data_User extends \core\models\GeneralUser{
+class DataUser extends \core\models\GeneralUser{
 
   private $model_Groups;
   private $service_Language;

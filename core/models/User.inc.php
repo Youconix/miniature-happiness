@@ -45,7 +45,7 @@ class User extends GeneralUser {
    * @param \core\models\Groups $model_Groups   The groups model
    */
   public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security,\core\services\Hashing $service_Hashing, 
-    \core\services\Session $service_Session,\core\models\Groups $model_Groups,\core\models\data\Data_User $model_UserData){
+    \core\services\Session $service_Session,\core\models\Groups $model_Groups,\core\models\data\DataUser $model_UserData){
 		parent::__construct($service_QueryBuilder,$service_Security,$service_Hashing);
 			
 		$this->a_userModels = array();
@@ -58,7 +58,7 @@ class User extends GeneralUser {
 	 * Gets the requested users
 	 *
 	 * @param   array $a_userid   Array from user IDs
-	 * @return  Data_User-array   The data objects
+	 * @return  DataUser-array   The data objects
 	 */
 	public function getUsersById($a_userid){
 		\core\Memory::type('array',$a_userid);
@@ -90,7 +90,7 @@ class User extends GeneralUser {
 	 * Gets the requested user
 	 *
 	 * @param   int $i_userid   The userid, leave empty for logged in user
-	 * @return  Data_User   The data object of a empty data object if the user is not logged in
+	 * @return  DataUser   The data object of a empty data object if the user is not logged in
 	 * @throws  DBException If the userid is invalid
 	 */
 	public function get($i_userid = -1){
@@ -202,7 +202,7 @@ class User extends GeneralUser {
 	/**
 	 * Creates a new user object
 	 *
-	 * @return Data_User    The user object
+	 * @return DataUser    The user object
 	 */
 	public function createUser(){
 		return $this->model_UserData->cloneModel();
