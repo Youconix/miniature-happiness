@@ -7,7 +7,7 @@ namespace core\database;
  * @author REJ Scheijen rej-scheijen@scripthulp.com
  * @copyright Messageboard bv 2008-2012
  * @since 01/10/2008
- *        @changed 04/11/11
+ *
  */
 class Database_Mysqli_binded
 {

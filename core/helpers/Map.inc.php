@@ -7,7 +7,7 @@
  * @author:		Rachelle Scheijen <rachelle.scheijen@unixerius.nl>
  * @copyright	The au pair BV	2013
  * @since     1.0
- * @changed   21/01/13
+ *
  */
 class Service_Map extends Service
 {

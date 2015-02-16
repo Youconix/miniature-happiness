@@ -13,7 +13,7 @@ if (! class_exists('\CoreException')) {
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 1.0
- *        @changed 31/05/2014
+ *
  *       
  *       
  *        Scripthulp framework is free software: you can redistribute it and/or modify

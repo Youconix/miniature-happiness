@@ -6,7 +6,7 @@
  * @author:		Rachelle Scheijen <rachelle.scheijen@unixerius.nl>
  * @copyright	The au pair BV	2013
  * @since     1.0
- * @changed   01/06/2013
+ *
  * @see include/openID/OpenAuth.inc.php
  */
 class Facebook extends OpenAuth

@@ -9,7 +9,7 @@
  * @copyright 2012,2013,2014  Rachelle Scheijen
  * @author    Rachelle Scheijen
  * @since     1.0
- * @changed   09/01/2013
+ *
  *
  *
  * Scripthulp framework is free software: you can redistribute it and/or modify

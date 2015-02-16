@@ -12,7 +12,7 @@ namespace core\models;
  *
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
- * @since 2.0 @changed 03/01/2015
+ *
  */
 class Login extends Model
 {

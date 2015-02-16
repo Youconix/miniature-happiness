@@ -10,7 +10,7 @@ namespace core\services;
  * @copyright 2014,2015,2016 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 1.0
- *        @changed 30/03/2014
+ *
  *       
  *        Scripthulp framework is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by

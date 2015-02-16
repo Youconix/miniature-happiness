@@ -10,7 +10,7 @@ namespace core\services;
  * @copyright 2012,2013,2014 Rachelle Scheijen
  * @author Rachelle Scheijen
  * @since 1.0
- *        @changed 01/07/2013
+ *
  * @see include/openID/OpenAuth.inc.php Scripthulp framework is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU Lesser General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or

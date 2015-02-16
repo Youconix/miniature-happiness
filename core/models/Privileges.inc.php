@@ -9,7 +9,7 @@ namespace core\models;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 2.0
- *        @changed 06/02/2015
+ *
  *       
  *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by

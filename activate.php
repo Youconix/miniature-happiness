@@ -8,7 +8,7 @@
  * @version		1.0
  * @since		1.0
  * @date		25/09/12
- * @changed		25/11/12
+ *
  */
 define('NIV', './');
 include (NIV . 'core/BaseLogicClass.php');

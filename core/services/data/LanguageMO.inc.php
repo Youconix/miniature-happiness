@@ -11,7 +11,7 @@ namespace core\services\data;
  * @version 2.0
  * @since 2.0
  *        @date 14/09/2014
- *        @changed 14/09/2014
+ *
  *       
  *        Scripthulp framework is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by

@@ -7,7 +7,7 @@
  * @version	1.0
  * @since		1.0
  * @date made	24/09/12
- * @changed		24/09/12
+ *
  */
 use \core\Memory;
 
