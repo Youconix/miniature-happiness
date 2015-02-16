@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Observer interface (observer pattern)
  * 
@@ -6,75 +7,89 @@
  * @since     1.0
  * @changed   09/01/13
  */
-interface Observer {
-	public function update($observable,$data);
+interface Observer
+{
+
+    public function update($observable, $data);
 }
 
 /**
  * Observable parent class (observer pattern)
  *
- * @author    Rachelle Scheijen
- * @since     1.0
- * @changed   09/01/13
+ * @author Rachelle Scheijen
+ * @since 1.0
+ *        @changed 09/01/13
  */
-abstract class Observable {
- 	private $a_observers	= array();
-	private $bo_changed	= false;
+abstract class Observable
+{
 
-	/**
-	 * Adds the given observer
-	 *
-	 * @param Observer $observer	The observer
-	 * @throws Exception	if $observer does niet implement Observer
-	 */
-	public function addObserver($observer){
-		if( !($observer instanceof Observer) )
-			throw new Exception("Can only add observers");
-		
-		foreach($this->a_observers AS $item){
-			if( $item == $observer)
-				return;
-		}
-		
-		$this->a_observers[] =	$observer;
-	}
+    private $a_observers = array();
 
-	/**
-	 * Deletes the given observer
-	 * 
-	 * @param Observer $observer	The observer
-	 */
-	public function deleteObserver($observer){
-		$i_number	= count($this->a_observers);
-		
-		for($i=0; $i<$i_number; $i++){
-			if( $this->a_observers[$i] == $observer){
-				$this->a_observers[$i] = null;
-				break;
-			}
-		}
-	}
+    private $bo_changed = false;
 
-	/**
-	 * Sets the observable as changed
-	 */
-	public function setChanged(){
-		$this->bo_changed	= true;
-	}
+    /**
+     * Adds the given observer
+     *
+     * @param Observer $observer
+     *            observer
+     * @throws Exception $observer does niet implement Observer
+     */
+    public function addObserver($observer)
+    {
+        if (! ($observer instanceof Observer))
+            throw new Exception("Can only add observers");
+        
+        foreach ($this->a_observers as $item) {
+            if ($item == $observer)
+                return;
+        }
+        
+        $this->a_observers[] = $observer;
+    }
 
-	/**
-	 * Notifies the observers
-	 * 
-	 * @param string $data	The payload to send
-	 */
-	public function notifyObservers($data = null){
-		if( !$this->bo_changed )	return;
+    /**
+     * Deletes the given observer
+     *
+     * @param Observer $observer
+     *            observer
+     */
+    public function deleteObserver($observer)
+    {
+        $i_number = count($this->a_observers);
+        
+        for ($i = 0; $i < $i_number; $i ++) {
+            if ($this->a_observers[$i] == $observer) {
+                $this->a_observers[$i] = null;
+                break;
+            }
+        }
+    }
 
-		foreach($this->a_observers AS $observer){
-			if( is_null($observer) )	continue;
+    /**
+     * Sets the observable as changed
+     */
+    public function setChanged()
+    {
+        $this->bo_changed = true;
+    }
 
-			$observer->update($this,$data);
-		}
-	}
+    /**
+     * Notifies the observers
+     *
+     * @param string $data
+     *            payload to send
+     */
+    public function notifyObservers($data = null)
+    {
+        if (! $this->bo_changed)
+            return;
+        
+        foreach ($this->a_observers as $observer) {
+            if (is_null($observer))
+                continue;
+            
+            $observer->update($this, $data);
+        }
+    }
 }
 ?>

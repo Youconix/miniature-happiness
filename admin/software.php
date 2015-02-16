@@ -22,72 +22,74 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-define('NIV','../');
-include(NIV.'include/AdminLogicClass.php');
+define('NIV', '../');
+include (NIV . 'include/AdminLogicClass.php');
 
-class Software extends AdminLogicClass  {
-	private $service_Software;
-	
+class Software extends AdminLogicClass
+{
+
+    private $service_Software;
+
     /**
      * Starts the class Software
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->init();
         
-        if( !Memory::isAjax() )
-        	exit();
+        if (! Memory::isAjax())
+            exit();
         
-		if( $_SERVER['REQUEST_METHOD'] != 'POST' ){
-			$this->view();
-		}
-		else {
-			$this->update();
-		}
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view();
+        } else {
+            $this->update();
+        }
     }
 
     /**
      * Inits the class Stats
      */
-    protected function init(){    	
+    protected function init()
+    {
         parent::init();
         
-        $this->service_Software	= Memory::services('Software');
+        $this->service_Software = Memory::services('Software');
     }
 
     /**
      * Displays the main view
      */
-	private function view(){
-		$i_status	= $this->service_Software->checkUpdates();
-		
-		if( $i_status == -1 ){
-			$this->service_Template->set('notice','<span class="errorNotice">'.$this->service_Language->get('language/admin/software/noContact').'</span>');
-		}
-		else if( $i_status == 0 ){
-			$this->service_Template->set('notice','<span class="Notice">'.$this->service_Language->get('language/admin/software/upToDate').'</span>');
-		}
-		else {
-			$this->service_Template->set('notice','<a href="javascript:admin.update()" class="systemNotice">'.$this->service_Language->get('language/admin/software/updateAvailable').'</a>');
-		}
-	}
-	
-	/**
-	 * Updates the software
-	 */
-	private function update(){
-		$i_status	= $this->service_Software->update();
-		
-		if( $i_status < 0 ){
-			$this->service_Template->set('notice','<span class="errorNotice">'.$this->service_Language->get('language/admin/software/updateFailure').'</span>');
-		}
-		else if( $i_status == 0 ){
-			$this->service_Template->set('notice','<span class="Notice">'.$this->service_Language->get('language/admin/software/upToDate').'</span>');
-		}
-		else {
-			$this->service_Template->set('notice','<span class="Notice">'.$this->service_Language->get('language/admin/software/updateSucceed').'</span>');
-		}
-	}
+    private function view()
+    {
+        $i_status = $this->service_Software->checkUpdates();
+        
+        if ($i_status == - 1) {
+            $this->service_Template->set('notice', '<span class="errorNotice">' . $this->service_Language->get('language/admin/software/noContact') . '</span>');
+        } else 
+            if ($i_status == 0) {
+                $this->service_Template->set('notice', '<span class="Notice">' . $this->service_Language->get('language/admin/software/upToDate') . '</span>');
+            } else {
+                $this->service_Template->set('notice', '<a href="javascript:admin.update()" class="systemNotice">' . $this->service_Language->get('language/admin/software/updateAvailable') . '</a>');
+            }
+    }
+
+    /**
+     * Updates the software
+     */
+    private function update()
+    {
+        $i_status = $this->service_Software->update();
+        
+        if ($i_status < 0) {
+            $this->service_Template->set('notice', '<span class="errorNotice">' . $this->service_Language->get('language/admin/software/updateFailure') . '</span>');
+        } else 
+            if ($i_status == 0) {
+                $this->service_Template->set('notice', '<span class="Notice">' . $this->service_Language->get('language/admin/software/upToDate') . '</span>');
+            } else {
+                $this->service_Template->set('notice', '<span class="Notice">' . $this->service_Language->get('language/admin/software/updateSucceed') . '</span>');
+            }
+    }
 }
 
 $obj_Software = new Software();

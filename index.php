@@ -11,15 +11,17 @@
  */
 use \core\Memory;
 
-include(NIV.'core/BaseLogicClass.php');
-class Index extends \core\BaseLogicClass  {     
+include (NIV . 'core/BaseLogicClass.php');
+
+class Index extends \core\BaseLogicClass
+{
+
     /**
      * Sets the index content
      */
-    protected function view(){
-    	$this->service_Template->set('content',
-			Memory::helpers('IndexInstall')
-    	);
+    protected function view()
+    {
+        $this->service_Template->set('content', Memory::helpers('IndexInstall'));
     }
 }
 ?>

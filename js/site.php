@@ -1,23 +1,27 @@
-<?php 
-define('NIV','../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../');
+require (NIV . 'js/generalJS.php');
 
-class Site extends GeneralJS {
-	private $s_language;
-	
-	public function __construct(){
-		require(NIV.'core/Memory.php');
-		\core\Memory::startUp();
-		
-		$this->service_Language	= \core\Memory::services('Language');
-		$this->s_language	= $this->service_Language->getLanguage();
-		$this->sendHeaders();
-		
-		$this->display();
-	}
-	
-	protected function display(){
-		$s_file = 'function Site(){        		
+class Site extends GeneralJS
+{
+
+    private $s_language;
+
+    public function __construct()
+    {
+        require (NIV . 'core/Memory.php');
+        \core\Memory::startUp();
+        
+        $this->service_Language = \core\Memory::services('Language');
+        $this->s_language = $this->service_Language->getLanguage();
+        $this->sendHeaders();
+        
+        $this->display();
+    }
+
+    protected function display()
+    {
+        $s_file = 'function Site(){        		
 			Site.prototype.checkMessage	= function(){
 				var receiver	= $.trim($("#receiver").val());
 				var subject		= $.trim($("#subject").val());
@@ -25,13 +29,13 @@ class Site extends GeneralJS {
 				error	= "";
 				
 				if( receiver == "" ){
-					error	+= "'.$this->service_Language->get('language/messages/notices/noReceiver').'<br/>";
+					error	+= "' . $this->service_Language->get('language/messages/notices/noReceiver') . '<br/>";
 				}
 				if( subject == "" ){
-					error	+= "'.$this->service_Language->get('language/messages/notices/noSubject').'<br/>";
+					error	+= "' . $this->service_Language->get('language/messages/notices/noSubject') . '<br/>";
 				}
 				if( message	== "" ){
-					error	+= "'.$this->service_Language->get('language/messages/notices/noMessage').'<br/>";
+					error	+= "' . $this->service_Language->get('language/messages/notices/noMessage') . '<br/>";
 				}
 				
 				if( error != "" ){
@@ -43,7 +47,7 @@ class Site extends GeneralJS {
 			}
 			
 			Site.prototype.confirmMessageDelete	= function(){
-				if( confirm("'.$this->service_Language->get('language/messages/notices/deleteConfirm').'") ){
+				if( confirm("' . $this->service_Language->get('language/messages/notices/deleteConfirm') . '") ){
 					return true;
 				}
 				return false;
@@ -59,11 +63,11 @@ class Site extends GeneralJS {
 					/* Session expired */					
 					var div = document.createElement("div");
 					$(div).attr("id","ajaxLoginBox")
-						.html(\'<a href="javascript:removeAuthButton()">'.$this->service_Language->get('language/sessionExpired').'</a>\')
+						.html(\'<a href="javascript:removeAuthButton()">' . $this->service_Language->get('language/sessionExpired') . '</a>\')
 						.appendTo($("body"));
 				}
 				else if( jqxhr.status == 403 ){
-                    window.location.href = "'.\core\Memory::getBase().'errors/403.php";
+                    window.location.href = "' . \core\Memory::getBase() . 'errors/403.php";
                 }
 			});
         });
@@ -71,15 +75,15 @@ class Site extends GeneralJS {
         function removeAuthButton(){
         	if( $("#ajaxLoginBox").length > 0 ){
         		$("#ajaxLoginBox").remove();
-        		window.open("'.\core\Memory::getBase().'login.php?ajaxLogin=true", "session", config="height=350,width=1100,toolbar=no,menubar=no,location=no,directories=no,status=no,left:40%,top:40%");
+        		window.open("' . \core\Memory::getBase() . 'login.php?ajaxLogin=true", "session", config="height=350,width=1100,toolbar=no,menubar=no,location=no,directories=no,status=no,left:40%,top:40%");
         	}        	        	
         }
         ';
-		
-		echo($s_file);
-	}
+        
+        echo ($s_file);
+    }
 }
 
-$obj_Site	= new Site();
+$obj_Site = new Site();
 unset($obj_Site);
 ?>

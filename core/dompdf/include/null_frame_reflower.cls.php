@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package dompdf
  * @link    http://dompdf.github.com/
@@ -12,10 +13,16 @@
  * @access private
  * @package dompdf
  */
-class Null_Frame_Reflower extends Frame_Reflower {
+class Null_Frame_Reflower extends Frame_Reflower
+{
 
-  function __construct(Frame $frame) { parent::__construct($frame); }
+    function __construct(Frame $frame)
+    {
+        parent::__construct($frame);
+    }
 
-  function reflow(Block_Frame_Decorator $block = null) { return; }
-  
+    function reflow(Block_Frame_Decorator $block = null)
+    {
+        return;
+    }
 }

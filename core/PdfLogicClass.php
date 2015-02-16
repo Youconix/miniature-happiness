@@ -22,80 +22,95 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-include(NIV.'include/BaseLogicClass.php');
+include (NIV . 'include/BaseLogicClass.php');
 
-abstract class PdfLogicClass extends BaseLogicClass {
-	/**
-	 * Displays the PDF in the browser
-	 * 
-	 * @param String	$s_name			The file name
-	 * @param String	$s_content		The file content
-	 * @param int		$i_size			The file size
-	 */
-	protected function inlinePDF($s_name,$s_content,$i_size){
-		$this->prepareFramework();
-		
-		header('Content-Type: application/pdf');
-		header('Content-Disposition: inline; filename="'.$s_name.'"');
-		header('Content-Transfer-Encoding: binary');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate');
-		header('Pragma: public');
-		header('Content-Length:'.$i_size);
-		
-		echo($s_content);
-		
-		exit();
-	}
-	
-	/**
-	 * Force downloads the PDF
-	 *
-	 * @param String	$s_name			The file name
-	 * @param String	$s_content		The file content
-	 * @param int		$i_size			The file size
-	 */
-	protected function downloadPDF($s_name,$s_content,$i_size){
-		$this->downloadGeneral($s_name, $s_content, $i_size,'application/pdf');
-	}
-	
-/**
-	 * Force downloads the document
-	 *
-	 * @param String	$s_name			The file name
-	 * @param String	$s_content		The file content
-	 * @param int		$i_size			The file size
-	 * @parm String $s_mimetype The mimetype, leave empty for auto detection
-	 */
-	protected function downloadGeneral($s_name,$s_content,$i_size,$s_mimetype = ''){
-		$this->prepareFramework();
-		
-		if( empty($s_mimetype) ){
-			$s_mimetype = Memory::services('FileData')->getMimeType($s_name);
-		}
-		
-		header('Content-Type: '.$s_mimetype);
-		header('Content-Disposition: attachment; filename="'.$s_name.'"');
-		header('Content-Transfer-Encoding: binary');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate');
-		header('Pragma: public');
-		header('Content-Length:'.$i_size);
-		
-		echo($s_content);
-		exit();
-	}
-	
-	/**
-	 * Prepares the framework for PDF download
-	 */
-	protected function prepareFramework(){
-		if( is_null($this->service_Template) )
-			return;
-		
-		Memory::delete('service', 'Template');
-		$this->service_Template	= null;
-	}
+abstract class PdfLogicClass extends BaseLogicClass
+{
+
+    /**
+     * Displays the PDF in the browser
+     *
+     * @param String $s_name
+     *            name
+     * @param String $s_content
+     *            content
+     * @param int $i_size
+     *            size
+     */
+    protected function inlinePDF($s_name, $s_content, $i_size)
+    {
+        $this->prepareFramework();
+        
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $s_name . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length:' . $i_size);
+        
+        echo ($s_content);
+        
+        exit();
+    }
+
+    /**
+     * Force downloads the PDF
+     *
+     * @param String $s_name
+     *            name
+     * @param String $s_content
+     *            content
+     * @param int $i_size
+     *            size
+     */
+    protected function downloadPDF($s_name, $s_content, $i_size)
+    {
+        $this->downloadGeneral($s_name, $s_content, $i_size, 'application/pdf');
+    }
+
+    /**
+     * Force downloads the document
+     *
+     * @param String $s_name
+     *            name
+     * @param String $s_content
+     *            content
+     * @param int $i_size
+     *            size
+     *            @parm String $s_mimetype The mimetype, leave empty for auto detection
+     */
+    protected function downloadGeneral($s_name, $s_content, $i_size, $s_mimetype = '')
+    {
+        $this->prepareFramework();
+        
+        if (empty($s_mimetype)) {
+            $s_mimetype = Memory::services('FileData')->getMimeType($s_name);
+        }
+        
+        header('Content-Type: ' . $s_mimetype);
+        header('Content-Disposition: attachment; filename="' . $s_name . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length:' . $i_size);
+        
+        echo ($s_content);
+        exit();
+    }
+
+    /**
+     * Prepares the framework for PDF download
+     */
+    protected function prepareFramework()
+    {
+        if (is_null($this->service_Template))
+            return;
+        
+        Memory::delete('service', 'Template');
+        $this->service_Template = null;
+    }
 }
 
 ?>

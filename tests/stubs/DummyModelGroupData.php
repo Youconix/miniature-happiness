@@ -1,87 +1,99 @@
 <?php
-if( !class_exists('\core\models\data\Data_Group') ){
-  require(NIV.'include/models/data/Data_Group.inc.php');
+if (! class_exists('\core\models\data\Data_Group')) {
+    require (NIV . 'include/models/data/Data_Group.inc.php');
 }
 
-class DummyModelGroupData extends \core\models\data\Data_Group {
-  public function __construct(){}
-  
-  /**
-   * Gets the user access level
-   *
-   * @param   int $i_userid     The user ID
-   * @return  int The access level defined in /include/services/Session.inc.php
-   */
-  public function getLevelByGroupID($i_userid){
-    return 0;
-  }
+class DummyModelGroupData extends \core\models\data\Data_Group
+{
 
-  /**
-   * Gets all the members from the group
-   *
-   * @return   array   The members from the group
-   */
-  public function getMembersByGroup(){
-    return array();
-  }
+    public function __construct()
+    {}
 
-  /**
-   * Saves the new group
-   */
-  public function save(){    
-  }
+    /**
+     * Gets the user access level
+     *
+     * @param int $i_userid
+     *            The user ID
+     * @return int The access level defined in /include/services/Session.inc.php
+     */
+    public function getLevelByGroupID($i_userid)
+    {
+        return 0;
+    }
 
-  /**
-   * Saves the changed group
-   */
-  public function persist(){    
-  }
+    /**
+     * Gets all the members from the group
+     *
+     * @return array The members from the group
+     */
+    public function getMembersByGroup()
+    {
+        return array();
+    }
 
-  /**
-   * Deletes the group
-   */
-  public function deleteGroup(){
-  }
+    /**
+     * Saves the new group
+     */
+    public function save()
+    {}
 
-  /**
-   * Adds a user to the group
-   *
-   * @param int $i_userid		The userid
-   * @param int $i_level		The access level, default 0 (user)
-   */
-  public function addUser($i_userid, $i_level = 0){
-  }
+    /**
+     * Saves the changed group
+     */
+    public function persist()
+    {}
 
-  /**
-   * Edits the users access rights for this group
-   *
-   * @param int $i_userid		The userid
-   * @param int $i_level		The access level, default 0 (user)
-   */
-  public function editUser($i_userid, $i_level = 0){
-  }
+    /**
+     * Deletes the group
+     */
+    public function deleteGroup()
+    {}
 
-  /**
-   * Adds all the users to this group if the group is default
-   */
-  public function addUsersToDefault(){
-  }
+    /**
+     * Adds a user to the group
+     *
+     * @param int $i_userid
+     *            userid
+     * @param int $i_level
+     *            access level, default 0 (user)
+     */
+    public function addUser($i_userid, $i_level = 0)
+    {}
 
-  /**
-   * Deletes the user from the group
-   *
-   * @param int $i_userid	The userid
-   */
-  public function deleteUser($i_userid){
-  }
+    /**
+     * Edits the users access rights for this group
+     *
+     * @param int $i_userid
+     *            userid
+     * @param int $i_level
+     *            access level, default 0 (user)
+     */
+    public function editUser($i_userid, $i_level = 0)
+    {}
 
-  /**
-   * Checks if the group is in use
-   *
-   * @return boolean	True if the group is in use
-   */
-  public function inUse(){
-    return true;
-  }
+    /**
+     * Adds all the users to this group if the group is default
+     */
+    public function addUsersToDefault()
+    {}
+
+    /**
+     * Deletes the user from the group
+     *
+     * @param int $i_userid
+     *            userid
+     */
+    public function deleteUser($i_userid)
+    {}
+
+    /**
+     * Checks if the group is in use
+     *
+     * @return boolean if the group is in use
+     */
+    public function inUse()
+    {
+        return true;
+    }
 }
 ?>

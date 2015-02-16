@@ -1,4 +1,5 @@
 <?php
+
 /** 
  * IllegalArgumentException Exception class
  *
@@ -22,8 +23,11 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class IllegalArgumentException extends GeneralException{
-    public function __construct($s_message){
+class IllegalArgumentException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
         parent::__construct($s_message);
     }
 }

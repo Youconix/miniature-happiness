@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminUsers extends GeneralJS {
-	protected function display(){
-		$s_file = 'AdminUsers.prototype = new AdminMain();
+class AdminUsers extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminUsers.prototype = new AdminMain();
 		AdminUsers.prototype.constructor = AdminUsers;
 		function AdminUsers(){
 			this.name = "users";
@@ -72,7 +75,7 @@ class AdminUsers extends GeneralJS {
 					var username	= $.trim( $("#username").val() );
 				
 					if( username == ""){
-						error	+= "'.$this->service_Language->get('language/admin/users/js/usernameEmpty').'<br/>";
+						error	+= "' . $this->service_Language->get('language/admin/users/js/usernameEmpty') . '<br/>";
 					}
 				
 					params["username"]	= username;
@@ -80,10 +83,10 @@ class AdminUsers extends GeneralJS {
 					var password	= $.trim( $("#password").val() );
 					var password2	= $.trim( $("#password2").val() );
 					if( password == "" ){
-						error	+= "'.$this->service_Language->get('language/admin/users/js/passwordEmpty').'<br/>";
+						error	+= "' . $this->service_Language->get('language/admin/users/js/passwordEmpty') . '<br/>";
 					}
 					else if( password != password2 ){
-						error	+= "'.$this->service_Language->get('language/admin/users/js/passwordInvalid').'<br/>";
+						error	+= "' . $this->service_Language->get('language/admin/users/js/passwordInvalid') . '<br/>";
 					}
 								
 					params["password"]		= password;	
@@ -96,15 +99,15 @@ class AdminUsers extends GeneralJS {
 				var bot			= 0;
 				
 				if( firstName == "" ){
-					error	+= "'.$this->service_Language->get('language/admin/users/js/firstNameEmpty').'<br/>";
+					error	+= "' . $this->service_Language->get('language/admin/users/js/firstNameEmpty') . '<br/>";
 				}
 				
 				if( surname	== "" ){
-					error	+= "'.$this->service_Language->get('language/admin/users/js/surnameEmpty').'<br/>";
+					error	+= "' . $this->service_Language->get('language/admin/users/js/surnameEmpty') . '<br/>";
 				}
 				
 				if( !validateEmail(email) ){
-					error	+= "'.$this->service_Language->get('language/admin/users/js/emailInvalid').'<br/>";
+					error	+= "' . $this->service_Language->get('language/admin/users/js/emailInvalid') . '<br/>";
 				}
 				
 				if( $("#bot_1").is(":checked") ){
@@ -151,11 +154,11 @@ class AdminUsers extends GeneralJS {
 				if( params["blocked"] == 1 ){
 					if( params["userid"] == userid ){
 						/* You can\'t block yourself */
-						alert("'.$this->service_Language->get('language/admin/users/js/blockRejected').'");
+						alert("' . $this->service_Language->get('language/admin/users/js/blockRejected') . '");
 						return;
 					}
 				
-					if( !confirm("'.$this->service_Language->get('language/admin/users/js/blockConfirm').'") ){
+					if( !confirm("' . $this->service_Language->get('language/admin/users/js/blockConfirm') . '") ){
 						return;
 					}
 				}
@@ -187,7 +190,7 @@ class AdminUsers extends GeneralJS {
 				}
 				else {
 					adminUsers.usernameValid	= false;
-					$("#formNotice").html("'.$this->service_Language->get('language/admin/users/js/nickNotice').'");
+					$("#formNotice").html("' . $this->service_Language->get('language/admin/users/js/nickNotice') . '");
 				}
 			}
 				
@@ -205,7 +208,7 @@ class AdminUsers extends GeneralJS {
 				}
 				else {
 					adminUsers.emailValid	= false;
-					$("#formNotice").html("'.$this->service_Language->get('language/admin/users/js/emailNotice').'");
+					$("#formNotice").html("' . $this->service_Language->get('language/admin/users/js/emailNotice') . '");
 				}
 			}
 		    
@@ -216,11 +219,11 @@ class AdminUsers extends GeneralJS {
 		    AdminUsers.prototype.deleteUser = function(id,userid){
 		        if( id == userid ){
 					/* You can\'t remove yourself */
-					alert("'.$this->service_Language->get('language/admin/users/js/deleteRejected').'");
+					alert("' . $this->service_Language->get('language/admin/users/js/deleteRejected') . '");
 					return;
 				}
 		        
-		        if( !confirm("'.$this->service_Language->get('language/admin/users/js/deleteConfirm').'") ){
+		        if( !confirm("' . $this->service_Language->get('language/admin/users/js/deleteConfirm') . '") ){
 		            return;
 		        }
 				
@@ -237,7 +240,7 @@ class AdminUsers extends GeneralJS {
 				$("#passwordNotice").html("");
 				
 				if( password1 == "" || password1 != password2 ){
-					$("#passwordErrorNotice").html("'.$this->service_Language->get('language/admin/users/js/passwordInvalid').'");
+					$("#passwordErrorNotice").html("' . $this->service_Language->get('language/admin/users/js/passwordInvalid') . '");
 				}
 				
 				var params	={"AJAX":"true","command":"changePassword","password":password1,"userid":$("#id").val()};
@@ -247,7 +250,7 @@ class AdminUsers extends GeneralJS {
 			}
 				
 			AdminUsers.prototype.changePasswordresult	= function(response){
-				$("#passwordNotice").html("'.$this->service_Language->get('language/admin/users/js/passwordChanged').'");
+				$("#passwordNotice").html("' . $this->service_Language->get('language/admin/users/js/passwordChanged') . '");
 			}
 				
 			AdminUsers.prototype.selectGroup	= function(groupID,userid){
@@ -259,12 +262,12 @@ class AdminUsers extends GeneralJS {
 
 				if( groupID == 0 ){
 					if( active == 0 && userid == $("#id").val() ){
-						alert("'.$this->service_Language->get('language/admin/users/js/groupAdminRejected').'");
+						alert("' . $this->service_Language->get('language/admin/users/js/groupAdminRejected') . '");
 						$("#group_"+groupID).prop("checked", true);
 						return;
 					}
 					else if( active == 1 ){
-						if( !confirm("'.$this->service_Language->get('language/admin/users/js/groupAdminConfirm').'") ){
+						if( !confirm("' . $this->service_Language->get('language/admin/users/js/groupAdminConfirm') . '") ){
 							$("#group_"+groupID).prop("checked", false);
 							return;
 						}
@@ -299,10 +302,10 @@ class AdminUsers extends GeneralJS {
 		}
 		
 		var adminUsers  = new AdminUsers();';
-		echo($s_file);
-	}
+        echo ($s_file);
+    }
 }
 
-$obj_AdminUsers	= new AdminUsers();
+$obj_AdminUsers = new AdminUsers();
 unset($obj_AdminUsers);
 ?>

@@ -23,4 +23,4 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
 header("Location: /authorization/login/index");
-exit;
+exit();

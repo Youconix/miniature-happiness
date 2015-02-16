@@ -1,4 +1,5 @@
 <?php
+
 /** 
  * Memory Exception class
  *
@@ -22,8 +23,11 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class MemoryException extends GeneralException {
-    public function __construct($s_message){
+class MemoryException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
         parent::__construct($s_message);
     }
 }

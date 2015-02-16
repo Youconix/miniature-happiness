@@ -1,4 +1,5 @@
 <?php
+
 /**
  * System check class
  * This class checks if the server has the framework requirements
@@ -24,169 +25,186 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class SystemCheck {
-	private $s_systemConfig = '';
-	private $bo_mysql	= false;
-	private $bo_postgres	= false;
-	private $bo_valid	= true;
-	private $s_valid	= '<span class="Notice">V</span>';
-	private $s_inValid	= '<span class="errorNotice">X</span>';
+class SystemCheck
+{
 
-	/**
-	 * PHP 5 constructor
-	 */
-	public function __construct(){
-		$s_protocol	= 'http://';
-		if( $_SERVER['SERVER_PORT'] == 443 )
-		$s_protocol	= 'https://';
+    private $s_systemConfig = '';
 
-		$this->s_systemConfig = file_get_contents($s_protocol.$_SERVER['HTTP_HOST'].str_replace('index.php','',$_SERVER['SCRIPT_NAME']).'/serverInfo.php');
-	}
+    private $bo_mysql = false;
 
-	/**
-	 * Validates the server
-	 */
-	public function validate(){
-		$s_output	= '<table>
+    private $bo_postgres = false;
+
+    private $bo_valid = true;
+
+    private $s_valid = '<span class="Notice">V</span>';
+
+    private $s_inValid = '<span class="errorNotice">X</span>';
+
+    /**
+     * PHP 5 constructor
+     */
+    public function __construct()
+    {
+        $s_protocol = 'http://';
+        if ($_SERVER['SERVER_PORT'] == 443)
+            $s_protocol = 'https://';
+        
+        $this->s_systemConfig = file_get_contents($s_protocol . $_SERVER['HTTP_HOST'] . str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) . '/serverInfo.php');
+    }
+
+    /**
+     * Validates the server
+     */
+    public function validate()
+    {
+        $s_output = '<table>
 			<tbody>
     	    <tr>
     	    	<td>Minimun PHP 5.2</td>
-    	    	<td>'.$this->phpVersion().'</td>
+    	    	<td>' . $this->phpVersion() . '</td>
     	    </tr>
     	    <tr>
     	    	<td>MySQL 5+</td>
-    	    	<td>'.$this->mysql().'</td>
+    	    	<td>' . $this->mysql() . '</td>
     	    </tr>
     	    <tr>
     	    	<td>Postgres 9+</td>
-    	    	<td>'.$this->postgres().'</td>
+    	    	<td>' . $this->postgres() . '</td>
     	    </tr>
     	    <tr>
     	    	<td>GD</td>
-    	    	<td>'.$this->gd().'</td>
+    	    	<td>' . $this->gd() . '</td>
     	    </tr>
     	    <tr>
     	    	<td>XML support</td>
-    	    	<td>'.$this->xml().'</td>
+    	    	<td>' . $this->xml() . '</td>
     	    </tr>
     	    <tr>
     	    	<td>Curl</td>
-    	    	<td>'.$this->curl().'</td>
+    	    	<td>' . $this->curl() . '</td>
     	    </tr>
     	    <tr>
     	    	<td colspan="2"><br/></td>
     	    </tr>
     	    </tbody>
     	    </table>';
+        
+        if (! $this->bo_mysql && ! $this->bo_postgres)
+            $this->bo_valid = false;
+        
+        return $s_output;
+    }
 
-		if( !$this->bo_mysql && !$this->bo_postgres )
-		$this->bo_valid	= false;
-			
-		return $s_output;
-	}
-	
-	public function checkWritable($s_dir){
-		if( is_writable($s_dir) ){
-			return true;
-		}
-		
-		return false;
-	}
+    public function checkWritable($s_dir)
+    {
+        if (is_writable($s_dir)) {
+            return true;
+        }
+        
+        return false;
+    }
 
-	/**
-	 * Returns if the server is valid
-	 * 
-	 * @return boolean	True if the server is valid
-	 */
-	public function isValid(){
-		return $this->bo_valid;
-	}
+    /**
+     * Returns if the server is valid
+     *
+     * @return boolean if the server is valid
+     */
+    public function isValid()
+    {
+        return $this->bo_valid;
+    }
 
-	/**
-	 *  Checks php version
-	 *  
-	 *  @return string	The status code
-	 */
-	private function phpVersion(){
-		$s_result	= $this->s_valid;
-		$a_version	= explode('.',phpversion());
-		if( ($a_version[0] < 5) || ($a_version[0] == 5 && $a_version[1] < 2) ){
-			$this->bo_valid	= false;
-			$s_result	= $this->s_inValid;
-		}
+    /**
+     * Checks php version
+     *
+     * @return string status code
+     */
+    private function phpVersion()
+    {
+        $s_result = $this->s_valid;
+        $a_version = explode('.', phpversion());
+        if (($a_version[0] < 5) || ($a_version[0] == 5 && $a_version[1] < 2)) {
+            $this->bo_valid = false;
+            $s_result = $this->s_inValid;
+        }
+        
+        return $s_result;
+    }
 
-		return $s_result;
-	}
+    /**
+     * Checks the Mysqli and Mysql support
+     *
+     * @return string status code
+     */
+    private function mysql()
+    {
+        /* Check mysqli first */
+        if (class_exists('mysqli')) {
+            $this->bo_mysql = true;
+            return $this->s_valid;
+        }
+        
+        return $this->s_inValid;
+    }
 
-	/**
-	 * Checks the Mysqli and Mysql support
-	 * 
-	 * @return string	The status code
-	 */
-	private function mysql(){
-		/* Check mysqli first */
-		if( class_exists('mysqli') ){
-			$this->bo_mysql	= true;
-			return $this->s_valid;
-		}
-		
-		return $this->s_inValid;
-	}
+    /**
+     * Checks the postgresql support
+     *
+     * @return string status code
+     */
+    private function postgres()
+    {
+        if (function_exists('pg_connect')) {
+            $this->bo_postgres = true;
+            return $this->s_valid;
+        }
+        
+        return $this->s_inValid;
+    }
 
-	/**
-	 * Checks the postgresql support
-	 * 
-	 * @return string	The status code
-	 */
-	private function postgres(){
-		if( function_exists('pg_connect') ){
-			$this->bo_postgres	= true;
-			return $this->s_valid;
-		}
+    /**
+     * Checks the PHP GD support
+     *
+     * @return string status code
+     */
+    private function gd()
+    {
+        if (! function_exists('ImageCreate')) {
+            $this->bo_valid = false;
+            return $this->s_inValid;
+        }
+        
+        return $this->s_valid;
+    }
 
-		return $this->s_inValid;
-	}
-	
-	/**
-	 * Checks the PHP GD support
-	 * 
-	 * @return string	The status code
-	 */
-	private function gd(){
-		if( !function_exists('ImageCreate') ){
-			$this->bo_valid	= false;
-			return $this->s_inValid;
-		}
-		
-		return $this->s_valid;
-	}
-	
-	/**
-	 * Checks the XML support
-	 * 
-	 * @return string	The status code
-	 */
-	private function xml(){
-		if( !class_exists('DOMDocument') || !class_exists('DOMXPath') ){
-			$this->bo_valid	= false;
-			return $this->s_inValid;
-		}
-		
-		return $this->s_valid;
-	}
-	
-	/**
-	 * Checks the Curl support
-	 * 
-	 * @return string	The status code
-	 */
-	private function curl(){
-		if( !function_exists('curl_init') ){
-			$this->bo_valid	= false;
-			return $this->s_inValid;
-		}
-		
-		return $this->s_valid;
-	}
+    /**
+     * Checks the XML support
+     *
+     * @return string status code
+     */
+    private function xml()
+    {
+        if (! class_exists('DOMDocument') || ! class_exists('DOMXPath')) {
+            $this->bo_valid = false;
+            return $this->s_inValid;
+        }
+        
+        return $this->s_valid;
+    }
+
+    /**
+     * Checks the Curl support
+     *
+     * @return string status code
+     */
+    private function curl()
+    {
+        if (! function_exists('curl_init')) {
+            $this->bo_valid = false;
+            return $this->s_inValid;
+        }
+        
+        return $this->s_valid;
+    }
 }
 ?>

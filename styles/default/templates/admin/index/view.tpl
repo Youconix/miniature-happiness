@@ -1,12 +1,12 @@
- <!-- admin view -->
- <section id="admin">
- 	{[menuAdmin]}
- 	
- 	<section id="adminContent">
- 	</section>
- </section>
 
- <script>
+<!-- admin view -->
+<section id="admin">
+	{[menuAdmin]}
+
+	<section id="adminContent"></section>
+</section>
+
+<script>
  <!--
  var tabs = new Tabs();
  $(document).ready(function(){

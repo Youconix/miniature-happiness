@@ -22,6 +22,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV','./');
-header('location: '.NIV.'authorization/registration.php');
+define('NIV', './');
+header('location: ' . NIV . 'authorization/registration.php');
 ?>

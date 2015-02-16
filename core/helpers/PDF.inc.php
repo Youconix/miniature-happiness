@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Helper for generating PDFs
  *
@@ -22,15 +23,18 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Helper_PDF extends Helper {
-	/**
-	 * PHP 5 constructor
-	 */
-	public function __construct(){
-		if( !class_exists('DOMPDF') ){
-			require(NIV.'include/dompdf/dompdf_config.inc.php');
-			require(NIV.'include/helpers/data/GeneralPDF.inc.php');
-		}
-	}
+class Helper_PDF extends Helper
+{
+
+    /**
+     * PHP 5 constructor
+     */
+    public function __construct()
+    {
+        if (! class_exists('DOMPDF')) {
+            require (NIV . 'include/dompdf/dompdf_config.inc.php');
+            require (NIV . 'include/helpers/data/GeneralPDF.inc.php');
+        }
+    }
 }
 ?>

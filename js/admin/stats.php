@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminStats extends GeneralJS {
-	protected function display(){
-		$s_file = 'AdminStats.prototype = new AdminMain();
+class AdminStats extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminStats.prototype = new AdminMain();
 		AdminStats.prototype.constructor = AdminStats;
 				
 		function AdminStats(){
@@ -36,10 +39,10 @@ class AdminStats extends GeneralJS {
 		}
 		
 		var adminStats   = new AdminStats();';
-		echo($s_file);
-	}
+        echo ($s_file);
+    }
 }
 
-$obj_AdminStats	 = new AdminStats();
+$obj_AdminStats = new AdminStats();
 unset($obj_AdminStats);
 ?>

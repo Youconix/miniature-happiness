@@ -1,5 +1,4 @@
 <?php
-
 namespace core\classes;
 
 /**
@@ -26,58 +25,66 @@ namespace core\classes;
  *        You should have received a copy of the GNU Lesser General Public License
  *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
  */
-class Menu {
- protected $service_Template;
- protected $service_Language;
- protected $obj_User;
- protected $model_Groups;
- 
- /**
-  * Starts the class menu
-  */
- public function __construct( \core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Groups $model_Groups ){
-  $this->service_Template = $service_Template;
-  $this->service_Language = $service_Language;
-  $this->obj_User = $model_User->get();
-  $this->model_Groups = $model_Groups;  
- }
- 
- /**
-  * Generates the menu
-  */
- public function generateMenu(){
-  $this->service_Template->set('home', $this->service_Language->get('menu/home'));
-  
-  if( defined('USERID') ){
-   $this->service_Template->displayPart('menuLoggedIn');
-   
-   $this->loggedIn();
-  }
-  else{
-   $this->loggedout();
-  }
- }
- 
- /**
-  * Displays the logged out items
-  */
- protected function loggedout(){
-  $this->service_Template->set('login', $this->service_Language->get('menu/login'));
-  $this->service_Template->set('registration', $this->service_Language->get('menu/registration'));
- }
- 
- /**
-  * Displays the logged in items
-  */
- protected function loggedIn(){
-  $this->service_Template->set('logout', $this->service_Language->get('menu/logout'));
-  
-  if( $this->obj_User->isAdmin(GROUP_ADMIN) ){
-   $this->service_Template->displayPart('menuAdmin');
-   
-   $this->service_Template->set('adminPanel', $this->service_Language->get('system/menu/adminPanel'));
-  }
- }
+class Menu
+{
+
+    protected $service_Template;
+
+    protected $service_Language;
+
+    protected $obj_User;
+
+    protected $model_Groups;
+
+    /**
+     * Starts the class menu
+     */
+    public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Groups $model_Groups)
+    {
+        $this->service_Template = $service_Template;
+        $this->service_Language = $service_Language;
+        $this->obj_User = $model_User->get();
+        $this->model_Groups = $model_Groups;
+    }
+
+    /**
+     * Generates the menu
+     */
+    public function generateMenu()
+    {
+        $this->service_Template->set('home', $this->service_Language->get('menu/home'));
+        
+        if (defined('USERID')) {
+            $this->service_Template->displayPart('menuLoggedIn');
+            
+            $this->loggedIn();
+        } else {
+            $this->loggedout();
+        }
+    }
+
+    /**
+     * Displays the logged out items
+     */
+    protected function loggedout()
+    {
+        $this->service_Template->set('login', $this->service_Language->get('menu/login'));
+        $this->service_Template->set('registration', $this->service_Language->get('menu/registration'));
+    }
+
+    /**
+     * Displays the logged in items
+     */
+    protected function loggedIn()
+    {
+        $this->service_Template->set('logout', $this->service_Language->get('menu/logout'));
+        
+        if ($this->obj_User->isAdmin(GROUP_ADMIN)) {
+            $this->service_Template->displayPart('menuAdmin');
+            
+            $this->service_Template->set('adminPanel', $this->service_Language->get('system/menu/adminPanel'));
+        }
+    }
 }
 
 ?>

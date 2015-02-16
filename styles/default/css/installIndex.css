@@ -1,16 +1,51 @@
-h1,h2 { text-align:center; }
-h2 { font-size:1.2em; }
+h1, h2 {
+	text-align: center;
+}
 
-#installCompleted, #gettingStarted, #maintenance { float:left; border:2px outset black; min-height:20px; border-radius:15px; ms-border-radius:15px; padding:10px; }
+h2 {
+	font-size: 1.2em;
+}
 
-#installCompleted  { width:98%; padding:1%; float:left; margin-bottom:20px; }
+#installCompleted, #gettingStarted, #maintenance {
+	float: left;
+	border: 2px outset black;
+	min-height: 20px;
+	border-radius: 15px;
+	ms-border-radius: 15px;
+	padding: 10px;
+}
 
-#gettingStarted, #maintenance { min-height:40px; }
+#installCompleted {
+	width: 98%;
+	padding: 1%;
+	float: left;
+	margin-bottom: 20px;
+}
 
-#gettingStarted { margin-right:1.5%; width:70%; height:200px;  }
-#maintenance { width:25%; float:right; }
+#gettingStarted, #maintenance {
+	min-height: 40px;
+}
 
-#maintenance ul { margin-left:20px; }
-#maintenance li { list-style-type:disc}
+#gettingStarted {
+	margin-right: 1.5%;
+	width: 70%;
+	height: 200px;
+}
 
-#maintenance li a,#gettingStarted a { color:#222; text-decoration:underline }
+#maintenance {
+	width: 25%;
+	float: right;
+}
+
+#maintenance ul {
+	margin-left: 20px;
+}
+
+#maintenance li {
+	list-style-type: disc
+}
+
+#maintenance li a, #gettingStarted a {
+	color: #222;
+	text-decoration: underline
+}

@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminMaintenance extends GeneralJS {
-	protected function display(){
-		$s_file = 'AdminMaintenance.prototype = new AdminMain();
+class AdminMaintenance extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminMaintenance.prototype = new AdminMain();
 		AdminMaintenance.prototype.constructor = AdminMaintenance;
 				
 		function AdminMaintenance(){    
@@ -14,19 +17,19 @@ class AdminMaintenance extends GeneralJS {
 			AdminMaintenance.prototype.setPending	= function(name){
 				this.pending	= name;
 			    $("#"+name).attr("class","maintenancePending");
-			    $("#"+name).html("'.$this->service_Language->get('language/admin/maintenance/pending').'");
+			    $("#"+name).html("' . $this->service_Language->get('language/admin/maintenance/pending') . '");
 			}
 			
 			AdminMaintenance.prototype.setReady	= function(){				
 		    	$("#"+this.pending).attr("class","maintenanceReady");
-		    	$("#"+this.pending).html("'.$this->service_Language->get('language/admin/maintenance/ready').'");
+		    	$("#"+this.pending).html("' . $this->service_Language->get('language/admin/maintenance/ready') . '");
 				
 				this.pending	= "";
 			}
 		    
 			AdminMaintenance.prototype.setError	= function(){
 		    	$("#"+this.pending).attr("class","maintenanceError");
-		    	$("#"+this.pending).html("'.$this->service_Language->get('language/admin/maintenance/error').'");
+		    	$("#"+this.pending).html("' . $this->service_Language->get('language/admin/maintenance/error') . '");
 		    	
 		    	this.pending	= "";
 			}
@@ -105,10 +108,10 @@ class AdminMaintenance extends GeneralJS {
 		}
 		
 		var adminMaintenance    = new AdminMaintenance();';
-		echo($s_file);
-	}
+        echo ($s_file);
+    }
 }
 
-$obj_AdminMaintenance	 = new AdminMaintenance();
+$obj_AdminMaintenance = new AdminMaintenance();
 unset($obj_AdminMaintenance);
 ?>

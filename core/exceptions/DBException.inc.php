@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * Database Exception class                                                     #
  *                                                                              #
@@ -23,8 +24,11 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class DBException extends GeneralException {
-    public function __construct($s_message){
+class DBException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
         parent::__construct($s_message);
     }
 }

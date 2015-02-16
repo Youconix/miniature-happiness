@@ -3,44 +3,46 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
 <style>
-
 p {
-  border: 1px dotted grey;
+	border: 1px dotted grey;
 }
 
-p.image:before  {
-  content: url(images/html.png);
+p.image:before {
+	content: url(images/html.png);
 }
-p.image:after  {
-  content: url(images/pdf.png);
+
+p.image:after {
+	content: url(images/pdf.png);
 }
 
 p.counter {
 	page-break-after: always;
 }
-p.counter:before  {
-  content: "Page number " counter(page, upper-roman);
+
+p.counter:before {
+	content: "Page number " counter(page, upper-roman);
 }
 
 body:after {
-  content: "The End";
-  display: block;
-  margin-top: 2em;
-  text-align: center;
+	content: "The End";
+	display: block;
+	margin-top: 2em;
+	text-align: center;
 }
-
 </style>
 </head>
 
 <body>
-  Look at the HTML source !
-	
-  <p><q>quote &lt;q&gt;</q></p>
-  <p class="image"> to </p>
-	
-  <p class="counter"></p>
-  <p class="counter"></p>
-  <p class="counter"></p>
+	Look at the HTML source !
+
+	<p>
+		<q>quote &lt;q&gt;</q>
+	</p>
+	<p class="image">to</p>
+
+	<p class="counter"></p>
+	<p class="counter"></p>
+	<p class="counter"></p>
 
 </body>
 

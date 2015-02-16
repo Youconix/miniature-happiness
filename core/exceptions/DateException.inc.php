@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * Date Exception class                                                         #
  *                                                                              #
@@ -23,9 +24,12 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class DateException extends GeneralException {
-    public function __construct($s_message){
-        $this->message  = $s_message;
+class DateException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
+        $this->message = $s_message;
     }
 }
 

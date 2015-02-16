@@ -1,10 +1,11 @@
-		<h2>Wachtwoord veranderen</h2>
-		
-		<h3 id="passwordErrorNotice" class="errorNotice"></h3>
-		<h3 id="passwordNotice" class="Notice"></h3>
-		
-		<table>
-		<tbody>
+
+<h2>Wachtwoord veranderen</h2>
+
+<h3 id="passwordErrorNotice" class="errorNotice"></h3>
+<h3 id="passwordNotice" class="Notice"></h3>
+
+<table>
+	<tbody>
 		<tr>
 			<td><label>Nieuwe wachtwoord</label></td>
 			<td><input type="password" id="password1" required></td>
@@ -14,7 +15,8 @@
 			<td><input type="password" id="password2" required></td>
 		</tr>
 		<tr>
-			<td colspan="2"><a href="javascript:adminUsers.changePassword()" class="button">Aanpassen</a></td>
+			<td colspan="2"><a href="javascript:adminUsers.changePassword()"
+				class="button">Aanpassen</a></td>
 		</tr>
-		</tbody>
-		</table>
+	</tbody>
+</table>

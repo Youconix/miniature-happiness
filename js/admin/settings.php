@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminLogs extends GeneralJS{
-	protected function display(){
-		$s_file = 'AdminSettings.prototype = new AdminMain();
+class AdminLogs extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminSettings.prototype = new AdminMain();
 		AdminSettings.prototype.constructor = AdminSettings;
 				
 		function AdminSettings(){
@@ -27,18 +30,18 @@ class AdminLogs extends GeneralJS{
 		        
 		        var error   = "";
 		        if( $.trim( $("#url").val() ) == "" ){
-		            error   += "'.$this->service_Language->get('language/admin/settings/js/urlEmpty').'<br/>";
+		            error   += "' . $this->service_Language->get('language/admin/settings/js/urlEmpty') . '<br/>";
 		        }
 		                
 		        if( $.trim( $("#timezone").val() ) == "" ){
-		            error   += "'.$this->service_Language->get('language/admin/settings/js/timezoneEmpty').'<br/>";
+		            error   += "' . $this->service_Language->get('language/admin/settings/js/timezoneEmpty') . '<br/>";
 		        }
 		        else if( $("#timezone").val().indexOf("/") == -1 ){
-		            error   += "'.$this->service_Language->get('language/admin/settings/js/timezoneInvalid').'<br/>";
+		            error   += "' . $this->service_Language->get('language/admin/settings/js/timezoneInvalid') . '<br/>";
 		        }
 		        
 		        if( $.trim( $("#sessionExpire").val() ) != "" && isNaN($("#sessionExpire").val()) ){
-		            error   += "'.$this->service_Language->get('language/admin/settings/js/sessionInvalid').'<br/>";
+		            error   += "' . $this->service_Language->get('language/admin/settings/js/sessionInvalid') . '<br/>";
 		        }
 		        
 		        if( error != "" ){
@@ -80,18 +83,18 @@ class AdminLogs extends GeneralJS{
 		    }
 		    
 		    AdminSettings.prototype.saveResult  = function(response){
-		        $("#notice").html("'.$this->service_Language->get('language/admin/settings/js/saved').'");
+		        $("#notice").html("' . $this->service_Language->get('language/admin/settings/js/saved') . '");
 		    }
 		    
 		    AdminSettings.prototype.checkSQL    = function(){		        		
 		        if( $.trim( $("#sqlUsername").val() ) == "" || $.trim( $("#sqlPassword").val() ) == "" || 
 					$.trim( $("#sqlDatabase").val() ) == "" || $.trim( $("#sqlHost").val() ) == "" ){
-		            $("#sqlError").html("'.$this->service_Language->get('language/admin/settings/js/databaseEmpty').'");
+		            $("#sqlError").html("' . $this->service_Language->get('language/admin/settings/js/databaseEmpty') . '");
 		            return false;
 		        }
 		        
 		        if( $.trim( $("#sqlPort").val() ) != "" && isNaN($("#sqlPort").val()) ){
-		            $("#sqlError").html("'.$this->service_Language->get('language/admin/settings/js/databasePortInvalid').'");
+		            $("#sqlError").html("' . $this->service_Language->get('language/admin/settings/js/databasePortInvalid') . '");
 		            return false;
 		        }
 		        
@@ -130,7 +133,7 @@ class AdminLogs extends GeneralJS{
 		        
 		        if( response[0].code == 0 ){
 		            this.SQLChecked    = false;
-		            $("#sqlError").html("'.$this->service_Language->get('language/admin/settings/js/databaseInvalid').'");
+		            $("#sqlError").html("' . $this->service_Language->get('language/admin/settings/js/databaseInvalid') . '");
 		        }
 		        else {
 		            $("#sqlError").html("");
@@ -140,10 +143,10 @@ class AdminLogs extends GeneralJS{
 		}
 		
 		var adminSettings   = new AdminSettings();';
-		echo($s_file);
-	}
+        echo ($s_file);
+    }
 }
 
-$obj_AdminLogs	 = new AdminLogs();
+$obj_AdminLogs = new AdminLogs();
 unset($obj_AdminLogs);
 ?>

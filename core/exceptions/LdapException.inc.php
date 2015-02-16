@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * LDAP Exception class                                                         #
  *                                                                              #
@@ -23,15 +24,21 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class LdapException extends GeneralException {
-    public function __construct($s_message){
-        $this->message  = $s_message;
+class LdapException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
+        $this->message = $s_message;
     }
 }
 
-class LdapConnectionException extends GeneralException {
-	public function __construct($s_message){
-		$this->message  = $s_message;
-	}
+class LdapConnectionException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
+        $this->message = $s_message;
+    }
 }
 ?>

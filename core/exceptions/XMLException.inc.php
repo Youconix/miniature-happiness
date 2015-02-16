@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * XML Exception class                                                          #
  *                                                                              #
@@ -23,7 +24,8 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class XMLException extends GeneralException {
+class XMLException extends GeneralException
+{
 }
 
 ?>

@@ -1,16 +1,30 @@
 /* Users */
 #searchUsername {
-	width:90%;
+	width: 90%;
 }
-#users fieldset label.label,#groups fieldset label.label  { display:inline-block;  width:20%; margin-right:5px; text-align:right}
-#users input[type=text],#users input[type=email],#users input[type=password], #users textarea,
-#groups input[type=text],#groups input[type=email],#groups input[type=password], #groups textarea {
-	width:40%;
+
+#users fieldset label.label, #groups fieldset label.label {
+	display: inline-block;
+	width: 20%;
+	margin-right: 5px;
+	text-align: right
 }
-#users textarea, #groups textarea  {
-	height:4em;
+
+#users input[type=text], #users input[type=email], #users input[type=password],
+	#users textarea, #groups input[type=text], #groups input[type=email],
+	#groups input[type=password], #groups textarea {
+	width: 40%;
+}
+
+#users textarea, #groups textarea {
+	height: 4em;
 }
 
 /* Groups */
-.group_not_editable { cursor:not-allowed }
-.group_editable { cursor:pointer; }
+.group_not_editable {
+	cursor: not-allowed
+}
+
+.group_editable {
+	cursor: pointer;
+}

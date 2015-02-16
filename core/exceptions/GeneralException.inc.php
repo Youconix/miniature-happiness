@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * General Exception class                                                      #
  *                                                                              #
@@ -23,14 +24,17 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-abstract class GeneralException extends Exception {
-    public function __construct($s_message){
+abstract class GeneralException extends Exception
+{
+
+    public function __construct($s_message)
+    {
         parent::__construct($s_message);
     }
-    
-    public function __toString(){
-    	return 'Thrown '.get_class($this) . " with message '{$this->message}' in {$this->file}({$this->line})\n"
-    	. "{$this->getTraceAsString()}";
+
+    public function __toString()
+    {
+        return 'Thrown ' . get_class($this) . " with message '{$this->message}' in {$this->file}({$this->line})\n" . "{$this->getTraceAsString()}";
     }
 }
 

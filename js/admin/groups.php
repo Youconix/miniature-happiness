@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminGroups extends GeneralJS {	
-	protected function display(){
-		$s_file	= 'AdminGroups.prototype = new AdminMain();
+class AdminGroups extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminGroups.prototype = new AdminMain();
 		AdminGroups.prototype.constructor = AdminGroups;
 		
 		function AdminGroups() {
@@ -86,11 +89,11 @@ class AdminGroups extends GeneralJS {
 		
 				var error = "";
 				if (name == "") {
-					error += "'.$this->service_Language->get('language/admin/groups/js/nameEmpty').'<br/>";
+					error += "' . $this->service_Language->get('language/admin/groups/js/nameEmpty') . '<br/>";
 				}
 		
 				if (description == "") {
-					error += "'.$this->service_Language->get('language/admin/groups/js/descriptionEmpty').'<br/>";
+					error += "' . $this->service_Language->get('language/admin/groups/js/descriptionEmpty') . '<br/>";
 				}
 		
 				if (error != "") {
@@ -114,11 +117,11 @@ class AdminGroups extends GeneralJS {
 		}
 		
 		var adminGroups = new AdminGroups();';
-		
-		echo($s_file);
-	}
+        
+        echo ($s_file);
+    }
 }
 
-$obj_AdminGroups	 = new AdminGroups();
+$obj_AdminGroups = new AdminGroups();
 unset($obj_AdminGroups);
 ?>

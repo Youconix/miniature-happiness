@@ -22,35 +22,37 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV','./');
-define('SH','1');
-define('PROCESS','1');
+define('NIV', './');
+define('SH', '1');
+define('PROCESS', '1');
 
-include(NIV.'core/BaseClass.php');
+include (NIV . 'core/BaseClass.php');
 
-class Logout extends \core\BaseClass  {
+class Logout extends \core\BaseClass
+{
 
     /**
      * Starts the class Logout
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->init();
-
-		$this->logout();
-
+        
+        $this->logout();
+        
         $this->service_Memory->endProgram();
     }
 
-
-   /**
-    * Logs the user out 
-    */
-   private function logout(){
-       Memory::services('Authorization')->logout();
-
-        header('location: '.NIV.'index.php');
+    /**
+     * Logs the user out
+     */
+    private function logout()
+    {
+        Memory::services('Authorization')->logout();
+        
+        header('location: ' . NIV . 'index.php');
         exit();
-  } 
+    }
 }
 
 $obj_Logout = new Logout();

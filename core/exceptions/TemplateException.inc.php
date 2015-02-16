@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * Template Exception class                                                     #
  *                                                                              #
@@ -23,8 +24,11 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class TemplateException extends GeneralException {
-    public function __construct($s_message){
+class TemplateException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
         parent::__construct($s_message);
     }
 }

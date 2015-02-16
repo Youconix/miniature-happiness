@@ -1,10 +1,13 @@
-<?php 
-define('NIV','../../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../../');
+require (NIV . 'js/generalJS.php');
 
-class AdminLogs extends GeneralJS {
-	protected function display(){
-		$s_file = 'AdminLogs.prototype = new AdminMain();
+class AdminLogs extends GeneralJS
+{
+
+    protected function display()
+    {
+        $s_file = 'AdminLogs.prototype = new AdminMain();
 		AdminLogs.prototype.constructor = AdminLogs;
 				
 		function AdminLogs(){
@@ -23,7 +26,7 @@ class AdminLogs extends GeneralJS {
 		    AdminLogs.prototype.deleteLog = function(name){
 		        var _this   = this;
 		        
-		        if( !confirm("'.$this->service_Language->get('language/admin/logs/jsDelete').'") ){
+		        if( !confirm("' . $this->service_Language->get('language/admin/logs/jsDelete') . '") ){
 		            return;
 		        }
 		        		
@@ -41,11 +44,11 @@ class AdminLogs extends GeneralJS {
 		}
 		
 		var adminLogs   = new AdminLogs();';
-		
-		echo($s_file);
-	}
+        
+        echo ($s_file);
+    }
 }
 
-$obj_AdminLogs	 = new AdminLogs();
+$obj_AdminLogs = new AdminLogs();
 unset($obj_AdminLogs);
 ?>

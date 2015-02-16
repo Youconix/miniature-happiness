@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 namespace core\classes;
 
 /**
@@ -8,143 +7,164 @@ namespace core\classes;
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 2012,2013,2014  Rachelle Scheijen
- * @author    Rachelle Scheijen
- * @since     1.0
- * @changed    05/05/2014
- *
- * Scripthulp framework is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Scripthulp framework is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
- *
-*/
-class Queue {
-	private $a_content;
-	private $i_start;
-	private $i_counter;
+ * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @author Rachelle Scheijen
+ * @since 1.0
+ *        @changed 05/05/2014
+ *       
+ *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        it under the terms of the GNU Lesser General Public License as published by
+ *        the Free Software Foundation, either version 3 of the License, or
+ *        (at your option) any later version.
+ *       
+ *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *        GNU General Public License for more details.
+ *       
+ *        You should have received a copy of the GNU Lesser General Public License
+ *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *       
+ *       
+ */
+class Queue
+{
 
-	/**
-	 * Creates a new queue
-	 * 
-	 * @param	$a_content	The content of the queue, optional
-	 */
-	public function __construct($a_content = array()){
-		$this->clear();
+    private $a_content;
 
-		$this->addArray($a_content);
-	}
+    private $i_start;
 
-	/**
-	 * Merges the given queue with this one
-	 * 
-	 * @param Queue $obj_Queue		The queue
-	 * @throws Exception	If $obj_Queue if not a Queue
-	 */
-	public function addQueue($obj_Queue){
-		if( !($obj_Queue instanceof Queue) ){
-			throw new \Exception("Can only add Queues");
-		}
+    private $i_counter;
 
-		while( !$obj_Queue->isEmpty() ){
-			$this->push($obj_Queue->pop());
-		}
-	}
+    /**
+     * Creates a new queue
+     *
+     * @param $a_content The
+     *            of the queue, optional
+     */
+    public function __construct($a_content = array())
+    {
+        $this->clear();
+        
+        $this->addArray($a_content);
+    }
 
-	/**
-	 * Adds the array to the queue
-	 * 
-	 * @param array $a_content	The content to add
-	 */
-	public function addArray($a_content){
-		foreach($a_content AS $item){
-			$this->push($item);
-		}
-	}
+    /**
+     * Merges the given queue with this one
+     *
+     * @param Queue $obj_Queue
+     *            queue
+     * @throws Exception $obj_Queue if not a Queue
+     */
+    public function addQueue($obj_Queue)
+    {
+        if (! ($obj_Queue instanceof Queue)) {
+            throw new \Exception("Can only add Queues");
+        }
+        
+        while (! $obj_Queue->isEmpty()) {
+            $this->push($obj_Queue->pop());
+        }
+    }
 
-	/**
-	 * Pushes the item at the end of the queue
-	 * 
-	 * @param mixed $item	The item
-	 */
-	public function push($item){
-		$this->a_content[] = $item;
-		$this->i_counter++;
-	}
+    /**
+     * Adds the array to the queue
+     *
+     * @param array $a_content
+     *            content to add
+     */
+    public function addArray($a_content)
+    {
+        foreach ($a_content as $item) {
+            $this->push($item);
+        }
+    }
 
-	/**
-	 * Retrieves and removes the head of this queue, or null if this queue is empty. 
-	 *
-	 * @return mixed The first element of the queue.
-	 */
-	public function pop(){
-		if( $this->isEmpty() )
-			return null;
+    /**
+     * Pushes the item at the end of the queue
+     *
+     * @param mixed $item
+     *            item
+     */
+    public function push($item)
+    {
+        $this->a_content[] = $item;
+        $this->i_counter ++;
+    }
 
-		$s_content	= $this->a_content[$this->i_start];
-		$this->a_content[$this->i_start] = null;
-		$this->i_start++;
+    /**
+     * Retrieves and removes the head of this queue, or null if this queue is empty.
+     *
+     *
+     * @return mixed The first element of the queue.
+     */
+    public function pop()
+    {
+        if ($this->isEmpty())
+            return null;
+        
+        $s_content = $this->a_content[$this->i_start];
+        $this->a_content[$this->i_start] = null;
+        $this->i_start ++;
+        
+        return $s_content;
+    }
 
-		return $s_content;
-	}
+    /**
+     * Retrieves the head of this queue, or null if this queue is empty.
+     *
+     *
+     * @return mixed The first element of the queue.
+     */
+    public function peek()
+    {
+        if ($this->isEmpty())
+            return null;
+        
+        return $this->a_content[$this->i_start];
+    }
 
-	/**
-	 * Retrieves the head of this queue, or null if this queue is empty. 
-	 *
-	 * @return mixed The first element of the queue.
-	 */
-	public function peek(){
-		if( $this->isEmpty() )
-			return null;
+    /**
+     * Searches if the queue contains the given item
+     *
+     * @param Object $search
+     *            item
+     * @return Boolean if the queue contains the item
+     *        
+     */
+    public function search($search)
+    {
+        for ($i = $this->i_start; $i <= $this->i_counter; $i ++) {
+            if (is_object($this->a_content[$i]) && ($this->a_content[$i] instanceof String)) {
+                if ($this->a_content[$i]->equals($search))
+                    return true;
+            }
+            if ($this->a_content[$i] == $search) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
-		return $this->a_content[$this->i_start];
-	}
+    /**
+     * Checks if the queue is empty
+     *
+     * @return boolean if the queue is empty
+     */
+    public function isEmpty()
+    {
+        return ($this->i_start == $this->i_counter);
+    }
 
-	/**
-	 * Searches if the queue contains the given item
-	 * 
-	 * @param Object $search		The item
-	 * @return Boolean	True if the queue contains the item
-	 * 
-	 */
-	public function search($search){
-		for($i=$this->i_start; $i<=$this->i_counter; $i++){
-			if( is_object($this->a_content[$i]) && ($this->a_content[$i] instanceof String) ){
-				if( $this->a_content[$i]->equals($search) )
-					return true;
-			}
-			if( $this->a_content[$i] == $search ){
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the queue is empty
-	 * 
-	 * @return	boolean	True if the queue is empty
-	 */
-	public function isEmpty(){
-		return ($this->i_start == $this->i_counter);
-	}
-
-	/**
-	 * Clears the queue
-	 */
-	public function clear(){
-		$this->a_content	= array();
-		$this->i_counter	= 0;
-		$this->i_start		= 0;
-	}
+    /**
+     * Clears the queue
+     */
+    public function clear()
+    {
+        $this->a_content = array();
+        $this->i_counter = 0;
+        $this->i_start = 0;
+    }
 }
 ?>

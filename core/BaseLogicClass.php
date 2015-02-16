@@ -1,5 +1,4 @@
 <?php
-
 namespace core;
 
 /**
@@ -29,50 +28,58 @@ namespace core;
  * @since 1.0
  * @see include/BaseClass.php
  */
-if( !class_exists('\core\BaseClass') ){
- include (NIV . 'core/BaseClass.php');
+if (! class_exists('\core\BaseClass')) {
+    include (NIV . 'core/BaseClass.php');
 }
-abstract class BaseLogicClass extends BaseClass implements \Routable {
- protected $service_Session;
- public function __construct(){
-  $this->init();
- }
- 
- /**
-  * Routes the controller
-  * 
-  * @see Routable::route()
-  */
- public function route( $s_command ){  
-  $this->$s_command();
-  
-  $this->showLayout();
- }
- 
- protected function showLayout(){  
-  /* Call header */
-  $obj_header = Memory::loadClass('Header');
-  $obj_header->createHeader();
-  
-  /* Call Menu */
-  $obj_menu = Memory::loadClass('Menu');
-  $obj_menu->generateMenu();
-  
-  /* Call footer */
-  $obj_footer = Memory::loadClass('Footer');
-  $obj_footer->createFooter();
- }
- 
- /**
-  * Inits the class BaseLogicClass
-  *
-  * @see BaseClass::init()
-  */
- protected function init(){
-  parent::init();
-  
-  $this->service_Session = Memory::services('Session');
- }
+
+abstract class BaseLogicClass extends BaseClass implements \Routable
+{
+
+    protected $service_Session;
+
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        $this->$s_command();
+        
+        $this->showLayout();
+    }
+
+    protected function showLayout()
+    {
+        /* Call header */
+        $obj_header = Memory::loadClass('Header');
+        $obj_header->createHeader();
+        
+        /* Call Menu */
+        $obj_menu = Memory::loadClass('Menu');
+        $obj_menu->generateMenu();
+        
+        /* Call footer */
+        $obj_footer = Memory::loadClass('Footer');
+        $obj_footer->createFooter();
+    }
+
+    /**
+     * Inits the class BaseLogicClass
+     *
+     * @see BaseClass::init()
+     */
+    protected function init()
+    {
+        parent::init();
+        
+        $this->service_Session = Memory::services('Session');
+    }
 }
 
 ?>

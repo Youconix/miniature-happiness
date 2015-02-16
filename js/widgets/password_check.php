@@ -1,11 +1,13 @@
 <?php
-define ( 'NIV', '../../' );
+define('NIV', '../../');
 require (NIV . 'js/generalJS.php');
 
-class JS_PasswordCheck extends GeneralJS {
-	
-	protected function display() {
-		$this->s_output = 'function PasswordCheck(){
+class JS_PasswordCheck extends GeneralJS
+{
+
+    protected function display()
+    {
+        $this->s_output = 'function PasswordCheck(){
 				this.password1;
 				this.password2;
 				
@@ -30,14 +32,14 @@ class JS_PasswordCheck extends GeneralJS {
 				
 				error = false;
 				if( password1 != password2 ){
-					this.password1.prop("title","'.$this->service_Language->get('registration/notices/passwordInvalid').'");
-					this.password2.prop("title","'.$this->service_Language->get('registration/notices/passwordInvalid').'");
+					this.password1.prop("title","' . $this->service_Language->get('registration/notices/passwordInvalid') . '");
+					this.password2.prop("title","' . $this->service_Language->get('registration/notices/passwordInvalid') . '");
 					
 					error = true;
 				}
 				else if( password1.length < 8 ){
-					this.password1.prop("title","'.$this->service_Language->get('registration/notices/passwordToShort').'");
-					this.password2.prop("title","'.$this->service_Language->get('registration/notices/passwordToShort').'");
+					this.password1.prop("title","' . $this->service_Language->get('registration/notices/passwordToShort') . '");
+					this.password2.prop("title","' . $this->service_Language->get('registration/notices/passwordToShort') . '");
 					
 					error = true;
 				}
@@ -58,19 +60,19 @@ class JS_PasswordCheck extends GeneralJS {
 				this.password2.prop("title","");
 				
 				if( this.checkLetters(password) && this.checkNumbers(password) && this.checkSpecial(password) ){
-					text = "'.$this->service_Language->get('registration/notices/veryStrongPassword').'";
+					text = "' . $this->service_Language->get('registration/notices/veryStrongPassword') . '";
 					strength = 4;
 				}
 				else if(  this.checkLetters(password) && (this.checkNumbers(password) || this.checkSpecial(password)) ){
-					text = "'.$this->service_Language->get('registration/notices/strongPassword').'";
+					text = "' . $this->service_Language->get('registration/notices/strongPassword') . '";
 					strength = 3;
 				}
 				else if( password.length > 12 ){
-					text = "'.$this->service_Language->get('registration/notices/fairPassword').'";
+					text = "' . $this->service_Language->get('registration/notices/fairPassword') . '";
 					strength = 2;
 				}
 				else {
-					text = "'.$this->service_Language->get('registration/notices/weakPassword').'";
+					text = "' . $this->service_Language->get('registration/notices/weakPassword') . '";
 					strength = 1;
 				}
 				
@@ -101,12 +103,12 @@ class JS_PasswordCheck extends GeneralJS {
 				return password.match("[!@#\$%\^&\*\(\)\-_\+=\{\},\.\<\>/\?\|]+");
 		}
 		';
-		
-		echo ($this->s_output);
-	}
+        
+        echo ($this->s_output);
+    }
 }
 
 $obj_JS_PasswordCheck = new JS_PasswordCheck();
-unset ( $obj_JS_PasswordCheck );
+unset($obj_JS_PasswordCheck);
 ?>
 				

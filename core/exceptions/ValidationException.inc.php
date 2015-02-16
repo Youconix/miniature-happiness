@@ -1,4 +1,5 @@
 <?php
+
 /** #############################################################################
  * Validation Exception class                                                   #
  *                                                                              #
@@ -23,9 +24,12 @@
  * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.#
  * ##############################################################################
  */
-class ValidationException extends GeneralException {
-    public function __construct($s_message){
-        $this->message  = $s_message;
+class ValidationException extends GeneralException
+{
+
+    public function __construct($s_message)
+    {
+        $this->message = $s_message;
     }
 }
 

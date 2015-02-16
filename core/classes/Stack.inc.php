@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 namespace core\classes;
 
 /**
@@ -8,145 +7,166 @@ namespace core\classes;
  *
  * This file is part of Scripthulp framework
  *
- * @copyright 2012,2013,2014  Rachelle Scheijen
- * @author    Rachelle Scheijen
- * @since     1.0
- * @changed    05/05/2014
- *
- * Scripthulp framework is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Scripthulp framework is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
- *
-*/
-class Stack {
-	private $a_content;
-	private $i_counter;
+ * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @author Rachelle Scheijen
+ * @since 1.0
+ *        @changed 05/05/2014
+ *       
+ *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        it under the terms of the GNU Lesser General Public License as published by
+ *        the Free Software Foundation, either version 3 of the License, or
+ *        (at your option) any later version.
+ *       
+ *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *        GNU General Public License for more details.
+ *       
+ *        You should have received a copy of the GNU Lesser General Public License
+ *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *       
+ *       
+ */
+class Stack
+{
 
-	/**
-	 * Creates a new stack
-	 * 
-	 * @param	$a_content	The content of the stack, optional
-	 */
-	public function __construct($a_content = array()){
-		$this->clear();
+    private $a_content;
 
-		$this->addArray($a_content);
-	}
+    private $i_counter;
 
-	/**
-	 * Merges the given stack with this one
-	 * 
-	 * @param Stack $obj_Stack		The stack
-	 * @throws Exception	If $obj_Stack if not a Stack
-	 */
-	public function addStack($obj_Stack){
-		if( !($obj_Stack instanceof Stack) ){
-			throw new StackException("Can only add Stacks");
-		}
-
-		while( !$obj_Stack->isEmpty() ){
-			$this->push($obj_Stack->pop());
-		}
-	}
-
-	/**
-	 * Adds the array to the stack
-	 * 
-	 * @param array $a_content	The content to add
-	 */
-	public function addArray($a_content){
-		foreach($a_content AS $item){
-			$this->push($item);
-		}
-	}
-
-	/**
-	 * Pushes the item at the end of the stack
-	 * 
-	 * @param mixed $item	The item
-	 */
-	public function push($item){
-		$this->a_content[] = $item;
-		$this->i_counter++;
-	}
-
-	/**
-	 * Retrieves and removes the end of this stack
-	 *
-	 * @return mixed The last element of the stack.
-	 * @throws StackException	If the stack is empty
-	 */
-	public function pop(){
-		if( $this->isEmpty() ){
-			throw new StackException("Can not pop from empty stack");
+    /**
+     * Creates a new stack
+     *
+     * @param $a_content The
+     *            of the stack, optional
+     */
+    public function __construct($a_content = array())
+    {
+        $this->clear();
+        
+        $this->addArray($a_content);
     }
 
-		$s_content	= $this->a_content[$this->i_counter];
-		$this->a_content[$this->i_counter] = null;
-		$this->i_counter--;
-
-		return $s_content;
-	}
-
-	/**
-	 * Retrieves end of this stack without removing it
-	 *
-	 * @return mixed The last element of the stack.
-	 * @throws StackException	If the stack is empty
-	 */
-	public function peek(){
-		if( $this->isEmpty() ){
-			throw new StackException("Can not peek from empty stack");
+    /**
+     * Merges the given stack with this one
+     *
+     * @param Stack $obj_Stack
+     *            stack
+     * @throws Exception $obj_Stack if not a Stack
+     */
+    public function addStack($obj_Stack)
+    {
+        if (! ($obj_Stack instanceof Stack)) {
+            throw new StackException("Can only add Stacks");
+        }
+        
+        while (! $obj_Stack->isEmpty()) {
+            $this->push($obj_Stack->pop());
+        }
     }
 
-		return $this->a_content[$this->i_counter];
-	}
+    /**
+     * Adds the array to the stack
+     *
+     * @param array $a_content
+     *            content to add
+     */
+    public function addArray($a_content)
+    {
+        foreach ($a_content as $item) {
+            $this->push($item);
+        }
+    }
 
-	/**
-	 * Searches if the stack contains the given item
-	 * 
-	 * @param Object $search		The item
-	 * @return Boolean	True if the queue contains the item
-	 */
-	public function search($search){
-		for($i=0; $i<=$this->i_counter; $i++){
-			if( is_object($this->a_content[$i]) && ($this->a_content[$i] instanceof String) ){
-        if( $this->a_content[$i]->equals($search) ){  return true;  }
-			}
-			if( $this->a_content[$i] == $search ){
-				return true;
-			}
-		}
+    /**
+     * Pushes the item at the end of the stack
+     *
+     * @param mixed $item
+     *            item
+     */
+    public function push($item)
+    {
+        $this->a_content[] = $item;
+        $this->i_counter ++;
+    }
 
-		return false;
-	}
+    /**
+     * Retrieves and removes the end of this stack
+     *
+     * @return mixed The last element of the stack.
+     * @throws StackException the stack is empty
+     */
+    public function pop()
+    {
+        if ($this->isEmpty()) {
+            throw new StackException("Can not pop from empty stack");
+        }
+        
+        $s_content = $this->a_content[$this->i_counter];
+        $this->a_content[$this->i_counter] = null;
+        $this->i_counter --;
+        
+        return $s_content;
+    }
 
-	/**
-	 * Checks if the stack is empty
-	 * 
-	 * @return	boolean	True if the stack is empty
-	 */
-	public function isEmpty(){
-		return ($this->i_counter == -1);
-	}
+    /**
+     * Retrieves end of this stack without removing it
+     *
+     * @return mixed The last element of the stack.
+     * @throws StackException the stack is empty
+     */
+    public function peek()
+    {
+        if ($this->isEmpty()) {
+            throw new StackException("Can not peek from empty stack");
+        }
+        
+        return $this->a_content[$this->i_counter];
+    }
 
-	/**
-	 * Clears the stack
-	 */
-	public function clear(){
-		$this->a_content	= array();
-		$this->i_counter	= -1;
-	}
+    /**
+     * Searches if the stack contains the given item
+     *
+     * @param Object $search
+     *            item
+     * @return Boolean if the queue contains the item
+     */
+    public function search($search)
+    {
+        for ($i = 0; $i <= $this->i_counter; $i ++) {
+            if (is_object($this->a_content[$i]) && ($this->a_content[$i] instanceof String)) {
+                if ($this->a_content[$i]->equals($search)) {
+                    return true;
+                }
+            }
+            if ($this->a_content[$i] == $search) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Checks if the stack is empty
+     *
+     * @return boolean if the stack is empty
+     */
+    public function isEmpty()
+    {
+        return ($this->i_counter == - 1);
+    }
+
+    /**
+     * Clears the stack
+     */
+    public function clear()
+    {
+        $this->a_content = array();
+        $this->i_counter = - 1;
+    }
 }
 
-class StackException extends \Exception {
+class StackException extends \Exception
+{
 }
