@@ -166,7 +166,17 @@ class Loader
      */
     private static function getConstructor($s_filename)
     {
-        $s_file = \core\Memory::services('File')->readFile($s_filename);
+        $service_File = \core\Memory::services('File');
+        
+        if ($service_File->exists($s_filename)) {
+            $s_file = $service_File->readFile($s_filename);
+        } else 
+            if ($service_File->exists(str_replace('.inc.php', '.php', $s_filename))) {
+                $s_file = $service_File->readFile(str_replace('.inc.php', '.php', $s_filename));
+            } else {
+                throw new Exception('Call to unknown file ' . $s_filename . '.');
+            }
+        
         if (stripos($s_file, '__construct') === false) {
             /* Check if file has parent */
             preg_match('#class\\s+[a-zA-Z0-9\-_]+\\s+extends\\s+([\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches);
