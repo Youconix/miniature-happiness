@@ -446,7 +446,7 @@ class Database_Mysqli implements DAL
      * Excequetes the given query on the selected database
      *
      * @para string $s_query The query to excequte
-     * 
+     *
      * @throws DBException if no connection to the database exists
      * @throws DBException in case of a SQL error
      */

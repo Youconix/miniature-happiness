@@ -385,8 +385,8 @@ class Font_TrueType extends Font_Binary_Stream
         $gids = array(
             0, // .notdef
             1
-        ) // .null
-;
+        ); // .null
+
         
         foreach ($subset as $code) {
             if (! isset($glyphIndexArray[$code])) {
@@ -398,6 +398,7 @@ class Font_TrueType extends Font_Binary_Stream
         }
         
         /**
+         *
          * @var Font_Table_glyf $glyf
          */
         $glyf = $this->getTableObject("glyf");
@@ -442,6 +443,7 @@ class Font_TrueType extends Font_Binary_Stream
         Font::d("Tables : " . implode(", ", $tags));
         
         /**
+         *
          * @var Font_Table_Directory_Entry[] $entries
          */
         $entries = array();
@@ -496,6 +498,7 @@ class Font_TrueType extends Font_Binary_Stream
         
         for ($i = 0; $i < $this->header->data["numTables"]; $i ++) {
             /**
+             *
              * @var Font_Table_Directory_Entry $entry
              */
             $entry = new $class($this);
@@ -532,6 +535,7 @@ class Font_TrueType extends Font_Binary_Stream
         }
         
         /**
+         *
          * @var Font_Table $table
          */
         $table = new $class($this->directory[$tag]);
@@ -598,6 +602,7 @@ class Font_TrueType extends Font_Binary_Stream
     function getNameTableString($nameID)
     {
         /**
+         *
          * @var Font_Table_name_Record[] $records
          */
         $records = $this->getData("name", "records");

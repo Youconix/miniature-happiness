@@ -182,7 +182,7 @@ class GD_Adapter implements Canvas
 
     /**
      * Returns the current page number
-     * 
+     *
      * @return int
      */
     function get_page_number()
@@ -192,7 +192,7 @@ class GD_Adapter implements Canvas
 
     /**
      * Returns the total number of pages in the document
-     * 
+     *
      * @return int
      */
     function get_page_count()

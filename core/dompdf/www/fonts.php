@@ -134,6 +134,8 @@ $extensions = array(
 
 
 
+
+
 </table>
 
 <h3 id="install-fonts">Install new fonts</h3>
@@ -213,7 +215,6 @@ if (auth_ok()) {
 	</table>
 </form>
 <?php
-
 } else {
     echo auth_get_link();
 }

@@ -189,6 +189,7 @@ class Font_Table_name extends Font_Table
         $font = $this->getFont();
         
         /**
+         *
          * @var Font_Table_name_Record[] $records
          */
         $records = $this->data["records"];

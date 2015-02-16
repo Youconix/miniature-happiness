@@ -727,7 +727,7 @@ class Frame
     
     /**
      * Tells if the frame is a text node
-     * 
+     *
      * @return bool
      */
     function is_text_node()

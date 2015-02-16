@@ -94,7 +94,7 @@ abstract class Abstract_Renderer
         if (DEBUGPNG)
             print '[_background_image ' . $url . ']';
         
-        list ($img, $type,  /*$msg*/) = Image_Cache::resolve_url($url, $sheet->get_protocol(), $sheet->get_host(), $sheet->get_base_path(), $this->_dompdf);
+        list ($img, $type,   /*$msg*/) = Image_Cache::resolve_url($url, $sheet->get_protocol(), $sheet->get_host(), $sheet->get_base_path(), $this->_dompdf);
         
         // Bail if the image is no good
         if (Image_Cache::is_broken($img)) {

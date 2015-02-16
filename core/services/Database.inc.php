@@ -122,7 +122,7 @@ interface DAL
      * Excequetes the given query on the selected database
      *
      * @para String $s_query The query to excequte
-     * 
+     *
      * @throws Exception when the query failes
      */
     public function query($s_query);

@@ -58,8 +58,8 @@ class Stylesheet
         self::ORIG_UA => - 0x0FFFFFFF, // user agent style sheets
         self::ORIG_USER => - 0x0000FFFF, // user normal style sheets
         self::ORIG_AUTHOR => 0x00000000
-    ) // author normal style sheets
-;
+    ); // author normal style sheets
+
 
     /**
      * Current dompdf instance

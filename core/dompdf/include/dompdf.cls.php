@@ -118,7 +118,7 @@ class DOMPDF
      * Base hostname
      *
      * Used for relative paths/urls
-     * 
+     *
      * @var string
      */
     protected $_base_host;
@@ -127,7 +127,7 @@ class DOMPDF
      * Absolute base path
      *
      * Used for relative paths/urls
-     * 
+     *
      * @var string
      */
     protected $_base_path;
@@ -563,7 +563,7 @@ class DOMPDF
     /**
      * Loads an HTML string
      * Parse errors are stored in the global array _dompdf_warnings.
-     * 
+     *
      * @todo use the $encoding variable
      *      
      * @param string $str
@@ -677,8 +677,8 @@ class DOMPDF
             // If some text is before the doctype, we are in quirksmode
             if (preg_match("/^(.+)<!doctype/i", ltrim($str), $matches)) {
                 $quirksmode = true;
-            }            // If no doctype is provided, we are in quirksmode
-            elseif (! preg_match("/^<!doctype/i", ltrim($str), $matches)) {
+            } // If no doctype is provided, we are in quirksmode
+elseif (! preg_match("/^<!doctype/i", ltrim($str), $matches)) {
                 $quirksmode = true;
             } else {
                 // HTML5 <!DOCTYPE html>
@@ -826,7 +826,7 @@ mb_strtolower($tag->getAttribute("type")) === "text/css") {
 
     /**
      * Enable experimental caching capability
-     * 
+     *
      * @access private
      */
     function enable_caching($cache_id)

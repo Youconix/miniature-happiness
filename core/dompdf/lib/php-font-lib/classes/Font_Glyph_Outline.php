@@ -57,11 +57,13 @@ class Font_Glyph_Outline extends Font_Binary_Stream
         
         if ($font->readInt16() > - 1) {
             /**
+             *
              * @var Font_Glyph_Outline_Simple $glyph
              */
             $glyph = new Font_Glyph_Outline_Simple($table, $offset, $size);
         } else {
             /**
+             *
              * @var Font_Glyph_Outline_Composite $glyph
              */
             $glyph = new Font_Glyph_Outline_Composite($table, $offset, $size);

@@ -39,7 +39,7 @@ class Groups extends Model
 
     /**
      * PHP5 constructor
-     * 
+     *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
      * @param \core\services\Security $service_Security

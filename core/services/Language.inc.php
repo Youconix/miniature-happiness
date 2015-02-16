@@ -197,8 +197,7 @@ class Language extends Xml
             'en_US' => 'English (United States)',
             'en_ZA' => 'English (South Africa)',
             'en_ZW' => 'English (Zimbabwe)'
-        )
-        ;
+        );
     }
 
     /**

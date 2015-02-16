@@ -31,7 +31,7 @@
 /**
  * PHPMailer - PHP SMTP email transport class
  * NOTE: Designed for use with PHP version 5 and up
- * 
+ *
  * @package PHPMailer
  * @author Andy Prevost
  * @author Marcus Bointon
@@ -53,28 +53,28 @@ class SMTP
 
     /**
      * SMTP server port
-     * 
+     *
      * @var int
      */
     public $SMTP_PORT = 25;
 
     /**
      * SMTP reply line ending
-     * 
+     *
      * @var string
      */
     public $CRLF = "\r\n";
 
     /**
      * Sets whether debugging is turned on
-     * 
+     *
      * @var bool
      */
     public $do_debug; // the level of debug to perform
 
     /**
      * Sets VERP use on/off (default is off)
-     * 
+     *
      * @var bool
      */
     public $do_verp = false;
@@ -90,7 +90,7 @@ class SMTP
 
     /**
      * Initialize the class so that the data is in a known state.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -117,7 +117,7 @@ class SMTP
      *
      * SMTP CODE SUCCESS: 220
      * SMTP CODE FAILURE: 421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -179,7 +179,7 @@ $tval); // give up after ? secs
      * SMTP CODE 220 Ready to start TLS
      * SMTP CODE 501 Syntax error (no parameters allowed)
      * SMTP CODE 454 TLS not available due to temporary reason
-     * 
+     *
      * @access public
      * @return bool success
      */
@@ -227,7 +227,7 @@ $tval); // give up after ? secs
      * Performs SMTP authentication.
      * Must be run after running the
      * Hello() method. Returns true if successfully authenticated.
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -292,7 +292,7 @@ $tval); // give up after ? secs
 
     /**
      * Returns true if connected to a server otherwise false
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -317,7 +317,7 @@ $tval); // give up after ? secs
      * Closes the socket and cleans up the state of the class.
      * It is not considered good to use this function without
      * first trying to use QUIT.
-     * 
+     *
      * @access public
      * @return void
      */
@@ -353,7 +353,7 @@ $tval); // give up after ? secs
      * SMTP CODE FAILURE: 552,554,451,452
      * SMTP CODE FAILURE: 451,554
      * SMTP CODE ERROR : 500,501,503,421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -497,7 +497,7 @@ $tval); // give up after ? secs
      *
      * SMTP CODE SUCCESS: 250
      * SMTP CODE ERROR : 500, 501, 504, 421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -530,7 +530,7 @@ $tval); // give up after ? secs
 
     /**
      * Sends a HELO/EHLO command.
-     * 
+     *
      * @access private
      * @return bool
      */
@@ -574,7 +574,7 @@ $tval); // give up after ? secs
      * SMTP CODE SUCCESS: 250
      * SMTP CODE SUCCESS: 552,451,452
      * SMTP CODE SUCCESS: 500,501,421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -621,7 +621,7 @@ $tval); // give up after ? secs
      *
      * SMTP CODE SUCCESS: 221
      * SMTP CODE ERROR : 500
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -679,7 +679,7 @@ $tval); // give up after ? secs
      * SMTP CODE SUCCESS: 250,251
      * SMTP CODE FAILURE: 550,551,552,553,450,451,452
      * SMTP CODE ERROR : 500,501,503,421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -727,7 +727,7 @@ $tval); // give up after ? secs
      *
      * SMTP CODE SUCCESS: 250
      * SMTP CODE ERROR : 500,501,504,421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -780,7 +780,7 @@ $tval); // give up after ? secs
      * SMTP CODE SUCCESS: 250
      * SMTP CODE SUCCESS: 552,451,452
      * SMTP CODE SUCCESS: 500,501,502,421
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -829,7 +829,7 @@ $tval); // give up after ? secs
      * SMTP CODE SUCCESS: 250
      * SMTP CODE FAILURE: 502
      * SMTP CODE ERROR : 500, 503
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -846,7 +846,7 @@ $tval); // give up after ? secs
 
     /**
      * Get the current error
-     * 
+     *
      * @access public
      * @return array
      */
@@ -865,7 +865,7 @@ $tval); // give up after ? secs
      * With SMTP we can tell if we have more lines to read if the
      * 4th character is '-' symbol. If it is a space then we don't
      * need to read anything else.
-     * 
+     *
      * @access private
      * @return string
      */

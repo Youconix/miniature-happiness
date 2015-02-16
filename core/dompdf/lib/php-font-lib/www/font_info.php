@@ -120,7 +120,7 @@ if ($unicodemap) {
 
     <?php
     
-foreach ($font->getTable() as $entry) {
+    foreach ($font->getTable() as $entry) {
         $tag = $entry->tag;
         $data = $font->getData($tag);
         
@@ -138,7 +138,7 @@ foreach ($font->getTable() as $entry) {
   
   <?php
     
-foreach ($font->getTable() as $table) {
+    foreach ($font->getTable() as $table) {
         $tag = $table->tag;
         $data = $font->getData($tag);
         

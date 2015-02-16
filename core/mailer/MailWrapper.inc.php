@@ -576,7 +576,7 @@ class MailWrapper extends \core\services\Service
      * Static so it can be used without instantiation
      * Tries to use PHP built-in validator in the filter extension (from PHP 5.2), falls back to a reasonably competent regex validator
      * Conforms approximately to RFC2822
-     * 
+     *
      * @link http://www.hexillion.com/samples/#Regex Original pattern found here
      *      
      * @param string $s_address
@@ -900,7 +900,7 @@ class MailWrapper extends \core\services\Service
      * Encode string to RFC2045 (6.7) quoted-printable format
      * Uses a PHP5 stream filter to do the encoding about 64x faster than the old version
      * Also results in same content as you started with after decoding
-     * 
+     *
      * @see EncodeQPphp()
      *
      * @param string $s_text
@@ -918,7 +918,7 @@ class MailWrapper extends \core\services\Service
 
     /**
      * Encode string to q encoding.
-     * 
+     *
      * @link http://tools.ietf.org/html/rfc2047
      *      
      * @param string $s_text

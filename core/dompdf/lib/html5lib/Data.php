@@ -44,8 +44,8 @@ class HTML5_Data
         0x9D => 0x009D, // <control>
         0x9E => 0x017E, // LATIN SMALL LETTER Z WITH CARON ('ž')
         0x9F => 0x0178
-    ) // LATIN CAPITAL LETTER Y WITH DIAERESIS ('Ÿ')
-;
+    ); // LATIN CAPITAL LETTER Y WITH DIAERESIS ('Ÿ')
+
 
     protected static $namedCharacterReferences;
 

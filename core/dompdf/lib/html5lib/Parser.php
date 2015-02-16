@@ -12,7 +12,7 @@ class HTML5_Parser
 
     /**
      * Parses a full HTML document.
-     * 
+     *
      * @param $text HTML
      *            text to parse
      * @param $builder Custom
@@ -28,7 +28,7 @@ class HTML5_Parser
 
     /**
      * Parses an HTML fragment.
-     * 
+     *
      * @param $text HTML
      *            text to parse
      * @param $context String

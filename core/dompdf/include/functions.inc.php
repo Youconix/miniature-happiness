@@ -933,7 +933,7 @@ if (! function_exists("date_default_timezone_get")) {
  * later.
  * Without this function, errors are displayed immediately and
  * PDF streaming is impossible.
- * 
+ *
  * @see http://www.php.net/manual/en/function.set-error_handler.php
  *
  * @param int $errno            
@@ -1150,7 +1150,7 @@ if (function_exists("curl_init")) {
 
 /**
  * Affect null to the unused objects
- * 
+ *
  * @param mixed $object            
  */
 if (PHP_VERSION_ID < 50300) {

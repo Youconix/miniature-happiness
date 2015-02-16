@@ -26,7 +26,7 @@ class Inline_Positioner extends Positioner
     {
         /**
          * Find our nearest block level parent and access its lines property.
-         * 
+         *
          * @var Block_Frame_Decorator
          */
         $p = $this->_frame->find_block_parent();

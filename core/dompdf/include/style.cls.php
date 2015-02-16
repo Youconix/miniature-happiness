@@ -44,7 +44,7 @@ class Style
     /**
      * Default "absolute" font sizes relative to the default font-size
      * http://www.w3.org/TR/css3-fonts/#font-size-the-font-size-property
-     * 
+     *
      * @var array<float>
      */
     static $font_size_keywords = array(
@@ -55,8 +55,8 @@ class Style
         "large" => 1.2, // 6/5
         "x-large" => 1.5, // 3/2
         "xx-large" => 2.0
-    ) // 2/1
-;
+    ); // 2/1
+
 
     /**
      * List of all inline types.
@@ -835,10 +835,10 @@ class Style
         }
         
         $DEBUGCSS = DEBUGCSS; // =DEBUGCSS; Allow override of global setting for ad hoc debug
-                            
+                              
         // Select the appropriate font. First determine the subtype, then check
-                            // the specified font-families for a candidate.
-                            
+                              // the specified font-families for a candidate.
+                              
         // Resolve font-weight
         $weight = $this->__get("font_weight");
         
@@ -1431,7 +1431,7 @@ class Style
     /**
      * #@+
      * Returns the outline width, as it is currently stored
-     * 
+     *
      * @return float|string
      */
     function get_outline_width()
@@ -1689,7 +1689,7 @@ class Style
 
     /**
      * Set the background image url
-     * 
+     *
      * @link http://www.w3.org/TR/CSS21/colors.html#background-properties
      *      
      * @param string $val            

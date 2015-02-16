@@ -64,7 +64,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Return the set year
-     * 
+     *
      * @return int The set year
      */
     public function getYear()
@@ -74,7 +74,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Sets the year
-     * 
+     *
      * @param int $i_year
      *            The year
      */
@@ -107,7 +107,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Sets the week start-date (0 == sunday)
-     * 
+     *
      * @param int $i_day
      *            The week start date
      */

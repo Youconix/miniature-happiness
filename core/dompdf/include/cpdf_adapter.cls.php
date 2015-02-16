@@ -634,7 +634,7 @@ class CPDF_Adapter implements Canvas
     
     /**
      * Returns the PDF's width in points
-     * 
+     *
      * @return float
      */
     function get_width()
@@ -644,7 +644,7 @@ class CPDF_Adapter implements Canvas
 
     /**
      * Returns the PDF's height in points
-     * 
+     *
      * @return float
      */
     function get_height()
@@ -654,7 +654,7 @@ class CPDF_Adapter implements Canvas
 
     /**
      * Returns the current page number
-     * 
+     *
      * @return int
      */
     function get_page_number()
@@ -664,7 +664,7 @@ class CPDF_Adapter implements Canvas
 
     /**
      * Returns the total number of pages in the document
-     * 
+     *
      * @return int
      */
     function get_page_count()
@@ -696,7 +696,7 @@ class CPDF_Adapter implements Canvas
      * Sets the stroke color
      *
      * See {@link Style::set_color()} for the format of the color array.
-     * 
+     *
      * @param array $color            
      */
     protected function _set_stroke_color($color)
@@ -708,7 +708,7 @@ class CPDF_Adapter implements Canvas
      * Sets the fill colour
      *
      * See {@link Style::set_color()} for the format of the colour array.
-     * 
+     *
      * @param array $color            
      */
     protected function _set_fill_color($color)
@@ -718,7 +718,7 @@ class CPDF_Adapter implements Canvas
 
     /**
      * Sets line transparency
-     * 
+     *
      * @see Cpdf::setLineTransparency() Valid blend modes are (case-sensitive):
      *     
      *      Normal, Multiply, Screen, Overlay, Darken, Lighten,
@@ -737,7 +737,7 @@ class CPDF_Adapter implements Canvas
 
     /**
      * Sets fill transparency
-     * 
+     *
      * @see Cpdf::setFillTransparency() Valid blend modes are (case-sensitive):
      *     
      *      Normal, Multiply, Screen, Overlay, Darken, Lighten,

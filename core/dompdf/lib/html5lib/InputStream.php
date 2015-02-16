@@ -242,7 +242,7 @@ class HTML5_InputStream
     /**
      * Matches as far as possible until we reach a certain set of bytes
      * and returns the matched substring.
-     * 
+     *
      * @param $bytes Bytes
      *            to match.
      */
@@ -265,7 +265,7 @@ class HTML5_InputStream
     /**
      * Matches as far as possible with a certain set of bytes
      * and returns the matched substring.
-     * 
+     *
      * @param $bytes Bytes
      *            to match.
      */

@@ -3312,7 +3312,7 @@ EOT;
 
     /**
      * scale
-     * 
+     *
      * @param float $s_x
      *            scaling factor for width as percent
      * @param float $s_y
@@ -3340,7 +3340,7 @@ EOT;
 
     /**
      * translate
-     * 
+     *
      * @param float $t_x
      *            movement to the right
      * @param float $t_y
@@ -3362,7 +3362,7 @@ EOT;
 
     /**
      * rotate
-     * 
+     *
      * @param float $angle
      *            angle in degrees for counter-clockwise rotation
      * @param float $x
@@ -3392,7 +3392,7 @@ EOT;
 
     /**
      * skew
-     * 
+     *
      * @param float $angle_x            
      * @param float $angle_y            
      * @param float $x
@@ -3421,7 +3421,7 @@ EOT;
 
     /**
      * apply graphic transformations
-     * 
+     *
      * @param array $tm
      *            transformation matrix
      */

@@ -31,7 +31,7 @@
 /**
  * PHPMailer - PHP POP Before SMTP Authentication Class
  * NOTE: Designed for use with PHP version 5 and up
- * 
+ *
  * @package PHPMailer
  * @author Andy Prevost
  * @author Marcus Bointon
@@ -65,63 +65,63 @@ class POP3
 
     /**
      * Default POP3 port
-     * 
+     *
      * @var int
      */
     public $POP3_PORT = 110;
 
     /**
      * Default Timeout
-     * 
+     *
      * @var int
      */
     public $POP3_TIMEOUT = 30;
 
     /**
      * POP3 Carriage Return + Line Feed
-     * 
+     *
      * @var string
      */
     public $CRLF = "\r\n";
 
     /**
      * Displaying Debug warnings? (0 = now, 1+ = yes)
-     * 
+     *
      * @var int
      */
     public $do_debug = 2;
 
     /**
      * POP3 Mail Server
-     * 
+     *
      * @var string
      */
     public $host;
 
     /**
      * POP3 Port
-     * 
+     *
      * @var int
      */
     public $port;
 
     /**
      * POP3 Timeout Value
-     * 
+     *
      * @var int
      */
     public $tval;
 
     /**
      * POP3 Username
-     * 
+     *
      * @var string
      */
     public $username;
 
     /**
      * POP3 Password
-     * 
+     *
      * @var string
      */
     public $password;
@@ -137,7 +137,7 @@ class POP3
 
     /**
      * Constructor, sets the initial values
-     * 
+     *
      * @access public
      * @return POP3
      */
@@ -150,7 +150,7 @@ class POP3
 
     /**
      * Combination of public events - connect, login, disconnect
-     * 
+     *
      * @access public
      * @param string $host            
      * @param integer $port            
@@ -204,7 +204,7 @@ class POP3
 
     /**
      * Connect to the POP3 server
-     * 
+     *
      * @access public
      * @param string $host            
      * @param integer $port            
@@ -284,7 +284,7 @@ $tval); // Timeout (seconds)
 
     /**
      * Login to the POP3 server (does not support APOP yet)
-     * 
+     *
      * @access public
      * @param string $username            
      * @param string $password            
@@ -332,7 +332,7 @@ $tval); // Timeout (seconds)
 
     /**
      * Disconnect from the POP3 server
-     * 
+     *
      * @access public
      */
     public function Disconnect()
@@ -349,7 +349,7 @@ $tval); // Timeout (seconds)
     /**
      * Get the socket response back.
      * $size is the maximum number of bytes to retrieve
-     * 
+     *
      * @access private
      * @param integer $size            
      * @return string
@@ -363,7 +363,7 @@ $tval); // Timeout (seconds)
 
     /**
      * Send a string down the open socket connection to the POP3 server
-     * 
+     *
      * @access private
      * @param string $string            
      * @return integer
@@ -377,7 +377,7 @@ $tval); // Timeout (seconds)
 
     /**
      * Checks the POP3 server response for +OK or -ERR
-     * 
+     *
      * @access private
      * @param string $string            
      * @return boolean
@@ -403,7 +403,7 @@ $tval); // Timeout (seconds)
 
     /**
      * If debug is enabled, display the error message array
-     * 
+     *
      * @access private
      */
     private function displayErrors()
@@ -419,7 +419,7 @@ $tval); // Timeout (seconds)
 
     /**
      * Takes over from PHP for the socket warning handler
-     * 
+     *
      * @access private
      * @param integer $errno            
      * @param string $errstr            

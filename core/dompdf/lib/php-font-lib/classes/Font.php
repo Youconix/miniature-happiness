@@ -63,6 +63,7 @@ class Font
             require_once dirname(__FILE__) . "/$class.php";
             
             /**
+             *
              * @var Font_TrueType $obj
              */
             $obj = new $class();

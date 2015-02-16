@@ -49,7 +49,7 @@ class Image_Frame_Decorator extends Frame_Decorator
         if ($debug_png)
             print '[__construct ' . $url . ']';
         
-        list ($this->_image_url,  /*$type*/, $this->_image_msg) = Image_Cache::resolve_url($url, $dompdf->get_protocol(), $dompdf->get_host(), $dompdf->get_base_path(), $dompdf);
+        list ($this->_image_url,   /*$type*/, $this->_image_msg) = Image_Cache::resolve_url($url, $dompdf->get_protocol(), $dompdf->get_host(), $dompdf->get_base_path(), $dompdf);
         
         if (Image_Cache::is_broken($this->_image_url) && $alt = $frame->get_node()->getAttribute("alt")) {
             $style = $frame->get_style();

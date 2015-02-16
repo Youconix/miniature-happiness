@@ -2501,8 +2501,8 @@ class HTML5_Tokenizer
                         $this->emitToken(array(
                             'type' => self::PARSEERROR,
                             'data' => 'overlong-character-entity'
-                        ) // XXX probably not correct
-);
+                        )) // XXX probably not correct
+;
                         return "\xEF\xBF\xBD";
                     }
                     /*

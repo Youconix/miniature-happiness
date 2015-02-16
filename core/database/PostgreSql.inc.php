@@ -329,7 +329,7 @@ class Database_PostgreSql implements DAL
      * Excequetes the given query on the selected database
      *
      * @para String $s_query The query to excequte
-     * 
+     *
      * @throws DBException if no connection to the database exists
      * @throws DBException in case of a SQL error
      */

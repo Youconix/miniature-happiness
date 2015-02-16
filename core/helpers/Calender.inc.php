@@ -65,7 +65,7 @@ class Calender extends Helper
 
     /**
      * Return the set year
-     * 
+     *
      * @return int The set year
      */
     public function getYear()
@@ -75,7 +75,7 @@ class Calender extends Helper
 
     /**
      * Sets the year
-     * 
+     *
      * @param int $i_year
      *            The year
      */
@@ -108,7 +108,7 @@ class Calender extends Helper
 
     /**
      * Sets the week start-date (0 == sunday)
-     * 
+     *
      * @param int $i_day
      *            The week start date
      */
@@ -120,7 +120,7 @@ class Calender extends Helper
 
     /**
      * Sets the callback event
-     * 
+     *
      * @param string $s_event
      *            the callback event
      */

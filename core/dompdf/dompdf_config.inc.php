@@ -205,7 +205,7 @@ def("DOMPDF_DEFAULT_PAPER_SIZE", "letter");
  * The default font family
  *
  * Used if no suitable fonts can be found. This must exist in the font folder.
- * 
+ *
  * @var string
  */
 def("DOMPDF_DEFAULT_FONT", "serif");
@@ -290,7 +290,7 @@ def("DOMPDF_ENABLE_REMOTE", false);
 
 /**
  * The debug output log
- * 
+ *
  * @var string
  */
 def("DOMPDF_LOG_OUTPUT_FILE", DOMPDF_FONT_DIR . "log.htm");
@@ -304,7 +304,7 @@ def("DOMPDF_FONT_HEIGHT_RATIO", 1.1);
  * Enable CSS float
  *
  * Allows people to disabled CSS float support
- * 
+ *
  * @var bool
  */
 def("DOMPDF_ENABLE_CSS_FLOAT", false);

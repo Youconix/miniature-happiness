@@ -221,11 +221,13 @@ class Font_Glyph_Outline_Composite extends Font_Glyph_Outline
         $contours = array();
         
         /**
+         *
          * @var Font_Table_glyf $glyph_data
          */
         $glyph_data = $this->getFont()->getTableObject("glyf");
         
         /**
+         *
          * @var Font_Glyph_Outline[] $glyphs
          */
         $glyphs = $glyph_data->data;
