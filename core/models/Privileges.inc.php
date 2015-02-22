@@ -93,7 +93,10 @@ class Privileges {
 		
 		/* Get redict url */
 		$s_base = $this->model_Config->getBase();
-		$s_page = str_replace($s_base, '', $_SERVER['REQUEST_URI']);
+		$s_page = $_SERVER['REQUEST_URI'];
+		if( $s_base != '/' ){
+		  $s_page = str_replace($s_base, '', $s_page);
+		}
 		
 		$this->checkloginStatus($s_page);
 		
@@ -115,7 +118,9 @@ class Privileges {
 		
 		$this->checkCommand($i_commandLevel, $i_userid);
 		
-		define('USERID', $i_userid);
+		if( !defined('USERID') ){
+    		define('USERID', $i_userid);
+		}
 	}
 	
 	/**
