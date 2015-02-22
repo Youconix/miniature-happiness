@@ -1,16 +1,64 @@
 /* Users */
 #searchUsername {
-	width:90%;
+	width: 90%;
 }
-#users fieldset label.label,#groups fieldset label.label  { display:inline-block;  width:20%; margin-right:5px; text-align:right}
-#users input[type=text],#users input[type=email],#users input[type=password], #users textarea,
-#groups input[type=text],#groups input[type=email],#groups input[type=password], #groups textarea {
-	width:40%;
+
+#users fieldset label.label, #groups fieldset label.label, #pages fieldset label.label {
+	display: inline-block;
+	width: 20%;
+	margin-right: 5px;
+	text-align: right
 }
-#users textarea, #groups textarea  {
-	height:4em;
+
+#users input[type=text], #users input[type=email], #users input[type=password],
+	#users textarea, #groups input[type=text], #groups input[type=email],
+	#groups input[type=password], #groups textarea, #pages input[type=text], {
+	width: 40%;
+}
+
+#users textarea, #groups textarea {
+	height: 4em;
 }
 
 /* Groups */
-.group_not_editable { cursor:not-allowed }
-.group_editable { cursor:pointer; }
+.group_not_editable {
+	cursor: not-allowed
+}
+
+.group_editable {
+	cursor: pointer;
+}
+
+/* Pages */
+#page_list { margin-left:40px; }
+#page_list .link { cursor:pointer; }
+#page_list ul { margin-left:20px; }
+#page_list .directory_pointer { font-weight:bold}
+
+#dir_menu,#page_menu {
+	background-color:#fff;
+	border:1px outset black;
+	border-radius:5px;
+	z-index:10;
+	width:200px;
+	height:auto;
+	display:none;
+	position:absolute;
+	padding:5px 0px;
+}
+#dir_menu li ,#page_menu li {
+	padding-left:10%;
+	padding-right:5%;
+	cursor:pointer;
+	height:1.3em;
+	display:inline-block;
+	width:85%;
+}
+
+#dir_menu li:hover ,#page_menu li:hover {
+    background-color:#111;
+    color:#fff;	
+}
+
+#pages .item_header nav { width:40% }
+#pages .item_header h1 { display:inline-block; width:auto; }

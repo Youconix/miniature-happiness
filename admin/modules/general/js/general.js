@@ -19,7 +19,7 @@ General.prototype.showGroups = function(){
   admin.show(this.address+'groups.php',groups.init);
 }
 General.prototype.showPageRights = function(){
-  admin.show(this.address+'pages.php');
+  admin.show(this.address+'pages.php?command=index',pageRights.init);
 }
 General.prototype.showLogs = function(){
   admin.show(this.address+'logs.php');
@@ -28,7 +28,7 @@ General.prototype.showUpdates = function(){
   admin.show(this.address+'updates.php');
 }
 General.prototype.showBackup = function(){
-  admin.show('maintenance.php?view=backup');
+  admin.show('maintenance.php?command=backup');
 }
 General.prototype.showMaintenance = function(){
   admin.show('maintenance.php');
