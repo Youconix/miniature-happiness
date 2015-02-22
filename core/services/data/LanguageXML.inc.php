@@ -96,7 +96,12 @@ class LanguageXML extends \core\services\Xml{
 	 */
 	public function get($s_path){
 		$a_path = explode('/',$s_path);
+		
 		if( !array_key_exists($a_path[0],$this->a_documents) ){
+		    if( substr($s_path, 0,8) != 'language' ){
+                $s_path = 'language/'.$s_path;
+            }
+		 
 			$obj_file = $this->a_documents['site'];
 		}
 		else {

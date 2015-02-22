@@ -96,8 +96,10 @@ class Config extends Model {
 			$s_page = substr($s_page, 1);
 		}
 
-		if( stripos($s_page, $s_base) !== false ){
-			$s_page = substr($s_page, strlen($s_base));
+		if( $s_base != '/' ){
+    		if( stripos($s_page, $s_base) !== false ){
+    			$s_page = substr($s_page, strlen($s_base));
+    		}
 		}
 		
 		while( substr($s_page, 0, 1) == '/' ){
