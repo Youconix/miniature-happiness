@@ -88,11 +88,11 @@ class Login extends Model {
   }
   
   $a_data = $service_Database->fetch_assoc();
-  
+
   if( $a_data[0]['bot'] == '1' || $a_data[0]['active'] == '0' || $a_data[0]['blocked'] == '1' ){
    return;
   }
-  
+
   /* Check the number of tries */
   if( $i_tries >= 5 ){
    if( $i_tries == 5 ){
@@ -212,11 +212,15 @@ class Login extends Model {
    $this->service_Session->delete('page');
   }
   
+  while( strpos($s_redirection,'//') !== false ){
+      $s_redirection = str_replace('//','/',$s_redirection);
+  }
+  
   $this->service_QueryBuilder->update('users', 'lastLogin', 'i', time())->getWhere()->addAnd('id','i',$a_login['id']);
   $this->service_QueryBuilder->getResult();
   
   $this->service_Session->setLogin($a_login['id'], $a_login['nick'], $a_login['lastLogin']);
-  
+
   $this->service_Headers->redirect($s_redirection);
  }
  
