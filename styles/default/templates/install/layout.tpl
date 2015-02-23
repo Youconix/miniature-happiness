@@ -13,7 +13,7 @@
 </head>
 <body {autostart} data-styledir="{LEVEL}{styledir}" data-datadir="{datadir}">
 <section class="container">
-	<header class="holder">Scripthulp framework {version}</header>
+	<header class="holder">Miniature-happiness {version}</header>
 	
 	<section id="content">
 		<ul id="progressBar">

@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * General class loader and dependency injection
  * 
  * @author Roxanna Lugtigheid
  * @link        http://www.php-fig.org/psr/psr-4/

@@ -4,24 +4,24 @@ namespace admin;
 /**
  * Admin page rights configuration class
  *
- * This file is part of miniature-happiness
+ * This file is part of Miniature-happiness
  *
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 2.0
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 define('NIV', '../../../');
 include (NIV . 'core/AdminLogicClass.php');
@@ -49,15 +49,15 @@ class Pages extends \core\AdminLogicClass
             if ($this->get['command'] == 'view') {
                 $this->view();
             }
-        }
-        else if( isset($this->post['command']) ){
-            if( $this->post['command'] == 'edit' ){
-                $this->edit();
+        } else 
+            if (isset($this->post['command'])) {
+                if ($this->post['command'] == 'edit') {
+                    $this->edit();
+                }
+                if ($this->post['command'] == 'delete') {
+                    $this->delete();
+                }
             }
-            if( $this->post['command'] == 'delete'){
-                $this->delete();
-            }
-        }
     }
 
     protected function init()
@@ -118,10 +118,10 @@ class Pages extends \core\AdminLogicClass
         $this->viewEditText();
         
         $this->service_Template->set('pageTitle', 'Pagina rechten bewerken');
-        $this->service_Template->set('url',$this->get['url']);
+        $this->service_Template->set('url', $this->get['url']);
         
         $a_rights = $this->model_PrivilegeController->getRightsForPage($this->get['url']);
-        $this-> setGroupList('groups', $a_rights['general']['groupID']);
+        $this->setGroupList('groups', $a_rights['general']['groupID']);
         
         $this->service_Template->set('name', $a_rights['page']);
         $this->setAccessList('pageRight', $a_rights['general']['minLevel']);
@@ -161,20 +161,25 @@ class Pages extends \core\AdminLogicClass
             ));
         }
     }
-    
-    private function edit(){
-        if( empty($this->post['url']) || !isset($this->post['rights']) || !in_array($this->post['rights'],array(-1,0,1,2)) || 
-            !isset($this->post['group']) || $this->post['group'] < 0 ){
+
+    private function edit()
+    {
+        if (empty($this->post['url']) || ! isset($this->post['rights']) || ! in_array($this->post['rights'], array(
+            - 1,
+            0,
+            1,
+            2
+        )) || ! isset($this->post['group']) || $this->post['group'] < 0) {
             return;
         }
         
         /* Check group */
         $a_groups = \Loader::inject('\core\models\Groups')->getGroups();
-        if( !array_key_exists($this->post['group'], $a_groups) ){
+        if (! array_key_exists($this->post['group'], $a_groups)) {
             return;
         }
         
-        $this->model_PrivilegeController->changePageRights($this->post['url'],$this->post['rights'],$this->post['group']);
+        $this->model_PrivilegeController->changePageRights($this->post['url'], $this->post['rights'], $this->post['group']);
     }
 
     /**

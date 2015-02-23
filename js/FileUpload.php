@@ -1,14 +1,17 @@
-<?php 
-define('NIV','../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../');
+require (NIV . 'js/generalJS.php');
 
-class JS_FileUpload extends GeneralJS {
-	private $s_language;
-	
-	protected function display(){
-		$this->s_language	= $this->service_Language->getLanguage();
-		
-		$this->s_output = 'function FileUploader(){
+class JS_FileUpload extends GeneralJS
+{
+
+    private $s_language;
+
+    protected function display()
+    {
+        $this->s_language = $this->service_Language->getLanguage();
+        
+        $this->s_output = 'function FileUploader(){
 			this.response;
 			this.id;
 			this.frameID;
@@ -299,9 +302,9 @@ class JS_FileUpload extends GeneralJS {
 			}
 		}		
 		';
-		
-		echo($this->s_output);
-	}
+        
+        echo ($this->s_output);
+    }
 }
 
 $obj_JS_FileUpload = new JS_FileUpload();

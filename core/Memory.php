@@ -8,26 +8,24 @@ if (! class_exists('\CoreException')) {
 /**
  * Memory-handler for controlling memory and autostarting the framework
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
- * @since 1.0
- *        @changed 31/05/2014
+ * @since 1.0       
  *       
- *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Memory
 {
@@ -228,7 +226,7 @@ class Memory
      * Returns the used protocol
      *
      * @return String protocol
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:getProtocol
      */
     public static function getProtocol()
@@ -240,7 +238,7 @@ class Memory
      * Returns the current page
      *
      * @return String page
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:getPage
      */
     public static function getPage()
@@ -252,7 +250,7 @@ class Memory
      * Checks if ajax-mode is active
      *
      * @return boolean if ajax-mode is active
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:isAjax
      */
     public static function isAjax()
@@ -1073,4 +1071,3 @@ if (! function_exists('class_alias')) {
         eval('class ' . $alias . ' extends ' . $original . ' {}');
     }
 }
-?>

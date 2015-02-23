@@ -6,24 +6,23 @@ namespace core\services;
  *
  * This file is part of Miniature-Happiness
  *
- * @copyright 2014,2015,2016 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *        @date 12/01/2006
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Session extends Service
 {
@@ -272,4 +271,3 @@ class Session extends Service
     }
 }
 class_alias('\core\services\Session', 'Session');
-?>

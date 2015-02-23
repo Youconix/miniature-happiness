@@ -1,1060 +1,1299 @@
 <?php
-
 namespace core\database;
 
-class Builder_mysqli implements \core\services\Builder {
-	private $service_Database;
-	private $s_query;
-	private $s_limit;
-	private $s_group;
-	private $s_order;
+class Builder_mysqli implements \core\services\Builder
+{
 
-	private $a_joins;
-	private $a_fieldsPre;
-	private $a_fields;
-	private $a_values;
-	private $a_types;
+    private $service_Database;
 
-	private $bo_create;	
+    private $s_query;
 
-	private $s_resultQuery;
-	private $obj_where;
-	private $obj_create;	
-	private $obj_having;
+    private $s_limit;
 
-	/**
-	 * PHP 5 constructor
-   * 
-   * @param core\database\DAL      $service_Database    The DAL
-	 */
-	public function __construct(\core\database\DAL $service_Database){
-		$this->service_Database	= $service_Database;
-		
-		$this->obj_where	= new Where_Mysqli();
-		$this->obj_create	= new Create_Mysqli();
-		$this->obj_having	= new Having_Mysqli();
-		$this->reset();
-	}
+    private $s_group;
 
-	/**
-	 * Destructor
-	 */
-	public function __destruct(){
-		$this->service_Database	= null;
-		$this->obj_where	= null;
-		$this->obj_create = null;
-		$this->obj_having	= null;
-	}
-	
-	/**
-	 * Resets the builder
-	 */
-	private function reset(){
-		$this->s_query = '';
-		$this->s_limit = '';
-		$this->s_group = '';
-		$this->s_order = '';
-		$this->a_joins	= array();
-		$this->a_fieldsPre	= array();
-		$this->a_fields	= array();
-		$this->a_values	= array();
-		$this->a_types	= array();
-		$this->bo_create	= false;		
-		$this->s_resultQuery = '';
-		$this->obj_where->reset();
-		$this->obj_create->reset();
-		$this->obj_having->reset();
-	}
-	
-	/**
-	 * Shows the tables in the current database
-	 */
-	public function showTables(){
-		$this->bo_create	= false;
-		
-		$this->s_query	= 'SHOW TABLES';
-	}
-	
-	/**
-	 * Shows the databases that the user has access to
-	 */
-	public function showDatabases(){
-		$this->bo_create	= false;
-		
-		$this->s_query	= 'SHOW DATABASES';
-	}
+    private $s_order;
 
-	/**
-	 * Creates a select statement
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		String	$s_fields	The field names sepperated with a ,
-	 */
-	public function select($s_table,$s_fields){
-		$this->bo_create	= false;
+    private $a_joins;
 
-		$this->s_query	= "SELECT ".$s_fields." FROM ".DB_PREFIX.$s_table." ";
-		
-		return $this;
-	}
+    private $a_fieldsPre;
 
-	/**
-	 * Creates a insert statement
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		array	$a_fields	The field names, also accepts a single value	 
-	 * @param		array	$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
-	 * @param		array	$a_values	The values, also accepts a single value
-	 */
-	public function insert($s_table,$a_fields,$a_types,$a_values){
-		$this->bo_create	= false;
-		
-		if( !is_array($a_fields) ){
-			$a_fields = array($a_fields);
-			$a_types	= array($a_types);
-			$a_values	= array($a_values);
-		}
+    private $a_fields;
 
-		$this->s_query	= "INSERT INTO ".DB_PREFIX.$s_table." ";
+    private $a_values;
 
-		$this->a_fields	= $a_fields;
-		$this->a_values	= $a_values;
-		$this->a_types	= $a_types;
-		
-		return $this;
-	}
+    private $a_types;
 
-	/**
-	 * Creates a update statement
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		array	$a_fields	The field names, also accepts a single value
-	 * @param		array	$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
-	 * @param		array	$a_values	The values, also accepts a single value
-	 */
-	public function update($s_table,$a_fields,$a_types,$a_values){
-		$this->bo_create	= false;
-		
-		if( !is_array($a_fields) ){
-			$a_fields = array($a_fields);
-			$a_types	= array($a_types);
-			$a_values	= array($a_values);
-		}
+    private $bo_create;
 
-		$this->s_query	= "UPDATE ".DB_PREFIX.$s_table." ";
-		$this->a_fields	= $a_fields;
-		$this->a_values	= $a_values;
-		$this->a_types	= $a_types;
-		
-		return $this;
-	}
+    private $s_resultQuery;
 
-	/**
-	 * Creates a delete statement
-	 *
-	 * @param		String	$s_table	The table name
-	 */
-	public function delete($s_table){
-		$this->bo_create	= false;
+    private $obj_where;
 
-		$this->s_query	= "DELETE FROM ".DB_PREFIX.$s_table." ";
-		
-		return $this;
-	}
-	
-	/**
-	 * Returns the create table generation class
-	 * 
-	 * @param String $s_table			The table name
-	 * @param	Boolean $bo_dropTable	Set to true to drop the given table before creating it
-	 * @return Create The create table generation class
-	 */
-	public function getCreate($s_table,$bo_dropTable = false){
-		$this->bo_create	= true;
-		$this->obj_create->setTable($s_table,$bo_dropTable);
-		return $this->obj_create;
-	}
+    private $obj_create;
 
-	
+    private $obj_having;
 
-	/**
-	 * Adds a inner join between 2 tables
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		String	$s_field1	The field from the first table
-	 * @param		String	$s_field2	The field from the second table
-	 */
-	public function innerJoin($s_table,$s_field1,$s_field2){
-		$this->a_joins[]	= "INNER JOIN ".DB_PREFIX.$s_table." ON ".$s_field1." = ".$s_field2." ";
-		
-		return $this;
-	}
+    /**
+     * PHP 5 constructor
+     *
+     * @param core\database\DAL $service_Database
+     *            The DAL
+     */
+    public function __construct(\core\database\DAL $service_Database)
+    {
+        $this->service_Database = $service_Database;
+        
+        $this->obj_where = new Where_Mysqli();
+        $this->obj_create = new Create_Mysqli();
+        $this->obj_having = new Having_Mysqli();
+        $this->reset();
+    }
 
-	/**
-	 * Adds a outer join between 2 tables
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		String	$s_field1	The field from the first table
-	 * @param		String	$s_field2	The field from the second table
-	 */
-	public function outerJoin($s_table,$s_field1,$s_field2){
-		$this->a_joins[]	= "OUTER JOIN ".DB_PREFIX.$s_table." ON ".$s_field1." = ".$s_field2." ";
-		
-		return $this;
-	}
+    /**
+     * Destructor
+     */
+    public function __destruct()
+    {
+        $this->service_Database = null;
+        $this->obj_where = null;
+        $this->obj_create = null;
+        $this->obj_having = null;
+    }
 
-	/**
-	 * Adds a left join between 2 tables
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		String	$s_field1	The field from the first table
-	 * @param		String	$s_field2	The field from the second table
-	 */
-	public function leftJoin($s_table,$s_field1,$s_field2){
-		$this->a_joins[]	= "LEFT JOIN ".DB_PREFIX.$s_table." ON ".$s_field1." = ".$s_field2." ";
-		
-		return $this;
-	}
+    /**
+     * Resets the builder
+     */
+    private function reset()
+    {
+        $this->s_query = '';
+        $this->s_limit = '';
+        $this->s_group = '';
+        $this->s_order = '';
+        $this->a_joins = array();
+        $this->a_fieldsPre = array();
+        $this->a_fields = array();
+        $this->a_values = array();
+        $this->a_types = array();
+        $this->bo_create = false;
+        $this->s_resultQuery = '';
+        $this->obj_where->reset();
+        $this->obj_create->reset();
+        $this->obj_having->reset();
+    }
 
-	/**
-	 * Adds a right join between 2 tables
-	 *
-	 * @param		String	$s_table	The table name
-	 * @param		String	$s_field1	The field from the first table
-	 * @param		String	$s_field2	The field from the second table
-	 */
-	public function rightJoin($s_table,$s_field1,$s_field2){
-		$this->a_joins[]	= "RIGHT JOIN ".DB_PREFIX.$s_table." ON ".$s_field1." = ".$s_field2." ";
-		
-		return $this;
-	}
+    /**
+     * Shows the tables in the current database
+     */
+    public function showTables()
+    {
+        $this->bo_create = false;
+        
+        $this->s_query = 'SHOW TABLES';
+    }
 
-	/**
-	 * Returns the where generation class
-	 * 
-	 * @return Where	The where generation class
-	 */
-	public function getWhere(){
-		return $this->obj_where;
-	}
+    /**
+     * Shows the databases that the user has access to
+     */
+    public function showDatabases()
+    {
+        $this->bo_create = false;
+        
+        $this->s_query = 'SHOW DATABASES';
+    }
 
-	/**
-	 * Adds a limitation to the query statement
-	 * Only works on select, update and delete statements
-	 *
-	 * @param		int	$i_limit	The limitation of records
-	 * @param		int	$i_offset	The offset to start from, default 0 (first record)
-	 */
-	public function limit($i_limit,$i_offset = 0){
-		$this->s_limit	= "LIMIT ".$i_offset.",".$i_limit." ";
-		
-		return $this;
-	}
+    /**
+     * Creates a select statement
+     *
+     * @param String $s_table
+     *            name
+     * @param String $s_fields
+     *            names sepperated with a ,
+     */
+    public function select($s_table, $s_fields)
+    {
+        $this->bo_create = false;
+        
+        $this->s_query = "SELECT " . $s_fields . " FROM " . DB_PREFIX . $s_table . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Groups the results by the given field
-	 *
-	 * @param		String	$s_field	The field
-	 */
-	public function group($s_field){
-		$this->s_group = 'GROUP BY '.$s_field;
-		
-		return $this;
-	}
+    /**
+     * Creates a insert statement
+     *
+     * @param String $s_table
+     *            name
+     * @param array $a_fields
+     *            names, also accepts a single value
+     * @param array $a_types
+     *            types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
+     * @param array $a_values
+     *            also accepts a single value
+     */
+    public function insert($s_table, $a_fields, $a_types, $a_values)
+    {
+        $this->bo_create = false;
+        
+        if (! is_array($a_fields)) {
+            $a_fields = array(
+                $a_fields
+            );
+            $a_types = array(
+                $a_types
+            );
+            $a_values = array(
+                $a_values
+            );
+        }
+        
+        $this->s_query = "INSERT INTO " . DB_PREFIX . $s_table . " ";
+        
+        $this->a_fields = $a_fields;
+        $this->a_values = $a_values;
+        $this->a_types = $a_types;
+        
+        return $this;
+    }
 
-	/**
-	 * Returns the having generation class
-	 * 
-	 * @return Having		The having generation class
-	 */
-	public function getHaving(){
-		return $this->obj_having;
-	}
+    /**
+     * Creates a update statement
+     *
+     * @param String $s_table
+     *            name
+     * @param array $a_fields
+     *            names, also accepts a single value
+     * @param array $a_types
+     *            types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
+     * @param array $a_values
+     *            also accepts a single value
+     */
+    public function update($s_table, $a_fields, $a_types, $a_values)
+    {
+        $this->bo_create = false;
+        
+        if (! is_array($a_fields)) {
+            $a_fields = array(
+                $a_fields
+            );
+            $a_types = array(
+                $a_types
+            );
+            $a_values = array(
+                $a_values
+            );
+        }
+        
+        $this->s_query = "UPDATE " . DB_PREFIX . $s_table . " ";
+        $this->a_fields = $a_fields;
+        $this->a_values = $a_values;
+        $this->a_types = $a_types;
+        
+        return $this;
+    }
 
-	/**
-	 * Orders the records in the given order
-	 *
-	 * @param		String	$s_field1			The first field to order on
-	 * @param		String	$s_ordering1	The ordering method (ASC|DESC)
-	 * @param		String	$s_field2			The second field to order on, optional
-	 * @param		String	$s_ordering2	The ordering method (ASC|DESC), optional
-	 */
-	public function order($s_field1,$s_ordering1='ASC',$s_field2='',$s_ordering2='ASC'){
-		$this->s_order	= "ORDER BY ".$s_field1." ".$s_ordering1;
-		if( empty($s_field2) )
-			$this->s_order .= " ";
-		else
-			$this->s_order .= ",".$s_field2." ".$s_ordering2." ";
-		
-		return $this;
-	}
+    /**
+     * Creates a delete statement
+     *
+     * @param String $s_table
+     *            name
+     */
+    public function delete($s_table)
+    {
+        $this->bo_create = false;
+        
+        $this->s_query = "DELETE FROM " . DB_PREFIX . $s_table . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Return the total amount statement for the given field
-	 *
-	 * @param String $s_field		The field name
-	 * @param String $s_alias		The alias
-	 * @return String		The statement
-	 */
-	public function getSum($s_field,$s_alias=''){
-		return $this->getSpecialField($s_field, $s_alias, 'SUM');
-	}
+    /**
+     * Returns the create table generation class
+     *
+     * @param String $s_table
+     *            table name
+     * @param Boolean $bo_dropTable
+     *            to true to drop the given table before creating it
+     * @return Create The create table generation class
+     */
+    public function getCreate($s_table, $bo_dropTable = false)
+    {
+        $this->bo_create = true;
+        $this->obj_create->setTable($s_table, $bo_dropTable);
+        return $this->obj_create;
+    }
 
-	/**
-	 * Return the maximun value statement for the given field
-	 *
-	 * @param String $s_field		The field name
-	 * @param String $s_alias		The alias, default the field name
-	 * @return String		The statement
-	 */
-	public function getMaximun($s_field,$s_alias=''){
-		return $this->getSpecialField($s_field, $s_alias, 'MAX');
-	}
+    /**
+     * Adds a inner join between 2 tables
+     *
+     * @param String $s_table
+     *            name
+     * @param String $s_field1
+     *            from the first table
+     * @param String $s_field2
+     *            from the second table
+     */
+    public function innerJoin($s_table, $s_field1, $s_field2)
+    {
+        $this->a_joins[] = "INNER JOIN " . DB_PREFIX . $s_table . " ON " . $s_field1 . " = " . $s_field2 . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Return the minimun value statement for the given field
-	 *
-	 * @param String $s_field		The field name
-	 * @param String $s_alias		The alias
-	 * @return String		The statement
-	 */
-	public function getMinimun($s_field,$s_alias=''){
-		return $this->getSpecialField($s_field, $s_alias, 'MIN');
-	}
+    /**
+     * Adds a outer join between 2 tables
+     *
+     * @param String $s_table
+     *            name
+     * @param String $s_field1
+     *            from the first table
+     * @param String $s_field2
+     *            from the second table
+     */
+    public function outerJoin($s_table, $s_field1, $s_field2)
+    {
+        $this->a_joins[] = "OUTER JOIN " . DB_PREFIX . $s_table . " ON " . $s_field1 . " = " . $s_field2 . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Return the average value statement for the given field
-	 *
-	 * @param String $s_field	The field name
-	 * @param String $s_alias		The alias
-	 * @return String		The statement
-	 */
-	public function getAverage($s_field,$s_alias=''){
-		return $this->getSpecialField($s_field, $s_alias, 'AVG');
-	}
+    /**
+     * Adds a left join between 2 tables
+     *
+     * @param String $s_table
+     *            name
+     * @param String $s_field1
+     *            from the first table
+     * @param String $s_field2
+     *            from the second table
+     */
+    public function leftJoin($s_table, $s_field1, $s_field2)
+    {
+        $this->a_joins[] = "LEFT JOIN " . DB_PREFIX . $s_table . " ON " . $s_field1 . " = " . $s_field2 . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Return statement for counting the number of records on the given field
-	 *
-	 * @param String $s_field		The field name
-	 * @param String $s_alias		The alias
-	 * @return String		The statement
-	 */
-	public function getCount($s_field,$s_alias=''){
-		return $this->getSpecialField($s_field, $s_alias, 'COUNT');
-	}
+    /**
+     * Adds a right join between 2 tables
+     *
+     * @param String $s_table
+     *            name
+     * @param String $s_field1
+     *            from the first table
+     * @param String $s_field2
+     *            from the second table
+     */
+    public function rightJoin($s_table, $s_field1, $s_field2)
+    {
+        $this->a_joins[] = "RIGHT JOIN " . DB_PREFIX . $s_table . " ON " . $s_field1 . " = " . $s_field2 . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Generates the field statements
-	 *
-	 * @param String $s_field		The field name
-	 * @param String $s_alias		The alias
-	 * @param String $s_key		The statement code
-	 * @return String		The statement
-	 */
-	private function getSpecialField($s_field,$s_alias,$s_key){
-		if( !empty($s_alias) ){
-			$s_alias = 'AS '.$s_alias.' ';
-		}
+    /**
+     * Returns the where generation class
+     *
+     * @return Where where generation class
+     */
+    public function getWhere()
+    {
+        return $this->obj_where;
+    }
 
-		return $s_key.'('.$s_field.') '.$s_alias;
-	}
+    /**
+     * Adds a limitation to the query statement
+     * Only works on select, update and delete statements
+     *
+     * @param int $i_limit
+     *            of records
+     * @param int $i_offset
+     *            to start from, default 0 (first record)
+     */
+    public function limit($i_limit, $i_offset = 0)
+    {
+        $this->s_limit = "LIMIT " . $i_offset . "," . $i_limit . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Returns the query result
-	 *
-	 * @return Service_Database		The query result as a database object
-	 */
-	public function getResult(){
-		$a_query	= $this->render();
+    /**
+     * Groups the results by the given field
+     *
+     * @param String $s_field            
+     */
+    public function group($s_field)
+    {
+        $this->s_group = 'GROUP BY ' . $s_field;
+        
+        return $this;
+    }
 
-		if( count($a_query['values']) == 0 ){
-			$this->service_Database->query($a_query['query']);
-		}
-		else {
-			$this->service_Database->queryBinded($a_query['query'],$a_query['types'],$a_query['values']);
-		}
+    /**
+     * Returns the having generation class
+     *
+     * @return Having having generation class
+     */
+    public function getHaving()
+    {
+        return $this->obj_having;
+    }
 
-		return $this->service_Database;
-	}
+    /**
+     * Orders the records in the given order
+     *
+     * @param String $s_field1
+     *            field to order on
+     * @param String $s_ordering1
+     *            method (ASC|DESC)
+     * @param String $s_field2
+     *            field to order on, optional
+     * @param String $s_ordering2
+     *            method (ASC|DESC), optional
+     */
+    public function order($s_field1, $s_ordering1 = 'ASC', $s_field2 = '', $s_ordering2 = 'ASC')
+    {
+        $this->s_order = "ORDER BY " . $s_field1 . " " . $s_ordering1;
+        if (empty($s_field2))
+            $this->s_order .= " ";
+        else
+            $this->s_order .= "," . $s_field2 . " " . $s_ordering2 . " ";
+        
+        return $this;
+    }
 
-	/**
-	 * Builds the query
-	 */
-	public function render(){
-		$this->s_resultQuery	= $this->s_query;
-		if( !is_array($this->a_fields) )	$this->a_fields = array($this->a_fields);
-		
-		$s_command	= strtoupper( substr($this->s_query, 0,strpos($this->s_query, ' ')) );
-		
-		if( $s_command == 'SELECT' ){
-			$this->addJoins();
-				
-			$this->addHaving();
-				
-			$this->addWhere();
-			
-			$this->addGroup();
-			
-			$this->addOrder();
-				
-			$this->addLimit();
-		}
-		else if( $s_command == 'UPDATE' ){
-			$this->addJoins();
-				
-			$a_data	= array();
-			$i_num = count($this->a_fields);
-			for($i=0; $i<$i_num; $i++){
-				if( $this->a_types[$i] != 'l' ){
-					$a_data[] = $this->a_fields[$i].' = ?';
-				}
-				else {
-					$a_data[] = $this->a_fields[$i].' = '.$this->a_values[$i];
-					unset($this->a_values[$i]);
-					unset($this->a_types[$i]);
-				}
-			}
-				
-			$this->s_resultQuery .= ' SET '.implode(',',$a_data).' ';
-				
-			$this->addGroup();
-				
-			$this->addHaving();
-				
-			$this->addWhere();
-				
-			$this->addLimit();
-				
-			$this->addLimit();
-		
-		}
-		else if( $s_command == 'INSERT' ){
-			$a_values	= array();
-			$i_num	= count($this->a_values);
-			for($i=0; $i<$i_num; $i++){
-				if( $this->a_types[$i] != 'l' ){
-					$a_values[] = '?'; 
-				}
-				else {
-					$this->a_fields[$i] .= ' = '.$this->a_values[$i];
-					unset($this->a_values[$i]);
-					unset($this->a_types[$i]);
-				}
-			}
-			$this->s_resultQuery .= '('.implode(',',$this->a_fields).') VALUES ('.implode(',', $a_values).') ';
-		}
-		else if( $s_command == 'DELETE' ){
-			$this->addWhere();
-				
-			$this->addLimit();
-		}
-		else if( $s_command == 'SHOW' ){
-			$this->addWhere();
-		}
-		else if( $this->bo_create ){
-			$s_dropTable	= $this->obj_create->getDropTable();
+    /**
+     * Return the total amount statement for the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias
+     * @return String statement
+     */
+    public function getSum($s_field, $s_alias = '')
+    {
+        return $this->getSpecialField($s_field, $s_alias, 'SUM');
+    }
 
-			if( $s_dropTable != '' ){
-				$this->service_Database->query($s_dropTable);
-			}
+    /**
+     * Return the maximun value statement for the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias, default the field name
+     * @return String statement
+     */
+    public function getMaximun($s_field, $s_alias = '')
+    {
+        return $this->getSpecialField($s_field, $s_alias, 'MAX');
+    }
 
-			$this->s_resultQuery	= $this->obj_create->render();
-		}
-		
-		$a_data = array('query'=>$this->s_resultQuery,'values'=>$this->a_values,'types'=>$this->a_types);
-		$this->reset();
-		return $a_data;
-	}
+    /**
+     * Return the minimun value statement for the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias
+     * @return String statement
+     */
+    public function getMinimun($s_field, $s_alias = '')
+    {
+        return $this->getSpecialField($s_field, $s_alias, 'MIN');
+    }
 
-	/**
-	 * Adds the joins
-	 */
-	private function addJoins(){
-		foreach($this->a_joins AS $s_join){
-			$this->s_resultQuery .= $s_join;
-		}
-	}
+    /**
+     * Return the average value statement for the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias
+     * @return String statement
+     */
+    public function getAverage($s_field, $s_alias = '')
+    {
+        return $this->getSpecialField($s_field, $s_alias, 'AVG');
+    }
 
-	/**
-	 * Adds the group by
-	 */
-	private function addGroup(){
-		$this->s_resultQuery .= $this->s_group." ";
-	}
+    /**
+     * Return statement for counting the number of records on the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias
+     * @return String statement
+     */
+    public function getCount($s_field, $s_alias = '')
+    {
+        return $this->getSpecialField($s_field, $s_alias, 'COUNT');
+    }
 
-	/**
-	 * Adds the having part
-	 */
-	private function addHaving(){
-		$a_having	= $this->obj_having->render();
-		if( is_null($a_having) )		return;
-		
-		$this->a_values	= array_merge($this->a_values,$a_having['values']);
-		$this->a_types	= array_merge($this->a_types,$a_having['types']);
-		
-		$this->s_resultQuery .= $a_having['having']." ";
-	}
+    /**
+     * Generates the field statements
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_alias
+     *            alias
+     * @param String $s_key
+     *            statement code
+     * @return String statement
+     */
+    private function getSpecialField($s_field, $s_alias, $s_key)
+    {
+        if (! empty($s_alias)) {
+            $s_alias = 'AS ' . $s_alias . ' ';
+        }
+        
+        return $s_key . '(' . $s_field . ') ' . $s_alias;
+    }
 
-	/**
-	 * Adds the where part
-	 */
-	private function addWhere(){
-		$a_where	= $this->obj_where->render();
-		if( is_null($a_where) )		return;
-		
-		$this->a_values	= array_merge($this->a_values,$a_where['values']);
-		$this->a_types	= array_merge($this->a_types,$a_where['types']);
-		
-		$this->s_resultQuery .= $a_where['where']." ";
-	}
+    /**
+     * Returns the query result
+     *
+     * @return Service_Database query result as a database object
+     */
+    public function getResult()
+    {
+        $a_query = $this->render();
+        
+        if (count($a_query['values']) == 0) {
+            $this->service_Database->query($a_query['query']);
+        } else {
+            $this->service_Database->queryBinded($a_query['query'], $a_query['types'], $a_query['values']);
+        }
+        
+        return $this->service_Database;
+    }
 
-	/**
-	 * Adds the limit part
-	 */
-	private function addLimit(){
-		$this->s_resultQuery .= $this->s_limit;
-	}
+    /**
+     * Builds the query
+     */
+    public function render()
+    {
+        $this->s_resultQuery = $this->s_query;
+        if (! is_array($this->a_fields))
+            $this->a_fields = array(
+                $this->a_fields
+            );
+        
+        $s_command = strtoupper(substr($this->s_query, 0, strpos($this->s_query, ' ')));
+        
+        if ($s_command == 'SELECT') {
+            $this->addJoins();
+            
+            $this->addHaving();
+            
+            $this->addWhere();
+            
+            $this->addGroup();
+            
+            $this->addOrder();
+            
+            $this->addLimit();
+        } else 
+            if ($s_command == 'UPDATE') {
+                $this->addJoins();
+                
+                $a_data = array();
+                $i_num = count($this->a_fields);
+                for ($i = 0; $i < $i_num; $i ++) {
+                    if ($this->a_types[$i] != 'l') {
+                        $a_data[] = $this->a_fields[$i] . ' = ?';
+                    } else {
+                        $a_data[] = $this->a_fields[$i] . ' = ' . $this->a_values[$i];
+                        unset($this->a_values[$i]);
+                        unset($this->a_types[$i]);
+                    }
+                }
+                
+                $this->s_resultQuery .= ' SET ' . implode(',', $a_data) . ' ';
+                
+                $this->addGroup();
+                
+                $this->addHaving();
+                
+                $this->addWhere();
+                
+                $this->addLimit();
+                
+                $this->addLimit();
+            } else 
+                if ($s_command == 'INSERT') {
+                    $a_values = array();
+                    $i_num = count($this->a_values);
+                    for ($i = 0; $i < $i_num; $i ++) {
+                        if ($this->a_types[$i] != 'l') {
+                            $a_values[] = '?';
+                        } else {
+                            $this->a_fields[$i] .= ' = ' . $this->a_values[$i];
+                            unset($this->a_values[$i]);
+                            unset($this->a_types[$i]);
+                        }
+                    }
+                    $this->s_resultQuery .= '(' . implode(',', $this->a_fields) . ') VALUES (' . implode(',', $a_values) . ') ';
+                } else 
+                    if ($s_command == 'DELETE') {
+                        $this->addWhere();
+                        
+                        $this->addLimit();
+                    } else 
+                        if ($s_command == 'SHOW') {
+                            $this->addWhere();
+                        } else 
+                            if ($this->bo_create) {
+                                $s_dropTable = $this->obj_create->getDropTable();
+                                
+                                if ($s_dropTable != '') {
+                                    $this->service_Database->query($s_dropTable);
+                                }
+                                
+                                $this->s_resultQuery = $this->obj_create->render();
+                            }
+        
+        $a_data = array(
+            'query' => $this->s_resultQuery,
+            'values' => $this->a_values,
+            'types' => $this->a_types
+        );
+        $this->reset();
+        return $a_data;
+    }
 
-	/**
-	 * Adds the order part
-	 */
-	private function addOrder(){
-		$this->s_resultQuery .= $this->s_order;
-	}
+    /**
+     * Adds the joins
+     */
+    private function addJoins()
+    {
+        foreach ($this->a_joins as $s_join) {
+            $this->s_resultQuery .= $s_join;
+        }
+    }
 
-	/**
-	 * Starts a new transaction
-	 *
-	 * @throws DBException	If a transaction is allready active
-	 */
-	public function transaction(){
-		$this->service_Database->transaction();
-		
-		return $this;
-	}
+    /**
+     * Adds the group by
+     */
+    private function addGroup()
+    {
+        $this->s_resultQuery .= $this->s_group . " ";
+    }
 
-	/**
-	 * Commits the current transaction
-	 *
-	 * @throws DBException	If no transaction is active
-	 */
-	public function commit(){
-		$this->service_Database->commit();
-		
-		return $this;
-	}
+    /**
+     * Adds the having part
+     */
+    private function addHaving()
+    {
+        $a_having = $this->obj_having->render();
+        if (is_null($a_having))
+            return;
+        
+        $this->a_values = array_merge($this->a_values, $a_having['values']);
+        $this->a_types = array_merge($this->a_types, $a_having['types']);
+        
+        $this->s_resultQuery .= $a_having['having'] . " ";
+    }
 
-	/**
-	 * Rolls the current transaction back
-	 *
-	 * @throws DBException	If no transaction is active
-	 */
-	public function rollback(){
-		$this->service_Database->rollback();
-		
-		return $this;
-	}
-  
-  /**
-   * Returns the DAL
-   * 
-   * @return DAL  The DAL
-   */
-  public function getDatabase(){
-    return $this->service_Database;
-  }
+    /**
+     * Adds the where part
+     */
+    private function addWhere()
+    {
+        $a_where = $this->obj_where->render();
+        if (is_null($a_where))
+            return;
+        
+        $this->a_values = array_merge($this->a_values, $a_where['values']);
+        $this->a_types = array_merge($this->a_types, $a_where['types']);
+        
+        $this->s_resultQuery .= $a_where['where'] . " ";
+    }
+
+    /**
+     * Adds the limit part
+     */
+    private function addLimit()
+    {
+        $this->s_resultQuery .= $this->s_limit;
+    }
+
+    /**
+     * Adds the order part
+     */
+    private function addOrder()
+    {
+        $this->s_resultQuery .= $this->s_order;
+    }
+
+    /**
+     * Starts a new transaction
+     *
+     * @throws DBException a transaction is allready active
+     */
+    public function transaction()
+    {
+        $this->service_Database->transaction();
+        
+        return $this;
+    }
+
+    /**
+     * Commits the current transaction
+     *
+     * @throws DBException no transaction is active
+     */
+    public function commit()
+    {
+        $this->service_Database->commit();
+        
+        return $this;
+    }
+
+    /**
+     * Rolls the current transaction back
+     *
+     * @throws DBException no transaction is active
+     */
+    public function rollback()
+    {
+        $this->service_Database->rollback();
+        
+        return $this;
+    }
+
+    /**
+     * Returns the DAL
+     *
+     * @return DAL The DAL
+     */
+    public function getDatabase()
+    {
+        return $this->service_Database;
+    }
 }
 
-abstract class QueryConditions_Mysqli {
-	protected $s_query;
-	protected $a_types;
-	protected $a_values;	
-	protected $a_keys = array('=' => '=','=='=>'=', '<>' => '<>','!='=>'<>','<'=>'<','>'=>'>', 'LIKE'=>'LIKE','IN'=>'IN','BETWEEN'=>'BETWEEN');
-	
-	/**
-	 * Resets the class
-	 */
-	public function reset(){
-		$this->s_query	= '';
-		$this->a_types	= array();
-		$this->a_values	= array();
-	}
-	
-	/**
-	 * Adds fields with an and relation
-	 * 
-	 * @param array 	$a_fields		The fields,also accepts a single value 
-	 * @param		array	$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
-	 * @param	 array	$a_values		The values, also accepts a single value
-	 * @param array		$a_keys			The keys (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
-	 * @throws DBException		If the key is invalid
-	 */
-	public function addAnd($a_fields,$a_types,$a_values,$a_keys = array()){
-		if( !is_array($a_fields) )	$a_fields	= array($a_fields);
-		if( !is_array($a_types) )		$a_types = array($a_types);
-		if( !is_array($a_values) )	$a_values = array($a_values);
-		if( !is_array($a_keys) )		$a_keys = array($a_keys);
-		
-		$i_num	= count($a_fields);
-		$j=0;
-		for($i=0; $i<$i_num; $i++){
-			( array_key_exists($i, $a_keys) && !empty($a_keys[$i]) )?	$s_key = $a_keys[$i] : $s_key = '=';
-			
-			$this->addField($a_fields[$i], $a_types[$j], $a_values[$j],$s_key, 'AND');
-			if( $s_key == 'BETWEEN' ){
-				$j++;
-				$this->a_types[]	= $a_types[$j];
-				$this->a_values[] = $a_values[$j]; 
-			}
-			$j++;
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Adds fields with an or relation
-	 * 
-	 * @param array 	$a_fields		The fields,also accepts a single value 
-	 * @param		array	$a_types	The value types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
-	 * @param	 array	$a_values		The values, also accepts a single value
-	 * @param array		$a_keys			The keys (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
-	 * @throws DBException		If the key is invalid
-	 */
-	public function addOr($a_fields,$a_types,$a_values,$a_keys){
-		if( !is_array($a_fields) ){
-			$a_fields	= array($a_fields);
-			$a_types = array($a_types);
-			$a_values = array($a_values);
-			$a_keys = array($a_keys);
-		}
-		
-		$i_num	= count($a_fields);
-		$j=0;
-		for($i=0; $i<$i_num; $i++){
-			( array_key_exists($i, $a_keys) && !empty($a_keys[$i]) )?	$s_key = $a_keys[$i] : $s_key = '=';
-			
-			$this->addField($a_fields[$i], $a_types[$j], $a_values[$j], $s_key, 'OR');
-			if( $s_key == 'BETWEEN' ){
-				$j++;
-				$this->a_types[]	= $a_types[$j];
-				$this->a_values[] = $a_values[$j]; 
-			}
-			$j++;
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Adds a field
-	 * 
-	 * @param		String 	$s_field		The field
-	 * @param		array		$s_type	The value type : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
-	 * @param		String	$s_value		The value
-	 * @param		String 	$s_key			The key (=|<>|<|>|LIKE|IN|BETWEEN)
-	 * @param		String  $s_command		The command (AND|OR)	
-	 * @throws DBException		If the key is invalid
-	 */
-	protected function addField($s_field,$s_type,$s_value,$s_key,$s_command){
-		 if( !array_key_exists($s_key,$this->a_keys) )
-		 	throw new DBException('Unknown where key '.$s_key.'.');
-		 	
-		if( !empty($this->s_query) )	$this->s_query .= ' '.$s_command.' ';
-	
-		if( $s_type == 'l' ){
-			if( $s_key != 'IN' )
-				$this->s_query .= $s_field.' '.$this->a_keys[$s_key].' '.$s_value.' ';
-			else 
-				$this->s_query .= $s_field.' IN ('.$s_value.') ';
-			
-			return;
-		}
-		else if( $s_key == 'IN' ){
-			$a_data = array();
+abstract class QueryConditions_Mysqli
+{
 
-			foreach($s_value AS $item){
-				switch($s_type){
-					case 'i' :
-						if( !is_int($item) )	throw new DBException('Invalid IN value. expected int but got '.gettype($item).'.');
-						$a_data[] = $item;
-					break;
+    protected $s_query;
 
-					case 'i' :
-						if( !is_float($item) )	throw new DBException('Invalid IN value. expected float but got '.gettype($item).'.');
-						$a_data[] = $item;
-					break;
+    protected $a_types;
 
-					case 'i' :
-						if( !is_string($item) )	throw new DBException('Invalid IN value. expected string but got '.gettype($item).'.');
-						$a_data[] = "'".$item."'";
-					break;
+    protected $a_values;
 
+    protected $a_keys = array(
+        '=' => '=',
+        '==' => '=',
+        '<>' => '<>',
+        '!=' => '<>',
+        '<' => '<',
+        '>' => '>',
+        'LIKE' => 'LIKE',
+        'IN' => 'IN',
+        'BETWEEN' => 'BETWEEN'
+    );
 
-					default :
-						throw new DBException('Invalid IN type. Only ints, floats and strings are supported.');
-				}
-			}
+    /**
+     * Resets the class
+     */
+    public function reset()
+    {
+        $this->s_query = '';
+        $this->a_types = array();
+        $this->a_values = array();
+    }
 
-			$this->s_query .= $s_field.' IN ('.implode(',',$a_data).') ';
-			return;
-		}
-		
-		$this->a_types[]	= $s_type;
-		$this->a_values[] = $s_value;
-		
-		if( $s_key == 'LIKE' )
-			$this->s_query .= $s_field.' LIKE CONCAT("%",?,"%") ';
-		else if( $s_key == 'BETWEEN' )
-			$this->s_query .= $s_field.' BETWEEN ? AND ? ';
-		else 
-			$this->s_query .= $s_field.' '.$this->a_keys[$s_key].' ? ';
-	}
+    /**
+     * Adds fields with an and relation
+     *
+     * @param array $a_fields
+     *            fields,also accepts a single value
+     * @param array $a_types
+     *            types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
+     * @param array $a_values
+     *            also accepts a single value
+     * @param array $a_keys
+     *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
+     * @throws DBException the key is invalid
+     */
+    public function addAnd($a_fields, $a_types, $a_values, $a_keys = array())
+    {
+        if (! is_array($a_fields))
+            $a_fields = array(
+                $a_fields
+            );
+        if (! is_array($a_types))
+            $a_types = array(
+                $a_types
+            );
+        if (! is_array($a_values))
+            $a_values = array(
+                $a_values
+            );
+        if (! is_array($a_keys))
+            $a_keys = array(
+                $a_keys
+            );
+        
+        $i_num = count($a_fields);
+        $j = 0;
+        for ($i = 0; $i < $i_num; $i ++) {
+            (array_key_exists($i, $a_keys) && ! empty($a_keys[$i])) ? $s_key = $a_keys[$i] : $s_key = '=';
+            
+            $this->addField($a_fields[$i], $a_types[$j], $a_values[$j], $s_key, 'AND');
+            if ($s_key == 'BETWEEN') {
+                $j ++;
+                $this->a_types[] = $a_types[$j];
+                $this->a_values[] = $a_values[$j];
+            }
+            $j ++;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Adds fields with an or relation
+     *
+     * @param array $a_fields
+     *            fields,also accepts a single value
+     * @param array $a_types
+     *            types : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
+     * @param array $a_values
+     *            also accepts a single value
+     * @param array $a_keys
+     *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
+     * @throws DBException the key is invalid
+     */
+    public function addOr($a_fields, $a_types, $a_values, $a_keys)
+    {
+        if (! is_array($a_fields)) {
+            $a_fields = array(
+                $a_fields
+            );
+            $a_types = array(
+                $a_types
+            );
+            $a_values = array(
+                $a_values
+            );
+            $a_keys = array(
+                $a_keys
+            );
+        }
+        
+        $i_num = count($a_fields);
+        $j = 0;
+        for ($i = 0; $i < $i_num; $i ++) {
+            (array_key_exists($i, $a_keys) && ! empty($a_keys[$i])) ? $s_key = $a_keys[$i] : $s_key = '=';
+            
+            $this->addField($a_fields[$i], $a_types[$j], $a_values[$j], $s_key, 'OR');
+            if ($s_key == 'BETWEEN') {
+                $j ++;
+                $this->a_types[] = $a_types[$j];
+                $this->a_values[] = $a_values[$j];
+            }
+            $j ++;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Adds a field
+     *
+     * @param String $s_field
+     *            field
+     * @param array $s_type
+     *            type : l (SQL, no parse), i (int) ,d (double) ,s (string) or b (blob), also accepts a single value
+     * @param String $s_value            
+     * @param String $s_key
+     *            key (=|<>|<|>|LIKE|IN|BETWEEN)
+     * @param String $s_command
+     *            command (AND|OR)
+     * @throws DBException the key is invalid
+     */
+    protected function addField($s_field, $s_type, $s_value, $s_key, $s_command)
+    {
+        if (! array_key_exists($s_key, $this->a_keys))
+            throw new DBException('Unknown where key ' . $s_key . '.');
+        
+        if (! empty($this->s_query))
+            $this->s_query .= ' ' . $s_command . ' ';
+        
+        if ($s_type == 'l') {
+            if ($s_key != 'IN')
+                $this->s_query .= $s_field . ' ' . $this->a_keys[$s_key] . ' ' . $s_value . ' ';
+            else
+                $this->s_query .= $s_field . ' IN (' . $s_value . ') ';
+            
+            return;
+        } else 
+            if ($s_key == 'IN') {
+                $a_data = array();
+                
+                foreach ($s_value as $item) {
+                    switch ($s_type) {
+                        case 'i':
+                            if (! is_int($item))
+                                throw new DBException('Invalid IN value. expected int but got ' . gettype($item) . '.');
+                            $a_data[] = $item;
+                            break;
+                        
+                        case 'i':
+                            if (! is_float($item))
+                                throw new DBException('Invalid IN value. expected float but got ' . gettype($item) . '.');
+                            $a_data[] = $item;
+                            break;
+                        
+                        case 'i':
+                            if (! is_string($item))
+                                throw new DBException('Invalid IN value. expected string but got ' . gettype($item) . '.');
+                            $a_data[] = "'" . $item . "'";
+                            break;
+                        
+                        default:
+                            throw new DBException('Invalid IN type. Only ints, floats and strings are supported.');
+                    }
+                }
+                
+                $this->s_query .= $s_field . ' IN (' . implode(',', $a_data) . ') ';
+                return;
+            }
+        
+        $this->a_types[] = $s_type;
+        $this->a_values[] = $s_value;
+        
+        if ($s_key == 'LIKE')
+            $this->s_query .= $s_field . ' LIKE CONCAT("%",?,"%") ';
+        else 
+            if ($s_key == 'BETWEEN')
+                $this->s_query .= $s_field . ' BETWEEN ? AND ? ';
+            else
+                $this->s_query .= $s_field . ' ' . $this->a_keys[$s_key] . ' ? ';
+    }
 }
 
-class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Where {
-	protected $a_builder;
-	
-	/**
-	 * Resets the class Where_Mysqli
-	 */
-	public function reset(){
-		parent::reset();
-		$this->a_builder = null;
-	}
-	
-	/**
-	 * Starts a sub where part
-	 */
-	public function startSubWhere(){
-		$this->s_query .= '(';
-		
-		return $this;
-	}
-	
-	/**
-	 * Ends a sub where part
-	 */
-	public function endSubWhere(){
-		$this->s_query .= ')';
-		
-		return $this;
-	}
-	
-	/**
-	 * Adds a sub query
-	 * 
-	 * @param		Builder	$obj_builder	The builder object
-	 * @param 	String	$s_field			The field
-	 * @param 	String	$s_key				The key (=|<>|LIKE|IN|BETWEEN)
-	 * @param		String 	$s_command		The command (AND|OR)	
-	 * @throws DBException		If the key is invalid
-	 * @throws DBException		If the command is invalid
-	 */
-	public function addSubQuery($obj_builder,$s_field,$s_key,$s_command){
-		if( !($obj_builder instanceof Builder) )
-			throw new DBException("Can only add object of the type Builder.");
-			
-		if( !array_key_exists($s_key,$this->a_keys) )
-		 	throw new DBException('Unknown where key '.$s_key.'.');
-		 	
-		$s_command	= strtoupper($s_command);
-		if( !in_array($s_command,array('OR','AND')) )
-			throw new DBException('Unknown where command '.$s_command.'.  Only AND & OR are supported.');
-			
-		$this->a_builder	= array('object'=>$obj_builder,'field'=>$s_field, 'key'=>$s_key,'command'=>$s_command);
-		
-		return $this;
-	}
-	
-	/**
-	 * Renders the where
-	 * 
-	 * @return array		The where
-	 */
-	public function render(){
-		if( empty($this->s_query) )			return null;
-		
-		if( !is_null($this->a_builder) ){
-				$obj_builder	= $this->a_builder['object']->render();
-				$this->s_query .= $this->a_builder['command'].' '.$this->a_builder['field'].' '.$this->a_builder['key'].' ('.$obj_builder['query'].')';
-				$this->a_values[] = $obj_builder['values'];
-				$this->a_types[] = $obj_builder['types'];
-		}
-		
-		return array('where'=>' WHERE '.$this->s_query,'values'=>$this->a_values,'types'=>$this->a_types);
-	}
+class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Where
+{
+
+    protected $a_builder;
+
+    /**
+     * Resets the class Where_Mysqli
+     */
+    public function reset()
+    {
+        parent::reset();
+        $this->a_builder = null;
+    }
+
+    /**
+     * Starts a sub where part
+     */
+    public function startSubWhere()
+    {
+        $this->s_query .= '(';
+        
+        return $this;
+    }
+
+    /**
+     * Ends a sub where part
+     */
+    public function endSubWhere()
+    {
+        $this->s_query .= ')';
+        
+        return $this;
+    }
+
+    /**
+     * Adds a sub query
+     *
+     * @param Builder $obj_builder
+     *            object
+     * @param String $s_field            
+     * @param String $s_key
+     *            (=|<>|LIKE|IN|BETWEEN)
+     * @param String $s_command
+     *            command (AND|OR)
+     * @throws DBException the key is invalid
+     * @throws DBException the command is invalid
+     */
+    public function addSubQuery($obj_builder, $s_field, $s_key, $s_command)
+    {
+        if (! ($obj_builder instanceof Builder))
+            throw new DBException("Can only add object of the type Builder.");
+        
+        if (! array_key_exists($s_key, $this->a_keys))
+            throw new DBException('Unknown where key ' . $s_key . '.');
+        
+        $s_command = strtoupper($s_command);
+        if (! in_array($s_command, array(
+            'OR',
+            'AND'
+        )))
+            throw new DBException('Unknown where command ' . $s_command . '.  Only AND & OR are supported.');
+        
+        $this->a_builder = array(
+            'object' => $obj_builder,
+            'field' => $s_field,
+            'key' => $s_key,
+            'command' => $s_command
+        );
+        
+        return $this;
+    }
+
+    /**
+     * Renders the where
+     *
+     * @return array where
+     */
+    public function render()
+    {
+        if (empty($this->s_query))
+            return null;
+        
+        if (! is_null($this->a_builder)) {
+            $obj_builder = $this->a_builder['object']->render();
+            $this->s_query .= $this->a_builder['command'] . ' ' . $this->a_builder['field'] . ' ' . $this->a_builder['key'] . ' (' . $obj_builder['query'] . ')';
+            $this->a_values[] = $obj_builder['values'];
+            $this->a_types[] = $obj_builder['types'];
+        }
+        
+        return array(
+            'where' => ' WHERE ' . $this->s_query,
+            'values' => $this->a_values,
+            'types' => $this->a_types
+        );
+    }
 }
 
-class Having_Mysqli extends QueryConditions_Mysqli implements \core\services\Having{
-	/**
-	 * Starts a sub having part
-	 */
-	public function startSubHaving(){
-		$this->s_query .= '(';
-		
-		return $this;
-	}
-	
-	/**
-	 * Ends a sub having part
-	 */
-	public function endSubHaving(){
-		$this->s_query .= ')';
-		
-		return $this;
-	}
-	
-	/**
-	 * Renders the having
-	 * 
-	 * @return array		The having
-	 */
-	public function render(){
-		if( empty($this->s_query) )			return null;
-		
-		return array('having'=>' HAVING '.$this->s_query,'values'=>$this->a_values,'types'=>$this->a_types);
-	}
+class Having_Mysqli extends QueryConditions_Mysqli implements \core\services\Having
+{
+
+    /**
+     * Starts a sub having part
+     */
+    public function startSubHaving()
+    {
+        $this->s_query .= '(';
+        
+        return $this;
+    }
+
+    /**
+     * Ends a sub having part
+     */
+    public function endSubHaving()
+    {
+        $this->s_query .= ')';
+        
+        return $this;
+    }
+
+    /**
+     * Renders the having
+     *
+     * @return array having
+     */
+    public function render()
+    {
+        if (empty($this->s_query))
+            return null;
+        
+        return array(
+            'having' => ' HAVING ' . $this->s_query,
+            'values' => $this->a_values,
+            'types' => $this->a_types
+        );
+    }
 }
 
-class Create_Mysqli implements \core\services\Create {
-	private $s_query;
-	private $a_createRows;
-	private $a_createTypes;
-	private $s_engine;
-	private $s_dropTable;
+class Create_Mysqli implements \core\services\Create
+{
 
-	/**
-	 * Resets the class Create_Mysql
-	 */
-	public function reset(){
-		$this->s_query	= '';
-		$this->a_createRows	= array();
-		$this->a_createTypes	= array();
-		$this->s_engine	= '';
-		$this->s_dropTable = '';
-	}
-	
-	/**
-	 * Creates a table
-	 *
-	 * @param	String	$s_table	The table name
-	 * @param	Boolean $bo_dropTable	Set to true to drop the given table before creating it
-	 */
-	public function setTable($s_table,$bo_dropTable = false){
-		if( $bo_dropTable ){
-			$this->s_dropTable = 'DROP TABLE IF EXISTS '.DB_PREFIX.$s_table;
-		}
+    private $s_query;
 
-		$this->s_query	= "CREATE TABLE ".DB_PREFIX.$s_table." (";
-		
-		return $this;
-	}
+    private $a_createRows;
 
-	/**
-	 * Adds a field to the create stament
-	 *
-	 * @param String $s_field			The field name
-	 * @param String $s_type			The field type (database type!)
-	 * @param int	 $i_length			The length of the field, only for length fields
-	 * @param String $s_default			The default value
-	 * @param String $bo_signed			Set to true for unsigned value, default signed
-	 * @param String $bo_null			Set to true for NULL allowed
-	 * @param String $bo_autoIncrement	Set to true for auto increment
-	 */
-	public function addRow($s_field,$s_type,$i_length = -1,$s_default='',$bo_signed = true,$bo_null = false,$bo_autoIncrement = false){
-		( $bo_signed) ? $s_signed = ' SIGNED ' : $s_signed = ' UNSIGNED ';
+    private $a_createTypes;
 
-		$s_null = $this->checkNull($bo_null);
-		if( $bo_null && $s_default == "" ){
-			$s_default	= ' DEFAULT NULL ';
-		}
-		else if( $s_default != "" ){
-			$s_default = " DEFAULT '".$s_default."' ";
-		}
+    private $s_engine;
 
-		( $bo_autoIncrement ) ? $s_autoIncrement = ' AUTO_INCREMENT' : $s_autoIncrement = '';
-		$s_type = strtoupper($s_type);
+    private $s_dropTable;
 
-		if( in_array($s_type,array('VARCHAR','SMALLINT','MEDIUMINT','INT','BIGINT')) ){
-			$this->a_createRows[$s_field] = $s_field.' '.strtoupper($s_type).'('.$i_length.') '.$s_default.$s_null.$s_autoIncrement;
-		}
-		else if( $s_type == 'DECIMAL' ){
-			$this->a_createRows[$s_field] = $s_field.' DECIMAL(10,0) '.$s_default.$s_null.$s_autoIncrement;
-		}
-		else {
-			$this->a_createRows[$s_field] = $s_field.' '.strtoupper($s_type).' '.$s_default.$s_null.$s_autoIncrement;
-		}
-		
-		return $this;
-	}
+    /**
+     * Resets the class Create_Mysql
+     */
+    public function reset()
+    {
+        $this->s_query = '';
+        $this->a_createRows = array();
+        $this->a_createTypes = array();
+        $this->s_engine = '';
+        $this->s_dropTable = '';
+    }
 
-	/**
-	 * Adds an enum field to the create stament
-	 *
-	 * @param String $s_field			The field name
-	 * @param array	 $a_values			The values
-	 * @param String $s_default			The default value
-	 * @param String $bo_null			Set to true for NULL allowed
-	 */
-	public function addEnum($s_field,$a_values,$s_default,$bo_null = false){
-		$a_valuesPre	= array();
-		foreach($a_values AS $s_value){
-			$a_valuesPre[] = "'".$s_value."'";
-		}
+    /**
+     * Creates a table
+     *
+     * @param String $s_table
+     *            name
+     * @param Boolean $bo_dropTable
+     *            to true to drop the given table before creating it
+     */
+    public function setTable($s_table, $bo_dropTable = false)
+    {
+        if ($bo_dropTable) {
+            $this->s_dropTable = 'DROP TABLE IF EXISTS ' . DB_PREFIX . $s_table;
+        }
+        
+        $this->s_query = "CREATE TABLE " . DB_PREFIX . $s_table . " (";
+        
+        return $this;
+    }
 
-		$s_null = $this->checkNull($bo_null);
-		if( $bo_null && empty($s_default) ){
-			$s_default	= ' DEFAULT NULL ';
-		}
-		else {
-			$s_default = " DEFAULT '".$s_default."' ";
-		}
+    /**
+     * Adds a field to the create stament
+     *
+     * @param String $s_field
+     *            field name
+     * @param String $s_type
+     *            field type (database type!)
+     * @param int $i_length
+     *            length of the field, only for length fields
+     * @param String $s_default
+     *            default value
+     * @param String $bo_signed
+     *            to true for unsigned value, default signed
+     * @param String $bo_null
+     *            to true for NULL allowed
+     * @param String $bo_autoIncrement
+     *            to true for auto increment
+     */
+    public function addRow($s_field, $s_type, $i_length = -1, $s_default = '', $bo_signed = true, $bo_null = false, $bo_autoIncrement = false)
+    {
+        ($bo_signed) ? $s_signed = ' SIGNED ' : $s_signed = ' UNSIGNED ';
+        
+        $s_null = $this->checkNull($bo_null);
+        if ($bo_null && $s_default == "") {
+            $s_default = ' DEFAULT NULL ';
+        } else 
+            if ($s_default != "") {
+                $s_default = " DEFAULT '" . $s_default . "' ";
+            }
+        
+        ($bo_autoIncrement) ? $s_autoIncrement = ' AUTO_INCREMENT' : $s_autoIncrement = '';
+        $s_type = strtoupper($s_type);
+        
+        if (in_array($s_type, array(
+            'VARCHAR',
+            'SMALLINT',
+            'MEDIUMINT',
+            'INT',
+            'BIGINT'
+        ))) {
+            $this->a_createRows[$s_field] = $s_field . ' ' . strtoupper($s_type) . '(' . $i_length . ') ' . $s_default . $s_null . $s_autoIncrement;
+        } else 
+            if ($s_type == 'DECIMAL') {
+                $this->a_createRows[$s_field] = $s_field . ' DECIMAL(10,0) ' . $s_default . $s_null . $s_autoIncrement;
+            } else {
+                $this->a_createRows[$s_field] = $s_field . ' ' . strtoupper($s_type) . ' ' . $s_default . $s_null . $s_autoIncrement;
+            }
+        
+        return $this;
+    }
 
-		$this->a_createRows[$s_field] = $s_field.' ENUM('.implode(',',$a_valuesPre).') '.$s_default.$s_null;
-		
-		return $this;
-	}
+    /**
+     * Adds an enum field to the create stament
+     *
+     * @param String $s_field
+     *            field name
+     * @param array $a_values
+     *            values
+     * @param String $s_default
+     *            default value
+     * @param String $bo_null
+     *            to true for NULL allowed
+     */
+    public function addEnum($s_field, $a_values, $s_default, $bo_null = false)
+    {
+        $a_valuesPre = array();
+        foreach ($a_values as $s_value) {
+            $a_valuesPre[] = "'" . $s_value . "'";
+        }
+        
+        $s_null = $this->checkNull($bo_null);
+        if ($bo_null && empty($s_default)) {
+            $s_default = ' DEFAULT NULL ';
+        } else {
+            $s_default = " DEFAULT '" . $s_default . "' ";
+        }
+        
+        $this->a_createRows[$s_field] = $s_field . ' ENUM(' . implode(',', $a_valuesPre) . ') ' . $s_default . $s_null;
+        
+        return $this;
+    }
 
-	/**
-	 * Adds a set field to the create stament
-	 *
-	 * @param String $s_field			The field name
-	 * @param array	 $a_values			The values
-	 * @param String $s_default			The default value
-	 * @param String $bo_null			Set to true for NULL allowed
-	 */
-	public function addSet($s_field,$s_values,$s_default,$bo_null = false){
-		$a_valuesPre	= array();
-		foreach($a_values AS $s_value){
-			$a_valuesPre[] = "'".$s_value."'";
-		}
+    /**
+     * Adds a set field to the create stament
+     *
+     * @param String $s_field
+     *            field name
+     * @param array $a_values
+     *            values
+     * @param String $s_default
+     *            default value
+     * @param String $bo_null
+     *            to true for NULL allowed
+     */
+    public function addSet($s_field, $s_values, $s_default, $bo_null = false)
+    {
+        $a_valuesPre = array();
+        foreach ($a_values as $s_value) {
+            $a_valuesPre[] = "'" . $s_value . "'";
+        }
+        
+        $s_null = $this->checkNull($bo_null);
+        if ($bo_null && empty($s_default)) {
+            $s_default = ' DEFAULT NULL ';
+        } else {
+            $s_default = " DEFAULT '" . $s_default . "' ";
+        }
+        
+        $this->a_createRows[$s_field] = $s_field . ' SET(' . implode(',', $a_valuesPre) . ') ' . $s_default . $s_null;
+        
+        return $this;
+    }
 
-		$s_null = $this->checkNull($bo_null);
-		if( $bo_null && empty($s_default) ){
-			$s_default	= ' DEFAULT NULL ';
-		}
-		else {
-			$s_default = " DEFAULT '".$s_default."' ";
-		}
+    /**
+     * Adds a primary key to the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @throws DBException If the field is unknown or if the primary key is allready set
+     */
+    public function addPrimary($s_field)
+    {
+        if (! array_key_exists($s_field, $this->a_createRows)) {
+            throw new DBException("Can not add primary key on unknown field $s_field.");
+        }
+        if (array_key_exists('primary', $this->a_createTypes)) {
+            throw new DBException("Only one primary key pro table is allowed.");
+        }
+        
+        $this->a_createTypes['primary'] = 'PRIMARY KEY (' . $s_field . ')';
+        
+        return $this;
+    }
 
-		$this->a_createRows[$s_field] = $s_field.' SET('.implode(',',$a_valuesPre).') '.$s_default.$s_null;
-		
-		return $this;
-	}
+    /**
+     * Adds a index to the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @throws DBException If the field is unknown
+     */
+    public function addIndex($s_field)
+    {
+        if (! array_key_exists($s_field, $this->a_createRows)) {
+            throw new DBException("Can not add index key on unknown field $s_field.");
+        }
+        
+        $this->a_createTypes[] = 'KEY ' . $s_field . ' (' . $s_field . ')';
+        
+        return $this;
+    }
 
-	/**
-	 * Adds a primary key to the given field
-	 *
-	 * @param String $s_field	The field name
-	 * @throws DBException If the field is unknown or if the primary key is allready set
-	 */
-	public function addPrimary($s_field){
-		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add primary key on unknown field $s_field.");
-		}
-		if( array_key_exists('primary', $this->a_createTypes) ){
-			throw new DBException("Only one primary key pro table is allowed.");
-		}
+    /**
+     * Sets the given fields as unique
+     *
+     * @param String $s_field
+     *            field name
+     * @throws DBException If the field is unknown
+     */
+    public function addUnique($s_field)
+    {
+        if (! array_key_exists($s_field, $this->a_createRows)) {
+            throw new DBException("Can not add unique key on unknown field $s_field.");
+        }
+        
+        $this->a_createTypes[] = 'UNIQUE KEY ' . $s_field . ' (' . $s_field . ')';
+        
+        return $this;
+    }
 
-		$this->a_createTypes['primary'] = 'PRIMARY KEY ('.$s_field.')';
-		
-		return $this;
-	}
+    /**
+     * Sets full text search on the given field
+     *
+     * @param String $s_field
+     *            field name
+     * @throws DBException If the field is unknown
+     * @throws DBException If the field type is not VARCHAR and not TEXT.
+     */
+    public function addFullTextSearch($s_field)
+    {
+        if (! array_key_exists($s_field, $this->a_createRows)) {
+            throw new DBException("Can not add full text search on unknown field $s_field.");
+        }
+        if (stripos($this->a_createRows[$s_field], 'VARCHAR') === false && stripos($this->a_createRows[$s_field], 'TEXT') === false) {
+            throw new DBException("Full text search can only be added on VARCHAR or TEXT fields.");
+        }
+        
+        $this->a_createTypes[] = 'FULLTEXT KEY ' . $s_field . ' (' . $s_field . ')';
+        
+        $this->s_engine = 'ENGINE=MyISAM';
+        
+        return $this;
+    }
 
-	/**
-	 * Adds a index to the given field
-	 *
-	 * @param String $s_field	The field name
-	 * @throws DBException If the field is unknown
-	 */
-	public function addIndex($s_field){
-		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add index key on unknown field $s_field.");
-		}
+    /**
+     * Parses the null setting
+     *
+     * @param boolean $bo_null
+     *            null setting
+     * @return String null text
+     */
+    private function checkNull($bo_null)
+    {
+        $s_null = ' NOT NULL ';
+        if ($bo_null) {
+            $s_null = ' NULL ';
+        }
+        
+        return $s_null;
+    }
 
-		$this->a_createTypes[]	= 'KEY '.$s_field.' ('.$s_field.')';
-		
-		return $this;
-	}
+    /**
+     * Returns the drop table setting
+     *
+     * @return String drop table command. Empty string for not dropping
+     */
+    public function getDropTable()
+    {
+        return $this->s_dropTable;
+    }
 
-	/**
-	 * Sets the given fields as unique
-	 *
-	 * @param String $s_field	The field name
-	 * @throws DBException If the field is unknown
-	 */
-	public function addUnique($s_field){
-		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add unique key on unknown field $s_field.");
-		}
-
-		$this->a_createTypes[]	= 'UNIQUE KEY '.$s_field.' ('.$s_field.')';
-		
-		return $this;
-	}
-
-	/**
-	 * Sets full text search on the given field
-	 *
-	 * @param String $s_field	The field name
-	 * @throws DBException If the field is unknown
-	 * @throws DBException If the field type is not VARCHAR and not TEXT.
-	 */
-	public function addFullTextSearch($s_field){
-		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add full text search on unknown field $s_field.");
-		}
-		if( stripos($this->a_createRows[$s_field],'VARCHAR') === false && stripos($this->a_createRows[$s_field],'TEXT') === false ){
-			throw new DBException("Full text search can only be added on VARCHAR or TEXT fields.");
-		}
-
-		$this->a_createTypes[] = 'FULLTEXT KEY '.$s_field.' ('.$s_field.')';
-
-		$this->s_engine = 'ENGINE=MyISAM';
-		
-		return $this;
-	}
-
-	/**
-	 * Parses the null setting
-	 *
-	 * @param boolean $bo_null	The null setting
-	 * @return String		The null text
-	 */
-	private function checkNull($bo_null){
-		$s_null = ' NOT NULL ';
-		if( $bo_null ){
-			$s_null = ' NULL ';
-		}
-
-		return $s_null;
-	}
-
-	/**
-	 * Returns the drop table setting
-	 *
-	 * @return String	The drop table command. Empty string for not dropping
-	 */
-	public function getDropTable(){
-		return $this->s_dropTable;
-	}
-	
-	/**
-	 * Creates the query
-	 * 
-	 * @return String		The query
-	 */
-	public function render(){		
-			$this->s_query .= "\n".implode(",\n",$this->a_createRows);
-			if( count($this->a_createTypes) > 0 ){
-				$this->s_query.= ",\n";
-				$this->s_query .= implode(",\n",$this->a_createTypes);
-			}
-			$this->s_query .= "\n)".$this->s_engine;
-			
-			return $this->s_query;
-	}
+    /**
+     * Creates the query
+     *
+     * @return String query
+     */
+    public function render()
+    {
+        $this->s_query .= "\n" . implode(",\n", $this->a_createRows);
+        if (count($this->a_createTypes) > 0) {
+            $this->s_query .= ",\n";
+            $this->s_query .= implode(",\n", $this->a_createTypes);
+        }
+        $this->s_query .= "\n)" . $this->s_engine;
+        
+        return $this->s_query;
+    }
 }
-?>

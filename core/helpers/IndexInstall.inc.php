@@ -1,32 +1,38 @@
 <?php
 namespace core\helpers;
 
-class IndexInstall extends Helper implements Display {
-	private $s_content = '';
-	
-	public function __construct(\core\services\Template $service_Template){
-		$service_Template->setCssLink('<link rel="stylesheet" href="{STYLE_DIR}/css/installIndex.css">');
-	}
-	
-	public function generate(){
-		$this->title();
-		
-		$this->installCompleted();
-		
-		$this->gettingStarted();
-		
-		$this->maintenance();
-		
-		return $this->s_content;
-	}
-	
-	private function title(){
-		$this->s_content .= '<h1>Youconix framework</h1>
+class IndexInstall extends Helper implements Display
+{
+
+    private $s_content = '';
+
+    public function __construct(\core\services\Template $service_Template)
+    {
+        $service_Template->setCssLink('<link rel="stylesheet" href="{STYLE_DIR}/css/installIndex.css">');
+    }
+
+    public function generate()
+    {
+        $this->title();
+        
+        $this->installCompleted();
+        
+        $this->gettingStarted();
+        
+        $this->maintenance();
+        
+        return $this->s_content;
+    }
+
+    private function title()
+    {
+        $this->s_content .= '<h1>Youconix framework</h1>
 		';
-	}
-	
-	private function installCompleted(){
-		$this->s_content .= '<section id="installCompleted">
+    }
+
+    private function installCompleted()
+    {
+        $this->s_content .= '<section id="installCompleted">
 			<p>Youconix framework is a modern framework designed for AJAX-usage with modern techniques like MVC, interfaces, namespaces, dependency injection and unit-testing through the entire core.</p>
 				
 			<p>You have the freedom the use the code however you want. The framework is to serve you instead of forcing you to a certain way. You can use BaselogicClass for all your pages without any problem.
@@ -35,10 +41,11 @@ class IndexInstall extends Helper implements Display {
 			<p>Code on the way you want, but remember : If the framework does not like your commands, it will throw an exception.</p>
 		</section>
 		';
-	}
-	
-	private function gettingStarted(){
-		$this->s_content .= '<section id="gettingStarted">
+    }
+
+    private function gettingStarted()
+    {
+        $this->s_content .= '<section id="gettingStarted">
 			<h2>Getting started</h2>
 				
 			<p><a href="http://framework.youconix.nl/2/wiki/controllers">Creating new pages</a> Each page you visit trough the browser has his own controller and own access rights.</p> 
@@ -47,10 +54,11 @@ class IndexInstall extends Helper implements Display {
 			<p><a href="http://framework.youconix.nl/2/wiki/overrides">Overriding framework classes</a> It is possible to automatically override the framework libaries. The code will not even notice it until you cast it to your own object!</p>
 		</section>
 		';
-	}
-	
-	private function maintenance(){
-		$this->s_content .= '<section id="maintenance">
+    }
+
+    private function maintenance()
+    {
+        $this->s_content .= '<section id="maintenance">
 			<h2>External information</h2>
 				
 			<ul>
@@ -62,5 +70,5 @@ class IndexInstall extends Helper implements Display {
 				
 			</ul>
 		</section>';
-	}
+    }
 }
