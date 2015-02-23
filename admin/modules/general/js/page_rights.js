@@ -77,10 +77,17 @@ PageRights.prototype.deletePage	= function(){
 	confirmBox.show('Pagina verwijderen', 'Weet je zeker dat je '+page+' wilt verwijderen?');
 }
 PageRights.prototype.deletePageConfirm	= function(){
-	var page = $('#page_menu').data('url');
-	$.post(pageRights.address,{'command':'delete','url':page},function(){
+	var page;
+	
+	if ($('#page_menu').length > 0 ) {
+		page = $('#page_menu').data('url'); 
+	} else {
+		page = $('#pages').data('url');
+	}
+	
+/*	$.post(pageRights.address,{'command':'delete','url':page},function(){
 		general.showPageRights();
-	});
+	});*/
 }
 PageRights.prototype.loadRights = function(item){
 	var link = item.data('url');
@@ -88,6 +95,24 @@ PageRights.prototype.loadRights = function(item){
 }
 PageRights.prototype.loadRightsCallback = function(){
 	$('#pages_back').click(function(){ general.showPageRights(); });
+	$('#pages_update').click(function(){ general.edit(); } );
+	$('#pages_delete').click(function(){ 
+		var page = $('#pages').data('url');
+		
+		var height = 250;
+		
+		confirmBox.init(height,pageRights.deletePageConfirm);
+		confirmBox.show('Pagina verwijderen', 'Weet je zeker dat je '+page+' wilt verwijderen?');
+	})
+}
+PageRights.prototype.edit	= function(){
+	var rights = $('#pages_accesslevel').val();
+	var group = $('#pages_group').val();
+	var url = $('#pages').data('url');
+	
+	$.post(this.address,{'command':'edit','url':url,'rights':rights,'group':group},function(){
+		general.showPageRights();
+	});
 }
 
 var pageRights = new PageRights();

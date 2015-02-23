@@ -50,12 +50,25 @@ class Pages extends \core\AdminLogicClass
                 $this->view();
             }
         }
+        else if( isset($this->post['command']) ){
+            if( $this->post['command'] == 'edit' ){
+                $this->edit();
+            }
+            if( $this->post['command'] == 'delete'){
+                $this->delete();
+            }
+        }
     }
 
     protected function init()
     {
         $this->init_get = array(
             'url' => 'string-DB'
+        );
+        $this->init_post = array(
+            'url' => 'string-DB',
+            'rights' => 'int',
+            'group' => 'int'
         );
         
         parent::init();
@@ -105,6 +118,7 @@ class Pages extends \core\AdminLogicClass
         $this->viewEditText();
         
         $this->service_Template->set('pageTitle', 'Pagina rechten bewerken');
+        $this->service_Template->set('url',$this->get['url']);
         
         $a_rights = $this->model_PrivilegeController->getRightsForPage($this->get['url']);
         $this-> setGroupList('groups', $a_rights['general']['groupID']);
@@ -145,6 +159,41 @@ class Pages extends \core\AdminLogicClass
                 'selected' => $s_selected,
                 'text' => t('system/rights/level_' . $i)
             ));
+        }
+    }
+    
+    private function edit(){
+        if( empty($this->post['url']) || !isset($this->post['rights']) || !in_array($this->post['rights'],array(-1,0,1,2)) || 
+            !isset($this->post['group']) || $this->post['group'] < 0 ){
+            return;
+        }
+        
+        /* Check group */
+        $a_groups = \Loader::inject('\core\models\Groups')->getGroups();
+        if( !array_key_exists($this->post['group'], $a_groups) ){
+            return;
+        }
+        
+        $this->model_PrivilegeController->changePageRights($this->post['url'],$this->post['rights'],$this->post['group']);
+    }
+
+    /**
+     * Delete the page.
+     */
+    private function delete()
+    {
+        $obj_fileHandler = Memory::Services('File');
+        $obj_configuration = Memory::Models('Config');
+        
+        $s_fileURI = NIV . $this->post['url'];
+        $s_templatesURI = $obj_configuration->getStylesDir() . str_replace('.php', '', $this->post['url']);
+        
+        $this->model_PrivilegeController->deletePageRights($this->post['url']);
+        if ($obj_fileHandler->exists($s_fileURI)) {
+            $obj_fileHandler->deleteFile(NIV . $this->post['url']);
+        }
+        if ($obj_fileHandler->exists($s_templatesURI)) {
+            $obj_fileHandler->deleteDirectory($s_templatesURI);
         }
     }
 }

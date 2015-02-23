@@ -42,6 +42,7 @@
 	</gender>
 
 	<rights>
+		<level_-1>Anoniem</level_-1>
 		<level_0>Gebruiker</level_0>
 		<level_1>Moderator</level_1>
 		<level_2>Beheerder</level_2>

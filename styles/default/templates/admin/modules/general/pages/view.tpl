@@ -1,4 +1,4 @@
-<section id="pages">
+<section id="pages" data-url="{url}">
     <section class="item_header">
        <h1>{pageTitle}</h1>
        
@@ -23,7 +23,7 @@
         </fieldset>
         <fieldset>
             <label class="label">{accessLevelLabel}</label>
-            <select>
+            <select id="pages_accesslevel">
                 <block {pageRight}>
                     <option value="{value}" {selected}>{text}</option>
                 </block>

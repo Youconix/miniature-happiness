@@ -139,4 +139,64 @@ class PrivilegeController extends \core\models\Model
         
         return $a_rights;
     }
+    
+    /**
+     * Changes the page rights
+     * 
+     * @param string $s_page            The page
+     * @param int $i_rights                 The minimun access rights
+     * @param int $i_group                 The group ID
+     */
+    public function changePageRights($s_page,$i_rights,$i_group){
+        $this->service_QueryBuilder->update('group_pages',array('groupID','minLevel'),array('i','i'),array($i_group,$i_rights));
+        $this->service_QueryBuilder->getWhere()->addAnd('page','s',$s_page);
+        $this->service_QueryBuilder->getResult();
+    }
+    
+    /**
+     * Adds the page rights
+     *
+     * @param string $s_page            The page
+     * @param int $i_rights                 The minimun access rights
+     * @param int $i_group                 The group ID
+     */
+    public function addPageRights($s_page,$i_rights,$i_group){
+        $this->service_QueryBuilder->insert('group_pages',array('groupID','minLevel','page'),array('i','i','s'),array($i_group,$i_rights,$s_page));
+        $this->service_QueryBuilder->getResult();
+    }
+
+    /**
+     * Removes the page`s rights from the database. In essence, it makes it forget about the page.
+     * 
+     * @param   string  $s_page     The URL of the particular page to be forgotten about.
+     * 
+     * @author Roxanna Lugtigheid
+     */
+    public function deletePageRights($s_page)
+    {
+        try {
+            $this->service_QueryBuilder->transaction();
+            
+            $this->service_QueryBuilder->delete('group_pages');
+            $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
+            $this->service_QueryBuilder->getResult();
+            
+            $this->service_QueryBuilder->delete('group_pages_command');
+            $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
+            $this->service_QueryBuilder->getResult();
+            
+            $this->service_QueryBuilder->commit();
+        } catch (\DBException $e) {
+            $this->service_QueryBuilder->rollback();
+        }
+    }
+    
+    public function addViewRight($s_page,$s_command,$i_rights){
+        
+    }
+    
+    public function deleteViewRight($s_page,$s_command){
+        // Remove from DB
+    }
+    
 }
