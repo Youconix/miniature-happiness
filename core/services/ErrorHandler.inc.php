@@ -2,6 +2,19 @@
 namespace core\services;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Error-handler for reporting en registrating runtime-errors
  *
  * This file is part of Miniature-happiness
@@ -10,19 +23,8 @@ namespace core\services;
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ * @deprecated
+ * @see \core\services\Logs
  */
 class ErrorHandler extends Service
 {
@@ -49,11 +51,7 @@ class ErrorHandler extends Service
      */
     public function error($exception)
     {
-        \core\Memory::type('object', $exception);
-        
-        $s_exception = $exception->__toString();
-        
-        $this->errorAsString($s_exception);
+        $this->service_Logs->exception($exception);
     }
 
     /**
@@ -65,7 +63,6 @@ class ErrorHandler extends Service
      */
     public function errorAsString($s_exception)
     {
-        $s_exception .= "\n\n";
         $this->service_Logs->errorLog($s_exception);
     }
 }

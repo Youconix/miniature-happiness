@@ -431,18 +431,47 @@ class Config extends Model
     /**
      * Returns the logging setting
      *
-     * @return string The log setting
-     *         default Create log files in the given location (see getLogLocation)
-     *         error_log Use the webserver error log
-     *         sys_log Use the system log
+     * default Create log files in the given location (see getLogLocation)
+     * error_log Use the webserver error log
+     * sys_log Use the system log
+     * [else] defined log location in constant LOGGER
+     *
+     * @return object The logger object
+     *        
      */
     public function logging()
     {
-        if (! $this->service_Settings->exists('main/logs')) {
-            return 'default';
+        if (defined('LOGGER')) {
+            $s_type = LOGGER;
         }
         
-        return $this->service_Settings->get('main/logs');
+        if (! $this->service_Settings->exists('main/logs')) {
+            $s_type = 'default';
+        } else {
+            $s_type = $this->service_Settings->get('main/logs');
+        }
+        
+        switch ($s_type) {
+            case 'default':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerDefault', array(
+                    $this->getLogLocation(),
+                    $this->getLogfileMaxSize()
+                ));
+                break;
+            
+            case 'error_log':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerErrorLog');
+                break;
+            
+            case 'sys_log':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerSysLog');
+                break;
+            
+            default:
+                $obj_logger = Loader::Inject($s_type);
+        }
+        
+        return $obj_logger;
     }
 
     /**
@@ -453,7 +482,7 @@ class Config extends Model
     public function getLogLocation()
     {
         if (! $this->service_Settings->exists('main/log_location')) {
-            return DATA_DIR . 'logs/';
+            return DATA_DIR . 'logs' . DIRECTORY_SEPARATOR;
         }
         
         return $this->service_Settings->get('main/log_location');
@@ -471,5 +500,34 @@ class Config extends Model
         }
         
         return $this->service_Settings->get('main/log_max_size');
+    }
+
+    /**
+     * Returns the admin name and email for logging
+     *
+     * @return array The name and email
+     */
+    public function getAdminAddress()
+    {
+        if (! $this->service_Settings->exists('main/admin/email')) {
+            $service_QueryBuilder = \core\Memory::services('QueryBuilder')->createBuilder();
+            
+            /* Send to first user */
+            $service_QueryBuilder->select('users', 'nick,email')
+                ->getWhere()
+                ->addAnd('id', 'i', 1);
+            $database = $service_QueryBuilder->getResult();
+            $a_data = $database->fetch_assoc();
+            
+            return array(
+                'name' => $a_data[0]['nick'],
+                'email' => $a_data[0]['email']
+            );
+        }
+        
+        return array(
+            'name' => $this->service_Settings->get('main/admin/name'),
+            'email' => $this->service_Settings->get('main/admin/email')
+        );
     }
 }

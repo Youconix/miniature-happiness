@@ -271,7 +271,7 @@ class Mailer extends Service
      *
      * @param \core\models\data\DataUser $obj_receiver
      *            The receiver
-     * @return Boolean if the email is send
+     * @return Boolean True if the email is send
      */
     public function PM(\core\models\data\DataUser $obj_receiver)
     {
@@ -292,6 +292,51 @@ class Mailer extends Service
         
         $obj_mailer = $this->getMailer();
         $obj_mailer->addAddress($s_email, $s_username);
+        $obj_mailer->setSubject($a_mail['subject']);
+        $obj_mailer->setBody($s_body);
+        $obj_mailer->setAltBody($s_bodyAlt);
+        
+        return $this->sendMail($obj_mailer);
+    }
+
+    /**
+     * Sends the log alert email to the administrator
+     *
+     * @param string $s_message
+     *            The log message
+     * @param array $a_address
+     *            The name and emailaddress
+     * @param string $s_domain
+     *            The domain
+     * @return Boolean True if the email is send
+     */
+    public function logDeamon($s_message, $a_address, $s_domain)
+    {
+        $s_email = $a_address['email'];
+        $s_name = $a_address['name'];
+        
+        $a_mail = $this->getMail('log');
+        $s_body = $this->service_Language->insert($a_mail['body'], array(
+            'name',
+            'message',
+            'domain'
+        ), array(
+            $s_name,
+            nl2br($s_message),
+            $s_domain
+        ));
+        $s_bodyAlt = $this->service_Language->insert($a_mail['bodyAlt'], array(
+            'name',
+            'message',
+            'domain'
+        ), array(
+            $s_name,
+            $s_message,
+            $s_domain
+        ));
+        
+        $obj_mailer = $this->getMailer();
+        $obj_mailer->addAddress($s_email, $s_name);
         $obj_mailer->setSubject($a_mail['subject']);
         $obj_mailer->setBody($s_body);
         $obj_mailer->setAltBody($s_bodyAlt);

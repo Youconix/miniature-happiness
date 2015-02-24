@@ -195,18 +195,13 @@ abstract class BaseClass
 /* Set error catcher */
 function exception_handler($exception)
 {
-    $s_exception = $exception->getMessage() . '
-			' . $exception->getTraceAsString();
-    
     if (class_exists('Memory')) {
         if (! defined('Process') && Memory::isLoaded('service', 'Template')) {
             /* Disable output */
             Memory::delete('service', 'Template');
         }
         
-        try {
-            Memory::services('Logs')->errorLog($s_exception);
-        } catch (\Exception $e) {}
+        Memory::services('Logs')->exception($exception);
     }
     
     if (defined('DEBUG')) {

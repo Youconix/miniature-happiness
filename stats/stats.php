@@ -54,6 +54,7 @@ class Stats
      */
     public function __construct()
     {
+        return;
         $this->init();
         
         $this->save();
@@ -66,7 +67,7 @@ class Stats
      */
     public function __destruct()
     {
-        Memory::endProgram();
+       // \core\Memory::endProgram();
     }
 
     /**
@@ -75,8 +76,8 @@ class Stats
      */
     private function init()
     {
-        require (NIV . 'include/Memory.php');
-        Memory::startUp();
+        require (NIV . 'core/Memory.php');
+        \core\Memory::startUp();
         
         $a_init_get = array(
             'colors' => 'int',
@@ -85,7 +86,7 @@ class Stats
             'page' => 'string-DB'
         );
         
-        $service_Security = Memory::services('Security');
+        $service_Security = \core\Memory::services('Security');
         $a_get = $service_Security->secureInput('GET', $a_init_get);
         
         if (array_key_exists('colors', $a_get)) {
@@ -199,7 +200,7 @@ class Stats
      */
     private function save()
     {
-        $model_Stats = Memory::models('Stats');
+        $model_Stats = \core\Memory::models('Stats');
         
         if (! $model_Stats->saveIP($this->s_ip, $this->s_page)) {
             return;
@@ -221,7 +222,7 @@ class Stats
      */
     private function image()
     {
-        $s_styledir = Memory::services('XmlSettings')->get('settings/templates/dir');
+        $s_styledir = \core\Memory::services('XmlSettings')->get('settings/templates/dir');
         $s_file = NIV . 'styles/' . $s_styledir . '/images/stats.png';
         
         header('Content-type: image/png');
