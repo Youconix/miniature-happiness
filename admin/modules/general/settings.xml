@@ -7,27 +7,10 @@
 	<block>
 		<title>system/admin/general/users</title>
 		<id>admin_general_users</id>
-		<link>
-			<title>system/admin/users/users</title>
-			<id>admin_general_users2</id>
-		</link>
-		<link>
-			<title>system/admin/users/headerAdd</title>
-			<id>admin_general_add_user</id>
-		</link>
 	</block>
 	<block>
 		<title>system/admin/general/groups</title>
 		<id>admin_general_groups</id>
-
-		<link>
-			<title>system/admin/groups/groups</title>
-			<id>admin_general_groups2</id>
-		</link>
-		<link>
-			<title>system/admin/groups/headerAdd</title>
-			<id>admin_general_group_add</id>
-		</link>
 	</block>
 	<block>
 		<title>system/admin/general/page_rights</title>

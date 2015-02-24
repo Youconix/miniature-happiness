@@ -107,4 +107,3 @@ class ListItem extends HtmlItem
         $this->s_tag = '<li {between}>' . $this->parseContent($s_content) . '</li>';
     }
 }
-?>

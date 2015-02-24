@@ -116,4 +116,3 @@ class Section extends Div
         $this->setContent($s_content);
     }
 }
-?>

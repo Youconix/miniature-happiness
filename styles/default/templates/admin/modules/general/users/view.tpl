@@ -1,1 +1,3 @@
-<section id="users">{[adminUserView]}</section>
+<section id="users">
+    {[adminUserView]}
+</section>

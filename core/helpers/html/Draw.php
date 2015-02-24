@@ -12,4 +12,3 @@ class Canvas extends HtmlItem
         $this->s_tag = '<canvas {between}></canvas>';
     }
 }
-?>

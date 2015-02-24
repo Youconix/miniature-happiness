@@ -4,25 +4,24 @@
  * Calender generator class.
  * Generates a month calender with time selection field
  *
- * This file is part of Scripthulp framework                                    
+ * This file is part of Miniature-happiness                                    
  *                                                                              
- * @copyright 2012,2013,2014  Rachelle Scheijen                                
+ * @copyright Youconix                                
  * @author    Rachelle Scheijen                                                
  * @since     1.0                                                              
- *
  *                                                                              
- * Scripthulp framework is free software: you can redistribute it and/or modify 
+ * Miniature-happiness is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU Lesser General Public License as published by  
  * the Free Software Foundation, either version 3 of the License, or            
  * (at your option) any later version.                                          
  *                                                                              
- * Scripthulp framework is distributed in the hope that it will be useful,      
+ * Miniature-happiness is distributed in the hope that it will be useful,      
  * but WITHOUT ANY WARRANTY; without even the implied warranty of               
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                
  * GNU General Public License for more details.                                 
  *                                                                              
  * You should have received a copy of the GNU Lesser General Public License     
- * along with Scripthulp framework.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Helper_Timechooser extends Helper
 {
@@ -64,7 +63,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Return the set year
-     *
+     * 
      * @return int The set year
      */
     public function getYear()
@@ -74,7 +73,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Sets the year
-     *
+     * 
      * @param int $i_year
      *            The year
      */
@@ -107,7 +106,7 @@ class Helper_Timechooser extends Helper
 
     /**
      * Sets the week start-date (0 == sunday)
-     *
+     * 
      * @param int $i_day
      *            The week start date
      */
@@ -374,4 +373,3 @@ class Helper_Timechooser extends Helper
     	</script>';
     }
 }
-?>

@@ -6,7 +6,7 @@ if (! class_exists('\core\models\User')) {
 class DummyModelUser extends \core\models\User
 {
 
-    public function __construct(\core\models\data\Data_User $model_UserData)
+    public function __construct(\core\models\data\DataUser $model_UserData)
     {
         $this->a_userModels = array();
         $this->model_UserData = $model_UserData;
@@ -17,7 +17,7 @@ class DummyModelUser extends \core\models\User
      *
      * @param array $a_userid
      *            Array from user IDs
-     * @return Data_User-array The data objects
+     * @return DataUser-array The data objects
      */
     public function getUsersById($a_userid)
     {
@@ -32,7 +32,7 @@ class DummyModelUser extends \core\models\User
      *
      * @param int $i_userid
      *            The userid, leave empty for logged in user
-     * @return Data_User The data object of a empty data object if the user is not logged in
+     * @return DataUser The data object of a empty data object if the user is not logged in
      * @throws DBException If the userid is invalid
      */
     public function get($i_userid = -1)

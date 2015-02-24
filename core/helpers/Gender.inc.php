@@ -43,4 +43,3 @@ class Helper_Gender extends Helper
         return $obj_Select->generateItem();
     }
 }
-?>

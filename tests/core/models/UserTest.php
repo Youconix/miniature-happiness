@@ -85,7 +85,7 @@ class testUser extends GeneralTest
         $a_users = $this->model_User->getUsersById($a_keys);
         $this->assertEquals(4, count($a_users));
         foreach ($a_users as $obj_user) {
-            $this->assertInstanceOf('\core\models\data\Data_User', $obj_user);
+            $this->assertInstanceOf('\core\models\data\DataUser', $obj_user);
             $this->assertTrue(in_array($obj_user->getID(), $a_keys), 'Id ' . $obj_user->getID() . ' not in expected set.');
         }
     }
@@ -100,7 +100,7 @@ class testUser extends GeneralTest
         $i_userid = 0;
         $obj_user = $this->model_User->get($i_userid);
         
-        $this->assertInstanceOf('\core\models\data\Data_User', $obj_user);
+        $this->assertInstanceOf('\core\models\data\DataUser', $obj_user);
         $this->assertEquals($i_userid, $obj_user->getID());
     }
 
@@ -141,7 +141,7 @@ class testUser extends GeneralTest
         
         $this->assertEquals(4, $a_users['number']);
         foreach ($a_users['data'] as $obj_user) {
-            $this->assertInstanceOf('\core\models\data\Data_User', $obj_user);
+            $this->assertInstanceOf('\core\models\data\DataUser', $obj_user);
         }
     }
 
@@ -176,7 +176,7 @@ class testUser extends GeneralTest
      */
     public function createUser()
     {
-        $this->assertInstanceOf('\core\models\data\Data_User', $this->model_User->createUser());
+        $this->assertInstanceOf('\core\models\data\DataUser', $this->model_User->createUser());
     }
 
     /**

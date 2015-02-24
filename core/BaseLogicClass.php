@@ -5,24 +5,22 @@ namespace core;
  * General GUI parent class
  * This class is abstract and should be inheritanced by every controller with a gui
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * Scripthulp framework is free software: you can redistribute it and/or modify
+ * Miniature-happiness is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Scripthulp framework is distributed in the hope that it will be useful,
+ * Miniature-happiness is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  *
- *
- *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
@@ -32,7 +30,7 @@ if (! class_exists('\core\BaseClass')) {
     include (NIV . 'core/BaseClass.php');
 }
 
-abstract class BaseLogicClass extends BaseClass implements \Routable
+abstract class BaseLogicClass extends \core\BaseClass implements \Routable
 {
 
     protected $service_Session;
@@ -81,5 +79,3 @@ abstract class BaseLogicClass extends BaseClass implements \Routable
         $this->service_Session = Memory::services('Session');
     }
 }
-
-?>

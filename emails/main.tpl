@@ -3,13 +3,14 @@
 <head>
 <title></title>
 </head>
-<body style="margin: 0; padding: 0;">
-	<style type="text/css">
+<body style="margin:0; padding:0;">
+<style type="text/css">
 @media print {
+
 }
 </style>
 
-	[content]
-
+			[content]
+			
 </body>
 </html>

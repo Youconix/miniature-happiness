@@ -31,7 +31,7 @@ class DummyModelPmData extends \core\models\data\Data_PM
     /**
      * Returns the sender
      *
-     * @return Data_User The sender
+     * @return DataUser The sender
      */
     public function getSender()
     {

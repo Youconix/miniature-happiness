@@ -5,25 +5,24 @@ namespace core\models;
  * PM controller model.
  * Contains the PM models
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class PM extends Model
 {
@@ -56,14 +55,14 @@ class PM extends Model
     /**
      * Sends a message from system
      *
-     * @param \core\models\data\Data_User $obj_receiver            
+     * @param \core\models\data\DataUser $obj_receiver            
      * @param String $s_title
      *            The title of the message
      * @param String $s_message
      *            The content of the message
      * @return int The new message ID
      */
-    public function sendSystemMessage(\core\models\data\Data_User $obj_receiver, $s_title, $s_message)
+    public function sendSystemMessage(\core\models\data\DataUser $obj_receiver, $s_title, $s_message)
     {
         \core\Memory::type('string', $s_title);
         \core\Memory::type('string', $s_message);
@@ -87,7 +86,7 @@ class PM extends Model
     /**
      * Sends a message
      *
-     * @param \core\models\data\Data_User $obj_receiver            
+     * @param \core\models\data\DataUser $obj_receiver            
      * @param String $s_title
      *            The title of the message
      * @param String $s_message
@@ -96,7 +95,7 @@ class PM extends Model
      *            ID, default current user
      * @return int The new message ID
      */
-    public function sendMessage(\core\models\data\Data_User $obj_receiver, $s_title, $s_message, $i_sender = -1)
+    public function sendMessage(\core\models\data\DataUser $obj_receiver, $s_title, $s_message, $i_sender = -1)
     {
         \core\Memory::type('string', $s_title);
         \core\Memory::type('string', $s_message);
@@ -201,4 +200,3 @@ class PM extends Model
         unset($this->a_messages[$i_id]);
     }
 }
-?>

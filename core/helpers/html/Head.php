@@ -137,4 +137,3 @@ class Metatag extends CoreHtmlItem
         }
     }
 }
-?>

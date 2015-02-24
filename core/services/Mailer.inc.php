@@ -5,25 +5,24 @@ namespace core\services;
  * Mailer service
  * Wraps the class PHPMailer (GPL)
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2014,2015,2016 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Mailer extends Service
 {
@@ -270,11 +269,11 @@ class Mailer extends Service
     /**
      * Sends the personal message notification email
      *
-     * @param \core\models\data\Data_User $obj_receiver
+     * @param \core\models\data\DataUser $obj_receiver
      *            The receiver
-     * @return Boolean if the email is send
+     * @return Boolean True if the email is send
      */
-    public function PM(\core\models\data\Data_User $obj_receiver)
+    public function PM(\core\models\data\DataUser $obj_receiver)
     {
         $s_email = $obj_receiver->getEmail();
         $s_username = $obj_receiver->getUsername();
@@ -293,6 +292,51 @@ class Mailer extends Service
         
         $obj_mailer = $this->getMailer();
         $obj_mailer->addAddress($s_email, $s_username);
+        $obj_mailer->setSubject($a_mail['subject']);
+        $obj_mailer->setBody($s_body);
+        $obj_mailer->setAltBody($s_bodyAlt);
+        
+        return $this->sendMail($obj_mailer);
+    }
+
+    /**
+     * Sends the log alert email to the administrator
+     *
+     * @param string $s_message
+     *            The log message
+     * @param array $a_address
+     *            The name and emailaddress
+     * @param string $s_domain
+     *            The domain
+     * @return Boolean True if the email is send
+     */
+    public function logDeamon($s_message, $a_address, $s_domain)
+    {
+        $s_email = $a_address['email'];
+        $s_name = $a_address['name'];
+        
+        $a_mail = $this->getMail('log');
+        $s_body = $this->service_Language->insert($a_mail['body'], array(
+            'name',
+            'message',
+            'domain'
+        ), array(
+            $s_name,
+            nl2br($s_message),
+            $s_domain
+        ));
+        $s_bodyAlt = $this->service_Language->insert($a_mail['bodyAlt'], array(
+            'name',
+            'message',
+            'domain'
+        ), array(
+            $s_name,
+            $s_message,
+            $s_domain
+        ));
+        
+        $obj_mailer = $this->getMailer();
+        $obj_mailer->addAddress($s_email, $s_name);
         $obj_mailer->setSubject($a_mail['subject']);
         $obj_mailer->setBody($s_body);
         $obj_mailer->setAltBody($s_bodyAlt);
@@ -375,4 +419,3 @@ class Mailer extends Service
         return $obj_mailer->send();
     }
 }
-?>

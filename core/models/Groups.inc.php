@@ -5,28 +5,27 @@ namespace core\models;
  * Group model.
  * Contains the group data
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  *       
- * @see include/services/Session.inc.php
- * @see include/models/data/Data_Group.inc.php
+ * @see core/services/Session.inc.php
+ * @see core/models/data/Data_Group.inc.php
  */
 class Groups extends Model
 {
@@ -39,17 +38,17 @@ class Groups extends Model
 
     /**
      * PHP5 constructor
-     *
+     * 
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
      * @param \core\services\Security $service_Security
      *            The security service
-     * @param \core\models\data\Data_Group $model_DataGroup
+     * @param \core\models\data\DataGroup $model_DataGroup
      *            The group data model
      * @param \core\models\Config $model_Config
      *            The config model
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\models\data\Data_Group $model_DataGroup, \core\models\Config $model_Config)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\models\data\DataGroup $model_DataGroup, \core\models\Config $model_Config)
     {
         parent::__construct($service_QueryBuilder, $service_Security);
         
@@ -256,4 +255,3 @@ class Groups extends Model
         }
     }
 }
-?>

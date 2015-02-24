@@ -1,2 +1,1 @@
-
-<!-- admin view -->
+ <!-- admin view -->

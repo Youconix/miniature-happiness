@@ -41,4 +41,3 @@ class Link extends HtmlItem
         return parent::generateItem();
     }
 }
-?>

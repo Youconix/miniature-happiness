@@ -1297,4 +1297,3 @@ class Create_Mysqli implements \core\services\Create
         return $this->s_query;
     }
 }
-?>

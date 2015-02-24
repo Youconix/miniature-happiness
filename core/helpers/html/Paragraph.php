@@ -16,4 +16,3 @@ class Paragraph extends HtmlItem
         $this->s_value = $this->parseContent($s_content);
     }
 }
-?>

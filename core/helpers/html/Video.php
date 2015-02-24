@@ -230,4 +230,3 @@ class Video extends Audio
         return parent::generateItem();
     }
 }
-?>

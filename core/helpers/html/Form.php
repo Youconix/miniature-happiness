@@ -68,4 +68,3 @@ class Form extends CoreHtmlItem
         return parent::generateItem();
     }
 }
-?>

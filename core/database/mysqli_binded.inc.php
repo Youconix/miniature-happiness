@@ -4,10 +4,9 @@ namespace core\database;
 /**
  * MySQLi Database Access Layer
  *
- * @author REJ Scheijen rej-scheijen@scripthulp.com
- * @copyright Messageboard bv 2008-2012
+ * @author Rachelle Scheijen
+ * @copyright Youconix
  * @since 01/10/2008
- *
  */
 class Database_Mysqli_binded
 {
@@ -310,5 +309,3 @@ class Database_Mysqli_binded
         return $a_result;
     }
 }
-
-?>

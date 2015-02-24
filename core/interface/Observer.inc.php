@@ -5,7 +5,7 @@
  * 
  * @author    Rachelle Scheijen
  * @since     1.0
- *
+ * @changed   09/01/13
  */
 interface Observer
 {
@@ -18,7 +18,7 @@ interface Observer
  *
  * @author Rachelle Scheijen
  * @since 1.0
- *
+ *        @changed 09/01/13
  */
 abstract class Observable
 {
@@ -92,4 +92,3 @@ abstract class Observable
         }
     }
 }
-?>

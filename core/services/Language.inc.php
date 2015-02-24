@@ -4,27 +4,25 @@ namespace core\services;
 /**
  * Language-handler for making your website language-independand
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2014,2015,2016 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *        @date 12/01/2006
- *
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Language extends Xml
 {
@@ -88,15 +86,14 @@ class Language extends Xml
     private function loadLanguageParser()
     {
         if ($this->service_Settings->exists('language/type') && $this->service_Settings->get('language/type') == 'mo') {
-            if (! class_exists('\core\services\data\LanguageMO')) {
-                require (NIV . 'core/services/data/LanguageMO.inc.php');
-            }
-            $this->obj_parser = new \core\services\data\LanguageMO($this->service_File, $this->s_language);
+            $this->obj_parser = \Loader::Inject('\core\services\data\LanguageMO', array(
+                $this->s_language
+            ));
         } else {
-            if (! class_exists('\core\services\data\LanguageXML')) {
-                require (NIV . 'core/services/data/LanguageXML.inc.php');
-            }
-            $this->obj_parser = new \core\services\data\LanguageXML($this->service_File, $this->s_language, $this->bo_fallback);
+            $this->obj_parser = \Loader::Inject('\core\services\data\LanguageXML', array(
+                $this->s_language,
+                $this->bo_fallback
+            ));
         }
         
         require (NIV . 'core/services/data/languageShortcut.php');
@@ -197,7 +194,8 @@ class Language extends Xml
             'en_US' => 'English (United States)',
             'en_ZA' => 'English (South Africa)',
             'en_ZW' => 'English (Zimbabwe)'
-        );
+        )
+        ;
     }
 
     /**
@@ -301,4 +299,3 @@ class Language extends Xml
         return Language::$_instance->get($s_key);
     }
 }
-?>

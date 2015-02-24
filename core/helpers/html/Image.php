@@ -65,4 +65,3 @@ class Image extends HtmlItem
         return parent::generateItem();
     }
 }
-?>

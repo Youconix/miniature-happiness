@@ -2,30 +2,28 @@
 namespace core;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Base class for the framework.
  * Use this file as parent
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *        @date			12/01/2006
- *
- *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
  */
 abstract class BaseClass
 {
@@ -197,18 +195,13 @@ abstract class BaseClass
 /* Set error catcher */
 function exception_handler($exception)
 {
-    $s_exception = $exception->getMessage() . '
-			' . $exception->getTraceAsString();
-    
     if (class_exists('Memory')) {
         if (! defined('Process') && Memory::isLoaded('service', 'Template')) {
             /* Disable output */
             Memory::delete('service', 'Template');
         }
         
-        try {
-            Memory::services('Logs')->errorLog($s_exception);
-        } catch (\Exception $e) {}
+        Memory::services('Logs')->exception($exception);
     }
     
     if (defined('DEBUG')) {
@@ -241,4 +234,3 @@ function exception_handler($exception)
 }
 
 set_exception_handler('\core\exception_handler');
-?>

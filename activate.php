@@ -1,14 +1,25 @@
 <?php
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *     
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *     
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ * 
  * Account activation page
  * Does not work for openID accounts
  *
- * @author:		Rachelle Scheijen <rachelle.scheijen@unixerius.nl>
- * @copyright	The au pair BV	2013
+ * @author:		Rachelle Scheijen
+ * @copyright	Youconix
  * @version		1.0
  * @since		1.0
- * @date		25/09/12
- *
  */
 define('NIV', './');
 include (NIV . 'core/BaseLogicClass.php');

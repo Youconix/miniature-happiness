@@ -709,4 +709,3 @@ class Select extends HtmlFormItem
         return parent::generateItem();
     }
 }
-?>

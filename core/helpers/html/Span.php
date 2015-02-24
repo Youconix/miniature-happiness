@@ -15,4 +15,3 @@ class Span extends HtmlItem
         $this->s_tag = '<span {between}>' . $this->parseContent($s_content) . '</span>';
     }
 }
-?>

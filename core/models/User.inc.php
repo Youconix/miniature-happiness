@@ -5,26 +5,24 @@ namespace core\models;
  * User data model.
  * Contains the user data
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
  *       
- *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 if (! class_exists('GeneralUser')) {
     require (NIV . 'core/models/GeneralUser.inc.php');
@@ -54,7 +52,7 @@ class User extends GeneralUser
      * @param \core\models\Groups $model_Groups
      *            The groups model
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\models\Groups $model_Groups, \core\models\data\Data_User $model_UserData)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\models\Groups $model_Groups, \core\models\data\DataUser $model_UserData)
     {
         parent::__construct($service_QueryBuilder, $service_Security, $service_Hashing);
         
@@ -69,7 +67,7 @@ class User extends GeneralUser
      *
      * @param array $a_userid
      *            Array from user IDs
-     * @return Data_User-array The data objects
+     * @return DataUser-array The data objects
      */
     public function getUsersById($a_userid)
     {
@@ -106,7 +104,7 @@ class User extends GeneralUser
      *
      * @param int $i_userid
      *            The userid, leave empty for logged in user
-     * @return Data_User The data object of a empty data object if the user is not logged in
+     * @return DataUser The data object of a empty data object if the user is not logged in
      * @throws DBException If the userid is invalid
      */
     public function get($i_userid = -1)
@@ -277,7 +275,7 @@ class User extends GeneralUser
     /**
      * Creates a new user object
      *
-     * @return Data_User The user object
+     * @return DataUser The user object
      */
     public function createUser()
     {
@@ -430,4 +428,3 @@ class User extends GeneralUser
         return $a_users;
     }
 }
-?>

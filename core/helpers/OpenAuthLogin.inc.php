@@ -218,4 +218,3 @@ class OpenAuthLogin extends Helper
         return $a_settings;
     }
 }
-?>

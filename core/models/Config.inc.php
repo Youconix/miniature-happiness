@@ -4,25 +4,24 @@ namespace core\models;
 /**
  * Config contains the main runtime configuration of the framework.
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 2.0
- *
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Config extends Model
 {
@@ -115,8 +114,10 @@ class Config extends Model
             $s_page = substr($s_page, 1);
         }
         
-        if (stripos($s_page, $s_base) !== false) {
-            $s_page = substr($s_page, strlen($s_base));
+        if ($s_base != '/') {
+            if (stripos($s_page, $s_base) !== false) {
+                $s_page = substr($s_page, strlen($s_base));
+            }
         }
         
         while (substr($s_page, 0, 1) == '/') {
@@ -430,18 +431,47 @@ class Config extends Model
     /**
      * Returns the logging setting
      *
-     * @return string The log setting
-     *         default Create log files in the given location (see getLogLocation)
-     *         error_log Use the webserver error log
-     *         sys_log Use the system log
+     * default Create log files in the given location (see getLogLocation)
+     * error_log Use the webserver error log
+     * sys_log Use the system log
+     * [else] defined log location in constant LOGGER
+     *
+     * @return object The logger object
+     *        
      */
     public function logging()
     {
-        if (! $this->service_Settings->exists('main/logs')) {
-            return 'default';
+        if (defined('LOGGER')) {
+            $s_type = LOGGER;
         }
         
-        return $this->service_Settings->get('main/logs');
+        if (! $this->service_Settings->exists('main/logs')) {
+            $s_type = 'default';
+        } else {
+            $s_type = $this->service_Settings->get('main/logs');
+        }
+        
+        switch ($s_type) {
+            case 'default':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerDefault', array(
+                    $this->getLogLocation(),
+                    $this->getLogfileMaxSize()
+                ));
+                break;
+            
+            case 'error_log':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerErrorLog');
+                break;
+            
+            case 'sys_log':
+                $obj_logger = \Loader::Inject('\core\services\logger\LoggerSysLog');
+                break;
+            
+            default:
+                $obj_logger = Loader::Inject($s_type);
+        }
+        
+        return $obj_logger;
     }
 
     /**
@@ -452,7 +482,7 @@ class Config extends Model
     public function getLogLocation()
     {
         if (! $this->service_Settings->exists('main/log_location')) {
-            return DATA_DIR . 'logs/';
+            return DATA_DIR . 'logs' . DIRECTORY_SEPARATOR;
         }
         
         return $this->service_Settings->get('main/log_location');
@@ -471,6 +501,33 @@ class Config extends Model
         
         return $this->service_Settings->get('main/log_max_size');
     }
-}
 
-?>
+    /**
+     * Returns the admin name and email for logging
+     *
+     * @return array The name and email
+     */
+    public function getAdminAddress()
+    {
+        if (! $this->service_Settings->exists('main/admin/email')) {
+            $service_QueryBuilder = \core\Memory::services('QueryBuilder')->createBuilder();
+            
+            /* Send to first user */
+            $service_QueryBuilder->select('users', 'nick,email')
+                ->getWhere()
+                ->addAnd('id', 'i', 1);
+            $database = $service_QueryBuilder->getResult();
+            $a_data = $database->fetch_assoc();
+            
+            return array(
+                'name' => $a_data[0]['nick'],
+                'email' => $a_data[0]['email']
+            );
+        }
+        
+        return array(
+            'name' => $this->service_Settings->get('main/admin/name'),
+            'email' => $this->service_Settings->get('main/admin/email')
+        );
+    }
+}

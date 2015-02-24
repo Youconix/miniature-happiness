@@ -21,4 +21,3 @@ class Header extends HtmlItem
         $this->s_tag = '<h' . $i_level . ' {between}>{value}</h' . $i_level . '>';
     }
 }
-?>

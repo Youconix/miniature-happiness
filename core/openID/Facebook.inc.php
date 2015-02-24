@@ -3,11 +3,10 @@
 /**
  * Facebook OpenID class
  *
- * @author:		Rachelle Scheijen <rachelle.scheijen@unixerius.nl>
- * @copyright	The au pair BV	2013
+ * @author:		Rachelle Scheijen
+ * @copyright	Youconix
  * @since     1.0
- *
- * @see include/openID/OpenAuth.inc.php
+ * @see core/openID/OpenAuth.inc.php
  */
 class Facebook extends OpenAuth
 {
@@ -139,4 +138,3 @@ class Facebook extends OpenAuth
         return $this->service_Session->get('token');
     }
 }
-?>

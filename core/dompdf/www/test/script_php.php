@@ -22,8 +22,7 @@ for ( $i = 0; $i < 30; $i++) {
 </script>
 <?php
 echo "<p>Current PHP version: " . phpversion() . ".  ";
-echo "Today is " . strftime("%A") . " the " . strftime("%e") . date("S") . strftime(" of %B, %Y %T") . "</p>";
+echo "Today is " . strftime("%A") . " the " . strftime("%e").date("S").strftime(" of %B, %Y %T") . "</p>";
 
 ?>
-</body>
-</html>
+</body> </html>

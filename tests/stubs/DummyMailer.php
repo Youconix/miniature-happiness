@@ -106,11 +106,11 @@ class DummyMailer extends \core\services\Mailer
     /**
      * Sends the personal message notification email
      *
-     * @param \core\models\data\Data_User $obj_receiver
+     * @param \core\models\data\DataUser $obj_receiver
      *            The receiver
      * @return Boolean if the email is send
      */
-    public function PM(\core\models\data\Data_User $obj_receiver)
+    public function PM(\core\models\data\DataUser $obj_receiver)
     {
         return true;
     }

@@ -26,7 +26,7 @@
 	margin-top: 0.8em;
 }
 
-#header_admin nav li, .item_header nav li, nav li.menu_link {
+#header_admin nav li, .item_header nav li {
 	background-color: inherit;
 	border: 0px;
 	padding-right: 15px;
@@ -45,15 +45,6 @@
 	font-weight: normal;
 	color: #fff;
 	text-decoration: none;
-}
-
-nav li.menu_link {
-	border: 0;
-	color: #111;
-	width: 80%;
-	float: left;
-	padding: 0;
-	list-style-type: circle;
 }
 
 #menu_wrapper {
@@ -89,17 +80,11 @@ nav li.menu_link {
 	float: left;
 	height: 150px;
 	padding: 5px;
-	overflow-y: auto;
 }
 
 .menu_item h2 {
-	padding-left: 20px;
+	text-align: center;
 	cursor: pointer;
-}
-
-.menu_item nav {
-	width: 80%;
-	padding-left: 20px
 }
 
 #adminContent {

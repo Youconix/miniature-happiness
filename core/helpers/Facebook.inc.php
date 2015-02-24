@@ -4,25 +4,25 @@ namespace\core\helpers;
 /**
  * Helper for Facebook GUI items
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
+ *        @changed 06/05/2014
  * @see include/openID/Facebook.inc.php
- * @see include/openID/OpenAuth.inc.php Scripthulp framework is free software: you can redistribute it and/or modify
+ * @see include/openID/OpenAuth.inc.php Miniature-happiness is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU Lesser General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or
  *      (at your option) any later version.
  *     
- *      Scripthulp framework is distributed in the hope that it will be useful,
+ *      Miniature-happiness is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *      GNU General Public License for more details.
  *     
  *      You should have received a copy of the GNU Lesser General Public License
- *      along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *      along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 if (! class_exists('\core\openid\OpenAuth')) {
     require_once (NIV . 'include/openID/OpenAuth.inc.php');
@@ -219,4 +219,3 @@ class Facebook extends \core\openid\Facebook
         $this->bo_sdkLoaded = true;
     }
 }
-?>

@@ -294,4 +294,3 @@ class TableCell extends HtmlItem
         return parent::generateItem();
     }
 }
-?>

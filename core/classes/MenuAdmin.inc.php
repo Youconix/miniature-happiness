@@ -4,26 +4,25 @@ namespace core\classes;
 /**
  * Displays the admin menu
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
  *       
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class MenuAdmin
 {
@@ -99,60 +98,21 @@ class MenuAdmin
                     'id' => $i
                 );
                 
-                $a_links = array();
-                
                 foreach ($block->childNodes as $item) {
-                    if ($item->tagName == 'link') {
-                        $a_links[] = $item;
-                        continue;
-                    } else 
-                        if ($item->tagName == 'title') {
-                            $a_data['title'] = $item->nodeValue;
-                            if ($this->service_Language->exists($item->nodeValue)) {
-                                $a_data['title'] = $this->service_Language->get($item->nodeValue);
-                            }
-                        } else {
-                            $a_data[$item->tagName] = $item->nodeValue;
-                        }
+                    if ($item->tagName == 'title') {
+                        $a_data['title'] = $this->service_Language->get($item->nodeValue);
+                    } else {
+                        $a_data[$item->tagName] = $item->nodeValue;
+                    }
                 }
-                $a_data['item_id'] = $a_data['id'];
+                if (array_key_exists('id', $a_data)) {
+                    $a_data['item_id'] = $a_data['id'];
+                }
                 
-                if (count($a_links) > 0) {
-                    $a_data['link_block'] = $a_data['id'];
-                }
                 $this->service_Template->setBlock('tab_' . $i, $a_data);
-                
-                $this->addLinks($a_data['id'], $a_links);
             }
             
             $i ++;
-        }
-    }
-
-    /**
-     * Adds the links for the block
-     *
-     * @param int $i_id
-     *            The block ID
-     * @param array $a_links
-     *            The XML elements
-     */
-    private function addLinks($i_id, $a_links)
-    {
-        foreach ($a_links as $link) {
-            $a_data = array();
-            foreach ($link->childNodes as $item) {
-                if ($item->tagName == 'title') {
-                    $a_data['link_' . $item->tagName] = $item->nodeValue;
-                    if ($this->service_Language->exists($item->nodeValue)) {
-                        $a_data['link_' . $item->tagName] = $this->service_Language->get($item->nodeValue);
-                    }
-                } else {
-                    $a_data['link_' . $item->tagName] = $item->nodeValue;
-                }
-            }
-            
-            $this->service_Template->setBlock('links_' . $i_id, $a_data);
         }
     }
 
@@ -196,4 +156,3 @@ class MenuAdmin
         }
     }
 }
-?>

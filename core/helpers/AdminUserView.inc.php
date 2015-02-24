@@ -77,6 +77,7 @@ class AdminUserView extends AdminUserAdd
             'loggedin' => ($obj_User->lastLoggedIn() == 0) ? '-' : $this->a_data['loggedin'] = date('d-m-Y H:i', $obj_User->lastLoggedIn()),
             'active' => ($obj_User->isEnabled()) ? $s_yes : $s_no,
             'blocked' => ($obj_User->isBlocked()) ? $s_yes : $s_no
-        );
+        )
+        ;
     }
 }

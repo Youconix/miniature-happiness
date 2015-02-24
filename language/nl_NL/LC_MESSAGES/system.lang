@@ -42,6 +42,7 @@
 	</gender>
 
 	<rights>
+		<level_-1>Anoniem</level_-1>
 		<level_0>Gebruiker</level_0>
 		<level_1>Moderator</level_1>
 		<level_2>Beheerder</level_2>
@@ -113,13 +114,13 @@
 			<id>ID</id>
 			<name>Naam</name>
 			<group>Groep</group>
-			<groups>Groepen bekijken</groups>
+			<groups>Groepen</groups>
 			<viewUsers>Bekijk gebruikers</viewUsers>
 			<description>Beschrijving</description>
 			<standard>Standaard</standard>
 			<user>Gebruiker</user>
 			<rights>Rechten</rights>
-			<headerAdd>Groep toevoegen</headerAdd>
+			<headerAdd>Toevoegen groep</headerAdd>
 			<headerEdit>Groep bewerken</headerEdit>
 			<headerUsers>Gebruikers van groep</headerUsers>
 			<js>
@@ -131,7 +132,7 @@
 		    <searchText>Zoek op gebruikersnaam, email of groep</searchText>
 		    <id>ID</id>
 			<title>Gebruiker beheer</title>
-			<users>Gebruikers zoeken</users>
+			<users>Gebruikers</users>
 			<user>Gebruiker</user>
 			<bot>Bot</bot>
 			<username>Gebruikersnaam</username>
@@ -314,6 +315,6 @@
 		<title>Standaard index pagina</title>
 	</index>
 	
-	<title>Scripthulp framework</title>
+	<title>Miniature-happiness</title>
 	<slogan>Standaard slogan</slogan>
 </system>

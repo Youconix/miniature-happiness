@@ -51,4 +51,3 @@ interface Authorization
      */
     public function logout($s_url);
 }
-?>

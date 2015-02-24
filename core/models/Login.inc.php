@@ -2,17 +2,17 @@
 namespace core\models;
 
 /**
- * Account authorization models Handles login from the accounts This file is part of Scripthulp framework
- * Scripthulp framework is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
+ * Account authorization models Handles login from the accounts This file is part of Miniature-happiness
+ * Miniature-happiness is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
  * General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
- * Scripthulp framework is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * Miniature-happiness is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the
- * GNU Lesser General Public License along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ * GNU Lesser General Public License along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
- *
+ * @since 2.0
  */
 class Login extends Model
 {
@@ -240,6 +240,10 @@ class Login extends Model
                 $s_redirection = $this->service_Session->get('page');
             
             $this->service_Session->delete('page');
+        }
+        
+        while (strpos($s_redirection, '//') !== false) {
+            $s_redirection = str_replace('//', '/', $s_redirection);
         }
         
         $this->service_QueryBuilder->update('users', 'lastLogin', 'i', time())
@@ -599,4 +603,3 @@ class Login extends Model
         $this->service_Session->setLoginTakeover($a_data[0]['id'], $a_data[0]['nick'], $a_data[0]['lastLogin']);
     }
 }
-?>
