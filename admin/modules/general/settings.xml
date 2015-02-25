@@ -17,10 +17,6 @@
 		<id>admin_general_page_rights</id>
 	</block>
 	<block>
-		<title>system/admin/general/logs</title>
-		<id>admin_general_logs</id>
-	</block>
-	<block>
 		<title>system/admin/general/updates</title>
 		<id>admin_general_updates</id>
 	</block>

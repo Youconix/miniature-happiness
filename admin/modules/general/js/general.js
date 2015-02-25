@@ -5,7 +5,6 @@ General.prototype.init	= function(){
   $('#admin_general_users h2').click(function(){ general.showUsers() } );
   $('#admin_general_groups h2').click(function(){ general.showGroups() } );
   $('#admin_general_page_rights h2').click(function(){ general.showPageRights() } );
-  $('#admin_general_logs h2').click(function(){ general.showLogs() } );
   $('#admin_general_updates h2').click(function(){ general.showUpdates() } );
   $('#admin_general_backup h2').click(function(){ general.showBackup() } );
   $('#admin_general_maintenance h2').click(function(){ general.showMaintenance() } );
@@ -20,9 +19,6 @@ General.prototype.showGroups = function(){
 }
 General.prototype.showPageRights = function(){
   admin.show(this.address+'pages.php?command=index',pageRights.init);
-}
-General.prototype.showLogs = function(){
-  admin.show(this.address+'logs.php');
 }
 General.prototype.showUpdates = function(){
   admin.show(this.address+'updates.php');
