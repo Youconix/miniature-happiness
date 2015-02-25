@@ -152,7 +152,3 @@ width
 	display: inline-block;
 	width: auto;
 }
-
-#modules #installed_modules tbody tr, #modules #upgradable_modules tbody tr, #modules #new_modules tbody tr{ 
-	cursor:pointer;
-}

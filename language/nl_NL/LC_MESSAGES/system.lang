@@ -78,6 +78,23 @@
 	       <cache>Cache</cache>
 	       <modules>Modules</modules>
 	   </general>
+	   <modules>
+	       <moduleTitle>Modules</moduleTitle>
+	       <headerName>Module</headerName>
+	       <headerAuthor>Auteur</headerAuthor>
+	       <headerVersion>Versie</headerVersion>
+	       <headerDescription>Beschrijving</headerDescription>
+	       <installedModulesTitle><![CDATA[ Ge&iuml;nstalleerde modules ]]></installedModulesTitle>
+	       <upgradableModulesTitle>Upgrades</upgradableModulesTitle>
+	       <headerVersionAvaiable>Nieuwe versie</headerVersionAvaiable>
+	       <newModulesTitle>Beschikbare modules</newModulesTitle>
+	       <deleteConfirmTitle>Module verwijderen</deleteConfirmTitle>	 
+	       <deleteConfirm>Weet u zeker dat u module [name] wilt verwijderen?</deleteConfirm>
+	       <upgradeConfirmTitle>Module bijwerken</upgradeConfirmTitle>
+	       <upgradeConfirm>Weet u zeker dat u module [name] wilt bijwerken?</upgradeConfirm>
+	       <installConfirmTitle>Module installeren</installConfirmTitle>
+	       <installConfirm>Weet u zeker dat u module [name] wilt installeren?</installConfirm>
+	   </modules>
 	   <settings>
 	       <email>Email</email>
 	       <smtp>SMTP</smtp>
@@ -126,6 +143,7 @@
 			<js>
 				<nameEmpty>De naam is niet ingevuld.</nameEmpty>
 				<descriptionEmpty>De beschrijving is niet ingevuld.</descriptionEmpty>
+				<delete>Weet u zeker dat u [name] wilt verwijderen?</delete>
 			</js>
 		</groups>
 		<users>
@@ -177,6 +195,7 @@
 				<deleteConfirm>Weet u zeker dat u deze gebruiker permanent wilt verwijderen?</deleteConfirm>
 				<groupAdminRejected>Je kan jezelf niet uit de Admin groep gooien. Deze heb je nodig voor het beheerpaneel.</groupAdminRejected>
 				<groupAdminConfirm>Weet je zeker dat je deze gebruiker toegang wilt geven tot het beheerpaneel?</groupAdminConfirm>
+				<loginAs>Weet u zeker dat u wilt inloggen als [username]?\nDit beeindigd uw admin sessie.</loginAs>
 			</js>
 		</users>
 		<stats>

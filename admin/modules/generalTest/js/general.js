@@ -33,7 +33,7 @@ General.prototype.showCache	= function(){
   admin.show('cache.php');
 }
 General.prototype.showModules	= function(){
-	  admin.show(this.address+'modules.php?command=index',modules.init);
+	  admin.show('modules.php');
 	}
 
 var general = new General();

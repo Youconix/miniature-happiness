@@ -2,6 +2,19 @@
 namespace core\classes;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Displays the admin menu
  *
  * This file is part of Miniature-happiness
@@ -9,27 +22,13 @@ namespace core\classes;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class MenuAdmin
 {
 
     private $service_Language;
 
-    private $service_File;
+    private $model_ControlPanelModules;
 
     private $service_XML;
 
@@ -38,39 +37,27 @@ class MenuAdmin
     /**
      * Starts the class menuAdmin
      */
-    public function __construct(\core\services\Language $service_Language, \core\services\File $service_File, \core\services\Xml $service_XML, \core\services\Template $service_Template)
+    public function __construct(\core\services\Language $service_Language, \core\services\Xml $service_XML, \core\services\Template $service_Template, \core\models\ControlPanelModules $model_ControlPanelModules)
     {
         $this->service_Language = $service_Language;
-        $this->service_File = $service_File;
         $this->service_XML = $service_XML;
+        $this->model_ControlPanelModules = $model_ControlPanelModules;
         $this->service_Template = $service_Template;
-        
-        $this->text();
         
         $this->modules();
     }
-
-    /**
-     * Displays the text
-     */
-    private function text()
-    {}
 
     /**
      * Displays the modules
      */
     private function modules()
     {
-        $s_dir = NIV . 'admin/modules';
-        $a_directory = $this->service_File->readDirectory($s_dir);
+        $s_dir = NIV . $this->model_ControlPanelModules->getDirectory();
+        $a_modules = $this->model_ControlPanelModules->getInstalledModulesList();
         
         $i = 1;
         $a_js = array();
-        foreach ($a_directory as $s_module) {
-            if (! $this->service_File->exists($s_dir . '/' . $s_module . '/settings.xml')) {
-                continue;
-            }
-            
+        foreach ($a_modules as $s_module) {
             $obj_settings = $this->service_XML->cloneService();
             $obj_settings->load($s_dir . '/' . $s_module . '/settings.xml');
             

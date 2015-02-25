@@ -213,7 +213,7 @@ class Database_Mysqli implements DAL
     public function connectionEnd()
     {
         if ($this->bo_connection) {
-            $this->obj_connection->close();
+            @$this->obj_connection->close();
             $this->bo_connection = false;
         }
     }

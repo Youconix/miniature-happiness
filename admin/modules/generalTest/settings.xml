@@ -4,11 +4,12 @@
     <author>Youconix</author>
     <description>General tasks for the framework Miniature-happiness</description>
     <version>1.0</version>
-    <install/>
+    <install>install.php</install>
     <upgrade/>
-    <deinstall/>
+    <deinstall>deinstall.php</deinstall>
 	<title>system/menu/general</title>
-	<js>js/general.js, js/users.js, js/groups.js, js/page_rights.js,js/modules.js</js>
+	<js>js/general.js, js/users.js, js/groups.js, js/page_rights.js,
+		js/logs.js</js>
 	<css>general.css</css>
 	<block>
 		<title>system/admin/general/users</title>

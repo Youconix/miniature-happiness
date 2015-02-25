@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
+    <name>Settings</name>
+    <author>Youconix</author>
+    <description>Settings module for the framework Miniature-happiness</description>
+    <version>1.0</version>
+    <install>install.php</install>
+    <upgrade/>
+    <deinstall>deinstall.php</deinstall>
 	<title>system/menu/settings</title>
 	<js>settings.js</js>
 	<css>settings.css</css>

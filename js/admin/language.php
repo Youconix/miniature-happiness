@@ -1,20 +1,49 @@
 <?php
 define('NIV', '../../');
-require (NIV . 'js/generalJS.php');
 
-class AdminGroups extends GeneralJS
-{
+class AdminGroups {
+    private $a_items = array();
+    
+    public function __construct()
+    {
+        require (NIV . 'core/Memory.php');
+        \core\Memory::startUp();
+    
+        $this->service_Language = \core\Memory::services('Language');
+        
+        $this->getItems();
+    
+        $this->display();
+    }
+    
+    private function getItems(){ 
+        $service_QueryBuilder = \core\Memory::services('QueryBuilder')->createBuilder();
+        $service_QueryBuilder->select('language_admin','javascript,language');
+        $database = $service_QueryBuilder->getResult();
+        
+        if( $database->num_rows() > 0 ){
+            $a_data = $database->fetch_assoc();
+            foreach( $a_data AS $a_item ){
+                $this->a_items[ $a_item['javascript'] ] = $a_item['language'];
+            }
+        }
+    }
+    
 
     protected function display()
     {
-        echo ('var languageAdmin = {
-	   "users_delete" : "Weet u zeker dat u [username] wilt verwijderen?",
-	   "users_login_as" : "Weet u zeker dat u wilt inloggen als [username]?\nDit beeindigd uw admin sessie.",
-	   "users_delete_group" : "Weet u zeker dat u [name] wilt verwijderen?",
-	   "users_username_taken" : "De gebruikersnaam is al in gebruik.",
-	   "users_email_taken" : "Het E-mail adres is al in gebruik.",
-	   "users_password_invalid" : "De wachtwoorden zijn niet gelijk",
-	   };');
+        $s_text = "var languageAdmin = { \n";
+        foreach( $this->a_items AS $s_name => $s_key ){
+            $s_text .= '"'.$s_name.'" : "'.t($s_key).'"'.",\n";
+        }  
+        $s_text .= '};' ;
+        
+        $service_Headers = \core\Memory::services('Headers');
+        
+        $service_Headers->setJavascript();
+        $service_Headers->cache(-1);
+        $service_Headers->printHeaders();
+        echo($s_text);
     }
 }
 
