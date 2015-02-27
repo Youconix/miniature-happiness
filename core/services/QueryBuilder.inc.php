@@ -2,6 +2,19 @@
 namespace core\services;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * General query builder configuration layer
  * Loads the preset query builder
  *
@@ -10,19 +23,6 @@ namespace core\services;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class QueryBuilder extends Service
 {
@@ -48,6 +48,15 @@ class QueryBuilder extends Service
         /* databasetype */
         $this->s_type = ucfirst($service_Settings->get('settings/SQL/type'));
         $this->loadBuilder();
+    }
+    
+    /**
+     * Returns if the object schould be traded as singleton
+     *
+     * @return boolean  True if the object is a singleton
+     */
+    public static function isSingleton(){
+        return true;
     }
 
     /**

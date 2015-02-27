@@ -48,6 +48,10 @@ class Loader
 
     public static function Inject($s_className, $a_arguments = array())
     {
+        if( $s_className == 'core\database\DAL' ){
+            $s_className = 'core\database\Database';
+        }
+        
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {
@@ -71,7 +75,17 @@ class Loader
             $s_caller = '\\' . $s_caller;
         }
         
-        return Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
+        $object = Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
+        
+        if( $s_className == 'core\database\Database' ){
+            $object = $object->loadDatabase();
+            
+            if( !\core\Memory::IsInCache($s_className) ){
+                \core\Memory::setCache($s_className, $object);
+            }
+        }
+        
+        return $object;
     }
 
     /**
@@ -85,10 +99,21 @@ class Loader
      * @return Object called object
      */
     private static function injection($s_caller, $s_filename, $a_argumentsGiven)
-    {
+    {        
         $ref = new \ReflectionClass($s_caller);
         if (! $ref->isInstantiable()) {
             throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
+        }
+        
+        $bo_singleton = false;
+        if( method_exists($s_caller, 'isSingleton') && $s_caller::isSingleton() ){
+            /* Check cache */
+            if( \core\Memory::IsInCache($s_caller) ){
+                return \core\Memory::getCache($s_caller);
+            }
+            else {
+                $bo_singleton = true;
+            }
         }
         
         $a_matches = Loader::getConstructor($s_filename);
@@ -132,10 +157,12 @@ class Loader
                             $a_arguments[] = \core\Memory::models($s_name);
                         } else {
                             /* Try to load object */
-                            $a_arguments[] = Loader::injection($s_caller);
+                            $a_arguments[] = Loader::inject($s_name);
                         }
             } else {
-                $s_name = end($a_path);
+                $a_arguments[] = Loader::inject($s_name);
+                
+                /* $s_name = end($a_path);
                 $bo_data = false;
                 if ($a_path[2] == 'data') {
                     $bo_data = true;
@@ -149,13 +176,19 @@ class Loader
                     } else 
                         if ($a_path[1] == 'models') {
                             $a_arguments[] = \core\Memory::models($s_name, $bo_data);
-                        }
+                        } */
             }
         }
         
         $a_arguments = array_merge($a_arguments, $a_argumentsGiven);
         
-        return $ref->newInstanceArgs($a_arguments);
+        $object =  $ref->newInstanceArgs($a_arguments);
+        
+        if( $bo_singleton ){
+            \core\Memory::setCache($s_caller, $object);
+        }
+        
+        return $object;
     }
 
     /**

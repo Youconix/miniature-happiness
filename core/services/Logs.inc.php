@@ -29,6 +29,15 @@ class Logs extends Service implements \Psr\Log\LoggerAwareInterface
 {
 
     protected $obj_logger = null;
+    
+    /**
+     * Returns if the object schould be traded as singleton
+     *
+     * @return boolean  True if the object is a singleton
+     */
+    public static function isSingleton(){
+        return true;
+    }
 
     /**
      * Sets a logger instance on the object

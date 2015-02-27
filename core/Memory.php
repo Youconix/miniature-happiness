@@ -6,6 +6,19 @@ if (! class_exists('\CoreException')) {
 }
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Memory-handler for controlling memory and autostarting the framework
  *
  * This file is part of Miniature-happiness
@@ -13,24 +26,9 @@ if (! class_exists('\CoreException')) {
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Memory
 {
-
-    private static $a_memory = null;
 
     private static $bo_testing = false;
 
@@ -51,6 +49,8 @@ class Memory
     private static $a_interface;
 
     private static $bo_prettyUrls;
+
+    private static $a_cache;
 
     /**
      * Destructor
@@ -83,7 +83,7 @@ class Memory
      */
     public static function startUp()
     {
-        if (! is_null(Memory::$a_memory)) {
+        if (! is_null(Memory::$a_cache)) {
             return;
         }
         
@@ -97,13 +97,7 @@ class Memory
             }
             
             /* Prepare cache */
-            Memory::$a_memory = array();
-            Memory::$a_memory['service'] = array();
-            Memory::$a_memory['service-data'] = array();
-            Memory::$a_memory['model'] = array();
-            Memory::$a_memory['model-data'] = array();
-            Memory::$a_memory['helper'] = array();
-            Memory::$a_memory['helper-data'] = array();
+            Memory::$a_cache = array();
             
             Memory::$a_service = array(
                 'systemPath' => NIV . 'core/services/',
@@ -154,6 +148,7 @@ class Memory
                 'userNamespace' => '\includes\interfaces\\'
             );
             
+            require_once (NIV . 'core/Object.inc.php');
             require_once (Memory::$a_service['systemPath'] . 'Service.inc.php');
             require_once (Memory::$a_model['systemPath'] . 'Model.inc.php');
             require_once (Memory::$a_helper['systemPath'] . 'Helper.inc.php');
@@ -162,36 +157,35 @@ class Memory
             /* Load standard services */
             require_once (Memory::$a_service['systemPath'] . 'File.inc.php');
             $service_File = new \core\services\File();
-            Memory::$a_memory['service']['File'] = $service_File;
+            Memory::$a_cache['\core\services\File'] = $service_File;
             
             require_once (Memory::$a_service['systemPath'] . 'Settings.inc.php');
             $service_Settings = new \core\services\Settings();
-            Memory::$a_memory['service']['XmlSettings'] = $service_Settings;
-            Memory::$a_memory['service']['Settings'] = $service_Settings;
+            Memory::$a_cache['\core\services\Settings'] = $service_Settings;
+            Memory::$a_cache['\core\services\XmlSettings'] = $service_Settings;
             
             date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
-                        
+            
             require_once (Memory::$a_service['systemPath'] . 'Session.inc.php');
             
             require_once (Memory::$a_service['systemPath'] . 'Security.inc.php');
             $service_Security = new \core\services\Security();
-            Memory::$a_memory['service']['Security'] = $service_Security;
+            Memory::$a_cache['\core\services\Security'] = $service_Security;
             
             require_once (Memory::$a_service['systemPath'] . 'Cookie.inc.php');
             $service_Cookie = new \core\services\Cookie($service_Security);
-            Memory::$a_memory['service']['Cookie'] = $service_Cookie;
+            Memory::$a_cache['\core\services\Cookie'] = $service_Cookie;
             
             require_once (Memory::$a_model['systemPath'] . 'Config.inc.php');
             $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie);
-            Memory::$a_memory['model']['Config'] = $model_Config;
+            Memory::$a_cache['\core\models\Config'] = $model_Config;
             
             require_once (Memory::$a_service['systemPath'] . 'Language.inc.php');
             $service_Language = new \core\services\Language($service_Settings, $service_Cookie, $service_File);
-            Memory::$a_memory['service']['Language'] = $service_Language;
+            Memory::$a_cache['\core\services\Language'] = $service_Language;
             
             require_once (Memory::$a_service['systemPath'] . 'Mailer.inc.php');
             $service_Mailer = new \core\services\Mailer($service_Language, $service_File);
-            Memory::$a_memory['service']['Mailer'] = $service_Mailer;
             
             $obj_logger = $model_Config->logging();
             if (method_exists($obj_logger, 'setMailer')) {
@@ -201,7 +195,7 @@ class Memory
             require_once (Memory::$a_service['systemPath'] . 'Logs.inc.php');
             $service_Logs = new \core\services\Logs();
             $service_Logs->setLogger($obj_logger);
-            Memory::$a_memory['service']['Logs'] = $service_Logs;
+            Memory::$a_cache['\core\services\Logs'] = $service_Logs;
             
             Memory::setDefaultValues($service_Security, $service_Settings);
         } catch (\Exception $e) {
@@ -209,6 +203,14 @@ class Memory
         }
     }
 
+    /**
+     * Sets the default values
+     *
+     * @param \core\services\Security $service_Security
+     *            The security service
+     * @param \core\services\Settings $service_Settings
+     *            The settings service
+     */
     private static function setDefaultValues($service_Security, $service_Settings)
     {
         if (isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], array(
@@ -233,6 +235,47 @@ class Memory
     }
 
     /**
+     * Checks if the class is in the cache
+     *
+     * @param string $s_name
+     *            The namespace and object name
+     * @return boolean True if the class is in the cache
+     */
+    public static function IsInCache($s_name)
+    {
+        return array_key_exists($s_name, Memory::$a_cache);
+    }
+
+    /**
+     * Sets the object in the cache
+     *
+     * @param string $s_name
+     *            The namespace and object name
+     * @param Object $object
+     *            The object
+     */
+    public static function setCache($s_name, $object)
+    {
+        Memory::$a_cache[$s_name] = $object;
+    }
+
+    /**
+     * Returns the object from the cache
+     *
+     * @param string $s_name
+     *            The namespace and object name
+     * @return Object The object or null
+     */
+    public static function getCache($s_name)
+    {
+        if (! Memory::IsInCache($s_name)) {
+            return null;
+        }
+        
+        return Memory::$a_cache[$s_name];
+    }
+
+    /**
      * Returns the used protocol
      *
      * @return String protocol
@@ -241,7 +284,7 @@ class Memory
      */
     public static function getProtocol()
     {
-        return Memory::getMemory('model', 'Config')->getProtocol();
+        return Memory::$a_cache['\core\models\Config']->getProtocol();
     }
 
     /**
@@ -253,7 +296,7 @@ class Memory
      */
     public static function getPage()
     {
-        return Memory::getMemory('model', 'Config')->getPage();
+        return Memory::$a_cache['\core\models\Config']->getPage();
     }
 
     /**
@@ -265,7 +308,7 @@ class Memory
      */
     public static function isAjax()
     {
-        return Memory::getMemory('model', 'Config')->isAjax();
+        return Memory::$a_cache['\core\models\Config']->isAjax();
     }
 
     /**
@@ -275,7 +318,7 @@ class Memory
      */
     public static function setAjax()
     {
-        Memory::getMemory('model', 'Config')->setAjax();
+        Memory::$a_cache['\core\models\Config']->setAjax();
     }
 
     /**
@@ -296,7 +339,7 @@ class Memory
      */
     public static function getBase()
     {
-        return Memory::getMemory('model', 'Config')->getBase();
+        return Memory::$a_cache['\core\models\Config']->getBase();
     }
 
     /**
@@ -309,7 +352,7 @@ class Memory
     public static function ensureClass($s_class)
     {
         if (! class_exists($s_class)) {
-            $service_File = Memory::getMemory('service', 'File');
+            $service_File = Memory::$a_cache['\core\services\File'];
             if (! $service_File->exists(Memory::$s_classPath . $s_class . '.inc.php')) {
                 throw new \MemoryException('Can not find class ' . $s_class);
             }
@@ -328,7 +371,7 @@ class Memory
     public static function ensureInterface($s_interface)
     {
         if (! interface_exists($s_interface)) {
-            $service_File = Memory::getMemory('service', 'File');
+            $service_File = Memory::$a_cache['\core\services\File'];
             if (! $service_File->exists(Memory::$s_interfacePath . $s_interface . '.inc.php')) {
                 throw new \MemoryException('Can not find interface ' . $s_interface);
             }
@@ -338,62 +381,23 @@ class Memory
     }
 
     /**
-     * Checks or the given service or model allready is loaded
+     * Checks if a file is a core module
      *
-     * @param String $s_type
-     *            The type (helper|helper-data|model|model-data|service|service-data)
-     * @param String $s_name
-     *            The name of the service or model
-     * @return boolean True if the given service or model is allready loaded, otherwise false
-     */
-    private static function checkMemory($s_type, $s_name)
-    {
-        if (array_key_exists($s_name, Memory::$a_memory[$s_type])) {
-            return true;
-        }
-        
-        return false;
-    }
-
-    /**
-     * Returns the requested service or model from the memory
+     * @param unknown $s_name            
+     * @param unknown $a_memoryItems            
+     * @param unknown $s_path            
+     * @param unknown $s_namespace            
+     * @param string $s_fallback            
+     * @deprecated
      *
-     * @param String $s_type
-     *            The type (helper|helper-data|model|model-data|service|service-data)
-     * @param String $s_name
-     *            The name of the service or model
-     * @return object The requested service or model
+     * @return boolean
      */
-    private static function getMemory($s_type, $s_name)
-    {
-        return Memory::$a_memory[$s_type][$s_name];
-    }
-
-    /**
-     * Saves the given service or model in the memory
-     *
-     * @param String $s_type
-     *            The type (helper|helper-data|model|model-data|service|service-data)
-     * @param String $s_name
-     *            The name of the service or model
-     * @param object $obj_value
-     *            The service or model
-     */
-    private static function setMemory($s_type, $s_name, $obj_value)
-    {
-        Memory::$a_memory[$s_type][$s_name] = $obj_value;
-    }
-
     private static function isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback = '')
     {
         $s_name = ucfirst($s_name);
         
-        if ((Memory::checkMemory($a_memoryItems[0], $s_name)) || (isset($a_memoryItems[1]) && Memory::checkMemory($a_memoryItems[1], $s_name))) {
-            return true;
-        }
-        
         /* Call class file */
-        $service_File = Memory::getMemory('service', 'File');
+        $service_File = Memory::$a_cache['\core\services\File'];
         $s_path = $s_path . '/' . $s_name . '.inc.php';
         
         if (! $service_File->exists($s_path)) {
@@ -426,6 +430,8 @@ class Memory
      * @param String $s_fallback
      *            The fallback class type (V1)
      * @return Object The module
+     * @deprecated
+     *
      * @throws \MemoryException If the requested module does not exist
      * @throws \OverrideException If the override module is not a child of the system module
      */
@@ -433,13 +439,9 @@ class Memory
     {
         $s_name = ucfirst($s_name);
         
-        if (Memory::checkMemory($s_memoryType, $s_name)) {
-            return Memory::getMemory($s_memoryType, $s_name);
-        }
+        $object = \Loader::Inject($a_data['systemNamespace'] . $s_name);
         
-        try {
-            $object = \Loader::Inject($a_data['systemNamespace'] . $s_name);
-        } catch (\MemoryException $e) {
+        if (is_null($object)) {
             if (! empty($s_fallback) && class_exists($s_fallback . '_' . $s_name)) {
                 $s_caller = $s_fallback . '_' . $s_name;
                 $object = new $s_caller();
@@ -447,8 +449,6 @@ class Memory
                 throw new \MemoryException('Can not find ' . $s_memoryType . ' ' . $s_name, 0, $e);
             }
         }
-        
-        Memory::setMemory($s_memoryType, $s_name, $object);
         
         return $object;
     }
@@ -460,6 +460,8 @@ class Memory
      *            The name of the helper
      * @param bool $bo_data
      *            to true to use the data directory
+     * @deprecated
+     *
      * @return bool if the helper exists, otherwise false
      */
     public static function isHelper($s_name, $bo_data = false)
@@ -489,6 +491,8 @@ class Memory
      * @param bool $bo_data
      *            to true to use the data directory
      * @return Helper The requested helper
+     * @deprecated
+     *
      * @throws Exception If the requested helper does not exist
      * @throws \OverrideException If the override module is not a child of the system module
      */
@@ -513,6 +517,8 @@ class Memory
      *            The name of the service
      * @param bool $bo_data
      *            to true to use the data directory
+     * @deprecated
+     *
      * @return bool if the service exists, otherwise false
      */
     public static function isService($s_name, $bo_data = false)
@@ -538,40 +544,18 @@ class Memory
      * @param bool $bo_data
      *            to true to use the data directory
      * @return Service The requested service
+     * @deprecated
+     *
      * @throws Exception If the requested service does not exist
      * @throws \OverrideException If the override module is not a child of the system module
      */
     public static function services($s_name, $bo_data = false)
     {
-        /* Check for DAL */
-        if ($s_name == 'DAL') {
-            return Memory::loadDAL();
-        }
-        
         if ($bo_data) {
             return Memory::loadModule($s_name, 'service', Memory::$a_serviceData);
         }
         
         return Memory::loadModule($s_name, 'service', Memory::$a_service, 'Service');
-    }
-
-    /**
-     * Loads the data access layer
-     *
-     * @return DAL The DAL
-     */
-    private static function loadDAL()
-    {
-        $s_name = 'Database';
-        
-        $service_Settings = Memory::services('Settings');
-        require (NIV . 'core/services/Database.inc.php');
-        $obj_Query_main = new \core\database\Query_main($service_Settings);
-        $object = $obj_Query_main->loadDatabase();
-        
-        Memory::setMemory('service', $s_name, $object);
-        
-        return $object;
     }
 
     /**
@@ -581,6 +565,8 @@ class Memory
      *            The name of the model
      * @param bool $bo_data
      *            to true to use the data directory
+     * @deprecated
+     *
      * @return bool if the model exists, otherwise false
      */
     public static function isModel($s_name, $bo_data = false)
@@ -606,6 +592,8 @@ class Memory
      * @param bool $bo_data
      *            to true to use the data directory
      * @return Model The requested model
+     * @deprecated
+     *
      * @throws Exception If the requested model does not exist
      * @throws \OverrideException If the override module is not a child of the system module
      */
@@ -625,6 +613,8 @@ class Memory
      *            The type (helper|helper-data|model|model-data|service|service-data)
      * @param String $s_name
      *            name of the object
+     * @deprecated
+     *
      * @return boolean if the value exists in the memory, false if it does not
      */
     public static function isLoaded($s_type, $s_name)
@@ -632,10 +622,10 @@ class Memory
         $s_type = strtolower($s_type);
         $s_name = ucfirst($s_name);
         
-        if (! array_key_exists($s_type, Memory::$a_memory)) {
+        if (! array_key_exists($s_type, Memory::$a_cache)) {
             return false;
         }
-        if (array_key_exists($s_name, Memory::$a_memory[$s_type])) {
+        if (array_key_exists($s_name, Memory::$a_cache[$s_type])) {
             return true;
         }
         return false;
@@ -648,6 +638,8 @@ class Memory
      *            The class name
      * @return Object The Object
      * @throws \MemoryException If the class does not exist
+     * @deprecated
+     *
      * @throws \OverrideException the override class is not a child of the default class
      */
     public static function loadClass($s_class)
@@ -655,7 +647,7 @@ class Memory
         $s_class = ucfirst($s_class);
         
         /* Check model */
-        $service_File = Memory::getMemory('service', 'File');
+        $service_File = Memory::$a_cache['\core\services\File'];
         $bo_override = false;
         $s_path = '';
         $s_caller = '';
@@ -683,7 +675,7 @@ class Memory
                 throw new \MemoryException('Can not find class ' . $s_class);
             }
         
-        $object = Memory::injection($s_caller, $s_path);
+        $object = \Loader::Inject($s_caller);
         
         if (! empty($s_callerParent) && ! ($object instanceof $s_callerParent)) {
             throw new \OverrideException('Override ' . $s_caller . ' is not a child of ' . $s_callerParent . '.');
@@ -696,6 +688,8 @@ class Memory
      *
      * @param String $s_interface
      *            interface
+     * @deprecated
+     *
      * @throws \MemoryException If the interface does not exist
      */
     public static function loadInterface($s_interface)
@@ -703,7 +697,7 @@ class Memory
         $s_interface = ucfirst($s_interface);
         
         /* Check model */
-        $service_File = Memory::getMemory('service', 'File');
+        $service_File = Memory::$a_cache['\core\services\File'];
         
         if ($service_File->exists(Memory::$a_interface['userPath'] . $s_interface . '.inc.php')) {
             require_once (Memory::$a_interface['userPath'] . $s_interface . '.inc.php');
@@ -713,139 +707,6 @@ class Memory
             } else {
                 throw new \MemoryException('Can not find interface ' . $s_interface);
             }
-    }
-
-    /**
-     * Performs the dependency injection
-     *
-     * @param String $s_caller
-     *            class name
-     * @param String $s_filename
-     *            source file name
-     * @throws MemoryException the object is not instantiable.
-     * @return Object called object
-     */
-    private static function injection($s_caller, $s_filename)
-    {
-        $ref = new \ReflectionClass($s_caller);
-        if (! $ref->isInstantiable()) {
-            throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
-        }
-        
-        $a_matches = Memory::getConstructor($s_filename);
-        
-        if (count($a_matches) == 0) {
-            /* No arguments */
-            return new $s_caller();
-        }
-        $a_argumentNamesPre = explode(',', $a_matches[1]);
-        
-        $a_argumentNames = array();
-        $a_arguments = array();
-        foreach ($a_argumentNamesPre as $s_name) {
-            $s_name = trim($s_name);
-            if (strpos($s_name, ' ') === false) {
-                continue;
-            }
-            if (substr($s_name, 0, 1) == '\\') {
-                $s_name = substr($s_name, 1);
-            }
-            
-            $a_item = explode(' ', $s_name);
-            $a_argumentNames[] = $a_item[0];
-        }
-        
-        foreach ($a_argumentNames as $s_name) {
-            $a_path = explode('\\', $s_name);
-            
-            if (count($a_path) == 1) {
-                /* No namespace */
-                if (strpos($s_name, 'Helper_') !== false) {
-                    $s_name = str_replace('Helper_', '', $s_name);
-                    $a_arguments[] = Memory::helpers($s_name);
-                } else 
-                    if (strpos($s_name, 'Service_') !== false) {
-                        $s_name = str_replace('Service_', '', $s_name);
-                        $a_arguments[] = Memory::services($s_name);
-                    } else 
-                        if (strpos($s_name, 'Model_') !== false) {
-                            $s_name = str_replace('Model_', '', $s_name);
-                            $a_arguments[] = Memory::models($s_name);
-                        } else {
-                            /* Try to load object */
-                            $a_arguments[] = Memory::injection($s_caller);
-                        }
-            } else {
-                $s_name = end($a_path);
-                $bo_data = false;
-                if ($a_path[2] == 'data') {
-                    $bo_data = true;
-                }
-                
-                if (($a_path[1] == 'helpers') || ($a_path[1] == 'html')) {
-                    $a_arguments[] = Memory::helpers($s_name, $bo_data);
-                } else 
-                    if (($a_path[1] == 'services') || ($a_path[1] == 'database')) {
-                        $a_arguments[] = Memory::services($s_name, $bo_data);
-                    } else 
-                        if ($a_path[1] == 'models') {
-                            $a_arguments[] = Memory::models($s_name, $bo_data);
-                        }
-            }
-        }
-        
-        return $ref->newInstanceArgs($a_arguments);
-    }
-
-    /**
-     * Gets the constructor parameters
-     *
-     * @param String $s_filename
-     *            name
-     * @return array parameters
-     */
-    private static function getConstructor($s_filename)
-    {
-        $s_file = Memory::services('File')->readFile($s_filename);
-        if (stripos($s_file, '__construct') === false) {
-            /* Check if file has parent */
-            preg_match('#class\\s+[a-zA-Z0-9\-_]+\\s+extends\\s+([\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches);
-            if (count($a_matches) == 0) {
-                return array();
-            }
-            
-            switch ($a_matches[1]) {
-                case '\core\models\Model':
-                case 'Model':
-                    $s_filename = NIV . 'core/models/Model.inc.php';
-                    break;
-                
-                case '\core\services\Service':
-                case 'Service':
-                    $s_filename = NIV . 'core/services/Service.inc.php';
-                    break;
-                
-                case '\core\helpers\Helper':
-                case 'Helper':
-                    $s_filename = NIV . 'core/helpers/Helper.inc.php';
-                    break;
-                
-                default:
-     /* Check for namespace */
-     preg_match('#namespace\\s+([\\a-z-_0-9]+);#', $s_file, $a_namespaces);
-                    if (count($a_namespaces) > 0) {
-                        $s_filename = NIV . str_replace('\\', '/', $a_namespaces[1] . '/' . $a_matches[1]) . '.inc.php';
-                    } else {
-                        $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
-                    }
-            }
-            
-            return Memory::getConstructor($s_filename);
-        }
-        
-        preg_match('#function\\s+__construct\\s?\({1}\\s?([\\a-zA-Z\\s\$\-_,]+)\\s?\){1}#si', $s_file, $a_matches);
-        
-        return $a_matches;
     }
 
     /**
@@ -948,17 +809,26 @@ class Memory
      */
     public static function endProgram()
     {
-        if (\core\Memory::checkMemory('service', 'Template')) {
-            $service_Template = \core\Memory::getMemory('service', 'Template');
+        $service_Template = null;
+        if (array_key_exists('\core\services\Template', Memory::$a_cache)) {
+            $service_Template = Memory::$a_cache['\core\services\Template'];
+        } else 
+            if (array_key_exists('\includes\services\Template', Memory::$a_cache)) {
+                $service_Template = Memory::$a_cache['\includes\services\Template'];
+            }
+        
+        if (! is_null($service_Template)) {
             $service_Template->printToScreen();
         }
         
         die();
     }
 
+    /**
+     * Resets Memory
+     */
     public static function reset()
     {
-        Memory::$a_memory = null;
         Memory::$bo_testing = null;
         
         Memory::$a_service = null;
@@ -970,6 +840,7 @@ class Memory
         Memory::$a_class = null;
         Memory::$a_interface = null;
         Memory::$bo_prettyUrls = null;
+        Memory::$a_cache = null;
     }
 
     /**
