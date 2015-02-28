@@ -14,14 +14,6 @@
 	        </tr>
 	    </thead>
 	    <tbody>
-	        <block {groupBlocked}>
-	            <tr data-id="-1" class="group_not_editable">
-	                <td>{id}</td>
-	                <td>{name}</td>
-	                <td>{description}</td>
-	                <td>{default}</td>
-	            </tr>
-	        </block>
 	        <block {group}>
 	            <tr data-id="{id}" class="group_editable">
 	                <td>{id}</td>

@@ -214,7 +214,7 @@ class DataGroup extends \core\models\Model
      */
     public function getMembersByGroup()
     {
-        $this->service_QueryBuilder->select('group_users g', 'g.level,u.nick')
+        $this->service_QueryBuilder->select('group_users g', 'g.level,u.nick AS username,u.id')
             ->innerJoin('users u', 'g.userid', 'u.id')
             ->order('u.nick', 'ASC');
         $this->service_QueryBuilder->getWhere()->addAnd('g.groupID', 'i', $this->i_id);

@@ -31,7 +31,9 @@ class Index extends \core\BaseLogicClass
     private $service_Logs;
 
     protected function view()
-    {}
+    {
+        \Loader::Inject('\core\helpers\ConfirmBox');
+    }
 
     /**
      * Routes the controller

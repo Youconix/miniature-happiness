@@ -2,9 +2,12 @@ function Users(){
   this.url = '../modules/general/users.php';
 }
 Users.prototype.init = function(){
-  $('#newUserButton, #newUserButton2').click(function(){  admin.show(users.url+"?command=addScreen",users.addUserScreen()); });  
+  $('#newUserButton, #newUserButton2').click(function(){  users.showAddUserScreen(); });  
   $('#searchUsername').on('keyup',function(){ users.filterUserList(); });    
   users.setUserListEvents();
+}
+Users.prototype.showAddUserScreen = function(){
+	admin.show(users.url+"?command=addScreen",users.addUserScreen());
 }
 Users.prototype.filterUserList	= function(){
 	var value = $.trim($('#searchUsername').val());
@@ -16,7 +19,6 @@ Users.prototype.filterUserList	= function(){
 }
 Users.prototype.filterUserListCallback = function(results){
 	results = JSON.parse( $.trim(results) );
-	console.log(results);
 	
 	$('#usertable tbody').empty();
 	
@@ -54,11 +56,8 @@ Users.prototype.showUserEvents = function(){
 		 
 		 if( id == userid ){ return; }
 		 
-		 if( confirm(languageAdmin.users_delete.replace('[username]',username)) ){
-			 $.post(users.url,{'command':'delete','userid':id});
-			 
-			 general.showUsers();
-		 }
+		 confirmBox.init(150,users.deleteConfirm);
+		 confirmBox.show(languageAdmin.users_delete_title,languageAdmin.users_delete.replace('[name]',username) );
 	  });
 	  
 	  $('#user_login_as').click(function(){
@@ -74,6 +73,12 @@ Users.prototype.showUserEvents = function(){
 			 });
 		 }
 	  })
+}
+Users.prototype.deleteConfirm = function(){
+	var id = $('#users_delete').data('id');
+	$.post(users.url,{'command':'delete','userid':id},function(){
+		general.showUsers();
+	});
 }
 Users.prototype.editUserScreen = function(){
 	$('#userUpdateButton').click(function(){ users.checkUpdate(); });

@@ -4,7 +4,7 @@
 	   
 	   <nav>
         <ul>
-            <li id="users_delete" data-id="{id}" data-name="{nameDefault}">{delete}</li>
+            <li id="groups_delete" data-id="{id}" data-name="{nameDefault}">{delete}</li>
             <li id="users_back">{buttonBack}</li>
         </ul>
       </nav>

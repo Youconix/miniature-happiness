@@ -56,6 +56,7 @@ class MenuAdmin
         $a_modules = $this->model_ControlPanelModules->getInstalledModulesList();
         
         $i = 1;
+        $i_blockNr = 1;
         $a_js = array();
         foreach ($a_modules as $s_module) {
             $obj_settings = $this->service_XML->cloneService();
@@ -84,19 +85,33 @@ class MenuAdmin
                 $a_data = array(
                     'id' => $i
                 );
+                $a_links = array();
                 
                 foreach ($block->childNodes as $item) {
-                    if ($item->tagName == 'title') {
-                        $a_data['title'] = $this->service_Language->get($item->nodeValue);
-                    } else {
-                        $a_data[$item->tagName] = $item->nodeValue;
-                    }
+                    if ($item->tagName == 'link') {
+                        $a_links[] = $item;
+                    } else 
+                        if ($item->tagName == 'title') {
+                            ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = '?';
+                        } else {
+                            $a_data[$item->tagName] = $item->nodeValue;
+                        }
                 }
                 if (array_key_exists('id', $a_data)) {
                     $a_data['item_id'] = $a_data['id'];
                 }
+                if (empty($a_data['icon'])) {
+                    $a_data['icon'] = 'images/youconix/module_not_found.png';
+                } else {
+                    $a_data['icon'] = 'admin/modules/' . $a_data['icon'];
+                }
+                $a_data['name'] = $i_blockNr;
                 
                 $this->service_Template->setBlock('tab_' . $i, $a_data);
+                
+                $this->setLinks($a_links, $i_blockNr);
+                
+                $i_blockNr ++;
             }
             
             $i ++;
@@ -140,6 +155,26 @@ class MenuAdmin
         $a_css = explode(',', $s_css);
         foreach ($a_css as $s_css) {
             $this->service_Template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
+        }
+    }
+
+    private function setLinks($a_links, $s_module)
+    {
+        foreach ($a_links as $obj_link) {
+            $a_data = array();
+            
+            foreach ($obj_link->childNodes as $item) {
+                if ($item->tagName == 'title') {
+                    ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = '?';
+                } else {
+                    $a_data[$item->tagName] = $item->nodeValue;
+                }
+            }
+            
+            $a_data['link_title'] = $a_data['title'];
+            $a_data['link_id'] = $a_data['id'];
+            
+            $this->service_Template->setBlock('link_' . $s_module, $a_data);
         }
     }
 }

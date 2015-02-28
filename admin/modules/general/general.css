@@ -156,3 +156,17 @@ width
 #modules #installed_modules tbody tr, #modules #upgradable_modules tbody tr, #modules #new_modules tbody tr{ 
 	cursor:pointer;
 }
+
+#group_user_list {
+	display:inline-block;
+	height:auto;
+	max-height:450px;
+	y-overflow:auto;
+	width:50%;
+}
+#group_user_list td {
+	cursor:pointer;
+}
+#group_user_list td:first-child {
+	width:200px;
+}

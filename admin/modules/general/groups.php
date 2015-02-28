@@ -2,6 +2,19 @@
 namespace admin;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Admin group configuration class
  *
  * This file is part of Miniature-happiness
@@ -9,21 +22,6 @@ namespace admin;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *       
- *       
  */
 define('NIV', '../../../');
 include (NIV . 'core/AdminLogicClass.php');
@@ -32,6 +30,11 @@ class Groups extends \core\AdminLogicClass
 {
 
     private $model_Groups;
+
+    private $a_systemGroups = array(
+        0,
+        1
+    );
 
     /**
      * PHP 5 constructor
@@ -45,28 +48,36 @@ class Groups extends \core\AdminLogicClass
         }
         
         if (isset($this->get['command'])) {
-            if ($this->get['command'] == 'getGroup') {
-                $this->getGroup();
-            } else 
-                if ($this->get['command'] == 'viewUsers') {
-                    $this->viewUsers();
-                } else 
-                    if ($this->get['command'] == 'addScreen') {
-                        $this->addScreen();
-                    }
+            switch ($this->get['command']) {
+                case 'view':
+                    $this->view();
+                    break;
+                case 'getGroup':
+                    $this->getGroup();
+                    break;
+                
+                case 'addScreen':
+                    $this->addScreen();
+                    break;
+                default:
+                    $this->groupview();
+                    break;
+            }
         } else 
             if (isset($this->post['command'])) {
-                if ($this->post['command'] == 'add') {
-                    $this->add();
-                } else 
-                    if ($this->post['command'] == 'edit') {
+                switch ($this->post['command']) {
+                    case 'add':
+                        $this->add();
+                        break;
+                    
+                    case 'edit':
                         $this->edit();
-                    } else 
-                        if ($this->post['command'] == 'delete') {
-                            $this->delete();
-                        }
-            } else {
-                $this->groupview();
+                        break;
+                    
+                    case 'delete':
+                        $this->delete();
+                        break;
+                }
             }
     }
 
@@ -110,15 +121,53 @@ class Groups extends \core\AdminLogicClass
                 'description' => $obj_group->getDescription(),
                 'default' => ($obj_group->isDefault() ? 1 : 0)
             );
-            if ($obj_group->inUse()) {
-                $this->service_Template->setBlock('groupBlocked', $a_data);
-            } else {
-                $this->service_Template->setBlock('group', $a_data);
-            }
+            $this->service_Template->setBlock('group', $a_data);
         }
         
         $this->service_Template->set('buttonDelete', t('system/buttons/delete'));
         $this->service_Template->set('addButton', t('system/buttons/add'));
+    }
+
+    /**
+     * Displays the group
+     */
+    private function view()
+    {
+        try {
+            $obj_group = $this->model_Groups->getGroup($this->get['id']);
+        } catch (Exception $e) {
+            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->get['id'] . '.');
+            header('location: ' . NIV . 'logout.php');
+            exit();
+        }
+        
+        $this->setHeader();
+        $this->service_Template->set('nameDefault', $obj_group->getName());
+        $this->service_Template->set('descriptionDefault', $obj_group->getDescription());
+        ($obj_group->isDefault()) ? $s_automatic = t('system/yes') : $s_automatic = t('system/no');
+        $this->service_Template->set('automatic', $s_automatic);
+        $this->service_Template->set('id', $this->get['id']);
+        
+        $this->service_Template->set('groupTitle', t('system/admin/groups/headerView') . ' ' . $obj_group->getName());
+        
+        $this->service_Template->set('buttonBack', t('system/buttons/back'));
+        $this->service_Template->set('buttonDelete', t('system/buttons/delete'));
+        $this->service_Template->set('buttonEdit', t('system/buttons/edit'));
+        $this->service_Template->set('memberlistTitle', t('system/admin/groups/memberlist'));
+        
+        if (in_array($this->get['id'], $this->a_systemGroups)) {
+            $this->service_Template->set('editDisabled', 'style="color:grey; text-decoration: line-through; cursor:auto"');
+        }
+        
+        /* Display users */
+        $a_users = $obj_group->getMembersByGroup();
+        foreach ($a_users as $a_user) {
+            $this->service_Template->setBlock('userlist', array(
+                'userid' => $a_user['id'],
+                'user' => $a_user['username'],
+                'level' => t('system/rights/level_' . $a_user['level'])
+            ));
+        }
     }
 
     /**
@@ -147,35 +196,6 @@ class Groups extends \core\AdminLogicClass
         
         $this->service_Template->set('buttonBack', t('system/buttons/back'));
         $this->service_Template->set('delete', t('system/buttons/delete'));
-    }
-
-    private function viewUsers()
-    {
-        try {
-            $obj_Group = $this->model_Groups->getGroup($this->get['id']);
-            
-            $a_users = $obj_Group->getMembersByGroup();
-            foreach ($a_users as $a_user) {
-                $a_data = array(
-                    'id' => $a_user['userid'],
-                    'username' => $a_user['nick'],
-                    'level' => ''
-                );
-                
-                $a_data['rights'] = t('rights/level_' . $a_user['level']);
-                
-                $this->service_Template->setBlock('user', $a_data);
-            }
-            
-            $this->service_Template->set('groupTitle', t('system/admin/groups/headerUsers') . ' ' . $obj_Group->getName());
-            $this->service_Template->set('headerUser', t('system/admin/groups/user'));
-            $this->service_Template->set('headerRights', t('system/admin/groups/rights'));
-            $this->service_Template->set('backButton', t('system/buttons/back'));
-        } catch (Exception $e) {
-            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->get['id'] . '.');
-            header('location: ' . NIV . 'logout.php');
-            exit();
-        }
     }
 
     /**
@@ -218,7 +238,7 @@ class Groups extends \core\AdminLogicClass
      */
     private function delete()
     {
-        if (! isset($this->post['id']) || $this->post['id'] <= 0)
+        if (! isset($this->post['id']) || $this->post['id'] <= 0 || in_array($this->post['id'], $this->a_systemGroups))
             return;
             
             /* Get group */
@@ -237,7 +257,7 @@ class Groups extends \core\AdminLogicClass
      */
     private function edit()
     {
-        if (! isset($this->post['name']) || $this->post['name'] == '' || ! isset($this->post['description']) || $this->post['description'] == '' || ! isset($this->post['default']) || ($this->post['default'] != 0 && $this->post['default'] != 1) || ! isset($this->post['id']) || $this->post['id'] <= 0) {
+        if (! isset($this->post['name']) || $this->post['name'] == '' || ! isset($this->post['description']) || $this->post['description'] == '' || ! isset($this->post['default']) || ($this->post['default'] != 0 && $this->post['default'] != 1) || ! isset($this->post['id']) || $this->post['id'] <= 0 || in_array($this->post['id'], $this->a_systemGroups)) {
             return;
         }
         

@@ -43,55 +43,68 @@ class Users extends \core\AdminLogicClass
         }
         
         if (isset($this->get['command'])) {
-            if ($this->get['command'] == 'view') {
-                $this->view();
-            } else 
-                if ($this->get['command'] == 'checkUsername') {
+            switch ($this->get['command']) {
+                case 'view':
+                    $this->view();
+                    break;
+                
+                case 'checkUsername':
                     if ($this->checkUsername($this->get['username'])) {
                         $this->service_Template->set('result', '1');
                     } else {
                         $this->service_Template->set('result', '0');
                     }
-                } else 
-                    if ($this->get['command'] == 'checkEmail') {
-                        if ($this->checkEmail($this->get['email'])) {
-                            $this->service_Template->set('result', '1');
-                        } else {
-                            $this->service_Template->set('result', '0');
-                        }
-                    } else 
-                        if ($this->get['command'] == 'index') {
-                            $this->index();
-                        } else 
-                            if ($this->get['command'] == 'searchResults') {
-                                $this->search();
-                            } else 
-                                if ($this->get['command'] == 'addScreen') {
-                                    $this->addScreen();
-                                } else 
-                                    if ($this->get['command'] == 'editScreen') {
-                                        $this->editScreen();
-                                    }
+                    break;
+                case 'checkEmail':
+                    if ($this->checkEmail($this->get['email'])) {
+                        $this->service_Template->set('result', '1');
+                    } else {
+                        $this->service_Template->set('result', '0');
+                    }
+                    break;
+                case 'index':
+                    $this->index();
+                    break;
+                
+                case 'searchResults':
+                    $this->search();
+                    break;
+                
+                case 'addScreen':
+                    $this->addScreen();
+                    break;
+                
+                case 'editScreen':
+                    $this->editScreen();
+                    break;
+            }
         } else 
             if (isset($this->post['command'])) {
-                if ($this->post['command'] == 'add') {
-                    $this->add();
-                } else 
-                    if ($this->post['command'] == 'edit') {
+                switch ($this->post['command']) {
+                    case 'add':
+                        $this->add();
+                        break;
+                    
+                    case 'edit':
                         $this->edit();
-                    } else 
-                        if ($this->post['command'] == 'delete') {
-                            $this->delete();
-                        } else 
-                            if ($this->post['command'] == 'addGroup') {
-                                $this->addGroup();
-                            } else 
-                                if ($this->post['command'] == 'deleteGroup') {
-                                    $this->deleteGroup();
-                                } else 
-                                    if ($this->post['command'] == 'login') {
-                                        $this->login();
-                                    }
+                        break;
+                    
+                    case 'delete':
+                        $this->delete();
+                        break;
+                    
+                    case 'addGroup':
+                        $this->addGroup();
+                        break;
+                    
+                    case 'deleteGroup':
+                        $this->deleteGroup();
+                        break;
+                    
+                    case 'login':
+                        $this->login();
+                        break;
+                }
             }
     }
 

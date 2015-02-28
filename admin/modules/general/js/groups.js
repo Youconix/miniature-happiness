@@ -6,7 +6,7 @@ Groups.prototype.init = function(){
 		$(this).click(function(){
 			var id = $(this).data('id');
 			if( id != -1 ){
-				admin.show(groups.url+'?command=getGroup&id='+id,groups.showGroup);
+				admin.show(groups.url+'?command=view&id='+id,groups.view);
 			}
 		});
 	});
@@ -14,18 +14,56 @@ Groups.prototype.init = function(){
 	$('#groupAddButton').click(function(){
 		admin.show(groups.url+'?command=addScreen',groups.addScreen);
 	})
+	$('#admin_general_groups_add_group').click(function(){
+		admin.show(groups.url+'?command=addScreen',groups.addScreen);
+	});
+}
+Groups.prototype.view = function(){
+	$('#group_user_list tr').each(function(){
+		$(this).click(function(){
+			var id = $(this).data('id');
+			
+			admin.show(users.url+'?command=view&userid='+id,users.showUserEvents);
+		});
+	});
+	
+	$('#groups_edit').click(function(){
+		var id = $(this).data('id');
+		if( !groups.editAllowed(id) ){	return; }
+		
+		admin.show(groups.url+'?command=getGroup&id='+id,groups.showGroup);
+	});
+	
+	$('#groups_delete').click(function(){
+		groups.deleteItem();
+	});
+	
+	$('#users_back').click(function(){ general.showGroups(); });
+}
+Groups.prototype.editAllowed = function(id){
+	if( id == 0 || id == 1 ){	return false; }
+	return true;
+}
+Groups.prototype.deleteItem = function(){
+	var id = $('#groups_delete').data('id');
+	if( !groups.editAllowed(id) ){	return; }
+	
+	var name = $('#groups_delete').data('name');
+	
+	confirmBox.init(150,groups.deleteConfirm);
+	confirmBox.show(languageAdmin.groups_delete_title,languageAdmin.users_delete.replace('[name]',name));
+}
+Groups.prototype.deleteConfirm = function(){
+	var id = $('#groups_edit').data('id');
+	
+	$.post(groups.url,{'command':'delete','id':id},function(){
+		general.showGroups();
+	});
 }
 Groups.prototype.showGroup	= function(){
 	$('#users_back, #groupCancel').click(function(){ general.showGroups(); });
-	$('#users_delete').click(function(){
-		var name = $(this).data('name');
-		var id = $(this).data('name');
-		
-		if( confirm(users_delete.replace('[username]',name)) ){
-			$.post(groups.url,{'command':'delete','id':id},function(){
-				general.showGroups();
-			});
-		}
+	$('#groups_delete').click(function(){
+		groups.deleteItem();
 	});
 	
 	$('#groupEditSave').click(function(){ groups.edit(); });

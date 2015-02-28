@@ -24,7 +24,7 @@ class AdminUserAdd extends Helper
         
         $this->service_Template->set('usernameHeader', $this->service_Language->get('system/admin/users/username'));
         $this->service_Template->set('emailHeader', $this->service_Language->get('system/admin/users/email'));
-        $this->service_Template->set('headerText', $this->service_Language->get('system/admin/users/headerView'));
+        $this->service_Template->set('headerText', $this->service_Language->get('system/admin/users/headerAdd'));
         $this->service_Template->set('botHeader', $this->service_Language->get('system/admin/users/bot'));
         
         $this->service_Template->set('buttonBack', $this->service_Language->get('system/buttons/back'));

@@ -13,14 +13,25 @@
 	<block>
 		<title>system/admin/general/users</title>
 		<id>admin_general_users</id>
+		<icon>general/icons/users.png</icon>
+		<link>
+		  <title>system/admin/users/headerAdd</title>
+		  <id>admin_general_users_add_user</id>
+		</link>
 	</block>
 	<block>
 		<title>system/admin/general/groups</title>
 		<id>admin_general_groups</id>
+		<icon>general/icons/groups.png</icon>
+		<link>
+		  <title>system/admin/groups/headerAdd</title>
+		  <id>admin_general_groups_add_group</id>
+		</link>
 	</block>
 	<block>
 		<title>system/admin/general/page_rights</title>
 		<id>admin_general_page_rights</id>
+		<icon>general/icons/rights.png</icon>
 	</block>
 	<block>
 		<title>system/admin/general/updates</title>

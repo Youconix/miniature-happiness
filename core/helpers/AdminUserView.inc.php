@@ -22,6 +22,7 @@ class AdminUserView extends AdminUserAdd
         $this->service_Template->set('loggedinHeader', $this->service_Language->get('system/admin/users/loggedIn'));
         $this->service_Template->set('registratedHeader', $this->service_Language->get('system/admin/users/registrated'));
         $this->service_Template->set('activeHeader', $this->service_Language->get('system/admin/users/activated'));
+        $this->service_Template->set('headerText', $this->service_Language->get('system/admin/users/headerView'));
         
         $this->service_Template->set('username', $this->a_data['username']);
         $this->service_Template->set('email', $this->a_data['email']);
