@@ -47,7 +47,7 @@ class Headers extends Service
     }
 
     /**
-     * Returns if the object schould be traded as singleton
+     * Returns if the object schould be treated as singleton
      *
      * @return boolean True if the object is a singleton
      */
@@ -350,11 +350,20 @@ class Headers extends Service
     /**
      * Returns if a force download was excecuted
      *
-     * @return boolean is the download was excecuted
+     * @return boolean True if the download was excecuted
      */
     public function isForceDownload()
     {
         return $this->bo_forceDownload;
+    }
+    
+    /**
+     * Returns if a redirect was executed
+     * 
+     * @return boolean  True if a redirect was excequeted
+     */
+    public function isRedirect(){
+        return array_key_exists('Location', $this->a_headers);
     }
 
     /**
@@ -365,6 +374,15 @@ class Headers extends Service
     public function getHeaders()
     {
         return $this->a_headers;
+    }
+    
+    /**
+     * Imports the given headers
+     * 
+     * @param array $a_headers  The headers
+     */
+    public function importHeaders($a_headers){
+        $this->a_headers = $a_headers;
     }
 
     /**

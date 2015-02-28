@@ -26,29 +26,31 @@ namespace core\models;
 class Config extends Model
 {
 
-    private $service_Settings;
+    protected $service_Settings;
 
-    private $service_File;
+    protected $service_File;
 
-    private $service_Cookie;
+    protected $service_Cookie;
 
-    private $s_templateDir;
+    protected $s_templateDir;
 
-    private $bo_ajax = false;
+    protected $bo_ajax = false;
 
-    private $s_base;
+    protected $s_base;
 
-    private $s_page;
+    protected $s_page;
 
-    private $s_protocol;
+    protected $s_protocol;
 
-    private $s_command = 'view';
+    protected $s_command = 'view';
 
-    private $s_layout = 'default';
+    protected $s_layout = 'default';
 
-    private $a_observers = array();
+    protected $a_observers = array();
 
     const LOG_MAX_SIZE = 10000000;
+    
+    protected $s_language;
 
     /**
      * PHP 5 constructor
@@ -68,11 +70,22 @@ class Config extends Model
         
         $this->loadTemplateDir();
         
+        $this->loadLanguage();
+        
         $this->setDefaultValues($service_Settings);
+    }
+    
+    /**
+     * Returns the settings service
+     * 
+     * @return \core\services\Settings  The service
+     */
+    public function getSettings(){
+        return $this->service_Settings;
     }
 
     /**
-     * Returns if the object schould be traded as singleton
+     * Returns if the object schould be treated as singleton
      *
      * @return boolean True if the object is a singleton
      */
@@ -86,13 +99,96 @@ class Config extends Model
         $this->a_observers[] = $observer;
     }
 
-    private function notifyObservers()
+    protected function notifyObservers()
     {
         foreach ($this->a_observers as $observer) {
             if (! is_null($observer)) {
                 $observer->update($this);
             }
         }
+    }
+    
+    /**
+     * Loads the language
+     */
+    protected function loadLanguage(){
+        /* Check language */
+        $a_languages = $this->getLanguages();
+        $this->s_language = $this->service_Settings->get('defaultLanguage');
+        
+        if (isset($_GET['lang'])) {
+            if (in_array($_GET['lang'], $a_languages)) {
+                $this->s_language = $_GET['lang'];
+                $this->service_Cookie->set('language', $this->s_language, '/');
+            }
+            unset($_GET['lang']);
+        } else
+            if ($this->service_Cookie->exists('language')) {
+                if (in_array($this->service_Cookie->get('language'), $a_languages)) {
+                    $this->s_language = $this->service_Cookie->get('language');
+                    /* Renew cookie */
+                    $this->service_Cookie->set('language', $this->s_language, '/');
+                } else {
+                    $this->service_Cookie->delete('language');
+                }
+            }
+    }
+    
+    /**
+     * Collects the installed languages
+     *
+     * @return array The installed languages
+     */
+    public function getLanguages()
+    {
+        $a_languages = array();
+        $a_languageFiles = $this->service_File->readDirectory(NIV . 'language');
+    
+        foreach ($a_languageFiles as $s_languageFile) {
+            if (strpos($s_languageFile, 'language_') !== false) {
+                /* Fallback */
+                return $this->getLanguagesOld();
+            }
+    
+            if ($s_languageFile == '..' || $s_languageFile == '.' || strpos($s_languageFile, '.') !== false) {
+                continue;
+            }
+    
+            $a_languages[] = $s_languageFile;
+        }
+    
+        return $a_languages;
+    }
+    
+    /**
+     * Collects the installed languages
+     * Old way of storing
+     *
+     * @return array The installed languages
+     */
+    protected function getLanguagesOld()
+    {
+        $a_languages = array();
+        $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
+    
+        foreach ($a_languageFiles as $s_languageFile) {
+            if (strpos($s_languageFile, 'language_') === false)
+                continue;
+    
+            $s_languageFile = str_replace(array(
+                'language_',
+                '.lang'
+            ), array(
+                '',
+                ''
+            ), $s_languageFile);
+    
+            $a_languages[] = $s_languageFile;
+        }
+    
+        $this->bo_fallback = true;
+    
+        return $a_languages;
     }
 
     /**
@@ -101,7 +197,7 @@ class Config extends Model
      * @param core\services\Settings $service_Settings
      *            The settings service
      */
-    private function setDefaultValues($service_Settings)
+    protected function setDefaultValues($service_Settings)
     {
         if (! defined('DB_PREFIX')) {
             define('DB_PREFIX', $service_Settings->get('settings/SQL/prefix'));
@@ -156,7 +252,7 @@ class Config extends Model
     /**
      * Detects an AJAX call
      */
-    private function detectAjax()
+    protected function detectAjax()
     {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
             $this->bo_ajax = true;
@@ -173,27 +269,27 @@ class Config extends Model
     /**
      * Loads the template directory
      */
-    private function loadTemplateDir()
+    protected function loadTemplateDir()
     {
         $s_templateDir = $this->service_Settings->get('settings/templates/dir');
         
-        if (isset($_GET['private_style_dir'])) {
-            $s_styleDir = $this->clearLocation($_GET['private_style_dir']);
+        if (isset($_GET['protected_style_dir'])) {
+            $s_styleDir = $this->clearLocation($_GET['protected_style_dir']);
             if ($this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
                 $s_templateDir = $s_styleDir;
-                $this->service_Cookie->set('private_style_dir', $s_templateDir, '/');
+                $this->service_Cookie->set('protected_style_dir', $s_templateDir, '/');
             } else 
-                if ($this->service_Cookie->exists('private_style_dir')) {
-                    $this->service_Cookie->delete('private_style_dir', '/');
+                if ($this->service_Cookie->exists('protected_style_dir')) {
+                    $this->service_Cookie->delete('protected_style_dir', '/');
                 }
         } else 
-            if ($this->service_Cookie->exists('private_style_dir')) {
-                $s_styleDir = $this->clearLocation($this->service_Cookie->get('private_style_dir'));
+            if ($this->service_Cookie->exists('protected_style_dir')) {
+                $s_styleDir = $this->clearLocation($this->service_Cookie->get('protected_style_dir'));
                 if ($this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
                     $s_templateDir = $s_styleDir;
-                    $this->service_Cookie->set('private_style_dir', $s_templateDir, '/');
+                    $this->service_Cookie->set('protected_style_dir', $s_templateDir, '/');
                 } else {
-                    $this->service_Cookie->delete('private_style_dir', '/');
+                    $this->service_Cookie->delete('protected_style_dir', '/');
                 }
             }
         $this->s_templateDir = $s_templateDir;
@@ -209,7 +305,7 @@ class Config extends Model
      * @param String $s_location            
      * @return String path
      */
-    private function clearLocation($s_location)
+    protected function clearLocation($s_location)
     {
         while ((strpos($s_location, './') !== false) || (strpos($s_location, '../') !== false)) {
             $s_location = str_replace(array(
@@ -252,6 +348,15 @@ class Config extends Model
     public function getLayout()
     {
         return $this->s_layout;
+    }
+    
+    /**
+     * Returns the current language from the user
+     * 
+     * @return string   The language code
+     */
+    public function getLanguage(){
+        return $this->s_language;
     }
 
     /**

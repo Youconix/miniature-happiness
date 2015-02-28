@@ -33,18 +33,46 @@
 	<block>
 		<title>system/admin/general/updates</title>
 		<id>admin_general_updates</id>
+		<link>
+		  <title>system/admin/updates/checkUpdate</title>
+		  <id>admin_updates_checkupdate</id>
+		</link>
 	</block>
 	<block>
 		<title>system/admin/general/backup</title>
 		<id>admin_general_backup</id>
+		<link>
+		  <title>system/admin/maintenance/createBackup</title>
+		  <id>admin_backup_createbackup</id>
+		</link>
+        <link>
+          <title>system/admin/maintenance/restoreBackup</title>
+          <id>admin_backup_restorebackup</id>
+        </link>
 	</block>
 	<block>
 		<title>system/admin/general/maintenance</title>
 		<id>admin_general_maintenance</id>
+		<link>
+		  <title>system/admin/maintenance/optimizeDatabase</title>
+		  <id>admin_general_optimize_database</id>
+		</link>
+		<link>
+		  <title>system/admin/maintenance/checkDatabase</title>
+		  <id>admin_general_checkDatabase</id>
+		</link>
 	</block>
 	<block>
 		<title>system/admin/general/cache</title>
 		<id>admin_general_cache</id>
+		<link>
+		  <title>system/admin/cache/languageCache</title>
+		  <id>admin_general_cache_language</id>
+		</link>
+        <link>
+          <title>system/admin/cache/siteCache</title>
+          <id>admin_general_cache_site</id>
+        </link>
 	</block>
 	<block>
 		<title>system/admin/general/modules</title>

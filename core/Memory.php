@@ -181,7 +181,7 @@ class Memory
             Memory::$a_cache['\core\models\Config'] = $model_Config;
             
             require_once (Memory::$a_service['systemPath'] . 'Language.inc.php');
-            $service_Language = new \core\services\Language($service_Settings, $service_Cookie, $service_File);
+            $service_Language = new \core\services\Language($model_Config, $service_Cookie, $service_File);
             Memory::$a_cache['\core\services\Language'] = $service_Language;
             
             require_once (Memory::$a_service['systemPath'] . 'Mailer.inc.php');

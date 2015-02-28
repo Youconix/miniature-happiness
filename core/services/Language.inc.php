@@ -46,45 +46,26 @@ class Language extends Xml
     /**
      * PHP 5 constructor
      *
-     * @param core\services\Settings $service_Settings
-     *            The settings service
+     * @param core\models\Config $model_Config  The configuration
      * @param core\services\Cookie $service_Cookie
      *            The cookie handler
      * @param core\services\File $service_File
      *            The file service
      */
-    public function __construct(\core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie, \core\services\File $service_File)
+    public function __construct(\core\models\Config $model_Config, \core\services\Cookie $service_Cookie, \core\services\File $service_File)
     {
         parent::__construct();
         
         /* Check language */
         $this->service_File = $service_File;
-        $this->service_Settings = $service_Settings;
-        $a_languages = $this->getLanguages();
-        $this->s_language = $service_Settings->get('defaultLanguage');
-        
-        if (isset($_GET['lang'])) {
-            if (in_array($_GET['lang'], $a_languages)) {
-                $this->s_language = $_GET['lang'];
-                $service_Cookie->set('language', $this->s_language, '/');
-            }
-            unset($_GET['lang']);
-        } else 
-            if ($service_Cookie->exists('language')) {
-                if (in_array($service_Cookie->get('language'), $a_languages)) {
-                    $this->s_language = $service_Cookie->get('language');
-                    /* Renew cookie */
-                    $service_Cookie->set('language', $this->s_language, '/');
-                } else {
-                    $service_Cookie->delete('language');
-                }
-            }
+        $this->service_Settings = $model_Config->getSettings();
+        $this->s_language = $model_Config->getLanguage();
         
         $this->loadLanguageParser();
     }
 
     /**
-     * Returns if the object schould be traded as singleton
+     * Returns if the object schould be treated as singleton
      *
      * @return boolean True if the object is a singleton
      */
@@ -125,63 +106,6 @@ class Language extends Xml
             }
         }
         return $a_data;
-    }
-
-    /**
-     * Collects the installed languages
-     *
-     * @return array The installed languages
-     */
-    public function getLanguages()
-    {
-        $a_languages = array();
-        $a_languageFiles = $this->service_File->readDirectory(NIV . 'language');
-        
-        foreach ($a_languageFiles as $s_languageFile) {
-            if (strpos($s_languageFile, 'language_') !== false) {
-                /* Fallback */
-                return $this->getLanguagesOld();
-            }
-            
-            if ($s_languageFile == '..' || $s_languageFile == '.' || strpos($s_languageFile, '.') !== false) {
-                continue;
-            }
-            
-            $a_languages[] = $s_languageFile;
-        }
-        
-        return $a_languages;
-    }
-
-    /**
-     * Collects the installed languages
-     * Old way of storing
-     *
-     * @return array The installed languages
-     */
-    private function getLanguagesOld()
-    {
-        $a_languages = array();
-        $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
-        
-        foreach ($a_languageFiles as $s_languageFile) {
-            if (strpos($s_languageFile, 'language_') === false)
-                continue;
-            
-            $s_languageFile = str_replace(array(
-                'language_',
-                '.lang'
-            ), array(
-                '',
-                ''
-            ), $s_languageFile);
-            
-            $a_languages[] = $s_languageFile;
-        }
-        
-        $this->bo_fallback = true;
-        
-        return $a_languages;
     }
 
     public function getLanguageCodes()

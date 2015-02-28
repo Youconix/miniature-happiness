@@ -1,6 +1,6 @@
 <section id="groups">
     <section class="item_header">
-	   <h1>{editTitle}</h1>
+	   <h1 id="groups_main_title">{editTitle}</h1>
 	   
 	   <nav>
         <ul>

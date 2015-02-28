@@ -2,6 +2,19 @@
 namespace core\services;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Maintenance service for maintaining the website
  *
  * This file is part of Miniature-happiness
@@ -10,19 +23,6 @@ namespace core\services;
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Maintenance extends Service
 {
@@ -30,6 +30,8 @@ class Maintenance extends Service
     private $service_File;
 
     private $service_QueryBuilder;
+    
+    private $model_Config;
 
     private $model_Stats;
 
@@ -47,18 +49,18 @@ class Maintenance extends Service
      * @param core\services\File $service_File
      *            The file service
      * @param core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param core\services\Template $service_Template
      *            The template service
      * @param core\models\Stats $model_Stats
      *            The statistics model
+     * @param core\models\Config    $model_Config   The config
      */
-    public function __construct(\core\services\File $service_File, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Template $service_Template, \core\models\Stats $model_Stats)
+    public function __construct(\core\services\File $service_File, \core\services\QueryBuilder $service_QueryBuilder, \core\models\Stats $model_Stats,\core\models\Config    $model_Config)
     {
         $this->service_File = $service_File;
         $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
         $this->model_Stats = $model_Stats;
-        $this->s_styleDir = $service_Template->getStylesDir();
+        $this->s_styleDir = $model_Config->getStylesDir();
+        $this->model_Config = $model_Config;
     }
 
     /**
@@ -317,13 +319,5 @@ class Maintenance extends Service
     public function cleanStatsMonth()
     {
         $this->model_Stats->cleanStatsMonth();
-    }
-
-    /**
-     * Cleans the old logs
-     */
-    public function cleanLogs()
-    {
-        $this->model_Stats->clean();
     }
 }

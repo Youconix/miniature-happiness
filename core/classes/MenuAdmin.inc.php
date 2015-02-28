@@ -92,7 +92,7 @@ class MenuAdmin
                         $a_links[] = $item;
                     } else 
                         if ($item->tagName == 'title') {
-                            ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = '?';
+                            ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
                         } else {
                             $a_data[$item->tagName] = $item->nodeValue;
                         }
@@ -160,7 +160,7 @@ class MenuAdmin
             
             foreach ($obj_link->childNodes as $item) {
                 if ($item->tagName == 'title') {
-                    ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = '?';
+                    ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
                 } else {
                     $a_data[$item->tagName] = $item->nodeValue;
                 }

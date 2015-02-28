@@ -232,6 +232,7 @@
 			<date>Datum</date>
 		</messages>
 		<updates>
+		    <checkUpdate>Controleren voor updates</checkUpdate>
 			<title>Updates</title>
 		</updates>
 		<logs>
@@ -253,6 +254,8 @@
 			<ready>Gereed</ready>
 			<pending>Bezig</pending>
 			<error>Fout, zie log</error>
+			<createBackup>Backup maken</createBackup>
+			<restoreBackup>Herstellen vanaf backup</restoreBackup>
 		</maintenance>
 		<notices>
 			<screenTitle>Beheer paneel : bekijk systeem meldingen</screenTitle>
@@ -301,6 +304,13 @@
     		<stats>Statistieken</stats>
     		<maintenance>Onderhoud</maintenance>
 		</menu>
+		<cache>
+		  <languageCache>Taal bestanden cache verwijderen</languageCache>
+		  <siteCache>Site cache verwijderen</siteCache>
+		  <title>Cache verwijderen</title>
+		  <language>Weet u zeker dat u de taal cache wilt verwijderen?</language>
+		  <site>Weet u zeker dat u de site cache wilt verwijderen?</site>
+		</cache>
 	</admin>
 
 	<bann>

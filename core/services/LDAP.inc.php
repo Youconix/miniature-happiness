@@ -53,7 +53,7 @@ class LDAP extends Service
     }
 
     /**
-     * Returns if the object schould be traded as singleton
+     * Returns if the object schould be treated as singleton
      *
      * @return boolean True if the object is a singleton
      */

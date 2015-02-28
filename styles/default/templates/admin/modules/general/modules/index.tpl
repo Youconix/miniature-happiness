@@ -1,6 +1,6 @@
 <section id="modules">
     <section class="item_header">
-	   <h1>{moduleTitle}</h1>
+	   <h1 id="modules_main_title">{moduleTitle}</h1>
 	</section>
 	
 	<section class="item_body">

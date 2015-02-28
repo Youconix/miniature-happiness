@@ -27,6 +27,10 @@ namespace core\services;
 class Template extends Service
 {
 
+    private $service_Headers;
+
+    private $service_Cache;
+
     private $model_Config;
 
     private $service_File;
@@ -58,14 +62,20 @@ class Template extends Service
      *            The File service
      * @param core\models\Config $model_Config
      *            The configuration model
+     * @param core\services\Cache $service_Cache
+     *            The caching service
+     * @param core\services\Headers $service_Headers
+     *            The headers service
      * @throws TemplateException if the layout does not exist
      * @throws IOException if the layout is not readable
      */
-    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config)
+    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Cache $service_Cache, \core\services\Headers $service_Headers)
     {
         $this->service_File = $service_File;
         $this->model_Config = $model_Config;
         $this->s_templateDir = $model_Config->getTemplateDir();
+        $this->service_Headers = $service_Headers;
+        $this->service_Cache = $service_Cache;
         
         $this->model_Config->addObserver($this);
         
@@ -73,7 +83,7 @@ class Template extends Service
     }
 
     /**
-     * Returns if the object schould be traded as singleton
+     * Returns if the object schould be treated as singleton
      *
      * @return boolean True if the object is a singleton
      */
@@ -112,6 +122,8 @@ class Template extends Service
         if (defined('PROCES') || \core\Memory::isTesting()) {
             return;
         }
+        
+        $this->service_Cache->checkCache(); // Program wil stop if cache is used
         
         /* Load layout */
         if (! $this->model_Config->isAjax()) {
@@ -544,7 +556,7 @@ class Template extends Service
      */
     public function printToScreen()
     {
-        if (! $this->bo_loaded) {
+        if (! $this->bo_loaded || $this->service_Headers->isForceDownload() || $this->service_Headers->isRedirect()) {
             return;
         }
         
@@ -600,6 +612,8 @@ class Template extends Service
         $this->s_template = preg_replace("#{\[+[a-zA-Z_0-9/]+\]}+#si", "", $this->s_template);
         
         echo ($this->s_template);
+        
+        $this->service_Cache->writeCache($this->s_template, $this->service_Headers);
         
         $this->bo_loaded = false;
     }

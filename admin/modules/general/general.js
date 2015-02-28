@@ -24,12 +24,11 @@ General.prototype.init = function() {
 	$('#admin_general_maintenance h2').click(function() {
 		general.showMaintenance()
 	});
-	$('#admin_general_cache h2').click(function() {
-		general.showCache()
-	});
 	$('#admin_general_modules h2').click(function() {
 		general.showModules()
 	});
+	
+	cache.init();
 }
 General.prototype.showUsers = function() {
 	admin.show(this.address + 'users.php?command=index', users.init);
@@ -60,6 +59,29 @@ var general = new General();
 $(document).ready(function() {
 	general.init();
 });
+
+/* Cache */
+function Cache(){
+	this.address = '../modules/general/cache.php';
+}
+Cache.prototype.init	= function(){
+	$('#admin_general_cache_language').click(function(){
+		confirmBox.init(350,cache.language);
+		confirmBox.show(languageAdmin.cache_title,languageAdmin.cache_language);
+	});
+	$('#admin_general_cache_site').click(function(){
+		confirmBox.init(350,cache.site);
+		confirmBox.show(languageAdmin.cache_title,languageAdmin.cache_site);
+	});
+}
+Cache.prototype.language	= function(){
+	$.post(cache.address,{'command':'language'});
+}
+Cache.prototype.site	= function(){
+	$.post(cache.address,{'command':'site'});
+}
+
+var cache = new Cache();
 
 /* Groups */
 function Groups() {

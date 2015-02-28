@@ -1,6 +1,6 @@
 <section id="pages" data-url="{url}">
     <section class="item_header">
-       <h1>{pageTitle}</h1>
+       <h1 id="pages_main_title">{pageTitle}</h1>
        
        <nav>
         <ul>
