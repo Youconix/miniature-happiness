@@ -117,7 +117,7 @@ class Database_Mysqli_binded
         }
         
         $s_command = strtoupper(trim(substr($s_query, 0, strpos($s_query, ' '))));
-        if ($s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE') {
+        if( $s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE' || $s_command == 'OPTIMIZE' || $s_command == 'REPAIR' ){
             $this->a_result = null; // force cleaning
             
             $query->store_result();

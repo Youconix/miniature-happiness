@@ -464,7 +464,7 @@ class Database_Mysqli implements \core\database\DAL
         }
         
         $s_command = strtoupper(trim(substr($s_query, 0, strpos($s_query, ' '))));
-        if ($s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE') {
+        if( $s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE' || $s_command == 'OPTIMIZE' || $s_command == 'REPAIR' ){
             $this->obj_query = $qry_sql;
         }
         if ($s_command == 'INSERT') {
