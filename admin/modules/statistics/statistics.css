@@ -1,0 +1,10 @@
+
+
+/* Icons */
+#admin_statistics_hits h2, #admin_statistics_visitors h2, #admin_statistics_visitors h2, #admin_statistics_os h2, #admin_statistics_browsers h2, 
+#admin_statistics_screen_colors h2, #admin_statistics_references h2, #admin_statistics_pages h2 {
+    background-image:url('stats.png');
+    background-size:25px;
+    background-repeat: no-repeat;
+    padding-left:30px;
+}

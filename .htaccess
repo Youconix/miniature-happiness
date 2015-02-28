@@ -1,4 +1,9 @@
 Options +FollowSymLinks -MultiViews
+<ifModule mod_headers.c>
+    RequestHeader  edit "If-None-Match" "^\"(.*)-gzip\"$" "\"$1\""
+    Header  edit "ETag" "^\"(.*[^g][^z][^i][^p])\"$" "\"$1-gzip\""
+</ifModule>
+
 RewriteEngine on
 RewriteBase /
 

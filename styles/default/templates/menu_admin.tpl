@@ -12,7 +12,7 @@
                 <article id="tab_{id}">
                     <block {tab_{id}}>
                         <div class="menu_item" id="{item_id}">
-                            <h2><img src="{NIV}{icon}" alt="">{title}</h2>
+                            <h2>{title}</h2>
                             
                             <block {link_{name}}>
                                 <p id="{link_id}">{link_title}</p>

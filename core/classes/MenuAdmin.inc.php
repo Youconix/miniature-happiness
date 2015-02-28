@@ -100,11 +100,6 @@ class MenuAdmin
                 if (array_key_exists('id', $a_data)) {
                     $a_data['item_id'] = $a_data['id'];
                 }
-                if (empty($a_data['icon'])) {
-                    $a_data['icon'] = 'images/youconix/module_not_found.png';
-                } else {
-                    $a_data['icon'] = 'admin/modules/' . $a_data['icon'];
-                }
                 $a_data['name'] = $i_blockNr;
                 
                 $this->service_Template->setBlock('tab_' . $i, $a_data);

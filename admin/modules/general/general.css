@@ -170,3 +170,37 @@ width
 #group_user_list td:first-child {
 	width:200px;
 }
+
+
+/* Icons */
+#admin_general_users h2,#admin_general_backup h2,#admin_general_cache h2,#admin_general_groups h2,#admin_general_maintenance h2,#admin_general_modules h2,
+#admin_general_page_rights h2,#admin_general_updates h2 {
+	background-image:url('icons/youconix.png');
+    background-size:25px;
+    background-repeat: no-repeat;
+    padding-left:30px;
+}
+#admin_general_users h2 {
+    background-position:0 -225px;
+}
+#admin_general_cache h2 {
+    background-position:0 -32px;
+}
+#admin_general_groups h2 {
+    background-position:0 -58px;
+}
+#admin_general_maintenance h2 {
+    background-position:0 -92px;
+}
+#admin_general_modules h2 {
+    background-position:0 -130px;
+}
+#admin_general_page_rights h2 {
+    background-position:0 -165px;
+}
+#admin_general_updates h2 {
+    background-position:0 -190px;
+}
+#admin_general_backup h2 {
+	background-position:0 0px;
+}
