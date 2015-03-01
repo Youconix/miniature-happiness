@@ -3,7 +3,7 @@
 	width: 90%;
 }
 
-#users fieldset label.label, #groups fieldset label.label, #pages fieldset label.label
+#users fieldset label.label, #groups fieldset label.label, #pages fieldset label.label, #maintenance fieldset label.label
 	{
 	display: inline-block;
 	width: 20%;
@@ -171,10 +171,48 @@ width
 	width:200px;
 }
 
+#admin_general_cache h2, #admin_general_backup h2, #admin_general_maintenance h2, #admin_general_updates h2 { cursor:auto;}
+
+/* Maintenance */
+.maintenancePending, .maintenanceError, .maintenanceReady {
+    margin-left:40px;
+    width:40%;
+    border-radius:5px;
+    #float:left;
+    height:35px;
+    display:inline-block;
+    padding:4px 10px;
+    color:#fff;
+    font-weight:bold;
+}
+.maintenanceReady {
+	background-color:green;
+	background: o-linear-gradient(green,white);
+	background: ms-linear-gradient(green,white);
+	background: moz-linear-gradient(green,white);
+	background: webkit-linear-gradient(green,white);
+	background: linear-gradient(green,white);
+}
+.maintenancePending {
+    background-color:orange;
+    background: o-linear-gradient(orange,white);
+    background: ms-linear-gradient(orange,white);
+    background: moz-linear-gradient(orange,white);
+    background: webkit-linear-gradient(orange,white);
+    background: linear-gradient(orange,white);
+}
+.maintenanceError {
+    background-color:red;
+    background: o-linear-gradient(red,white);
+    background: ms-linear-gradient(red,white);
+    background: moz-linear-gradient(red,white);
+    background: webkit-linear-gradient(red,white);
+    background: linear-gradient(red,white);
+}
 
 /* Icons */
 #admin_general_users h2,#admin_general_backup h2,#admin_general_cache h2,#admin_general_groups h2,#admin_general_maintenance h2,#admin_general_modules h2,
-#admin_general_page_rights h2,#admin_general_updates h2, #users_main_title, #groups_main_title, #pages_main_title,#modules_main_title {
+#admin_general_page_rights h2,#admin_general_updates h2, #users_main_title, #groups_main_title, #pages_main_title,#modules_main_title, #maintenance_main_title {
 	background-image:url('icons/youconix.png');
     background-size:25px;
     background-repeat: no-repeat;
@@ -189,7 +227,7 @@ width
 #admin_general_groups h2, #groups_main_title {
     background-position:0 -58px;
 }
-#admin_general_maintenance h2 {
+#admin_general_maintenance h2, #maintenance_main_title {
     background-position:0 -92px;
 }
 #admin_general_modules h2, #modules_main_title {

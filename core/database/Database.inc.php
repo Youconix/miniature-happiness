@@ -274,4 +274,15 @@ interface DAL
      * @return boolean if the database exists, otherwise false
      */
     public function databaseExists($s_database);
+    
+    /**
+     * Describes the table structure
+     * 
+     * @param string    $s_table    The table name
+     * @param string    The structure
+     * @param boolean   Set to true to add "IF NOT EXISTS"
+     * @param boolean   Set to true to add dropping the table first
+     * @throws \DBException If the table does not exists
+     */
+    public function describe($s_table,$bo_addNotExists = false,$bo_dropTable = false);
 }

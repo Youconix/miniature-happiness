@@ -18,17 +18,12 @@ General.prototype.init = function() {
 	$('#admin_general_updates h2').click(function() {
 		general.showUpdates()
 	});
-	$('#admin_general_backup h2').click(function() {
-		general.showBackup()
-	});
-	$('#admin_general_maintenance h2').click(function() {
-		general.showMaintenance()
-	});
 	$('#admin_general_modules h2').click(function() {
 		general.showModules()
 	});
 	
 	cache.init();
+	maintenance.init();
 }
 General.prototype.showUsers = function() {
 	admin.show(this.address + 'users.php?command=index', users.init);
@@ -38,18 +33,6 @@ General.prototype.showGroups = function() {
 }
 General.prototype.showPageRights = function() {
 	admin.show(this.address + 'pages.php?command=index', pageRights.init);
-}
-General.prototype.showUpdates = function() {
-	admin.show(this.address + 'updates.php');
-}
-General.prototype.showBackup = function() {
-	admin.show('maintenance.php?command=backup');
-}
-General.prototype.showMaintenance = function() {
-	admin.show('maintenance.php');
-}
-General.prototype.showCache = function() {
-	admin.show('cache.php');
 }
 General.prototype.showModules = function() {
 	admin.show(this.address + 'modules.php?command=index', modules.init);
@@ -229,6 +212,120 @@ Groups.prototype.check = function() {
 	return data;
 }
 var groups = new Groups();
+
+/* Maintenance */
+function Maintenance(){
+	this.address = "../modules/general/maintenance.php";
+	this.action = '';
+}
+Maintenance.prototype.init = function(){
+	$('#admin_updates_checkupdate').click(function(){
+		admin.show(maintenance.address + '?command=checkupdates', maintenance.checkupdates);
+	});
+	$('#admin_backup_createbackup').click(function(){
+		admin.show(maintenance.address + '?action=view', maintenance.backup);
+	});
+	$('#admin_backup_restorebackup').click(function(){
+		admin.show(maintenance.address + '?command=restoreBackupScreen', maintenance.restoreBackup);
+	});
+	$('#admin_general_optimize_database').click(function(){
+		maintenance.action = 'optimize_database';
+		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
+	});
+	$('#admin_general_checkDatabase').click(function(){
+		maintenance.action = 'check_database';
+		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
+	});
+	$('#admin_general_stats').click(function(){
+		maintenance.action = 'stats';
+		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
+	});
+}
+Maintenance.prototype.checkupdates = function(){
+	
+}
+Maintenance.prototype.backup = function(){
+	maintenance.showPending('maintenance_backup');
+	
+	setTimeout(function(){
+		$.post(maintenance.address,{'command':'createBackup'}, function(response){
+			response = JSON.parse(response);
+			if( reponse.status != 1 ){
+				maintenance.showError('maintenance_backup');
+			}
+			else {
+				maintenance.showReady('maintenance_backup');
+				location.href = response['file']; // download backup
+			}
+		});
+	},750);
+}
+Maintenance.prototype.restoreBackup = function(){
+	
+}
+Maintenance.prototype.mainScreen = function(){
+	$('#maintenance_check_database_label').click(function(){
+		maintenance.showPending('maintenance_check_database');
+		
+		setTimeout(function(){
+			$.post(maintenance.address,{'action':'checkDatabase','command':'result'},function(response){
+				maintenance.checkResponse(response,'maintenance_check_database');
+			});
+		},750);
+	});
+	
+	$('#maintenance_optimize_database_label').click(function(){
+		maintenance.showPending('maintenance_optimize_database');
+		
+		setTimeout(function(){
+			$.post(maintenance.address,{'action':'optimizeDatabase','command':'result'},function(response){
+				maintenance.checkResponse(response,'maintenance_optimize_database');
+			});
+		},750);
+	});
+	
+	$('#maintenance_clean_stats_label').click(function(){
+		maintenance.showPending('maintenance_clean_stats');
+		
+		setTimeout(function(){
+			$.post(maintenance.address,{'action':'cleanStats','command':'result'},function(response){
+				maintenance.checkResponse(response,'maintenance_clean_stats');
+			});
+		},750);
+	});
+	
+	if( maintenance.action == 'check_database' ){
+		$('#maintenance_check_database_label').trigger('click');
+	}
+	else if( maintenance.action == 'optimize_database' ){
+		$('#maintenance_optimize_database_label').trigger('click');
+	}
+	else if( maintenance.action == 'stats' ){
+		$('#maintenance_clean_stats_label').trigger('click');
+	}
+}
+Maintenance.prototype.checkResponse = function(response,field){
+	if( response != 1 ){
+		maintenance.showError(field);
+	}
+	else {
+		maintenance.showReady(field);
+	}
+}
+Maintenance.prototype.showReady	= function(field){
+	$('#'+field).removeClass('maintenancePending').removeClass('maintenanceError').addClass('maintenanceReady');
+	$('#'+field).html(languageAdmin.maintenance_ready);
+}
+Maintenance.prototype.showPending	= function(field){
+	$('#'+field).removeClass('maintenanceError').removeClass('maintenanceReady').addClass('maintenancePending');
+	$('#'+field).html(languageAdmin.maintenance_pending);
+}
+Maintenance.prototype.showError	= function(field){
+	$('#'+field).removeClass('maintenancePending').removeClass('maintenanceReady').addClass('maintenanceError');
+	$('#'+field).html(languageAdmin.maintenance_error);
+}
+
+var maintenance = new Maintenance();
 
 /* modules */
 function Modules() {

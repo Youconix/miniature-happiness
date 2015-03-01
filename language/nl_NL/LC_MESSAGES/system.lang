@@ -252,10 +252,11 @@
 			<cleanStatsYear>Statistieken ouder dan een jaar verwijderen</cleanStatsYear>
 			<cleanStatsMonth>Statistieken ouder dan een maand verwijderen</cleanStatsMonth>
 			<ready>Gereed</ready>
-			<pending>Bezig</pending>
-			<error>Fout, zie log</error>
+			<pending>Bezig...</pending>
+			<error>Er is een fout opgetreden, zie de log</error>
 			<createBackup>Backup maken</createBackup>
 			<restoreBackup>Herstellen vanaf backup</restoreBackup>
+			<stats>Oude statieken verwijderen</stats>
 		</maintenance>
 		<notices>
 			<screenTitle>Beheer paneel : bekijk systeem meldingen</screenTitle>

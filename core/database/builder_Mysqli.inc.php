@@ -673,6 +673,94 @@ class Builder_mysqli implements \core\services\Builder
     {
         return $this->service_Database;
     }
+
+    /**
+     * Dumps the current active database to a file
+     *
+     * @return string The database dump
+     */
+    public function dumpDatabase()
+    {
+        $sql = '';
+        
+        /* Remove constrains */
+        $this->service_Database->query("SELECT table_name,column_name,referenced_table_name,referenced_column_name,contraint_name 
+            FROM  information_schema.key_column_usage WHERE
+            referenced_table_name is not null
+            and table_schema = '" . $this->service_Database->getDatabase() . "'");
+        
+        $a_contrains = array();
+        if ($this->service_Database->num_rows() > 0) {
+            $a_contrains = $this->service_Database->fetch_assoc();
+            
+            foreach($a_contrains AS $a_contrain ){
+                $sql .= 'ALTER TABLE '.$a_constrain['table_name'].' IF EXISTS DROP FOREIGN KEY '.$a_constrain['constraint_name'].';';
+            }
+            $sql .= "\n-- --------------------------\n";
+        }
+        
+        $a_tables = $this->showTables();
+        foreach ($a_tables as $s_table) {
+            $service_Database = $this->getDatabase();
+            
+            $sql .= $this->dumpTable($s_table);
+            $sql .= "\n";
+            $sql .= "-- ---------------------------\n\n";
+        }
+        
+        /* Restore constrains */
+        if (count($a_contrains) > 0) {
+            foreach($a_contrains AS $a_contrain ){
+                $sql .= 'ALTER TABLE '.$a_constrain['table_name'].' ADD CONSTRAINT '.$a_constrain['constraint_name'].' FOREIGN KEY ( '.$a_contrain['column_name'].') 
+                    REFERENCES '.$a_contrain['referenced_table_name'].' ( '.$a_contrain['referenced_column_name'].' ) ON DELETE RESTRICT ON UPDATE RESTRICT ;'."\n";
+            }
+            
+            $sql .= "\n-- --------------------------\n";
+        }
+        
+        
+        return $sql;
+    }
+
+    protected function dumpTable($s_table)
+    {
+        /* Table structure */
+        $s_sql . "--\n" . '-- Table structure for table ' . $s_table . ".\n--\n";
+        $s_structure = $this->service_Database->describe($s_table, false, true);
+        
+        /* Table content */
+        $this->select($s_table, '*');
+        $database = $this->getResult();
+        
+        /* Get colums */
+        $s_sql .= "--\n" . '-- Dumping data for table ' . $s_table . ".\n--\n";
+        if ($database->num_rows() == 0) {
+            return $s_sql;
+        }
+        $a_data = $database->fetch_assoc();
+        $a_keys = array_keys($a_data[0]);
+        
+        $a_columns = array();
+        foreach ($a_keys as $s_column) {
+            $a_columns[] = $s_column;
+        }
+        $s_insert = 'INSERT INTO ' . $s_table . ' (' . implode(',', $a_columns) . ') VALUES (';
+        
+        foreach ($a_data as $a_item) {
+            $a_values = array();
+            foreach ($a_item as $s_key => $s_value) {
+                if (is_numeric($s_value)) {
+                    $a_values[] = $s_value;
+                } else {
+                    $a_values[] = "'" . str_replace("'", "\'", $s_value) . "'";
+                }
+            }
+            
+            $s_sql .= $s_insert . implode(',', $a_values) . ");\n";
+        }
+        
+        return $s_sql;
+    }
 }
 
 abstract class QueryConditions_Mysqli

@@ -351,6 +351,13 @@ interface Builder
      * @return DAL The DAL
      */
     public function getDatabase();
+    
+    /**
+     * Dumps the current active database to a file
+     * 
+     * @return string   The database dump
+     */
+    public function dumpDatabase();
 }
 
 interface Where

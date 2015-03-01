@@ -61,6 +61,10 @@
 		  <title>system/admin/maintenance/checkDatabase</title>
 		  <id>admin_general_checkDatabase</id>
 		</link>
+        <link>
+          <title>system/admin/maintenance/stats</title>
+          <id>admin_general_stats</id>
+        </link>
 	</block>
 	<block>
 		<title>system/admin/general/cache</title>

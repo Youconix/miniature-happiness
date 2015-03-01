@@ -618,4 +618,30 @@ class Database_Mysqli implements \core\database\DAL
             throw new \DBException("Database-error : trying to get data on a non-SELECT-query");
         }
     }
+    
+    /**
+     * Describes the table structure
+     * 
+     * @param string    $s_table    The table name
+     * @param string    The structure
+     * @param boolean   Set to true to add "IF NOT EXISTS"
+     * @param boolean   Set to true to add dropping the table first
+     * @throws \DBException If the table does not exists
+     */
+    public function describe($s_table,$bo_addNotExists = false,$bo_dropTable = false){
+        $this->query('SHOW CREATE TABLE '.$s_table);
+        if( $this->num_rows() == 0 ){
+            throw new \DBException('Table '.$s_table.' does not exist.');
+        }
+        
+        $a_table = $this->fetch_assoc();
+        $s_description = $a_table[0][$s_table];
+        if( $bo_dropTable ){
+            $s_description = 'DROP TABLE IF EXISTS '.$s_table.";\n".$s_description;   
+        }        
+        if( $bo_addNotExists ){
+            $s_description = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $s_description);
+        }
+        return $s_description;
+    }
 }

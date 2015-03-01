@@ -2,6 +2,19 @@
 namespace admin;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Admin maintenance class
  *
  * This file is part of Miniature-happiness
@@ -9,24 +22,10 @@ namespace admin;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *       
  */
-define('NIV', '../');
+define('NIV', '../../../');
 
-include (NIV . 'include/AdminLogicClass.php');
+include (NIV . 'core/AdminLogicClass.php');
 
 class Maintenance extends \core\AdminLogicClass
 {
@@ -40,37 +39,26 @@ class Maintenance extends \core\AdminLogicClass
     {
         $this->init();
         
-        if (! Memory::isAjax()) {
+        if (! $this->model_Config->isAjax()) {
             exit();
         }
         
-        if (! isset($this->get['action']) && ! isset($this->post['action'])) {
-            $this->view();
-        }
         if (isset($this->get['action'])) {
-            if ($this->get['action'] == 'css') {
-                $this->performAction($this->get['action']);
-            } else 
-                if ($this->get['action'] == 'js') {
-                    $this->performAction($this->get['action']);
-                } else 
-                    if ($this->get['action'] == 'checkDatabase') {
-                        $this->performAction($this->get['action']);
-                    } else 
-                        if ($this->get['action'] == 'optimizeDatabase') {
-                            $this->performAction($this->get['action']);
-                        }
+            switch ($this->get['action']) {
+                default:
+                    $this->view();
+                    break;
+            }
         } else 
             if (isset($this->post['action'])) {
-                if ($this->post['action'] == 'cleanLogs') {
-                    $this->performAction($this->post['action']);
-                } else 
-                    if ($this->post['action'] == 'cleanStatsYear') {
-                        $this->performAction($this->post['action']);
-                    } else 
-                        if ($this->post['action'] == 'cleanStatsMonth') {
-                            $this->performAction($this->post['action']);
-                        }
+                $this->performAction();
+            }
+            else if( isset($this->post['command']) ){
+                switch($this->post['command']){
+                    case 'createBackup' :
+                        $this->createBackup();
+                        break;
+                }
             }
     }
 
@@ -88,62 +76,68 @@ class Maintenance extends \core\AdminLogicClass
         
         parent::init();
         
-        $this->service_Maintenance = Memory::services('Maintenance');
+        $this->service_Maintenance = \core\Memory::services('Maintenance');
     }
 
     /**
-     * Generates the action menu
+     * Generates the action menu 
      */
     private function view()
     {
-        $this->service_Template->set('compressCSS', $this->service_Language->get('admin/maintenance/compressCSS'));
-        $this->service_Template->set('compressJS', $this->service_Language->get('admin/maintenance/compressJS'));
-        $this->service_Template->set('checkDatabase', $this->service_Language->get('admin/maintenance/checkDatabase'));
-        $this->service_Template->set('optimizeDatabase', $this->service_Language->get('admin/maintenance/optimizeDatabase'));
-        $this->service_Template->set('cleanLogs', $this->service_Language->get('admin/maintenance/cleanLogs'));
-        $this->service_Template->set('systemUpdate', $this->service_Language->get('admin/maintenance/systemUpdate'));
-        $this->service_Template->set('cleanStatsYear', $this->service_Language->get('admin/maintenance/cleanStatsYear'));
-        $this->service_Template->set('cleanStatsMonth', $this->service_Language->get('admin/maintenance/cleanStatsMonth'));
-        $this->service_Template->set('ready', $this->service_Language->get('admin/maintenance/ready'));
+        $this->service_Template->set('moduleTitle',t('system/admin/general/maintenance'));
+        $this->service_Template->set('checkDatabase', t('system/admin/maintenance/checkDatabase'));
+        $this->service_Template->set('optimizeDatabase', t('system/admin/maintenance/optimizeDatabase'));
+        $this->service_Template->set('cleanStatsYear', t('system/admin/maintenance/stats'));
+        $this->service_Template->set('backup',t('system/admin/maintenance/createBackup'));        
+        $this->service_Template->set('ready',t('system/admin/maintenance/ready'));
     }
 
     /**
      * Performs the maintenance action
-     *
-     * @param string $s_action
-     *            action
      */
-    private function performAction($s_action)
+    private function performAction()
     {
         $bo_result = false;
         
-        if ($s_action == 'css') {
-            $bo_result = $this->service_Maintenance->compressCSS();
-        } else 
-            if ($s_action == 'js') {
+        switch ($this->post['action']) {
+            case 'css':
+                $bo_result = $this->service_Maintenance->compressCSS();
+                break;
+            
+            case 'js':
                 $bo_result = $this->service_Maintenance->compressJS();
-            } else 
-                if ($s_action == 'checkDatabase') {
-                    $bo_result = $this->service_Maintenance->checkDatabase();
-                } else 
-                    if ($s_action == 'optimizeDatabase') {
-                        $bo_result = $this->service_Maintenance->optimizeDatabase();
-                    } else 
-                        if ($s_action == 'cleanLogs') {
-                            $bo_result = $this->service_Maintenance->cleanLogs();
-                        } else 
-                            if ($s_action == 'cleanStatsYear') {
-                                $bo_result = $this->service_Maintenance->cleanStatsYear();
-                            } else 
-                                if ($s_action == 'cleanStatsMonth') {
-                                    $bo_result = $this->service_Maintenance->cleanStatsMonth();
-                                }
+                break;
+            
+            case 'checkDatabase':
+                $bo_result = $this->service_Maintenance->checkDatabase();
+                break;
+            
+            case 'optimizeDatabase':
+                $bo_result = $this->service_Maintenance->optimizeDatabase();
+                break;
+            
+            case 'cleanStats':
+                $bo_result = $this->service_Maintenance->cleanStatsYear();
+                break;
+        }
         
         if ($bo_result) {
             $this->service_Template->set('result', 1);
         } else {
             $this->service_Template->set('result', 0);
         }
+    }
+    
+    /**
+     * Creates the backup
+     */
+    private function createBackup(){
+        $s_backup = $this->service_Maintenance->createBackup();
+        
+        ( is_null($s_backup) ) ? $bo_result = 0 : $bo_result = 1;
+        
+        $this->service_Template->set('result', $bo_result);
+        $this->service_Template->set('backup',$s_backup);
     }
 }
 

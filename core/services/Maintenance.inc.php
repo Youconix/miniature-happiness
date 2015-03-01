@@ -34,6 +34,8 @@ class Maintenance extends Service
     private $model_Config;
 
     private $model_Stats;
+    
+    private $service_Logs;
 
     private $s_styleDir;
 
@@ -53,14 +55,17 @@ class Maintenance extends Service
      * @param core\models\Stats $model_Stats
      *            The statistics model
      * @param core\models\Config    $model_Config   The config
+     * @param core\services\Logs    $service_Logs   The logger
      */
-    public function __construct(\core\services\File $service_File, \core\services\QueryBuilder $service_QueryBuilder, \core\models\Stats $model_Stats,\core\models\Config    $model_Config)
+    public function __construct(\core\services\File $service_File, \core\services\QueryBuilder $service_QueryBuilder, \core\models\Stats $model_Stats,
+        \core\models\Config $model_Config,\core\services\Logs $service_Logs)
     {
         $this->service_File = $service_File;
         $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
         $this->model_Stats = $model_Stats;
         $this->s_styleDir = $model_Config->getStylesDir();
         $this->model_Config = $model_Config;
+        $this->service_Logs = $service_Logs;
     }
 
     /**
@@ -261,7 +266,8 @@ class Maintenance extends Service
             
             return 1;
         } catch (\DBException $e) {
-            \core\Memory::services('ErrorHandler')->error($e);
+            $this->service_Logs->exception($e);
+            
             return 0;
         }
     }
@@ -287,7 +293,7 @@ class Maintenance extends Service
             
             return 1;
         } catch (\DBException $e) {
-            \core\Memory::services('ErrorHandler')->error($e);
+            $this->service_Logs->exception($e);
             return 0;
         }
     }
@@ -319,5 +325,118 @@ class Maintenance extends Service
     public function cleanStatsMonth()
     {
         $this->model_Stats->cleanStatsMonth();
+    }
+    
+    public function createBackupFull(){
+        if( !$this->isZipSupported() ){
+            $this->service_Logs->errorLog('Can not create backup. Zip support is missing');
+            return null;
+        }
+    
+        $s_temp = DATA_DIR.DIRECTORY_SEPARATOR.'backups'.DIRECTORY_SEPARATOR;
+        $s_filename = $s_temp.'backup '.date('d-m-Y H:i').'zip';
+        $obj_zip = new \ZipArchive();
+    
+        if(  $obj_zip->open($s_filename.\ZipArchive::CREATE) !== true ){
+            $this->service_Logs->errorLog('Can not create zip archive in directory '.$s_temp.'.');
+            return;
+        }
+    
+        $obj_zip->setArchiveComment('Backup created by Miniature-happiness on '.date('d-m-Y H:i:s').'.');
+    
+        /* Add database */
+        $obj_zip->addFromString('database.sql',$this->backupDatabase());
+        
+        $this->addDirectory($obj_zip, NIV,'');
+    
+        $obj_zip->close();
+    
+        return $s_temp.$s_filename;
+    }
+    
+    protected function addDirectory($obj_zip,$s_directory,$s_pre){
+        if( $s_pre != '' ){ $s_pre .= DIRECTORY_SEPARATOR; }
+        
+        $a_files = $this->service_File->readDirectory();
+        foreach( $a_files AS $s_file ){
+            if( substr($s_file, 0,1) == '.' && $s_file != '.htaccess' ){
+                continue;
+            }
+            
+            if( is_dir($s_file) ){
+                $obj_zip->addEmptyDir($s_pre.$s_file);
+                $obj_zip = $this->addDirectory($obj_zip, $s_directory.DIRECTORY_SEPARATOR.$s_file, $s_pre.$s_file);
+            }
+            else {
+                $obj_zip->addFile($s_directory.DIRECTORY_SEPARATOR,$s_pre.$s_file);
+            }
+        }
+        
+        return $obj_zip;
+    }
+    
+    public function createBackup(){
+        if( !$this->isZipSupported() ){
+            $this->service_Logs->errorLog('Can not create backup. Zip support is missing');
+            return null;
+        }
+        
+        $s_temp = DATA_DIR.DIRECTORY_SEPARATOR.'backups'.DIRECTORY_SEPARATOR;
+        $s_filename = $s_temp.'backup '.date('d-m-Y H:i').'zip';
+        $obj_zip = new \ZipArchive();
+        
+        if(  $obj_zip->open($s_filename.\ZipArchive::CREATE) !== true ){
+            $this->service_Logs->errorLog('Can not create zip archive in directory '.$s_temp.'.');
+            return;
+        }
+        
+        $obj_zip->setArchiveComment('Backup created by Miniature-happiness on '.date('d-m-Y H:i:s').'.');
+        
+        /* Add database */
+        $obj_zip->addFromString('database.sql',$this->backupDatabase());
+        
+        /* Add files */        
+        $obj_zip->addEmptyDir('settings');
+        $a_files = $this->service_File(DATA_DIR.'settings');
+        foreach( $a_files AS $s_file ){
+            if( $s_file == '.' || $s_file == '.' ){
+                continue;
+            }
+            
+            $obj_zip->addFile(DATA_DIR.'settings'.DIRECTORY_SEPARATOR.$s_file,'settings'.DIRECTORY_SEPARATOR.$s_file);
+        }
+        
+        $obj_zip->addEmptyDir('logs');
+        $a_files = $this->service_File(DATA_DIR.'logs');
+        foreach( $a_files AS $s_file ){
+            if( $s_file == '.' || $s_file == '.' ){
+                continue;
+            }
+        
+            $obj_zip->addFile(DATA_DIR.'logs'.DIRECTORY_SEPARATOR.$s_file,'logs'.DIRECTORY_SEPARATOR.$s_file);
+        }
+        
+        $obj_zip->close();
+        
+        return $s_temp.$s_filename;
+    }
+    
+    private function backupDatabase(){
+        $s_sql = '-- Database dump created by Miniature-happiness on '.date('d-m-Y H:i:s').".\n\n";
+        
+        $s_sql .= $this->service_QueryBuilder->dumpDatabase();
+        
+        return $s_sql;
+    }
+    
+    public function restoreBackup($s_backup){
+        if( !$this->isZipSupported() ){
+            $this->service_Logs->errorLog('Can not restore backup. Zip support is missing');
+            return false;
+        }
+    }
+    
+    protected function isZipSupported(){
+        return class_exists('ZipArchive');
     }
 }
