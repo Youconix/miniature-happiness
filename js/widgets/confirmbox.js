@@ -1,6 +1,8 @@
 function ConfirmBox(){
 	this.height;
 	this.callback;
+	this.interval;
+	this.pos = -100;
 }
 ConfirmBox.prototype.init	= function(height,callback){
 	
@@ -24,6 +26,7 @@ ConfirmBox.prototype.show	= function(title,text){
 	
 	$('#confirmboxLayer').css('width',widthSite+'px');
 	$('#confirmbox').css('left',width+'px');
+	$('#confirmbox').css('margin-left','-100%');
 	$('#confirmbox').css('top',confirmBox.height+'px');
 	$('#confirmboxLayer').css('display','block');
 	$('#confirm_oke').click(function(){
@@ -34,11 +37,29 @@ ConfirmBox.prototype.show	= function(title,text){
 	$('#confirm_cancel').click(function(){
 		confirmBox.hide();
 	});
+
+	confirmBox.interval = setInterval(function(){
+		confirmBox.pos += 1;
+		$('#confirmbox').css('margin-left',confirmBox.pos+'%');
+		if( confirmBox.pos == 0 ){
+			clearInterval(confirmBox.interval);
+		}
+	},10);
 }
 ConfirmBox.prototype.hide	= function(){
 	$('#confirm_cancel').off('click');
 	$('#confirm_oke').off('click');
-	$('#confirmboxLayer').remove();
+
+
+	confirmBox.interval = setInterval(function(){
+		confirmBox.pos -= 1;
+		$('#confirmbox').css('margin-left',confirmBox.pos+'%');
+		if( confirmBox.pos == -100 ){
+			clearInterval(confirmBox.interval);
+			$('#confirmboxLayer').remove();
+		}
+	},10);
+	
 }
 ConfirmBox.prototype.confirm	= function(){
 	if( confirmBox.callback != null ){
