@@ -1,3 +1,6 @@
 <?php
-class CoreException extends Exception {}
+
+class CoreException extends Exception
+{
+}
 ?>

@@ -808,7 +808,7 @@ msgid "forgotPassword_openID"
 msgstr "This account has been registered through OpenID. Resetting the password is not possible."
 
 msgid "title"
-msgstr "Scripthulp framework"
+msgstr "Miniature-happiness"
 
 msgid "slogan"
 msgstr "Default slogan"

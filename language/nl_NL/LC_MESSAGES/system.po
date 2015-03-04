@@ -833,7 +833,7 @@ msgstr ""
 "Dit account is registreerd via openID. Wachtwoord reset is niet mogelijk."
 
 msgid "title"
-msgstr "Scripthulp framework"
+msgstr "Miniature-happiness"
 
 msgid "slogan"
 msgstr "Standaard slogan"

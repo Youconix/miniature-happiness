@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * General class loader and dependency injection
  * 
  * @author Roxanna Lugtigheid
  * @link        http://www.php-fig.org/psr/psr-4/
@@ -201,12 +202,26 @@ class Loader
                     break;
                 
                 default:
-                    /* Check for namespace */
-                    preg_match('#namespace\\s+([\\a-z-_0-9]+);#', $s_file, $a_namespaces);
-                    if (count($a_namespaces) > 0) {
-                        $s_filename = NIV . str_replace('\\', '/', $a_namespaces[1] . '/' . $a_matches[1]) . '.inc.php';
-                    } else {
-                        $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
+                    /* Check for namespace parent */
+                    preg_match('#extends\\s+(\\\\{1}[\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches);
+                    if( count($a_matches) > 0 ){
+                        
+                        if( strpos($a_matches[1],'\core') !== false || strpos($a_matches[1],'\includes') !== false ){
+                            $s_filename = NIV.$a_matches[1].'.inc.php';
+                        }
+                        else {
+                            $s_filename = NIV.'lib'.DIRECTORY_SEPARATOR.$a_matches[1].'.php';
+                        }
+                        $s_filename = str_replace(array('\\',DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR),array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR),$s_filename);
+                    }
+                    else {                    
+                        /* Check for namespace */
+                        preg_match('#namespace\\s+([\\a-z-_0-9]+);#', $s_file, $a_namespaces);
+                        if (count($a_namespaces) > 0) {
+                            $s_filename = NIV . str_replace('\\', '/', $a_namespaces[1] . '/' . $a_matches[1]) . '.inc.php';
+                        } else {
+                            $s_filename = NIV . str_replace('\\', '/', $a_matches[1]) . '.inc.php';
+                        }
                     }
             }
             

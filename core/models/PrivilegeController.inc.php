@@ -4,24 +4,23 @@ namespace core\models;
 /**
  * Controller for the page privileges
  *
- * This file is part of miniature-happiness
+ * This file is part of Miniature-happiness
  *
  * @copyright Youconix
  * @author Rachelle Scheijen
- * @since 2.0
  *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class PrivilegeController extends \core\models\Model
 {
@@ -62,8 +61,8 @@ class PrivilegeController extends \core\models\Model
             NIV . DIRECTORY_SEPARATOR . 'stats',
             NIV . DIRECTORY_SEPARATOR . 'tests',
             NIV . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'data',
-            NIV. DIRECTORY_SEPARATOR.'router.php',
-            NIV. DIRECTORY_SEPARATOR.'routes.php'
+            NIV . DIRECTORY_SEPARATOR . 'router.php',
+            NIV . DIRECTORY_SEPARATOR . 'routes.php'
         );
     }
 
@@ -115,7 +114,15 @@ class PrivilegeController extends \core\models\Model
 
     public function getRightsForPage($s_page)
     {
-        $a_rights = array('page'=>$s_page,'general'=>array('id'=>-1,'groupID'=>1,'minLevel'=>-1),'commands'=>array());
+        $a_rights = array(
+            'page' => $s_page,
+            'general' => array(
+                'id' => - 1,
+                'groupID' => 1,
+                'minLevel' => - 1
+            ),
+            'commands' => array()
+        );
         
         /* Check general rights */
         $this->service_QueryBuilder->select('group_pages', '*')
@@ -125,51 +132,86 @@ class PrivilegeController extends \core\models\Model
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_assoc();
-            $a_rights = array('page'=>$s_page,'general' => $a_data[0],'commands'=>array());
+            $a_rights = array(
+                'page' => $s_page,
+                'general' => $a_data[0],
+                'commands' => array()
+            );
             
             $this->service_QueryBuilder->select('group_pages_command', '*')
                 ->getWhere()
                 ->addAnd('page', 's', $s_page);
             $database = $this->service_QueryBuilder->getResult();
             
-            if( $database->num_rows() > 0 ){
-             $a_rights['commands'] = $database->fetch_assoc();
+            if ($database->num_rows() > 0) {
+                $a_rights['commands'] = $database->fetch_assoc();
             }
         }
         
         return $a_rights;
     }
-    
+
     /**
      * Changes the page rights
-     * 
-     * @param string $s_page            The page
-     * @param int $i_rights                 The minimun access rights
-     * @param int $i_group                 The group ID
-     */
-    public function changePageRights($s_page,$i_rights,$i_group){
-        $this->service_QueryBuilder->update('group_pages',array('groupID','minLevel'),array('i','i'),array($i_group,$i_rights));
-        $this->service_QueryBuilder->getWhere()->addAnd('page','s',$s_page);
-        $this->service_QueryBuilder->getResult();
-    }
-    
-    /**
-     * Adds the page rights
      *
-     * @param string $s_page            The page
-     * @param int $i_rights                 The minimun access rights
-     * @param int $i_group                 The group ID
+     * @param string $s_page
+     *            The page
+     * @param int $i_rights
+     *            The minimun access rights
+     * @param int $i_group
+     *            The group ID
      */
-    public function addPageRights($s_page,$i_rights,$i_group){
-        $this->service_QueryBuilder->insert('group_pages',array('groupID','minLevel','page'),array('i','i','s'),array($i_group,$i_rights,$s_page));
+    public function changePageRights($s_page, $i_rights, $i_group)
+    {
+        $this->service_QueryBuilder->update('group_pages', array(
+            'groupID',
+            'minLevel'
+        ), array(
+            'i',
+            'i'
+        ), array(
+            $i_group,
+            $i_rights
+        ));
+        $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
         $this->service_QueryBuilder->getResult();
     }
 
     /**
-     * Removes the page`s rights from the database. In essence, it makes it forget about the page.
-     * 
-     * @param   string  $s_page     The URL of the particular page to be forgotten about.
-     * 
+     * Adds the page rights
+     *
+     * @param string $s_page
+     *            The page
+     * @param int $i_rights
+     *            The minimun access rights
+     * @param int $i_group
+     *            The group ID
+     */
+    public function addPageRights($s_page, $i_rights, $i_group)
+    {
+        $this->service_QueryBuilder->insert('group_pages', array(
+            'groupID',
+            'minLevel',
+            'page'
+        ), array(
+            'i',
+            'i',
+            's'
+        ), array(
+            $i_group,
+            $i_rights,
+            $s_page
+        ));
+        $this->service_QueryBuilder->getResult();
+    }
+
+    /**
+     * Removes the page`s rights from the database.
+     * In essence, it makes it forget about the page.
+     *
+     * @param string $s_page
+     *            The URL of the particular page to be forgotten about.
+     *            
      * @author Roxanna Lugtigheid
      */
     public function deletePageRights($s_page)
@@ -190,13 +232,12 @@ class PrivilegeController extends \core\models\Model
             $this->service_QueryBuilder->rollback();
         }
     }
-    
-    public function addViewRight($s_page,$s_command,$i_rights){
-        
-    }
-    
-    public function deleteViewRight($s_page,$s_command){
+
+    public function addViewRight($s_page, $s_command, $i_rights)
+    {}
+
+    public function deleteViewRight($s_page, $s_command)
+    {
         // Remove from DB
     }
-    
 }

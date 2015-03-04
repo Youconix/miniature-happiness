@@ -1,163 +1,180 @@
 <?php
-
 define('NIV', dirname(__FILE__) . '/../../../');
-require(NIV . 'tests/GeneralTest.php');
+require (NIV . 'tests/GeneralTest.php');
 
-class testLDAP extends GeneralTest{
+class testLDAP extends GeneralTest
+{
 
-  private $service_Settings;
-  private $service_LDAP;
-  private $s_server;
-  private $i_port;
-  private $s_username;
-  private $s_password;
+    private $service_Settings;
 
-  public function __construct(){
-    parent::__construct();
+    private $service_LDAP;
 
-    require_once(NIV . 'include/exceptions/LdapException.inc.php');
-    require_once(NIV . 'include/services/LDAP.inc.php');
+    private $s_server;
 
-    $this->loadStub('DummySettings');
-    $this->service_Settings = new DummySettings();
-    $this->service_Settings->setValue('settings_LDAP_server', 'test_server.loc');
-    $this->service_Settings->setValue('settings_LDAP_port', 1050);
-    $this->service_Settings->setValue('settings_LDAP_version', 3);
-    $this->service_Settings->setValue('settings_LDAP_active', 1);
-  }
+    private $i_port;
 
-  public function setUp(){
-    parent::setUp();
+    private $s_username;
 
+    private $s_password;
 
-    $this->service_LDAP = new \core\services\LDAP($this->service_Settings);
-  }
+    public function __construct()
+    {
+        parent::__construct();
+        
+        require_once (NIV . 'include/exceptions/LdapException.inc.php');
+        require_once (NIV . 'include/services/LDAP.inc.php');
+        
+        $this->loadStub('DummySettings');
+        $this->service_Settings = new DummySettings();
+        $this->service_Settings->setValue('settings_LDAP_server', 'test_server.loc');
+        $this->service_Settings->setValue('settings_LDAP_port', 1050);
+        $this->service_Settings->setValue('settings_LDAP_version', 3);
+        $this->service_Settings->setValue('settings_LDAP_active', 1);
+    }
 
-  public function tearDown(){
-    $this->service_LDAP = null;
+    public function setUp()
+    {
+        parent::setUp();
+        
+        $this->service_LDAP = new \core\services\LDAP($this->service_Settings);
+    }
 
-    parent::tearDown();
-  }
+    public function tearDown()
+    {
+        $this->service_LDAP = null;
+        
+        parent::tearDown();
+    }
 
-  /**
-   * Tests connecting to the default LDAP server
-   *
-   * @expectedException     LdapConnectionException
-   * @test
-   */
-  public function bind(){
-    $this->service_LDAP->bind($this->s_username, $this->s_password);
-  }
+    /**
+     * Tests connecting to the default LDAP server
+     *
+     * @expectedException LdapConnectionException
+     * @test
+     */
+    public function bind()
+    {
+        $this->service_LDAP->bind($this->s_username, $this->s_password);
+    }
 
-  /**
-   * Test connection to the given LDAP server
-   *
-   * @expectedException	LdapConnectionException
-   * @test
-   */
-  public function bindManual(){
-    $this->service_LDAP->bindManual($this->s_server, $this->i_port, $this->s_username, $this->s_password);
-  }
+    /**
+     * Test connection to the given LDAP server
+     *
+     * @expectedException	LdapConnectionException
+     * @test
+     */
+    public function bindManual()
+    {
+        $this->service_LDAP->bindManual($this->s_server, $this->i_port, $this->s_username, $this->s_password);
+    }
 
-  /**
-   * Test closing the connection to the current LDAP server
-   * Should do nothing
-   * 
-   * @test
-   */
-  public function unbind(){
-    $this->service_LDAP->unbind();
-  }
+    /**
+     * Test closing the connection to the current LDAP server
+     * Should do nothing
+     *
+     * @test
+     */
+    public function unbind()
+    {
+        $this->service_LDAP->unbind();
+    }
 
-  /**
-   * Test adding a item to the LDAP server
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function add(){
-    $this->login();
+    /**
+     * Test adding a item to the LDAP server
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function add()
+    {
+        $this->login();
+        
+        $a_data = array();
+        $this->service_LDAP->add('newItem', $a_data);
+    }
 
-    $a_data = array();
-    $this->service_LDAP->add('newItem', $a_data);
-  }
+    /**
+     * Tests deleting a item from the LDAP server
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function delete()
+    {
+        $this->login();
+        
+        $this->service_LDAP->delete('item');
+    }
 
-  /**
-   * Tests deleting a item from the LDAP server
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function delete(){
-    $this->login();
+    /**
+     * Test searching on the baseDN on the LDAP server
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function search()
+    {
+        $this->login();
+        
+        $this->service_LDAP->search('baseDN', 'searchItem');
+    }
 
-    $this->service_LDAP->delete('item');
-  }
+    /**
+     * Test reading the baseDN on the LDAP server
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function readItem()
+    {
+        $this->login();
+        
+        $this->service_LDAP->search('baseDN', 'item');
+    }
 
-  /**
-   * Test searching on the baseDN on the LDAP server
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function search(){
-    $this->login();
+    /**
+     * Tests modifying a item on the LDAP server
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function modify()
+    {
+        $this->login();
+        
+        $a_data = array();
+        $this->service_LDAP->modify('newItem', $a_data);
+    }
 
-    $this->service_LDAP->search('baseDN', 'searchItem');
-  }
+    /**
+     * Tests renaming a item to a new name
+     *
+     * @expectedException	LdapException
+     * @test
+     */
+    public function rename()
+    {
+        $this->login();
+        
+        $this->service_LDAP->rename('old_name', 'new_name', 'new_parent');
+    }
 
-  /**
-   * Test reading the baseDN on the LDAP server
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function readItem(){
-    $this->login();
+    /**
+     * Test cheching if the login to the LDAP is correct
+     *
+     * @test
+     */
+    public function checkLogin()
+    {
+        $this->assertFalse($this->service_LDAP->checkLogin($this->s_server, $this->i_port, $this->s_username, $this->s_password));
+    }
 
-    $this->service_LDAP->search('baseDN', 'item');
-  }
-
-  /**
-   * Tests modifying a item on the LDAP server
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function modify(){
-    $this->login();
-
-    $a_data = array();
-    $this->service_LDAP->modify('newItem', $a_data);
-  }
-
-  /**
-   * Tests renaming a item to a new name
-   *
-   * @expectedException	LdapException
-   * @test
-   */
-  public function rename(){
-    $this->login();
-
-    $this->service_LDAP->rename('old_name', 'new_name', 'new_parent');
-  }
-
-  /**
-   * Test cheching if the login to the LDAP is correct
-   *
-   * @test
-   */
-  public function checkLogin(){
-    $this->assertFalse($this->service_LDAP->checkLogin($this->s_server, $this->i_port, $this->s_username, $this->s_password));
-  }
-
-  /**
-   * Sets the LDAP in debugging mode
-   */
-  private function login(){
-    $this->service_LDAP->activateDebug();
-    $this->service_LDAP->bindManual($this->s_server, $this->i_port, $this->s_username, $this->s_password);
-  }
-
+    /**
+     * Sets the LDAP in debugging mode
+     */
+    private function login()
+    {
+        $this->service_LDAP->activateDebug();
+        $this->service_LDAP->bindManual($this->s_server, $this->i_port, $this->s_username, $this->s_password);
+    }
 }

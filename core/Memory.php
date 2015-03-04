@@ -8,26 +8,24 @@ if (! class_exists('\CoreException')) {
 /**
  * Memory-handler for controlling memory and autostarting the framework
  *
- * This file is part of Scripthulp framework
+ * This file is part of Miniature-happiness
  *
- * @copyright 2012,2013,2014 Rachelle Scheijen
+ * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *        @changed 31/05/2014
  *       
- *       
- *        Scripthulp framework is free software: you can redistribute it and/or modify
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
  *        it under the terms of the GNU Lesser General Public License as published by
  *        the Free Software Foundation, either version 3 of the License, or
  *        (at your option) any later version.
  *       
- *        Scripthulp framework is distributed in the hope that it will be useful,
+ *        Miniature-happiness is distributed in the hope that it will be useful,
  *        but WITHOUT ANY WARRANTY; without even the implied warranty of
  *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *        GNU General Public License for more details.
  *       
  *        You should have received a copy of the GNU Lesser General Public License
- *        along with Scripthulp framework. If not, see <http://www.gnu.org/licenses/>.
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Memory
 {
@@ -172,11 +170,7 @@ class Memory
             Memory::$a_memory['service']['Settings'] = $service_Settings;
             
             date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
-            
-            require_once (Memory::$a_service['systemPath'] . 'FileData.inc.php');
-            $service_FileData = new \core\services\FileData();
-            Memory::$a_memory['service']['FileData'] = $service_FileData;
-            
+                        
             require_once (Memory::$a_service['systemPath'] . 'Session.inc.php');
             
             require_once (Memory::$a_service['systemPath'] . 'Security.inc.php');
@@ -191,8 +185,22 @@ class Memory
             $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie);
             Memory::$a_memory['model']['Config'] = $model_Config;
             
+            require_once (Memory::$a_service['systemPath'] . 'Language.inc.php');
+            $service_Language = new \core\services\Language($service_Settings, $service_Cookie, $service_File);
+            Memory::$a_memory['service']['Language'] = $service_Language;
+            
+            require_once (Memory::$a_service['systemPath'] . 'Mailer.inc.php');
+            $service_Mailer = new \core\services\Mailer($service_Language, $service_File);
+            Memory::$a_memory['service']['Mailer'] = $service_Mailer;
+            
+            $obj_logger = $model_Config->logging();
+            if (method_exists($obj_logger, 'setMailer')) {
+                $obj_logger->setMailer($service_Mailer, $model_Config->getAdminAddress(), $model_Config->getHost());
+            }
+            
             require_once (Memory::$a_service['systemPath'] . 'Logs.inc.php');
-            $service_Logs = new \core\services\Logs($service_File, $service_FileData, $model_Config);
+            $service_Logs = new \core\services\Logs();
+            $service_Logs->setLogger($obj_logger);
             Memory::$a_memory['service']['Logs'] = $service_Logs;
             
             Memory::setDefaultValues($service_Security, $service_Settings);
@@ -228,7 +236,7 @@ class Memory
      * Returns the used protocol
      *
      * @return String protocol
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:getProtocol
      */
     public static function getProtocol()
@@ -240,7 +248,7 @@ class Memory
      * Returns the current page
      *
      * @return String page
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:getPage
      */
     public static function getPage()
@@ -252,7 +260,7 @@ class Memory
      * Checks if ajax-mode is active
      *
      * @return boolean if ajax-mode is active
-     * @deprecated since version 2. 
+     * @deprecated since version 2.
      * @see include/models/Config:isAjax
      */
     public static function isAjax()
@@ -1073,4 +1081,3 @@ if (! function_exists('class_alias')) {
         eval('class ' . $alias . ' extends ' . $original . ' {}');
     }
 }
-?>

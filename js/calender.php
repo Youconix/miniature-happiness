@@ -1,23 +1,26 @@
-<?php 
-define('NIV','../');
-require(NIV.'js/generalJS.php');
+<?php
+define('NIV', '../');
+require (NIV . 'js/generalJS.php');
 
-class JS_Calender extends GeneralJS {
-	private $s_language;
-	
-	protected function display(){
-		$s_months = '';
-		for($i=1; $i<=12; $i++){
-			$s_months .= '"'.$i.'" : "'.$this->service_Language->get('language/months/month'.$i).'", ';
-		}
-		
-		$this->s_output = '		
+class JS_Calender extends GeneralJS
+{
+
+    private $s_language;
+
+    protected function display()
+    {
+        $s_months = '';
+        for ($i = 1; $i <= 12; $i ++) {
+            $s_months .= '"' . $i . '" : "' . $this->service_Language->get('language/months/month' . $i) . '", ';
+        }
+        
+        $this->s_output = '		
 		function Calender() {
 			this.month;
 			this.year;
 			this.data = {};
 			this.startPos = 0;
-			this.months = {'.$s_months.'};
+			this.months = {' . $s_months . '};
 			this.caller = "";
 		}
 		
@@ -100,10 +103,10 @@ class JS_Calender extends GeneralJS {
 			eval(callback);
 		}
 		
-		calender = new Calender();';	
-
-		echo($this->s_output);
-	}
+		calender = new Calender();';
+        
+        echo ($this->s_output);
+    }
 }
 
 $obj_JS_Calender = new JS_Calender();
