@@ -312,6 +312,19 @@ interface Where {
 	public function addAnd($a_fields,$a_types,$a_values,$a_keys);
 	
 	/**
+	* Adds a field that can be NULL
+	*
+	* @param		string	$s_field	The field's name
+	* @param		array	$a_types	The possible value types
+	* @param		string	$s_value	The value
+	* @param		string	$s_default	The value if database returns NULL
+	* @param		string	$s_key		The key (=|<>|<|>|LIKE|IN|BETWEEN). Leave empty for =
+	* @param		string	$s_join		The join command for the where or having part
+	* @throws		DBException		If the key is invalid.
+	*/	
+	public function addIsNull($s_field,$a_types,$s_value,$s_default,$s_key = '',$s_join = 'AND');
+	
+	/**
 	 * Adds fields with an or relation
 	 * 
 	 * @param		array $a_fields		The fields,also accepts a single value 
@@ -368,6 +381,19 @@ interface Having {
 	 * @throws DBException		If the key is invalid
 	 */
 	public function addAnd($a_fields,$a_types,$a_values,$a_keys);
+	
+	/**
+	* Adds a field that can be NULL
+	*
+	* @param		string	$s_field	The field's name
+	* @param		array	$a_types	The possible value types
+	* @param		string	$s_value	The value
+	* @param		string	$s_default	The value if database returns NULL
+	* @param		string	$s_key		The key (=|<>|<|>|LIKE|IN|BETWEEN). Leave empty for =
+	* @param		string	$s_join		The join command for the where or having part
+	* @throws		DBException		If the key is invalid.
+	*/	
+	public function addIsNull($s_field,$a_types,$s_value,$s_default,$s_key = '',$s_join = 'AND');
 	
 	/**
 	 * Adds fields with an or relation

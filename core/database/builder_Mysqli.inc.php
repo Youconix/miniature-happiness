@@ -570,7 +570,8 @@ abstract class QueryConditions_Mysqli {
 	protected $s_query;
 	protected $a_types;
 	protected $a_values;	
-	protected $a_keys = array('=' => '=','=='=>'=', '<>' => '<>','!='=>'<>','<'=>'<','>'=>'>', 'LIKE'=>'LIKE','IN'=>'IN','BETWEEN'=>'BETWEEN');
+	protected $a_keys = array('<=' => '<=','>='=> '>=', '=' => '=','=='=>'=', '<>' => '<>','!='=>'<>','<'=>'<','>'=>'>', 'LIKE'=>'LIKE','IN'=>'IN','BETWEEN'=>'BETWEEN');
+	protected $s_isNull = 'ISNULL';
 	
 	/**
 	 * Resets the class
@@ -579,6 +580,19 @@ abstract class QueryConditions_Mysqli {
 		$this->s_query	= '';
 		$this->a_types	= array();
 		$this->a_values	= array();
+	}
+	
+	public function addIsNull($s_field,$a_types,$s_value,$s_default,$s_key = '',$s_join = 'AND'){
+		if( empty($s_key) ){	$s_key = $this->a_keys['=']; }
+		if( !in_array($s_join,array('AND','OR')) ){	$s_join = 'AND'; }
+		
+		if( !is_array($a_types) || count($a_types) != 2 ){
+			throw new \DBException('Expecting 2 types for addIsNull command.');
+		}
+		
+		$this->addField('IFNULL('.$s_field.',?)', $a_types[0], $s_value, $s_key, $s_join);
+		$this->a_types[] = $a_types[1];
+		$this->a_values[] = $s_default;
 	}
 	
 	/**
@@ -606,6 +620,11 @@ abstract class QueryConditions_Mysqli {
 				$j++;
 				$this->a_types[]	= $a_types[$j];
 				$this->a_values[] = $a_values[$j]; 
+			}
+			else if( stripos($a_fields[$i],$this->s_isNull) !== false ){
+				$j++;
+				$this->a_types[]	= $a_types[$j];
+				$this->a_values[] = $a_values[$j];
 			}
 			$j++;
 		}
@@ -659,9 +678,9 @@ abstract class QueryConditions_Mysqli {
 	 */
 	protected function addField($s_field,$s_type,$s_value,$s_key,$s_command){
 		 if( !array_key_exists($s_key,$this->a_keys) )
-		 	throw new DBException('Unknown where key '.$s_key.'.');
+		 	throw new \DBException('Unknown where key '.$s_key.'.');
 		 	
-		if( !empty($this->s_query) )	$this->s_query .= ' '.$s_command.' ';
+		if( !empty($this->s_query) && substr($this->s_query,-1) != '(' )	$this->s_query .= ' '.$s_command.' ';
 	
 		if( $s_type == 'l' ){
 			if( $s_key != 'IN' )
@@ -677,23 +696,23 @@ abstract class QueryConditions_Mysqli {
 			foreach($s_value AS $item){
 				switch($s_type){
 					case 'i' :
-						if( !is_int($item) )	throw new DBException('Invalid IN value. expected int but got '.gettype($item).'.');
+						if( !is_int($item) )	throw new \DBException('Invalid IN value. expected int but got '.gettype($item).'.');
 						$a_data[] = $item;
 					break;
 
 					case 'i' :
-						if( !is_float($item) )	throw new DBException('Invalid IN value. expected float but got '.gettype($item).'.');
+						if( !is_float($item) )	throw new \DBException('Invalid IN value. expected float but got '.gettype($item).'.');
 						$a_data[] = $item;
 					break;
 
 					case 'i' :
-						if( !is_string($item) )	throw new DBException('Invalid IN value. expected string but got '.gettype($item).'.');
+						if( !is_string($item) )	throw new \DBException('Invalid IN value. expected string but got '.gettype($item).'.');
 						$a_data[] = "'".$item."'";
 					break;
 
 
 					default :
-						throw new DBException('Invalid IN type. Only ints, floats and strings are supported.');
+						throw new \DBException('Invalid IN type. Only ints, floats and strings are supported.');
 				}
 			}
 
@@ -754,14 +773,14 @@ class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Wher
 	 */
 	public function addSubQuery($obj_builder,$s_field,$s_key,$s_command){
 		if( !($obj_builder instanceof Builder) )
-			throw new DBException("Can only add object of the type Builder.");
+			throw new \DBException("Can only add object of the type Builder.");
 			
 		if( !array_key_exists($s_key,$this->a_keys) )
-		 	throw new DBException('Unknown where key '.$s_key.'.');
+		 	throw new \DBException('Unknown where key '.$s_key.'.');
 		 	
 		$s_command	= strtoupper($s_command);
 		if( !in_array($s_command,array('OR','AND')) )
-			throw new DBException('Unknown where command '.$s_command.'.  Only AND & OR are supported.');
+			throw new \DBException('Unknown where command '.$s_command.'.  Only AND & OR are supported.');
 			
 		$this->a_builder	= array('object'=>$obj_builder,'field'=>$s_field, 'key'=>$s_key,'command'=>$s_command);
 		
@@ -952,10 +971,10 @@ class Create_Mysqli implements \core\services\Create {
 	 */
 	public function addPrimary($s_field){
 		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add primary key on unknown field $s_field.");
+			throw new \DBException("Can not add primary key on unknown field $s_field.");
 		}
 		if( array_key_exists('primary', $this->a_createTypes) ){
-			throw new DBException("Only one primary key pro table is allowed.");
+			throw new \DBException("Only one primary key pro table is allowed.");
 		}
 
 		$this->a_createTypes['primary'] = 'PRIMARY KEY ('.$s_field.')';
@@ -971,7 +990,7 @@ class Create_Mysqli implements \core\services\Create {
 	 */
 	public function addIndex($s_field){
 		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add index key on unknown field $s_field.");
+			throw new \DBException("Can not add index key on unknown field $s_field.");
 		}
 
 		$this->a_createTypes[]	= 'KEY '.$s_field.' ('.$s_field.')';
@@ -987,7 +1006,7 @@ class Create_Mysqli implements \core\services\Create {
 	 */
 	public function addUnique($s_field){
 		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add unique key on unknown field $s_field.");
+			throw new \DBException("Can not add unique key on unknown field $s_field.");
 		}
 
 		$this->a_createTypes[]	= 'UNIQUE KEY '.$s_field.' ('.$s_field.')';
@@ -1004,10 +1023,10 @@ class Create_Mysqli implements \core\services\Create {
 	 */
 	public function addFullTextSearch($s_field){
 		if( !array_key_exists($s_field, $this->a_createRows) ){
-			throw new DBException("Can not add full text search on unknown field $s_field.");
+			throw new \DBException("Can not add full text search on unknown field $s_field.");
 		}
 		if( stripos($this->a_createRows[$s_field],'VARCHAR') === false && stripos($this->a_createRows[$s_field],'TEXT') === false ){
-			throw new DBException("Full text search can only be added on VARCHAR or TEXT fields.");
+			throw new \DBException("Full text search can only be added on VARCHAR or TEXT fields.");
 		}
 
 		$this->a_createTypes[] = 'FULLTEXT KEY '.$s_field.' ('.$s_field.')';
