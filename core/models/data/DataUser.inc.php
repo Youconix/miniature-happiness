@@ -64,7 +64,8 @@ class DataUser extends \core\models\GeneralUser
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     *            @parma \core\services\Security $service_Security The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\Hashing $service_Hashing
      *            The hashing service
      * @param \core\models\Groups $model_Groups
@@ -72,9 +73,9 @@ class DataUser extends \core\models\GeneralUser
      * @param \core\services\Language $service_Language
      *            The language service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\Hashing $service_Hashing, \core\models\Groups $model_Groups, \core\services\Language $service_Language)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\Hashing $service_Hashing, \core\models\Groups $model_Groups, \core\services\Language $service_Language)
     {
-        parent::__construct($service_QueryBuilder, $service_Security, $service_Hashing);
+        parent::__construct($service_QueryBuilder, $service_Validation, $service_Hashing);
         $this->model_Groups = $model_Groups;
         $this->service_Language = $service_Language;
         
@@ -430,14 +431,14 @@ class DataUser extends \core\models\GeneralUser
     {
         $i_groupid = $this->checkGroup($i_groupid);
         
-        if ( array_key_exists($i_groupid, $this->a_levels)) {
+        if (array_key_exists($i_groupid, $this->a_levels)) {
             return $this->a_levels[$i_groupid];
         }
         if (is_null($this->i_userid)) {
             return \core\services\Session::ANONYMOUS;
         }
         
-        $this->a_levels[$i_groupid] = $this->model_Groups->getLevel($this->i_userid,$i_groupid);
+        $this->a_levels[$i_groupid] = $this->model_Groups->getLevel($this->i_userid, $i_groupid);
         return $this->a_levels[$i_groupid];
     }
 

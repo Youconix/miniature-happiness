@@ -29,7 +29,7 @@ namespace core\models;
 abstract class Model extends \core\Object
 {
 
-    protected $service_Security;
+    protected $service_Validation;
 
     protected $service_Database;
 
@@ -44,14 +44,14 @@ abstract class Model extends \core\Object
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Security $service_Security
-     *            The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation)
     {
         $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
         $this->service_Database = $this->service_QueryBuilder->getDatabase();
-        $this->service_Security = $service_Security;
+        $this->service_Validation = $service_Validation;
     }
 
     /**
@@ -138,10 +138,10 @@ abstract class Model extends \core\Object
                 )) && ! preg_match("/" . $this->a_validation[$s_key]['pattern'] . "/", $this->$s_key)) {
                     $bo_pattern = false;
                 } else 
-                    if (($this->a_validation[$s_key]['pattern'] == 'email' && ! $this->service_Security->checkEmail($this->$s_key))) {
+                    if (($this->a_validation[$s_key]['pattern'] == 'email' && ! $this->service_Validation->checkEmail($this->$s_key))) {
                         $bo_pattern = false;
                     } else 
-                        if ($this->a_validation[$s_key]['pattern'] == 'url' && ! $this->service_Security->checkURI($this->$s_key)) {
+                        if ($this->a_validation[$s_key]['pattern'] == 'url' && ! $this->service_Validation->checkURI($this->$s_key)) {
                             $bo_pattern = false;
                         }
                 

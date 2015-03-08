@@ -2,6 +2,19 @@
 namespace core\models;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Model is the general user model class.
  * This class is abstract and
  * should be inheritanced by every user model
@@ -11,19 +24,6 @@ namespace core\models;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 abstract class GeneralUser extends Model
 {
@@ -35,13 +35,14 @@ abstract class GeneralUser extends Model
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     *            @parma \core\services\Security $service_Security The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\Hashing $service_Hashing
      *            The hashing service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\Hashing $service_Hashing)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\Hashing $service_Hashing)
     {
-        parent::__construct($service_QueryBuilder, $service_Security);
+        parent::__construct($service_QueryBuilder, $service_Validation);
         $this->service_Hashing = $service_Hashing;
     }
 

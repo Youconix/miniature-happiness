@@ -44,7 +44,8 @@ class User extends GeneralUser
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     *            @parma \core\services\Security $service_Security The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\Hashing $service_Hashing
      *            The hashing service
      * @param \core\services\Session $service_Session
@@ -52,9 +53,9 @@ class User extends GeneralUser
      * @param \core\models\Groups $model_Groups
      *            The groups model
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\models\Groups $model_Groups, \core\models\data\DataUser $model_UserData)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\models\Groups $model_Groups, \core\models\data\DataUser $model_UserData)
     {
-        parent::__construct($service_QueryBuilder, $service_Security, $service_Hashing);
+        parent::__construct($service_QueryBuilder, $service_Validation, $service_Hashing);
         
         $this->a_userModels = array();
         $this->model_Groups = $model_Groups;

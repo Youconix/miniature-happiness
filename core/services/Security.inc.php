@@ -26,6 +26,11 @@ namespace core\services;
  */
 class Security extends Service
 {
+    protected $service_Validation;
+    
+    public function __construct(\core\services\Validation $service_Validation){
+        $this->service_Validation = $service_Validation;
+    }
 
     /**
      * Returns if the object schould be treated as singleton
@@ -153,15 +158,12 @@ class Security extends Service
      *
      * @param String $s_email
      *            The email address
+     * @deprecated
      * @return boolean True if the email address is valid, otherwise false
      */
     public function checkEmail($s_email)
     {
-        if (! filter_var($s_email, FILTER_VALIDATE_EMAIL)) {
-            return false;
-        }
-        
-        return true;
+        return $this->service_Validation->checkEmail($s_email);
     }
 
     /**
@@ -169,22 +171,12 @@ class Security extends Service
      *
      * @param String $s_uri
      *            The URI
+     * @deprecated
      * @return boolean True if the URI is valid, otherwise false
      */
     public function checkURI($s_uri)
     {
-        if (preg_match("#^(http://|https://|ftp://|ftps://|file://)+#i", $s_uri)) {
-            if (! filter_var($s_uri, FILTER_VALIDATE_URL)) {
-                return false;
-            }
-            
-            return true;
-        } else {
-            if (! preg_match("#^[a-z0-9\-\.]{2,255}\.+[a-z0-9\-]{2,63}#i", $s_uri)) {
-                return false;
-            }
-            return true;
-        }
+        return $this->service_Validation->checkURI($s_uri);
     }
 
     /**
@@ -192,18 +184,12 @@ class Security extends Service
      *
      * @param String $s_value
      *            The postal address
+     * @deprecated
      * @return boolean True if the postal address is valid, otherwise false
      */
     public function checkPostalNL($s_value)
     {
-        if (trim($s_value) == "") {
-            return false;
-        }
-        if (! preg_match("/^\d{4}\s?[a-z]{2}$/i", $s_value)) {
-            return false;
-        }
-        
-        return true;
+        return $this->service_Validation->checkPostalNL($s_value);
     }
 
     /**
@@ -211,22 +197,12 @@ class Security extends Service
      *
      * @param String $s_value
      *            The postal address
+     * @deprecated
      * @return boolean True if the postal address is valid, otherwise false
      */
     public function checkPostalBE($i_value)
     {
-        if (trim($i_value) == "") {
-            return false;
-        }
-        if (! preg_match("/^\d{4}$/", $i_value)) {
-            return false;
-        }
-        
-        if ($i_value < 1000 || $i_value > 9999) {
-            return false;
-        }
-        
-        return true;
+        return $this->service_Validation->checkPostalBE($i_value);
     }
 
     /**

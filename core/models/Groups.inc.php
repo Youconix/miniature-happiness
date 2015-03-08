@@ -41,16 +41,16 @@ class Groups extends Model
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Security $service_Security
-     *            The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\models\data\DataGroup $model_DataGroup
      *            The group data model
      * @param \core\models\Config $model_Config
      *            The config model
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\models\data\DataGroup $model_DataGroup, \core\models\Config $model_Config)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\models\data\DataGroup $model_DataGroup, \core\models\Config $model_Config)
     {
-        parent::__construct($service_QueryBuilder, $service_Security);
+        parent::__construct($service_QueryBuilder, $service_Validation);
         
         $this->model_DataGroup = $model_DataGroup;
         $this->model_Config = $model_Config;

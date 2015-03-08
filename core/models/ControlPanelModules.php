@@ -13,16 +13,16 @@ class ControlPanelModules extends \core\models\Model
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Security $service_Security
-     *            The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\File $service_File
      *            The file service
      * @param \core\services\XML $service_XML
      *            The XML service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\File $service_File, \core\services\Xml $service_XML)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder , \core\services\Validation $service_Validation, \core\services\File $service_File, \core\services\Xml $service_XML)
     {
-        parent::__construct($service_QueryBuilder, $service_Security);
+        parent::__construct($service_QueryBuilder, $service_Validation);
         
         $this->service_File = $service_File;
         $this->service_XML = $service_XML;

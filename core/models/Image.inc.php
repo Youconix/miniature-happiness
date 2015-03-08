@@ -2,6 +2,19 @@
 namespace core\models;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Image is an image manipulatie class
  *
  * This file is part of Miniature-happiness
@@ -9,19 +22,6 @@ namespace core\models;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 2.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Image extends Model
 {
@@ -33,14 +33,14 @@ class Image extends Model
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Security $service_Security
-     *            The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\FileData $service_Filedata
      *            The file details service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\FileData $service_Filedata)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\FileData $service_Filedata)
     {
-        parent::__construct($service_QueryBuilder, $service_Security);
+        parent::__construct($service_QueryBuilder, $service_Validation);
         
         $this->service_FileData = $service_Filedata;
     }

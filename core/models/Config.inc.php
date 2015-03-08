@@ -247,6 +247,8 @@ class Config extends Model
             if (isset($_POST['command'])) {
                 $this->s_command = $_POST['command'];
             }
+        
+        define('WEBSITE_ROOT',$_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$this->s_base);
     }
 
     /**
@@ -597,7 +599,7 @@ class Config extends Model
     public function getLogLocation()
     {
         if (! $this->service_Settings->exists('main/log_location')) {
-            return DATA_DIR . 'logs' . DIRECTORY_SEPARATOR;
+            return str_replace(NIV,WEBSITE_ROOT,DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR;
         }
         
         return $this->service_Settings->get('main/log_location');

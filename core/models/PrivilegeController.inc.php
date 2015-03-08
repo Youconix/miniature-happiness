@@ -2,25 +2,25 @@
 namespace core\models;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Controller for the page privileges
  *
  * This file is part of Miniature-happiness
  *
  * @copyright Youconix
  * @author Rachelle Scheijen
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class PrivilegeController extends \core\models\Model
 {
@@ -34,14 +34,14 @@ class PrivilegeController extends \core\models\Model
      *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Security $service_Security
-     *            The security service
+     * @param \core\services\Validation $service_Validation
+     *            The validation service
      * @param \core\services\File $service_File
      *            The file service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Security $service_Security, \core\services\File $service_File)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\File $service_File)
     {
-        parent::__construct($service_QueryBuilder, $service_Security);
+        parent::__construct($service_QueryBuilder, $service_Validation);
         
         $this->service_File = $service_File;
         
