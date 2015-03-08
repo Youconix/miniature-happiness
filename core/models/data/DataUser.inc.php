@@ -2,6 +2,19 @@
 namespace core\models\data;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Model is the user data model class.
  * This class contains the user data
  *
@@ -10,19 +23,6 @@ namespace core\models\data;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class DataUser extends \core\models\GeneralUser
 {
@@ -53,7 +53,7 @@ class DataUser extends \core\models\GeneralUser
 
     protected $s_activation = '';
 
-    protected $i_level;
+    protected $a_levels = array();
 
     protected $s_loginType;
 
@@ -426,17 +426,19 @@ class DataUser extends \core\models\GeneralUser
      *
      * @return int access level
      */
-    public function getLevel()
+    public function getLevel($i_groupid = -1)
     {
-        if (! is_null($this->i_level)) {
-            return $this->i_level;
+        $i_groupid = $this->checkGroup($i_groupid);
+        
+        if ( array_key_exists($i_groupid, $this->a_levels)) {
+            return $this->a_levels[$i_groupid];
         }
         if (is_null($this->i_userid)) {
             return \core\services\Session::ANONYMOUS;
         }
         
-        $this->i_level = $this->model_Groups->getLevel($this->i_userid);
-        return $this->i_level;
+        $this->a_levels[$i_groupid] = $this->model_Groups->getLevel($this->i_userid,$i_groupid);
+        return $this->a_levels[$i_groupid];
     }
 
     /**
@@ -487,9 +489,9 @@ class DataUser extends \core\models\GeneralUser
     {
         \core\Memory::type('int', $i_groupid);
         
-        $i_level = $this->checkGroup($i_groupid);
+        $i_group = $this->checkGroup($i_groupid);
         
-        switch ($this->getLevel($i_level)) {
+        switch ($this->getLevel($i_group)) {
             case \core\services\Session::ANONYMOUS:
                 return \core\services\Session::ANONYMOUS_COLOR;
             
@@ -532,6 +534,7 @@ class DataUser extends \core\models\GeneralUser
         \core\Memory::type('int', $i_groupid);
         
         $i_groupid = $this->checkGroup($i_groupid);
+        
         return ($this->getLevel($i_groupid) >= \core\services\Session::ADMIN);
     }
 
