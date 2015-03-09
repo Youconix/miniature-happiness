@@ -2,6 +2,19 @@
 namespace core\models;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Group model.
  * Contains the group data
  *
@@ -10,19 +23,6 @@ namespace core\models;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  *       
  * @see core/services/Session.inc.php
  * @see core/models/data/Data_Group.inc.php
@@ -38,7 +38,7 @@ class Groups extends Model
 
     /**
      * PHP5 constructor
-     * 
+     *
      * @param \core\services\QueryBuilder $service_QueryBuilder
      *            The query builder
      * @param \core\services\Security $service_Security
@@ -112,22 +112,26 @@ class Groups extends Model
      *            The user ID
      * @return int The access level defined in /include/services/Session.inc.php
      */
-    public function getLevel($i_userid)
+    public function getLevel($i_userid, $i_groupid = -1)
     {
         \core\Memory::type('int', $i_userid);
+        \core\Memory::type('int', $i_groupid);
         
-        $s_page = $this->model_Config->getPage();
-        $this->service_QueryBuilder->select('group_pages', 'groupID')
-            ->getWhere()
-            ->addAnd('page', 's', $s_page);
-        $service_Database = $this->service_QueryBuilder->getResult();
-        
-        if ($service_Database->num_rows() > 0) {
+        if ($i_groupid == - 1) {
+            $s_page = $this->model_Config->getPage();
+            $this->service_QueryBuilder->select('group_pages', 'groupID')
+                ->getWhere()
+                ->addAnd('page', 's', $s_page);
+            $service_Database = $this->service_QueryBuilder->getResult();
+            
+            if ($service_Database->num_rows() == 0) {
+                return \core\services\Session::ANONYMOUS;
+            }
+            
             $i_groupid = (int) $service_Database->result(0, 'groupID');
-            return $this->getLevelByGroupID($i_groupid, $i_userid);
         }
         
-        return \core\services\Session::ANONYMOUS;
+        return $this->getLevelByGroupID($i_groupid, $i_userid);
     }
 
     /**
