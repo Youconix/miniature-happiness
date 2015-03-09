@@ -38,8 +38,6 @@ class Logout extends \core\BaseClass
         $this->init();
         
         $this->logout();
-        
-        $this->service_Memory->endProgram();
     }
 
     /**
@@ -47,10 +45,10 @@ class Logout extends \core\BaseClass
      */
     private function logout()
     {
-        Memory::services('Authorization')->logout();
+        \Loader::inject('\core\models\Login')->logout();
         
-        header('location: ' . NIV . 'index.php');
-        exit();
+	$s_url = \core\Memory::parseUrl('index.php');
+        \Loader::inject('\core\services\Headers')->redirect($s_url);
     }
 }
 
