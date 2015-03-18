@@ -467,7 +467,7 @@ class Template extends Service
     {
         \core\Memory::type('string', $s_key);
         
-        if ($this->s_template == null) {
+        if ( is_null($this->s_template) ) {
             throw new \TemplateException('No template is loaded for ' . $_SERVER['PHP_SELF'] . '.');
         }
         
@@ -556,7 +556,7 @@ class Template extends Service
      */
     public function printToScreen()
     {
-        if (! $this->bo_loaded || $this->service_Headers->isForceDownload() || $this->service_Headers->isRedirect()) {
+        if (! $this->bo_loaded || $this->service_Headers->skipTemplate() ) {
             return;
         }
         
@@ -651,7 +651,7 @@ class Template extends Service
         
         $i_pos = stripos($this->s_template, $s_search);
         if ($i_pos === false) {
-            \core\Memory::services('ErrorHandler')->error(new \TemplateException('Notice : Call to undefined template block ' . $s_key . '.'));
+            \Loader::Inject('\core\services\Logs')->exception(new \TemplateException('Notice : Call to undefined template block ' . $s_key . '.'));
             return;
         }
         
@@ -868,7 +868,7 @@ class Template extends Service
         
         foreach ($this->a_parts as $s_key) {
             if (! in_array($s_key, $this->a_partsUsed)) {
-                \core\Memory::services('ErrorHandler')->error(new \TemplateException('Notice : Call to undefined template if ' . $s_key . '.'));
+                \Loader::Inject('\core\services\Logs')->exception(new \TemplateException('Notice : Call to undefined template if ' . $s_key . '.'));
             }
         }
     }

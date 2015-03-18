@@ -34,6 +34,10 @@ class Loader
             return $s_fileName;
         }
         
+        if( defined('WEBSITE_ROOT') && file_exists(WEBSITE_ROOT.$s_fileName) ){
+            return WEBSITE_ROOT.$s_fileName;
+        }
+        
         return null;
     }
 
@@ -55,6 +59,7 @@ class Loader
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {
+            echo('can not find file '.$s_className);
             return null;
         }
         

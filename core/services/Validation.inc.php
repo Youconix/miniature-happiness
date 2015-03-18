@@ -31,7 +31,7 @@ class Validation extends \core\services\Service {
     /**
      * Validates the given email address
      *
-     * @param String $s_email
+     * @param string $s_email
      *            The email address
      * @return boolean True if the email address is valid, otherwise false
      */
@@ -47,7 +47,7 @@ class Validation extends \core\services\Service {
     /**
      * Validates the given URI
      *
-     * @param String $s_uri
+     * @param string $s_uri
      *            The URI
      * @return boolean True if the URI is valid, otherwise false
      */
@@ -70,7 +70,7 @@ class Validation extends \core\services\Service {
     /**
      * Validates the given dutch postal address
      *
-     * @param String $s_value
+     * @param string $s_value
      *            The postal address
      * @return boolean True if the postal address is valid, otherwise false
      */
@@ -89,7 +89,7 @@ class Validation extends \core\services\Service {
     /**
      * Validates the given belgium postal address
      *
-     * @param String $s_value
+     * @param string $s_value
      *            The postal address
      * @return boolean True if the postal address is valid, otherwise false
      */
@@ -110,6 +110,21 @@ class Validation extends \core\services\Service {
     }
     
     /**
+     * Validates the IP address
+     * 
+     * @param string $s_value   The IPv4 or IPv6 address
+     * @return boolean  True if the address is valid
+     */
+    public function validateIP($s_value){
+        if( substr($s_value, -3) == '/' ){
+            $s_value = substr($s_value, 0,-3);
+        }
+        $s_value = @inet_pton($s_value);
+        
+        return ($s_value === false);
+    }
+    
+    /**
      * Performs the validation
      *
      * @return  boolean True if the fields are valid
@@ -119,30 +134,45 @@ class Validation extends \core\services\Service {
         $this->a_errors  = array();
         
         foreach ($a_keys as $s_key) {
-            if (! array_key_exists($key, $a_collection)) {
+            if (! array_key_exists($s_key, $a_collection)) {
                 $this->a_errors[] = 'Error validating non existing field ' . $s_key . '.';
+                continue;
+            }
+            
+            if (array_key_exists('required', $a_validation[$s_key]) && (is_null($a_collection[$s_key]) || trim($a_collection[$s_key]) == '')) {
+                $this->a_errors[] = 'Required field ' . $s_key . ' is not filled in.';
                 continue;
             }
     
             if (array_key_exists('type', $a_validation[$s_key])) {
                 $s_type = gettype($a_collection[$s_key]);
                 $s_expectedType = $a_validation[$s_key]['type'];
+                
+                if( $s_type == 'integer' ){
+                    $s_type = 'int';
+                }
     
                 switch ($s_expectedType) {
                     case 'int':
                     case 'array':
                         if ($s_type != $s_expectedType) {
-                            $this->a_errors[] = 'Invalid type for field ' . $s_field . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
+                            $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
                             continue;
                         }
                         break;
     
                     case 'float':
                         if ($s_type != 'float' && $s_type != 'double') {
-                            $this->a_errors[] = 'Invalid type for field ' . $s_field . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
+                            $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
                             continue;
                         }
                         break;
+                        
+                    case 'IP':
+                        if(   !$this->validateIP($a_collection[$s_key]) ){
+                            $this->a_errors[] = 'Field '.$s_key.' is not a valid IP-address';
+                            continue;
+                        }
                 }
     
                 if ($s_type == 'int' || $s_type == 'float') {
@@ -153,10 +183,6 @@ class Validation extends \core\services\Service {
                         $this->a_errors[] = "Field " . $s_key . " is bigger then maximun value " . $a_validation[$s_key]['max-value'] . ".";
                     }
                 }
-            }
-    
-            if (array_key_exists('required', $a_validation[$s_key]) && (is_null($a_collection[$s_key]) || trim($a_collection[$s_key]) == '')) {
-                $this->a_errors[] = 'Required field ' . $s_key . ' is not filled in.';
             }
     
             if (array_key_exists('pattern', $a_validation[$s_key]) && ! is_null($a_collection[$s_key]) && trim($a_collection[$s_key]) != '') {
@@ -170,7 +196,7 @@ class Validation extends \core\services\Service {
                     if (($a_validation[$s_key]['pattern'] == 'email' && ! $this->checkEmail($a_collection[$s_key]))) {
                         $bo_pattern = false;
                     } else
-                        if ($a_validation[$s_key]['pattern'] == 'url' && ! $this->checkURI($a_collection[$s_key])) {
+                        if ($a_validation[$s_key]['pattern'] == 'url' && (! $this->checkURI($a_collection[$s_key]) && $a_collection[$s_key] != 'localhost' && ! $this->validateIP($a_collection[$s_key]) )  ) {
                             $bo_pattern = false;
                         }
     

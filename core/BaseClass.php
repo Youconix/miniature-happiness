@@ -28,15 +28,35 @@ namespace core;
 abstract class BaseClass
 {
 
+    /**
+     * @var \core\models\Config
+     */
     protected $model_Config;
 
+    /**
+     * @var \core\services\Language
+     */
     protected $service_Language;
 
-    protected $service_ErrorHandler;
+    /**
+     * @var \core\services\Logs
+     */
+    protected $service_Logs;
 
+    /**
+     * @var \core\services\Security
+     */
     protected $service_Security;
 
+    /**
+     * @var \core\services\Template
+     */
     protected $service_Template;
+    
+    /**
+     * @var \core\services\Validation
+     */
+    protected $service_Validation;
 
     protected $init_post = array();
 
@@ -57,7 +77,7 @@ abstract class BaseClass
     {
         $this->model_Config = null;
         $this->service_Language = null;
-        $this->service_ErrorHandler = null;
+        $this->service_Logs = null;
         $this->service_Template = null;
         $this->service_Security = null;
         
@@ -83,26 +103,27 @@ abstract class BaseClass
         require_once (NIV . 'core/Memory.php');
         Memory::startUp();
         
-        $this->model_Config = Memory::models('Config');
-        $this->service_Language = Memory::services('Language');
-        $this->service_ErrorHandler = Memory::services('ErrorHandler');
-        $this->service_Security = Memory::services('Security');
+        $this->model_Config = \Loader::Inject('core\models\Config');
+        $this->service_Language = \Loader::Inject('core\services\Language');
+        $this->service_Logs = \Loader::Inject('core\services\Logs');
+        $this->service_Security = \Loader::Inject('core\services\Security');
+        $this->service_Validation = \Loader::Inject('core\services\Validation');
         
         /* Check login */
-        Memory::models('Privileges')->checkLogin();
+        \Loader::Inject('core\models\Privileges')->checkLogin();
         
         if (! defined("PROCESS")) {
-            $this->service_Template = Memory::services('Template');
+            $this->service_Template = \Loader::Inject('core\services\Template');
             
-            $s_language = Memory::services('Language')->getLanguage();
+            $s_language = $this->service_Language->getLanguage();
             $this->service_Template->headerLink('<script src="{NIV}js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
             
-            if (! Memory::isAjax()) {
+            if (! $this->model_Config->isAjax() ) {
                 $this->loadView();
             }
             
             /* Call statistics */
-            if (! Memory::isAjax() && stripos($_SERVER['PHP_SELF'], 'admin/') === false)
+            if (! $this->model_Config->isAjax() && stripos($_SERVER['PHP_SELF'], 'admin/') === false)
                 require (NIV . 'stats/statsView.php');
         }
         
@@ -143,7 +164,7 @@ abstract class BaseClass
                 $this->service_Template->set('mainTitle', $this->service_Language->get('title') . ',  ');
             }
         } catch (Exception $s_error) {
-            $this->service_ErrorHandler->error($s_error);
+            $this->service_Logs->exception($s_error);
             
             $this->throwError($s_error);
         }
@@ -195,17 +216,14 @@ abstract class BaseClass
 /* Set error catcher */
 function exception_handler($exception)
 {
-    if (class_exists('Memory')) {
-        if (! defined('Process') && Memory::isLoaded('service', 'Template')) {
-            /* Disable output */
-            Memory::delete('service', 'Template');
-        }
-        
-        Memory::services('Logs')->exception($exception);
+    if (class_exists('core\Memory')) {
+        \Loader::Inject('core\services\Logs')->exception($exception);
     }
     
     if (defined('DEBUG')) {
-        header('HTTP/1.1 500 Internal Server Error');
+        $headers = \Loader::Inject('\core\services\Headers');
+        $headers->http500();
+        $headers->printHeaders();
         echo ('<!DOCTYPE html>
 		<html>
 		<head>
@@ -227,10 +245,8 @@ function exception_handler($exception)
         exit();
     }
     
-    if (stripos($_SERVER["SCRIPT_NAME"], 'errors/500.php') === false) {
-        // header('location: ' . NIV . 'errors/500.php');
-        // exit();
-    }
+    include (WEBSITE_ROOT . 'errors/500.php');
+    exit();
 }
 
 set_exception_handler('\core\exception_handler');

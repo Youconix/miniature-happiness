@@ -359,15 +359,15 @@ class Mailer extends Service
         if (empty($s_language))
             $s_language = $this->s_language;
         
-        if (! $this->service_File->exists(NIV . 'emails/' . $s_language . '/' . $s_code . '.tpl')) {
+        if (! $this->service_File->exists(WEBSITE_ROOT . 'emails/' . $s_language . '/' . $s_code . '.tpl')) {
             throw new \Exception("Can not find the email template " . $s_code . " for language " . $this->s_language);
         }
         
-        $a_file = explode('<==========>', $this->service_File->readFile(NIV . 'emails/' . $s_language . '/' . $s_code . '.tpl'));
-        $a_filePlain = explode('<==========>', $this->service_File->readFile(NIV . 'emails/' . $s_language . '/' . $s_code . '_plain.tpl'));
+        $a_file = explode('<==========>', $this->service_File->readFile(WEBSITE_ROOT . 'emails/' . $s_language . '/' . $s_code . '.tpl'));
+        $a_filePlain = explode('<==========>', $this->service_File->readFile(WEBSITE_ROOT . 'emails/' . $s_language . '/' . $s_code . '_plain.tpl'));
         
-        $s_htmlBody = $this->service_File->readFile(NIV . 'emails/main.tpl');
-        $s_plainBody = $this->service_File->readFile(NIV . 'emails/main_plain.tpl');
+        $s_htmlBody = $this->service_File->readFile(WEBSITE_ROOT . 'emails/main.tpl');
+        $s_plainBody = $this->service_File->readFile(WEBSITE_ROOT . 'emails/main_plain.tpl');
         $a_filePlain[1] = str_replace('[content]', $a_filePlain[1], $s_plainBody);
         $a_file[1] = str_replace('[content]', $a_file[1], $s_htmlBody);
         

@@ -3,7 +3,7 @@
 	width: 90%;
 }
 
-#users fieldset label.label, #groups fieldset label.label, #pages fieldset label.label, #maintenance fieldset label.label
+#users fieldset label.label, #groups fieldset label.label, #pages fieldset label.label, #maintenance fieldset label.label, #settings fieldset label.label
 	{
 	display: inline-block;
 	width: 20%;

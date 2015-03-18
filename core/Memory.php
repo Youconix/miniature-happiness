@@ -168,8 +168,12 @@ class Memory
             
             require_once (Memory::$a_service['systemPath'] . 'Session.inc.php');
             
+            require_once (Memory::$a_service['systemPath'] . 'Validation.inc.php');
+            $service_Validation = new \core\services\Validation();
+            Memory::$a_cache['\core\services\Validation'] = $service_Validation;
+            
             require_once (Memory::$a_service['systemPath'] . 'Security.inc.php');
-            $service_Security = new \core\services\Security();
+            $service_Security = new \core\services\Security($service_Validation);
             Memory::$a_cache['\core\services\Security'] = $service_Security;
             
             require_once (Memory::$a_service['systemPath'] . 'Cookie.inc.php');
@@ -446,7 +450,7 @@ class Memory
                 $s_caller = $s_fallback . '_' . $s_name;
                 $object = new $s_caller();
             } else {
-                throw new \MemoryException('Can not find ' . $s_memoryType . ' ' . $s_name, 0, $e);
+                throw new \MemoryException('Can not find ' . $s_memoryType . ' ' . $s_name);
             }
         }
         
@@ -797,8 +801,11 @@ class Memory
         $s_type = strtolower($s_type);
         $s_name = ucfirst(strtolower($s_name));
         
-        if (\core\Memory::isLoaded($s_type, $s_name)) {
-            unset(\core\Memory::$a_memory[$s_type][$s_name]);
+        if ( array_key_exists('\core\\'.$s_type.'\\'.$s_name,Memory::$a_cache)) {
+            unset(Memory::$a_cache['\core\\'.$s_type.'\\'.$s_name]);
+        }
+        else if ( array_key_exists('\includes\\'.$s_type.'\\'.$s_name,Memory::$a_cache)) {
+            unset(Memory::$a_cache['\includes\\'.$s_type.'\\'.$s_name]);
         } else {
             throw new \MemoryException("Trying to delete " . $s_type . " " . $s_name . " that does not exist");
         }

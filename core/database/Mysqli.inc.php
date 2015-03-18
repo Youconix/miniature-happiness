@@ -144,15 +144,6 @@ class Database_Mysqli implements \core\database\DAL
         
         if (empty($s_username) || empty($s_host) || empty($s_database))
             return false;
-            
-            /* Check for current settings */
-        if (file_exists(NIV . 'admin/data/settings/settings.xml') && class_exists('\core\Memory') && ! is_null($this->service_Settings)) {
-            $s_type = $this->service_Settings->get('settings/SQL/type');
-            
-            if ($s_username == $this->service_Settings->get('settings/SQL/' . $s_type . '/username') && $s_password == $this->service_Settings->get('settings/SQL/' . $s_type . '/password') && $s_database == $this->service_Settings->get('settings/SQL/' . $s_type . '/database') && $s_host == $this->service_Settings->get('settings/SQL/' . $s_type . '/host') && $i_port == $this->service_Settings->get('settings/SQL/' . $s_type . '/port')) {
-                return true;
-            }
-        }
         
         /* connect to the database */
         if ($i_port == - 1 || $i_port == '') {

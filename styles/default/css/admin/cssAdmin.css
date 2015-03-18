@@ -25,6 +25,17 @@
 	float: right;
 	margin-top: 0.8em;
 }
+#header_admin nav {
+	padding-right:10px;
+}
+#header_admin nav ul {
+	display:inline-block;
+	float:right;
+}
+#header_admin nav li:first-child {
+    padding-right:0;
+    border-right:0;
+}
 
 #header_admin nav li, .item_header nav li {
 	background-color: inherit;
@@ -35,10 +46,6 @@
 	color: #fff;
 	cursor: pointer;
 	float: right;
-}
-
-#header_admin nav li:last-child, .item_header nav li:last-child {
-	border-left: 2px dashed black;
 }
 
 #header_admin nav li a, .item_header nav li a {

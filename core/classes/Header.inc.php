@@ -72,24 +72,13 @@ class Header
      */
     protected function displayLanguageFlags()
     {
-        $a_languages = $this->service_Language->getLanguages();
+        $a_languages = $this->model_Config->getLanguages();
         $a_languagesCodes = $this->service_Language->getLanguageCodes();
         
-        $s_flags = '<script>
-    <!--
-    function switchLanguage(language){
-    	$.get("{LEVEL}index.php?lang="+language,function(){
-    		location.reload();
-    	});
-    }
-    //-->
-    </script>';
         foreach ($a_languages as $s_code) {
             $s_language = (array_key_exists($s_code, $a_languagesCodes)) ? $a_languagesCodes[$s_code] : $s_code;
             
-            $s_flags .= '<a href="javascript:switchLanguage(\'' . $s_code . '\')">' . '<img src="{style_dir}/images/flags/' . $s_code . '.png" alt="' . $s_language . '" title="' . $s_language . '"></a>';
+            $this->service_Template->setBlock('header_languages',array('code'=>$s_code,'language'=>$s_language));
         }
-        
-        $this->service_Template->set('header_languages', $s_flags);
     }
 }

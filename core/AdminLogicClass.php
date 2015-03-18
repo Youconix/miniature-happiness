@@ -48,7 +48,7 @@ abstract class AdminLogicClass extends BaseClass
 
     protected function checkAjax()
     {
-        if (! \Core\Memory::models('Config')->isAjax()) {
+        if (! $this->model_Config->isAjax()) {
             exit();
         }
     }
@@ -66,11 +66,11 @@ abstract class AdminLogicClass extends BaseClass
         
         parent::init();
         
-        $this->service_Session = Memory::services('Session');
-        $this->model_User = Memory::models('User');
+        $this->service_Session = \Loader::Inject('core\services\Session');
+        $this->model_User = \Loader::Inject('core\models\User');
         
         $this->s_language = $this->service_Language->getLanguage();
-        if (! Memory::isAjax())
+        if (! $this->model_Config->isAjax() )
             $this->service_Template->set('noscript', '<noscript>' . $this->service_Language->get('language/noscript') . '</noscript>');
     }
 }

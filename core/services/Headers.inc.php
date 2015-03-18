@@ -376,6 +376,14 @@ class Headers extends Service
         return $this->a_headers;
     }
     
+    public function skipTemplate(){
+        if( $this->isForceDownload() || $this->isRedirect() || (array_key_exists('http', $this->a_headers) && $this->a_headers['http'][1] == '500 Internal Server Error' )){
+            return true;
+        }
+        
+        return false;
+    }
+    
     /**
      * Imports the given headers
      * 

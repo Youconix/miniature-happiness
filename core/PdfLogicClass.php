@@ -109,8 +109,5 @@ abstract class PdfLogicClass extends \includes\BaseLogicClass
     {
         if (is_null($this->service_Template))
             return;
-        
-        Memory::delete('service', 'Template');
-        $this->service_Template = null;
     }
 }

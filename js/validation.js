@@ -121,6 +121,14 @@ Validation.prototype.html5Validate	= function(item){
 		return false;
 	}
 	if( (typeof pattern != "undefined") && pattern != false ){
+		if( pattern.substring(0,1) == '/' ){
+			pattern = pattern.substring(1);
+		}
+		if( pattern.substring(pattern.length-1) == '/' ){
+			pattern = pattern.substring(0,pattern.length-1);
+		}
+		
+		pattern = new RegExp(pattern);
 		if( value != "" && (value.match(pattern) == null)  ){
 			$(item).addClass("invalid");
       this.errorMessage(item);

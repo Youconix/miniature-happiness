@@ -126,7 +126,7 @@ try {
     
     if (! method_exists($obj_class, $s_command)) {
         $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command;
-        include (NIV . 'errors/404.php');
+        include (NIV . 'errors/500.php');
         exit();
     }
     

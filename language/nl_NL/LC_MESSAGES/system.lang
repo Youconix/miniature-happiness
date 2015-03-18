@@ -98,14 +98,6 @@
 	       <installConfirmTitle>Module installeren</installConfirmTitle>
 	       <installConfirm>Weet u zeker dat u module [name] wilt installeren?</installConfirm>
 	   </modules>
-	   <settings>
-	       <email>Email</email>
-	       <smtp>SMTP</smtp>
-	       <general>Algemeen</general>
-	       <login>Inloggen</login>
-	       <sessions>Sessies</sessions>
-	       <templates>Templates</templates>
-	   </settings>
 	   <statistics>
 	       <hits>Bezoekers</hits>
 	       <visitors>Unieke bezoekers</visitors>
@@ -263,39 +255,98 @@
 			<notices>Systeem meldingen</notices>
 		</notices>
 		<settings>
-			<title>Instellingen</title>
-			<basedir>Submap</basedir>
-			<siteUrl>Site url</siteUrl>
-			<timezone>Tijd zone</timezone>
-			<sessionTitle>Sessie data (laat leeg voor standaard)</sessionTitle>
-			<sessionName>Sessie naam</sessionName>
-			<sessionPath>Sessie map</sessionPath>
-			<sessionExpire>Sessie verloop tijd (seconden)</sessionExpire>
-			<siteSettings>Site instellingen</siteSettings>
+		   <smtp>SMTP</smtp>
+           <login>
+                <title>Inloggen</title>
+                <loginRedirect>Verwijzing na inloggen</loginRedirect>
+                <logoutRedirect>Verwijzing na uitloggen</logoutRedirect>
+                <registrationRedirect>Verwijzing na registratie</registrationRedirect>
+                <normalLogin>Standaard login</normalLogin>
+                <openidLogin>OpenID login</openidLogin>
+                <facebookLogin>Facebook login</facebookLogin>
+                <facebookAppID>App ID</facebookAppID>
+                <ldapLogin>LDAP login</ldapLogin>
+                <loginChoice>Minimaal 1 moet er gekozen worden.</loginChoice>
+                <redirectError>De verwijziging kan niet leeg zijn.</redirectError>
+                <facebookAppError>De Facebook app ID is niet ingevuld.</facebookAppError>
+                <ldapServerError>De LDAP server kan niet leeg zijn.</ldapServerError>
+                <ldapPortError>De LDAP poort kan niet leeg zijn.</ldapPortError>
+           </login>
+           <sessions>
+                <title>Sessies</title>
+                <name>Sessie naam</name>
+                <path>Sessie object locatie</path>
+                <expire>Verlooptijd in seconden</expire>
+                <sessionInvalid>De sessie verloop tijd is ongeldig.</sessionInvalid>
+           </sessions>
+           <languages>
+                <title>Talen</title>
+           </languages>  
+           <cache>
+                <title>Cache instellingen</title>
+           </cache>
+		   <email>
+		      <title>E-mail</title>
+		      <generalTitle>Algemene email instellingen</generalTitle>
+		      <senderName>Naam afzender</senderName>
+              <senderEmail>Email afzender</senderEmail>
+              <smtp>SMTP</smtp>
+              <useSmtp>Gebruik SMTP</useSmtp>
+              <adminSenderTitle>E-mail admin</adminSenderTitle>
+              <adminSenderName>Naam administrator</adminSenderName>
+              <adminSenderEmail>Email administrator</adminSenderEmail>
+              <senderEmpty>De naam van de afzender kan niet leeg zijn.</senderEmpty>
+              <senderEmailEmpty>De email van de afzender kan niet leeg zijn.</senderEmailEmpty>
+              <smtpHostError>De host kan niet leeg zijn.</smtpHostError>
+              <smtpUsernameError>De gebruikersnaam kan niet leeg zijn.</smtpUsernameError>
+              <smptPasswordError>Het wachtwoord kan niet leeg zijn.</smptPasswordError>
+              <smtpPortError>Het poortnummer kan niet leeg zijn.</smtpPortError>
+		    </email>
+		    <title>Instellingen</title>
+		    <general>
+		        <title2>Algemeen</title2>
+		        <title>Algemene instellingen</title>
+		        <nameSite>Site naam</nameSite>
+    			<basedir>Submap</basedir>
+    			<siteUrl>Site url</siteUrl>
+    			<timezone>Tijd zone</timezone>
+    			<logger>Logger</logger>
+    			<logLocation>Log locatie</logLocation>
+    			<logSize>Maximale log grootte (Bytes)</logSize>
+    			<templates>Templates</templates>
+    			<siteNameEmpty>De site naam kan niet leeg zijn.</siteNameEmpty>
+    			<urlEmpty>De site url kan niet leeg zijn.</urlEmpty>
+                <timezoneInvalid>De tijdzone is niet geldig.</timezoneInvalid>
+                <loggerInvalid>De logger is niet geldig.</loggerInvalid>
+                <logLocationInvalid>De log locatie kan niet leeg zijn.</logLocationInvalid>
+                <logSizeInvalid>De maximale log grootte moet een heel positief getal zijn.</logSizeInvalid>
+			</general>
+			<database>
+			     <title>Database</title>
+			     <database>Database</database>
+			     <prefix>Tabel voorvoegsel</prefix>
+			     <type>Database type</type> 
+			     <databaseEmpty>Niet alle database gegevens zijn ingevuld.</databaseEmpty>
+                <databasePortInvalid>De database poort is ongeldig.</databasePortInvalid>
+                <databaseInvalid>De database gegevens zijn incorrect.</databaseInvalid>
+			 </database>
+			
 			<defaultLanguage>Standaard taal</defaultLanguage>
-			<templateDir>Template map</templateDir>
-			<databaseSettings>Database instellingen</databaseSettings>
+			
+			
 			<username>Gebruikersnaam</username>
 			<password>Wachtwoord</password>
-			<database>Database</database>
+			
 			<host>Server (host)</host>
-			<port>Poort (laat leeg voor standaard)</port>
+			<port>Poort</port>
 			<type>Type</type>
 			<ftpSettings>FTP instellingen</ftpSettings>
 			<disable>Uitschakelen</disable>
-			<js>
-				<urlEmpty>De site url kan niet leeg zijn.</urlEmpty>
-				<timezoneEmpty>De tijdzone kan niet leeg zijn.</timezoneEmpty>
-				<timezoneInvalid>De tijdzone is ongeldig.</timezoneInvalid>
-				<sessionInvalid>De sessie verloop tijd is ongeldig.</sessionInvalid>
-				<databaseEmpty>Niet alle database gegevens zijn ingevuld.</databaseEmpty>
-				<databasePortInvalid>De database poort is ongeldig.</databasePortInvalid>
-				<databaseInvalid>De database gegevens zijn incorrect.</databaseInvalid>
-				<ftpEmpty>Niet alle FTP gegevens zijn ingevuld.</ftpEmpty>
-				<ftpPortInvalid>De FTP poort is ongeldig.</ftpPortInvalid>
-				<ftpInvalid>De FTP gegevens zijn incorrect.</ftpInvalid>
-				<saved>De instellingen zijn opgeslagen.</saved>
-			</js>
+
+			<ftpEmpty>Niet alle FTP gegevens zijn ingevuld.</ftpEmpty>
+			<ftpPortInvalid>De FTP poort is ongeldig.</ftpPortInvalid>
+			<ftpInvalid>De FTP gegevens zijn incorrect.</ftpInvalid>
+		    <saved>De instellingen zijn opgeslagen.</saved>
 		</settings>
 		<menu>
 			<groups>Groepen</groups>
@@ -304,6 +355,10 @@
     		<settings>Instellingen</settings>
     		<stats>Statistieken</stats>
     		<maintenance>Onderhoud</maintenance>
+    		<close>Sluiten</close>
+    		<logout>Uitloggen</logout>
+    		<adminMenuLink>Menu</adminMenuLink>
+    		<loginHeader>Ingelogd als [name]</loginHeader>
 		</menu>
 		<cache>
 		  <languageCache>Taal bestanden cache verwijderen</languageCache>

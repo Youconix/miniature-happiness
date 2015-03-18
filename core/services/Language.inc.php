@@ -29,8 +29,6 @@ class Language extends Xml
 
     private $s_language = null;
 
-    private $s_encoding = null;
-
     private $service_File;
 
     private $service_Settings;
@@ -162,7 +160,7 @@ class Language extends Xml
      */
     public function getEncoding()
     {
-        return $this->s_encoding;
+        return $this->get('encoding');
     }
 
     /**
