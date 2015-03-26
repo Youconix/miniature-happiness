@@ -1,3 +1,6 @@
 [submodule "lib/mrclay"]
 	path = lib/mrclay
 	url = git@github.com:mrclay/minify.git
+[submodule "JShrink"]
+	path = lib/tedious
+	url = git@github.com:tedious/JShrink.git
