@@ -1,0 +1,3 @@
+[submodule "lib/mrclay"]
+	path = lib/mrclay
+	url = git@github.com:mrclay/minify.git
