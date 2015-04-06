@@ -104,7 +104,6 @@ class LoggerDefault extends \core\services\logger\LoggerParent
         
         try {
             if( $s_name == 'error' || in_array($level,array($obj_loglevel::EMERGENCY)) ){
-                echo('test '.$this->s_errorLog.'<br>');
                 $this->service_File->writeLastFile($this->s_errorLog,$message);
             }
             else {

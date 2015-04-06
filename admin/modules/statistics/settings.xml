@@ -13,36 +13,33 @@
 	<block>
 		<title>system/admin/statistics/hits</title>
 		<id>admin_statistics_hits</id>
-		<click>statistics.show('hits')</click>
 	</block>
 	<block>
-		<title>system/admin/statistics/visitors</title>
-		<id>admin_statistics_visitors</id>
-		<click>statistics.show('visitors')</click>
-	</block>
+        <title>system/admin/statistics/hits_hours</title>
+        <id>admin_statistics_hits_hours</id>
+    </block>
 	<block>
 		<title>system/admin/statistics/os</title>
 		<id>admin_statistics_os</id>
-		<click>statistics.show('os')</click>
 	</block>
 	<block>
 		<title>system/admin/statistics/browsers</title>
 		<id>admin_statistics_browsers</id>
-		<click>statistics.show('browsers')</click>
 	</block>
 	<block>
 		<title>system/admin/statistics/screen_colors</title>
 		<id>admin_statistics_screen_colors</id>
-		<click>statistics.show('screen_colors')</click>
 	</block>
+	<block>
+        <title>system/admin/statistics/screen_sizes</title>
+        <id>admin_statistics_screen_sizes</id>
+    </block>
 	<block>
 		<title>system/admin/statistics/references</title>
 		<id>admin_statistics_references</id>
-		<click>statistics.show('references')</click>
 	</block>
 	<block>
 		<title>system/admin/statistics/pages</title>
 		<id>admin_statistics_pages</id>
-		<click>statistics.show('pages')</click>
 	</block>
 </module>

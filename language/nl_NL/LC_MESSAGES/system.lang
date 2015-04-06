@@ -37,6 +37,20 @@
 		<month11>November</month11>
 		<month12>December</month12>
 	</months>
+	<monthsShort>
+        <month1>Jan</month1>
+        <month2>Feb</month2>
+        <month3>Ma</month3>
+        <month4>Apr</month4>
+        <month5>Mei</month5>
+        <month6>Jun</month6>
+        <month7>Jul</month7>
+        <month8>Aug</month8>
+        <month9>Sep</month9>
+        <month10>Okt</month10>
+        <month11>Nov</month11>
+        <month12>Dec</month12>
+    </monthsShort>
 
 	<gender>
 		<male>Man</male>
@@ -101,9 +115,11 @@
 	   <statistics>
 	       <hits>Bezoekers</hits>
 	       <visitors>Unieke bezoekers</visitors>
+	       <hits_hours>Bezoekers per uur</hits_hours>
 	       <os>Besturingssystemen</os>
 	       <browsers>Browsers</browsers>
 	       <screen_colors>Scherm kleuren</screen_colors>
+	       <screen_sizes>Scherm afmetingen</screen_sizes>
 	       <references>Afkomstig van</references>
 	       <pages>Pagina's</pages>
 	   </statistics>

@@ -2,6 +2,19 @@
 namespace admin;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Admin statistics view class
  *
  * This file is part of Miniature-happiness
@@ -9,35 +22,24 @@ namespace admin;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV', '../');
-include (NIV . 'include/AdminLogicClass.php');
+define('NIV', '../../../');
+include (NIV . 'core/AdminLogicClass.php');
 
 class Stats extends \core\AdminLogicClass
 {
 
+    /**
+     *
+     * @var \core\models\Stats
+     */
     private $model_Stats;
 
-    private $i_date;
+    private $i_startDate;
 
-    private $i_daysMonth;
+    private $i_endDate;
 
-    private $i_month;
-
-    private $i_year;
+    private $a_colors;
 
     /**
      * Starts the class Stats
@@ -46,26 +48,46 @@ class Stats extends \core\AdminLogicClass
     {
         $this->init();
         
-        if (! Memory::isAjax() || ! isset($this->get['command'])) {
+        if (! $this->model_Config->isAjax() || ! isset($this->get['command'])) {
             exit();
         }
         
-        if ($this->get['command'] == 'index') {
-            $this->view();
-        } else 
-            if ($this->get['command'] == 'OS') {
-                $this->OSLong();
-            } else 
-                if ($this->get['command'] == 'sizes') {
-                    $this->screenSizes(- 1);
-                } else 
-                    if ($this->get['command'] == 'browsers') {
-                        $this->browsersLong();
-                    }
-        
-        if ($this->get['command'] != 'index') {
-            $this->service_Template->set('back', $this->service_Language->get('language/buttons/back'));
+        switch ($this->get['command']) {
+            case 'hits':
+                $this->hits();
+                break;
+                
+            case 'hits_hours' :
+                $this->hitsHours();
+                break;
+                
+            case 'os':
+                $this->OS();
+                break;
+                
+            case 'browser' :
+                $this->browser();
+                break;
+                
+            case 'screencolors' :
+                $this->screenColors();
+                break;
+                
+            case 'screensizes' :
+                $this->screenSizes();
+                break;
+                
+            case 'references' :
+                $this->references();
+                break;
+                
+            case 'pages' :
+                $this->pages();
+                break;
         }
+        
+        $this->service_Template->set('title_startdate',date('d-m-Y',$this->i_startDate));
+        $this->service_Template->set('title_enddate',date('d-m-Y',$this->i_endDate));
     }
 
     /**
@@ -73,165 +95,106 @@ class Stats extends \core\AdminLogicClass
      */
     protected function init()
     {
-        $this->init_get = array(
-            'month' => 'int',
-            'year' => 'int'
-        );
-        
         parent::init();
         
-        if (isset($this->get['month']) && $this->get['month'] >= 1 && $this->get['month'] <= 12)
-            $this->i_month = $this->get['month'];
-        else
-            $this->i_month = date('n');
+        $this->service_Template->set('amount', t('system/admin/stats/amount'));
+        $this->service_Template->set('pageTitle', t('system/admin/stats/title'));
         
-        $this->i_year = date('Y');
-        if (isset($this->get['year']) && $this->get['year'] >= ($this->i_year - 3) && $this->get['year'] <= $this->i_year)
-            $this->i_year = $this->get['year'];
+        $i_daysMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
+        $this->i_startDate = mktime(0, 0, 0, date("n"), 1, date("Y") - 1);
+        $this->i_endDate = mktime(23, 59, 59, date("n"), $i_daysMonth, date("Y"));
         
-        $this->model_Stats = Memory::models('Stats');
-        $this->i_date = mktime(0, 0, 0, $this->i_month, 1, $this->i_year);
+        $this->model_Stats = \Loader::Inject('\core\models\Stats');
         
-        $this->i_daysMonth = Memory::helpers('Date')->getDaysMonth($this->i_month, $this->i_year);
-        $this->service_Template->set('amount', $this->service_Language->get('admin/stats/amount'));
-        $this->service_Template->set('pageTitle', $this->service_Language->get('admin/stats/title'));
-        
-        $this->service_Template->set('month', $this->i_month);
-        $this->service_Template->set('year', $this->i_year);
+        $this->a_colors = array(
+            '1252f3', // blue
+            'b331ae', // purple
+            '63413e', // brows
+            '3a8555', // green,
+            'f32212', // red
+            '1ee1f8', // light blue
+            'ebf81e', // yellow
+            '989898', // grey
+            '72ff00', // light green
+            '111', // black
+        );
     }
 
     /**
-     * Displays the main view
-     */
-    private function view()
-    {
-        $this->hits();
-        $this->visitors();
-        $this->os(10);
-        $this->browsers();
-        $this->screenColors(10);
-        $this->screenSizes(10);
-        $this->reference();
-        $this->pages();
-        
-        $this->service_Template->set('fullList', $this->service_Language->get('admin/stats/fullList'));
-        
-        $i_yearLast = $this->i_year;
-        $i_yearNext = $this->i_year;
-        $i_monthLast = $this->i_month - 1;
-        $i_monthNext = $this->i_month + 1;
-        if ($i_monthLast == 0) {
-            $i_monthLast = 12;
-            $i_yearLast --;
-        } else 
-            if ($i_monthNext == 13) {
-                $i_monthNext = 1;
-                $i_yearNext ++;
-            }
-        
-        if ($i_yearLast >= (date('Y') - 3)) {
-            $this->service_Template->set('lastMonth', '<a href="javascript:adminStats.view2(' . $i_monthLast . ',' . $i_yearLast . ')">&lt;&lt</a>');
-        }
-        if ($i_yearNext <= date('Y')) {
-            $this->service_Template->set('nextMonth', '<a href="javascript:adminStats.view2(' . $i_monthNext . ',' . $i_yearNext . ')">&gt;&gt</a>');
-        }
-    }
-
-    /**
-     * Displays the hits
+     * Displays the hits and unique visitors
      */
     private function hits()
     {
-        $a_hits = $this->model_Stats->getHits($this->i_date);
-        $a_hitHours = array(
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
+        $a_lines = array(
+            array(
+                'color' => $this->a_colors[0],
+                'text' => t('system/admin/statistics/hits')
+            ),
+            array(
+                'color' => $this->a_colors[1],
+                'text' => t('system/admin/statistics/visitors')
+            ),
+            array(
+                'color' => $this->a_colors[2],
+                'text' => 'Terugkerende bezoekers'
+            )
         );
-        $i_hitsTotal = 0;
+        $a_labels = array();
+        $a_hits = array(
+            0 => array(),
+            1 => array(),
+            2 => array()
+        );
         
-        for ($i = 1; $i <= $this->i_daysMonth; $i ++) {
-            $this->service_Template->setBlock('hitsDay', array(
-                'day' => $i
-            ));
+        $i_month = date('n', $this->i_startDate);
+        for ($i = 1; $i <= 13; $i ++) {
+            $a_labels[] = t('system/monthsShort/month' . $i_month);
             
-            $i_number = 0;
-            if (array_key_exists($i, $a_hits)) {
-                for ($j = 0; $j <= 23; $j ++) {
-                    if (array_key_exists($j, $a_hits[$i])) {
-                        $i_amount = $a_hits[$i][$j]['amount'];
-                        
-                        $a_hitHours[$j] += $i_amount;
-                        $i_number += $i_amount;
-                        $i_hitsTotal += $i_amount;
-                    }
-                }
+            $i_month ++;
+            if ($i_month == 13) {
+                $i_month = 1;
             }
-            
-            $this->service_Template->setBlock('hitsNumber', array(
-                'number' => $this->format($i_number)
-            ));
         }
         
-        for ($i = 0; $i <= 23; $i ++) {
-            $i_perc = 0;
-            if ($i_hitsTotal > 0)
-                $i_perc = round($a_hitHours[$i] / $i_hitsTotal * 100);
-            
-            $this->service_Template->setBlock('visitorsHour', array(
-                'hour' => $i,
-                'number' => $this->format($a_hitHours[$i]),
-                'width' => $this->format($i_perc * 4),
-                'percent' => $this->format($i_perc)
-            ));
+        $hits = $this->model_Stats->getHits($this->i_startDate, $this->i_endDate);
+        foreach ($hits as $hit) {
+            $a_hits[0][] = $hit->getAmount();
+        }
+        $unique = $this->model_Stats->getUnique($this->i_startDate, $this->i_endDate);
+        foreach ($unique as $hit) {
+            $a_hits[1][] = $hit->getAmount();
+        }
+        foreach($a_hits[1] AS $key => $value){
+            $a_hits[2][$key] = ($a_hits[0][$key] - $value);
         }
         
-        $this->service_Template->set('HitsTitle', $this->service_Language->get('admin/stats/visitors') . ' ' . strtolower($this->service_Language->get('months/month' . $this->i_month)) . ' ' . $this->i_year, $this->i_date);
+        $this->service_Template->set('hitsTitle',t('system/admin/statistics/hits'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('labels',json_encode($a_labels));
+        $this->service_Template->set('hits', json_encode($a_hits));
     }
-
+    
     /**
-     * Displays the unique visitors
+     * Displays the hits pro hour
      */
-    private function visitors()
-    {
-        $a_visitors = $this->model_Stats->getUnique($this->i_date);
-        
-        for ($i = 1; $i <= $this->i_daysMonth; $i ++) {
-            $this->service_Template->setBlock('visitorsDay', array(
-                'day' => $i
-            ));
-            
-            $i_number = 0;
-            if (array_key_exists($i, $a_visitors))
-                $i_number = $a_visitors[$i]['amount'];
-            
-            $this->service_Template->setBlock('visitorsNumber', array(
-                'number' => $this->format($i_number)
-            ));
+    private function hitsHours(){
+        $a_lines = array(
+            array(
+                'color' => $this->a_colors[0],
+                'text' => t('system/admin/statistics/hits')
+            )
+        );
+        $a_labels = array();
+        for($i=0; $i<=23; $i++){
+            $a_labels[] = $i;
         }
         
-        $this->service_Template->set('HitsUniqueTitle', $this->service_Language->get('admin/stats/uniqueVisitors') . ' ' . strtolower($this->service_Language->get('months/month' . $this->i_month)) . ' ' . $this->i_year, $this->i_date);
+        $a_hits = $this->model_Stats->getHitsHours($this->i_startDate,$this->i_endDate);
+        
+        $this->service_Template->set('hitsTitle',t('system/admin/statistics/hits_hours'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('labels',json_encode($a_labels));
+        $this->service_Template->set('hits', json_encode($a_hits));
     }
 
     /**
@@ -239,148 +202,143 @@ class Stats extends \core\AdminLogicClass
      */
     private function OS()
     {
-        $a_osses = $this->model_Stats->getOS($this->i_date);
+        $a_ossesRaw = $this->model_Stats->getOS($this->i_startDate,$this->i_endDate);
+        $a_lines = array();
+        $a_osses = array();
         
-        foreach ($a_osses as $a_os) {
-            $this->service_Template->setBlock('OS', array(
-                'name' => $a_os['name'],
-                'number' => $this->format($a_os['amount'])
-            ));
+        $i = -1;
+        $a_types = array();
+        foreach( $a_ossesRaw AS $a_os ){
+            if( !in_array($a_os['type'], $a_types) ){
+                $a_types[] = $a_os['type'];
+                $i++;
+            }
+            
+            $a_lines[] = array(
+                    'color' => $this->a_colors[$i],
+                    'type' => $a_os['type'],
+                    'text' => $a_os['name']
+            );
+            
+            $a_osses[] = array(
+                'amount' => $a_os['amount']
+            );
         }
         
-        $this->service_Template->set('operatingTitle', $this->service_Language->get('admin/stats/OSses'));
-        $this->service_Template->set('osTitle', $this->service_Language->get('admin/stats/OS'));
-    }
-
-    /**
-     * Displays the detailed operating systems
-     */
-    private function OSLong()
-    {
-        $a_osses = $this->model_Stats->getOSLong($this->i_date);
-        
-        foreach ($a_osses as $a_os) {
-            $this->service_Template->setBlock('OS', array(
-                'name' => $a_os['name'],
-                'number' => $this->format($a_os['amount'])
-            ));
-        }
-        
-        $this->service_Template->set('operatingTitle', $this->service_Language->get('admin/stats/OSses'));
-        $this->service_Template->set('osTitle', $this->service_Language->get('admin/stats/OS'));
+        $this->service_Template->set('osTitle', $this->service_Language->get('system/admin/stats/OS'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('os',json_encode($a_osses));
     }
 
     /**
      * Displays the browsers
      */
-    private function browsers()
+    private function browser()
     {
-        $a_browsers = array_reverse($this->model_Stats->getBrowsers($this->i_date));
-        krsort($a_browsers, SORT_STRING);
+        $a_browsersRaw = $this->model_Stats->getBrowsers($this->i_startDate,$this->i_endDate);
+        $a_lines = array();
+        $a_browsers = array();
         
-        foreach ($a_browsers as $a_browser) {
-            $this->service_Template->setBlock('browser', array(
-                'name' => $a_browser['name'],
-                'number' => $this->format($a_browser['amount'])
-            ));
+        $i = -1;
+        $a_types = array();
+        foreach( $a_browsersRaw AS $a_browser ){
+            if( !in_array($a_browser['type'], $a_types) ){
+                $a_types[] = $a_browser['type'];
+                $i++;
+            }
+            
+            $a_lines[] = array(
+                    'color' => $this->a_colors[$i],
+                    'type' => $a_browser['type'],
+                    'text' => $a_browser['name']
+            );
+            
+            $a_browsers[] = array(
+                'amount' => $a_browser['amount']
+            );
         }
         
-        $this->service_Template->set('browsersTitle', $this->service_Language->get('admin/stats/browsers'));
-        $this->service_Template->set('browserTitle', $this->service_Language->get('admin/stats/browser'));
-    }
-
-    /**
-     * Displays the detailed browsers
-     */
-    private function browsersLong()
-    {
-        $a_browsers = $this->model_Stats->getBrowsersLong($this->i_date);
-        
-        foreach ($a_browsers as $a_browser) {
-            $this->service_Template->setBlock('browser', array(
-                'name' => $a_browser['name'],
-                'version' => $a_browser['version'],
-                'number' => $this->format($a_browser['amount']),
-                'version' => $a_browser['version']
-            ));
-        }
-        
-        $this->service_Template->set('browsersTitle', $this->service_Language->get('admin/stats/browsers'));
-        $this->service_Template->set('browserTitle', $this->service_Language->get('admin/stats/browser'));
-        $this->service_Template->set('browserVersion', $this->service_Language->get('admin/stats/version'));
+        $this->service_Template->set('browserTitle', $this->service_Language->get('system/admin/stats/browsers'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('browsers',json_encode($a_browsers));
     }
 
     /**
      * Displays the screen colors
-     *
-     * @param int $i_limit
-     *            number of records to show, -1 for no limit
      */
-    private function screenColors($i_limit)
+    private function screenColors()
     {
-        $a_colors = $this->model_Stats->getScreenColors($this->i_date, $i_limit);
-        krsort($a_colors, SORT_STRING);
+        $a_lines = array();
+        $a_colors = array();
+        $a_data = $this->model_Stats->getScreenColors($this->i_startDate,$this->i_endDate);
+        krsort($a_data, SORT_STRING);
         
-        foreach ($a_colors as $a_color) {
-            $this->service_Template->setBlock('screenColor', array(
-                'name' => $a_color['name'],
-                'number' => $this->format($a_color['amount'])
-            ));
+        $i=0;
+        foreach ($a_data as $a_color) {
+            $a_lines[] = array(
+                'color' => $this->a_colors[$i],
+                'text' => $a_color['name']
+            );
+            
+            $a_colors[] = $a_color['amount'];
+            $i++;
         }
         
-        $this->service_Template->set('screenColorsTitle', $this->service_Language->get('admin/stats/screenColors'));
-        $this->service_Template->set('colorTitle', $this->service_Language->get('admin/stats/colors'));
+        $this->service_Template->set('screenColorsTitle', $this->service_Language->get('system/admin/stats/screenColors'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('screenColors',json_encode($a_colors));
     }
 
     /**
      * Displays the screen sizes
-     *
-     * @param int $i_limit
-     *            number of records to show, -1 for no limit
      */
-    private function screenSizes($i_limit)
+    private function screenSizes()
     {
-        $a_sizes = $this->model_Stats->getScreenSizes($this->i_date, $i_limit);
+        $a_lines = array();
+        $a_sizes = array();
+        $a_data = $this->model_Stats->getScreenSizes($this->i_startDate,$this->i_endDate);
+        krsort($a_data, SORT_STRING);
         
-        foreach ($a_sizes as $a_size) {
-            $this->service_Template->setBlock('screenSize', array(
-                'name' => $a_size['width'] . 'X' . $a_size['height'],
-                'number' => $this->format($a_size['amount'])
-            ));
+        $i=0;
+        foreach ($a_data as $a_size) {
+            $a_lines[] = array(
+                'color' => $this->a_colors[$i],
+                'text' => $a_size['width'].'X'.$a_size['height']
+            );
+            
+            $a_sizes[] = $a_size['amount'];
+            $i++;
         }
         
-        $this->service_Template->set('screenSizesTitle', $this->service_Language->get('admin/stats/screenSizes'));
-        $this->service_Template->set('screenSize', $this->service_Language->get('admin/stats/size'));
+        $this->service_Template->set('screenSizesTitle', $this->service_Language->get('system/admin/stats/screenSizes'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('screenSizes',json_encode($a_sizes));
     }
 
     /**
-     * Displays the reference
+     * Displays the references
      */
-    private function reference()
+    private function references()
     {
-        $a_references = $this->model_Stats->getReferences($this->i_date);
-        $i_total = 0;
+        $a_lines = array();
+        $a_references = array();
+        $a_data = $this->model_Stats->getReferences($this->i_startDate,$this->i_endDate);
+        krsort($a_data, SORT_STRING);
         
-        foreach ($a_references as $a_reference) {
-            $i_total += $a_reference['amount'];
+        $i=0;
+        foreach ($a_data as $a_reference) {
+            $a_lines[] = array(
+                'color' => $this->a_colors[$i],
+                'text' => $a_reference['name']
+            );
+        
+            $a_references[] = $a_reference['amount'];
+            $i++;
         }
         
-        if ($i_total == 0)
-            $i_total = 1;
-        
-        $s_bookmark = $this->service_Language->get('admin/stats/bookmark');
-        foreach ($a_references as $a_reference) {
-            if (empty($a_reference['name']))
-                $a_reference['name'] = $s_bookmark;
-            
-            $this->service_Template->setBlock('reference', array(
-                'name' => $a_reference['name'],
-                'number' => $this->format($a_reference['amount']),
-                'percent' => round($a_reference['amount'] / $i_total * 100)
-            ));
-        }
-        
-        $this->service_Template->set('referencesTitle', $this->service_Language->get('admin/stats/reference'));
+        $this->service_Template->set('referencesTitle', $this->service_Language->get('system/admin/statistics/references'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('references',json_encode($a_references));
     }
 
     /**
@@ -388,24 +346,25 @@ class Stats extends \core\AdminLogicClass
      */
     private function pages()
     {
-        $a_pages = $this->model_Stats->getPages($this->i_date);
-        $i_total = 0;
+        $a_lines = array();
+        $a_pages = array();
+        $a_data = $this->model_Stats->getPages($this->i_startDate,$this->i_endDate);
+        krsort($a_data, SORT_STRING);
         
-        foreach ($a_pages as $a_page) {
-            $i_total += $a_page['amount'];
+        $i=0;
+        foreach ($a_data as $a_page) {
+            $a_lines[] = array(
+                'color' => $this->a_colors[$i],
+                'text' => $a_page['name']
+            );
+        
+            $a_pages[] = $a_page['amount'];
+            $i++;
         }
         
-        foreach ($a_pages as $a_page) {
-            $i_percent = round($a_page['amount'] / $i_total * 100);
-            $this->service_Template->setBlock('visitorsPage', array(
-                'page' => $a_page['name'],
-                'number' => $this->format($a_page['amount']),
-                'width' => round($i_percent * 4),
-                'percent' => $i_percent
-            ));
-        }
-        
-        $this->service_Template->set('pagesTitle', $this->service_Language->get('admin/stats/pages'));
+        $this->service_Template->set('pagesTitle', $this->service_Language->get('system/admin/statistics/pages'));
+        $this->service_Template->set('lines',json_encode($a_lines));
+        $this->service_Template->set('pages',json_encode($a_pages));
     }
 }
 
