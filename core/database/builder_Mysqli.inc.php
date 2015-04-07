@@ -693,8 +693,8 @@ class Builder_mysqli implements \core\services\Builder
         if ($this->service_Database->num_rows() > 0) {
             $a_contrains = $this->service_Database->fetch_assoc();
             
-            foreach($a_contrains AS $a_contrain ){
-                $sql .= 'ALTER TABLE '.$a_constrain['table_name'].' IF EXISTS DROP FOREIGN KEY '.$a_constrain['constraint_name'].';';
+            foreach ($a_contrains as $a_contrain) {
+                $sql .= 'ALTER TABLE ' . $a_constrain['table_name'] . ' IF EXISTS DROP FOREIGN KEY ' . $a_constrain['constraint_name'] . ';';
             }
             $sql .= "\n-- --------------------------\n";
         }
@@ -710,14 +710,13 @@ class Builder_mysqli implements \core\services\Builder
         
         /* Restore constrains */
         if (count($a_contrains) > 0) {
-            foreach($a_contrains AS $a_contrain ){
-                $sql .= 'ALTER TABLE '.$a_constrain['table_name'].' ADD CONSTRAINT '.$a_constrain['constraint_name'].' FOREIGN KEY ( '.$a_contrain['column_name'].') 
-                    REFERENCES '.$a_contrain['referenced_table_name'].' ( '.$a_contrain['referenced_column_name'].' ) ON DELETE RESTRICT ON UPDATE RESTRICT ;'."\n";
+            foreach ($a_contrains as $a_contrain) {
+                $sql .= 'ALTER TABLE ' . $a_constrain['table_name'] . ' ADD CONSTRAINT ' . $a_constrain['constraint_name'] . ' FOREIGN KEY ( ' . $a_contrain['column_name'] . ') 
+                    REFERENCES ' . $a_contrain['referenced_table_name'] . ' ( ' . $a_contrain['referenced_column_name'] . ' ) ON DELETE RESTRICT ON UPDATE RESTRICT ;' . "\n";
             }
             
             $sql .= "\n-- --------------------------\n";
         }
-        
         
         return $sql;
     }

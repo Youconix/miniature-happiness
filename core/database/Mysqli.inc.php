@@ -144,8 +144,8 @@ class Database_Mysqli implements \core\database\DAL
         
         if (empty($s_username) || empty($s_host) || empty($s_database))
             return false;
-        
-        /* connect to the database */
+            
+            /* connect to the database */
         if ($i_port == - 1 || $i_port == '') {
             $obj_connection = new \mysqli($s_host, $s_username, $s_password, $s_database);
         } else {
@@ -455,7 +455,7 @@ class Database_Mysqli implements \core\database\DAL
         }
         
         $s_command = strtoupper(trim(substr($s_query, 0, strpos($s_query, ' '))));
-        if( $s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE' || $s_command == 'OPTIMIZE' || $s_command == 'REPAIR' ){
+        if ($s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE' || $s_command == 'OPTIMIZE' || $s_command == 'REPAIR') {
             $this->obj_query = $qry_sql;
         }
         if ($s_command == 'INSERT') {
@@ -609,28 +609,33 @@ class Database_Mysqli implements \core\database\DAL
             throw new \DBException("Database-error : trying to get data on a non-SELECT-query");
         }
     }
-    
+
     /**
      * Describes the table structure
-     * 
-     * @param string    $s_table    The table name
-     * @param string    The structure
-     * @param boolean   Set to true to add "IF NOT EXISTS"
-     * @param boolean   Set to true to add dropping the table first
+     *
+     * @param string $s_table
+     *            The table name
+     * @param
+     *            string The structure
+     * @param
+     *            boolean Set to true to add "IF NOT EXISTS"
+     * @param
+     *            boolean Set to true to add dropping the table first
      * @throws \DBException If the table does not exists
      */
-    public function describe($s_table,$bo_addNotExists = false,$bo_dropTable = false){
-        $this->query('SHOW CREATE TABLE '.$s_table);
-        if( $this->num_rows() == 0 ){
-            throw new \DBException('Table '.$s_table.' does not exist.');
+    public function describe($s_table, $bo_addNotExists = false, $bo_dropTable = false)
+    {
+        $this->query('SHOW CREATE TABLE ' . $s_table);
+        if ($this->num_rows() == 0) {
+            throw new \DBException('Table ' . $s_table . ' does not exist.');
         }
         
         $a_table = $this->fetch_assoc();
         $s_description = $a_table[0][$s_table];
-        if( $bo_dropTable ){
-            $s_description = 'DROP TABLE IF EXISTS '.$s_table.";\n".$s_description;   
-        }        
-        if( $bo_addNotExists ){
+        if ($bo_dropTable) {
+            $s_description = 'DROP TABLE IF EXISTS ' . $s_table . ";\n" . $s_description;
+        }
+        if ($bo_addNotExists) {
             $s_description = str_replace('CREATE TABLE', 'CREATE TABLE IF NOT EXISTS', $s_description);
         }
         return $s_description;

@@ -79,7 +79,6 @@ class Privileges
      *            level, optional
      * @param int $i_commandLevel
      *            The minimun level for the command, optional
-     * @throws MemoryException the page rights are not defined with arguments or database
      */
     public function checkLogin($i_group = -1, $i_level = -1, $i_commandLevel = -1)
     {

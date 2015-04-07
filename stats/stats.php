@@ -67,7 +67,7 @@ class Stats
      */
     public function __destruct()
     {
-       // \core\Memory::endProgram();
+        // \core\Memory::endProgram();
     }
 
     /**

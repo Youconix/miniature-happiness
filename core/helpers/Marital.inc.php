@@ -64,12 +64,12 @@ class Helper_Marital extends Helper
      * @param string $s_key
      *            key
      * @return string value
-     * @throws IllegalArgumentException the key is invalid
+     * @throws \OutOfBoundsException the key is invalid
      */
     public function getItem($s_key)
     {
         if (! $this->is_valid($s_key)) {
-            throw new IllegalArgumentException("Invalid key " . $s_key . ". Only 'married','registeredPartner','divorced','unknown','single','livingTogetherContract','livingTogether' and 'widow' are allowed.");
+            throw new \OutOfBoundsException("Invalid key " . $s_key . ". Only 'married','registeredPartner','divorced','unknown','single','livingTogetherContract','livingTogether' and 'widow' are allowed.");
         }
         
         return $this->a_items[$s_key];

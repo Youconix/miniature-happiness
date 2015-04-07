@@ -22,8 +22,8 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
-if( !class_exists('\includes\BaseLogicClass') ){
-    require(NIV.'includes/BaseLogicClass.php');
+if (! class_exists('\includes\BaseLogicClass')) {
+    require (NIV . 'includes/BaseLogicClass.php');
 }
 
 abstract class PdfLogicClass extends \includes\BaseLogicClass

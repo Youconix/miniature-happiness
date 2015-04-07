@@ -20,7 +20,7 @@ class ControlPanelModules extends \core\models\Model
      * @param \core\services\XML $service_XML
      *            The XML service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder , \core\services\Validation $service_Validation, \core\services\File $service_File, \core\services\Xml $service_XML)
+    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\File $service_File, \core\services\Xml $service_XML)
     {
         parent::__construct($service_QueryBuilder, $service_Validation);
         
@@ -268,8 +268,12 @@ class ControlPanelModules extends \core\models\Model
         
         $s_name = $database->result(0, 'name');
         
-        if( in_array($s_name,array('general','settings','statistics')) ){
-            /* 
+        if (in_array($s_name, array(
+            'general',
+            'settings',
+            'statistics'
+        ))) {
+            /*
              * Framework modules
              * Do not remove
              */
@@ -278,8 +282,8 @@ class ControlPanelModules extends \core\models\Model
         $s_dir = $this->getDirectory();
         
         $this->service_QueryBuilder->delete('admin_modules')
-        ->getWhere()
-        ->addAnd('id', 'i', $i_id);
+            ->getWhere()
+            ->addAnd('id', 'i', $i_id);
         $this->service_QueryBuilder->getResult();
         
         if ($this->service_File->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
@@ -290,7 +294,7 @@ class ControlPanelModules extends \core\models\Model
                 require ($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . $a_data['deinstall']);
             }
         }
-                
+        
         $this->service_File->deleteDirectory($s_dir . DIRECTORY_SEPARATOR . $s_name);
     }
 

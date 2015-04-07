@@ -61,12 +61,12 @@ class Countries extends Helper
      * @param int $i_id
      *            country ID
      * @return array country
-     * @throws IllegalArgumentException the ID does not exist
+     * @throws OutOfBoundsException the ID does not exist
      */
     public function getItem($i_id)
     {
         if (! array_key_exists($i_id, $this->a_countries)) {
-            throw new IllegalArgumentException("Call to unknown country with id " . $i_id . '.');
+            throw new \OutOfBoundsException"Call to unknown country with id " . $i_id . '.');
         }
         
         return $this->a_countries[$i_id];

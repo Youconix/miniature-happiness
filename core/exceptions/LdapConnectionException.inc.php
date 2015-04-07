@@ -1,13 +1,13 @@
 <?php
 
 /** 
- * General Exception class                                                      
+ * LDAP connection Exception class                                                         
  *                                                                              
  * This file is part of Miniature-happiness                                    
  *                                                                              
  * @copyright Youconix                                
  * @author    Rachelle Scheijen                                                
- * @since     1.0                                                               
+ * @since     2.0                                                               
  *                                                                              
  * Miniature-happiness is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU Lesser General Public License as published by  
@@ -22,18 +22,12 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
-abstract class GeneralException extends Exception
+class LdapConnectionException extends RuntimeException
 {
 
     public function __construct($s_message)
     {
-        parent::__construct($s_message);
-    }
-
-    public function __toString()
-    {
-        return 'Thrown ' . get_class($this) . " with message '{$this->message}' in {$this->file}({$this->line})\n" . "{$this->getTraceAsString()}";
+        $this->message = $s_message;
     }
 }
-
 ?>

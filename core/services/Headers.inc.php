@@ -356,13 +356,14 @@ class Headers extends Service
     {
         return $this->bo_forceDownload;
     }
-    
+
     /**
      * Returns if a redirect was executed
-     * 
-     * @return boolean  True if a redirect was excequeted
+     *
+     * @return boolean True if a redirect was excequeted
      */
-    public function isRedirect(){
+    public function isRedirect()
+    {
         return array_key_exists('Location', $this->a_headers);
     }
 
@@ -375,21 +376,24 @@ class Headers extends Service
     {
         return $this->a_headers;
     }
-    
-    public function skipTemplate(){
-        if( $this->isForceDownload() || $this->isRedirect() || (array_key_exists('http', $this->a_headers) && $this->a_headers['http'][1] == '500 Internal Server Error' )){
+
+    public function skipTemplate()
+    {
+        if ($this->isForceDownload() || $this->isRedirect() || (array_key_exists('http', $this->a_headers) && $this->a_headers['http'][1] == '500 Internal Server Error')) {
             return true;
         }
         
         return false;
     }
-    
+
     /**
      * Imports the given headers
-     * 
-     * @param array $a_headers  The headers
+     *
+     * @param array $a_headers
+     *            The headers
      */
-    public function importHeaders($a_headers){
+    public function importHeaders($a_headers)
+    {
         $this->a_headers = $a_headers;
     }
 

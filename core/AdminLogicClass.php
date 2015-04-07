@@ -70,7 +70,7 @@ abstract class AdminLogicClass extends BaseClass
         $this->model_User = \Loader::Inject('core\models\User');
         
         $this->s_language = $this->service_Language->getLanguage();
-        if (! $this->model_Config->isAjax() )
+        if (! $this->model_Config->isAjax())
             $this->service_Template->set('noscript', '<noscript>' . $this->service_Language->get('language/noscript') . '</noscript>');
     }
 }

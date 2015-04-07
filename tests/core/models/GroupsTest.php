@@ -74,7 +74,7 @@ class testGroups extends GeneralTest
      * Test of getting the registrated group with the given ID
      *
      * @test
-     * @expectedException MemoryException
+     * @expectedException OutOfBoundsException
      */
     public function getGroup()
     {

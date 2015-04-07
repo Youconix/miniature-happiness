@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-    <name>Statistics</name>
-    <author>Youconix</author>
-    <description>Statistics module for the framework Miniature-happiness</description>
-    <version>1.0</version>
-    <install>install.php</install>
-    <upgrade/>
-    <deinstall>deinstall.php</deinstall>
+	<name>Statistics</name>
+	<author>Youconix</author>
+	<description>Statistics module for the framework Miniature-happiness</description>
+	<version>1.0</version>
+	<install>install.php</install>
+	<upgrade />
+	<deinstall>deinstall.php</deinstall>
 	<title>system/menu/statistics</title>
 	<js>statistics.js</js>
 	<css>statistics.css</css>

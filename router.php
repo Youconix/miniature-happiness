@@ -70,8 +70,6 @@ function populateQuery($s_query)
 
 define('NIV', './');
 
-require (NIV . 'core/exceptions/CoreException.inc.php');
-
 $s_router = $_GET['router'];
 while (substr($s_router, - 1) == '/') {
     $s_router = substr($s_router, 0, - 1);

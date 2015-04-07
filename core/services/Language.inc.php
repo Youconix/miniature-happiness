@@ -44,7 +44,8 @@ class Language extends Xml
     /**
      * PHP 5 constructor
      *
-     * @param core\models\Config $model_Config  The configuration
+     * @param core\models\Config $model_Config
+     *            The configuration
      * @param core\services\Cookie $service_Cookie
      *            The cookie handler
      * @param core\services\File $service_File

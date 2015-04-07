@@ -1,6 +1,6 @@
 <?php
 
-class CoreException extends Exception
+class CoreException extends RuntimeException
 {
 }
 ?>

@@ -24,6 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  * @deprecated
+ *
  * @see \core\services\Logs
  */
 class ErrorHandler extends Service

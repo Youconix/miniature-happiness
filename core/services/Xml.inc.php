@@ -172,26 +172,29 @@ class Xml extends Service
         $newNode->appendChild($this->dom_document->createCDataSection($s_content));
         $oldnode->parentNode->replaceChild($newNode, $oldnode);
     }
-    
+
     /**
      * Adds a new node
-     * 
-     * @param string $s_path    The new path
-     * @param string $s_content The new content
-     * @throws \XMLException    If the path allready exists
+     *
+     * @param string $s_path
+     *            The new path
+     * @param string $s_content
+     *            The new content
+     * @throws \XMLException If the path allready exists
      */
-    public function add($s_path,$s_content){
+    public function add($s_path, $s_content)
+    {
         \core\Memory::type('String', $s_content);
         
-        if( $this->exists($s_path) ){
+        if ($this->exists($s_path)) {
             throw new \XMLException("Can not add existing " . $s_path);
         }
         
-        $s_parent = substr($s_path, 0,strrpos($s_path, '/'));
-        $s_name = end( explode('/'),$s_path);
+        $s_parent = substr($s_path, 0, strrpos($s_path, '/'));
+        $s_name = end(explode('/'), $s_path);
         $element = $this->getBlock($s_parent);
         
-        $node = $this->dom_document->createElement($s_name,$s_content);
+        $node = $this->dom_document->createElement($s_name, $s_content);
         $element->appendChild($node);
     }
 

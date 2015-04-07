@@ -51,10 +51,10 @@ class HeaderAdmin extends \core\classes\Header
     {
         $obj_User = $this->model_User->get();
         
-        $this->service_Template->set('logout',$this->service_Language->get('system/admin/menu/logout'));
-        $this->service_Template->set('close',$this->service_Language->get('system/admin/menu/close'));
-        $this->service_Template->set('adminMenuLink',$this->service_Language->get('system/admin/menu/adminMenuLink'));
-        $this->service_Template->set('loginHeader',$this->service_Language->insertPath('system/admin/menu/loginHeader', 'name', $obj_User->getUsername()) );
+        $this->service_Template->set('logout', $this->service_Language->get('system/admin/menu/logout'));
+        $this->service_Template->set('close', $this->service_Language->get('system/admin/menu/close'));
+        $this->service_Template->set('adminMenuLink', $this->service_Language->get('system/admin/menu/adminMenuLink'));
+        $this->service_Template->set('loginHeader', $this->service_Language->insertPath('system/admin/menu/loginHeader', 'name', $obj_User->getUsername()));
         
         $this->displayLanguageFlags();
     }

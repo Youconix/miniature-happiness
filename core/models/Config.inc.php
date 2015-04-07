@@ -23,7 +23,7 @@ namespace core\models;
  * @author Rachelle Scheijen
  * @since 2.0
  */
-class Config extends Model
+class Config extends Model implements \SplSubject
 {
 
     protected $service_Settings;
@@ -46,10 +46,10 @@ class Config extends Model
 
     protected $s_layout = 'default';
 
-    protected $a_observers = array();
+    protected $a_observers;
 
     const LOG_MAX_SIZE = 10000000;
-    
+
     protected $s_language;
 
     /**
@@ -68,19 +68,22 @@ class Config extends Model
         $this->service_Settings = $service_Settings;
         $this->service_Cookie = $service_Cookie;
         
+        $this->a_observers = new \SplObjectStorage();
+        
         $this->loadTemplateDir();
         
         $this->loadLanguage();
         
         $this->setDefaultValues($service_Settings);
     }
-    
+
     /**
      * Returns the settings service
-     * 
-     * @return \core\services\Settings  The service
+     *
+     * @return \core\services\Settings The service
      */
-    public function getSettings(){
+    public function getSettings()
+    {
         return $this->service_Settings;
     }
 
@@ -94,24 +97,27 @@ class Config extends Model
         return true;
     }
 
-    public function addObserver($observer)
+    public function attach(\SplObserver $observer)
     {
-        $this->a_observers[] = $observer;
-    }
-
-    protected function notifyObservers()
-    {
-        foreach ($this->a_observers as $observer) {
-            if (! is_null($observer)) {
-                $observer->update($this);
-            }
-        }
+        $this->a_observers->attach($observer);
     }
     
+    public function detach(\SplObserver $observer) {
+        $this->_observers->detach($observer);
+    }
+
+    public function notify()
+    {
+        foreach ($this->a_observers as $observer) {
+            $observer->update($this);
+        }
+    }
+
     /**
      * Loads the language
      */
-    protected function loadLanguage(){
+    protected function loadLanguage()
+    {
         /* Check language */
         $a_languages = $this->getLanguages();
         $this->s_language = $this->service_Settings->get('defaultLanguage');
@@ -122,7 +128,7 @@ class Config extends Model
                 $this->service_Cookie->set('language', $this->s_language, '/');
             }
             unset($_GET['lang']);
-        } else
+        } else 
             if ($this->service_Cookie->exists('language')) {
                 if (in_array($this->service_Cookie->get('language'), $a_languages)) {
                     $this->s_language = $this->service_Cookie->get('language');
@@ -133,7 +139,7 @@ class Config extends Model
                 }
             }
     }
-    
+
     /**
      * Collects the installed languages
      *
@@ -143,23 +149,23 @@ class Config extends Model
     {
         $a_languages = array();
         $a_languageFiles = $this->service_File->readDirectory(NIV . 'language');
-    
+        
         foreach ($a_languageFiles as $s_languageFile) {
             if (strpos($s_languageFile, 'language_') !== false) {
                 /* Fallback */
                 return $this->getLanguagesOld();
             }
-    
+            
             if ($s_languageFile == '..' || $s_languageFile == '.' || strpos($s_languageFile, '.') !== false) {
                 continue;
             }
-    
+            
             $a_languages[] = $s_languageFile;
         }
-    
+        
         return $a_languages;
     }
-    
+
     /**
      * Collects the installed languages
      * Old way of storing
@@ -170,11 +176,11 @@ class Config extends Model
     {
         $a_languages = array();
         $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
-    
+        
         foreach ($a_languageFiles as $s_languageFile) {
             if (strpos($s_languageFile, 'language_') === false)
                 continue;
-    
+            
             $s_languageFile = str_replace(array(
                 'language_',
                 '.lang'
@@ -182,12 +188,12 @@ class Config extends Model
                 '',
                 ''
             ), $s_languageFile);
-    
+            
             $a_languages[] = $s_languageFile;
         }
-    
+        
         $this->bo_fallback = true;
-    
+        
         return $a_languages;
     }
 
@@ -248,7 +254,7 @@ class Config extends Model
                 $this->s_command = $_POST['command'];
             }
         
-        define('WEBSITE_ROOT',$_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.$this->s_base);
+        define('WEBSITE_ROOT', $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $this->s_base);
     }
 
     /**
@@ -351,13 +357,14 @@ class Config extends Model
     {
         return $this->s_layout;
     }
-    
+
     /**
      * Returns the current language from the user
-     * 
-     * @return string   The language code
+     *
+     * @return string The language code
      */
-    public function getLanguage(){
+    public function getLanguage()
+    {
         return $this->s_language;
     }
 
@@ -599,7 +606,7 @@ class Config extends Model
     public function getLogLocation()
     {
         if (! $this->service_Settings->exists('main/log_location')) {
-            return str_replace(NIV,WEBSITE_ROOT,DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR;
+            return str_replace(NIV, WEBSITE_ROOT, DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR;
         }
         
         return $this->service_Settings->get('main/log_location');

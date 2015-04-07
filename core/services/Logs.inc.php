@@ -29,13 +29,14 @@ class Logs extends Service implements \Psr\Log\LoggerAwareInterface
 {
 
     protected $obj_logger = null;
-    
+
     /**
      * Returns if the object schould be treated as singleton
      *
-     * @return boolean  True if the object is a singleton
+     * @return boolean True if the object is a singleton
      */
-    public static function isSingleton(){
+    public static function isSingleton()
+    {
         return true;
     }
 
@@ -138,15 +139,14 @@ class Logs extends Service implements \Psr\Log\LoggerAwareInterface
     {
         $obj_loglevel = new \Psr\Log\LogLevel();
         
-        if( !array_key_exists('level', $context) ){
+        if (! array_key_exists('level', $context)) {
             $level = $obj_loglevel::INFO;
-        }
-        else {
+        } else {
             $level = $context['level'];
             unset($context['level']);
         }
         
-        $this->obj_logger->log($level, $message,$context);
+        $this->obj_logger->log($level, $message, $context);
     }
 
     /**
@@ -159,11 +159,14 @@ class Logs extends Service implements \Psr\Log\LoggerAwareInterface
      */
     public function log($level, $message, array $context = array())
     {
-        $this->obj_logger->log($level, $message,$context);
+        $this->obj_logger->log($level, $message, $context);
     }
-    
-    public function exception($exception){
+
+    public function exception($exception)
+    {
         $obj_loglevel = new \Psr\Log\LogLevel();
-        $this->log($obj_loglevel::CRITICAL, 'Uncaught exception',array('exception'=>$exception));
+        $this->log($obj_loglevel::CRITICAL,'Throw '.get_class($exception), array(
+            'exception' => $exception
+        ));
     }
 }

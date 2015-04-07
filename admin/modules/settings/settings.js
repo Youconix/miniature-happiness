@@ -23,6 +23,9 @@ Settings.prototype.init = function() {
 	$('#admin_settings_cache h2').click(function(){
 		admin.show(settings.address+'?command=cache',settings.cacheInit);
 	});
+	$('#admin_settings_languages h2').click(function(){
+		admin.show(settings.address+'?command=language',settings.languagesInit);
+	});
 }
 Settings.prototype.emailInit = function(){
 	$('#smtp_active').click(function(){
@@ -208,6 +211,15 @@ Settings.prototype.cacheInit = function(){
 Settings.prototype.cacheSave	= function(){
   
   
+}
+Settings.prototype.languagesInit  = function(){
+	$('#settings_database_save').click(function(){
+		settings.languagesSave();
+	})
+}
+Settings.prototype.languagesSave	=  function(){
+	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
+	$.post(settings.address,{'command':'language','default_language':$('#defaultLanguage').val()});
 }
 
 var settings = new Settings();

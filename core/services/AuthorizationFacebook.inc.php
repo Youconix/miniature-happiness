@@ -9,21 +9,21 @@ namespace core\services;
  *
  * @copyright Youconix
  * @author Rachelle Scheijen
- * @see core/openID/OpenAuth.inc.php 
+ * @see core/openID/OpenAuth.inc.php
  * @since 1.0
- * 
- *      Miniature-happiness is free software: you can redistribute it and/or modify
- *      it under the terms of the GNU Lesser General Public License as published by
- *      the Free Software Foundation, either version 3 of the License, or
- *      (at your option) any later version.
- *     
- *      Miniature-happiness is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *      GNU General Public License for more details.
- *     
- *      You should have received a copy of the GNU Lesser General Public License
- *      along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *       
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
+ *        it under the terms of the GNU Lesser General Public License as published by
+ *        the Free Software Foundation, either version 3 of the License, or
+ *        (at your option) any later version.
+ *       
+ *        Miniature-happiness is distributed in the hope that it will be useful,
+ *        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *        GNU General Public License for more details.
+ *       
+ *        You should have received a copy of the GNU Lesser General Public License
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Authorization extends Service
 {
@@ -71,10 +71,11 @@ class Authorization extends Service
             'LDAP'
         );
         foreach ($a_types as $s_type) {
-            try {
-                $this->a_authorizationTypes[$s_type] = \core\Memory::services('Authorization' . ucfirst($s_type), true);
+            $authorization = \Loader::Inject('\core\services\Authorization' . ucfirst($s_type), true);
+            if( !is_null($authorization) ){
+                $this->a_authorizationTypes[$s_type] = $authorization;
                 $this->a_openID_types[] = $s_type;
-            } catch (\MemoryException $ex) {}
+            }
         }
     }
 
@@ -99,12 +100,12 @@ class Authorization extends Service
      * @param String $s_type
      *            The authorization type (normal|openID|Facebook|LDAP)
      * @return Authorization The object
-     * @throws MemoryException If $s_type does not exist
+     * @throws OutOfBoundsException If $s_type does not exist
      */
     private function getAuthorization($s_type)
     {
         if (! array_key_exists($s_type, $this->a_authorizationTypes)) {
-            throw new \MemoryException('Call to unknown authorization protocol ' . $s_type . '.');
+            throw new \OutOfBoundsException('Call to unknown authorization protocol ' . $s_type . '.');
         }
         return $this->a_authorizationTypes[$s_type];
     }

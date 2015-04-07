@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Template extends Service
+class Template extends Service implements \SplObserver
 {
 
     private $service_Headers;
@@ -77,7 +77,7 @@ class Template extends Service
         $this->service_Headers = $service_Headers;
         $this->service_Cache = $service_Cache;
         
-        $this->model_Config->addObserver($this);
+        $this->model_Config->attach($this);
         
         $this->load();
     }
@@ -95,7 +95,7 @@ class Template extends Service
     /**
      * React on config change
      */
-    public function update($model_Config)
+    public function update(\SplSubject $subject)
     {
         $this->load();
     }
@@ -467,7 +467,7 @@ class Template extends Service
     {
         \core\Memory::type('string', $s_key);
         
-        if ( is_null($this->s_template) ) {
+        if (is_null($this->s_template)) {
             throw new \TemplateException('No template is loaded for ' . $_SERVER['PHP_SELF'] . '.');
         }
         
@@ -556,7 +556,7 @@ class Template extends Service
      */
     public function printToScreen()
     {
-        if (! $this->bo_loaded || $this->service_Headers->skipTemplate() ) {
+        if (! $this->bo_loaded || $this->service_Headers->skipTemplate()) {
             return;
         }
         

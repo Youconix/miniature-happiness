@@ -22,16 +22,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
-class LdapException extends GeneralException
-{
-
-    public function __construct($s_message)
-    {
-        $this->message = $s_message;
-    }
-}
-
-class LdapConnectionException extends GeneralException
+class LdapException extends LogicException
 {
 
     public function __construct($s_message)

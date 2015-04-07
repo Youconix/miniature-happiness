@@ -33,16 +33,19 @@ class Settings extends \core\AdminLogicClass
 {
 
     /**
+     *
      * @var \core\services\Settings
      */
     private $service_Settings;
 
     /**
-     * @var \core\services\File
+     *
+     * @var \core\services\FileHandler
      */
-    private $service_File;
-    
+    private $service_FileHandler;
+
     /**
+     *
      * @var \core\services\Builder
      */
     private $service_Builder;
@@ -79,10 +82,14 @@ class Settings extends \core\AdminLogicClass
                 case 'database':
                     $this->database();
                     break;
+                
+                case 'cache':
+                    $this->cache();
+                    break;
                     
-                case 'cache' : 
-		    $this->cache();
-		    break;
+                case 'language':
+                    $this->language();
+                    break;
             }
         } else 
             if (isset($this->post['command'])) {
@@ -111,10 +118,14 @@ class Settings extends \core\AdminLogicClass
                         $this->databaseSave();
                         break;
                     
-		    case 'cache' : 
-		      $this->cacheSave();
-		      break;
-		  }
+                    case 'cache':
+                        $this->cacheSave();
+                        break;
+                        
+                    case 'language':
+                        $this->languageSave();
+                        break;
+                }
             }
     }
 
@@ -166,13 +177,15 @@ class Settings extends \core\AdminLogicClass
             'host' => 'string',
             'port' => 'int',
             
+            'default_language' => 'string',
+            
             'language' => 'string'
         );
         
         parent::init();
         
         $this->service_Settings = \Loader::Inject('\core\services\Settings');
-        $this->service_File = \Loader::Inject('\core\services\File');
+        $this->service_FileHandler = \Loader::Inject('\core\services\FileHandler');
         $this->service_Builder = \Loader::Inject('\core\services\QueryBuilder')->createBuilder();
     }
 
@@ -212,12 +225,12 @@ class Settings extends \core\AdminLogicClass
         $this->service_Template->set('emailAdminText', t('system/admin/settings/email/adminSenderEmail'));
         $this->service_Template->set('emailAdmin', $this->getValue('main/admin/email'));
         
-        $this->service_Template->set('nameError',t('system/admin/settings/email/senderEmpty'));
-        $this->service_Template->set('emailError',t('system/admin/settings/email/senderEmailEmpty'));
-        $this->service_Template->set('smtpHostError',t('system/admin/settings/email/smtpHostError'));
-        $this->service_Template->set('smtpUsernameError',t('system/admin/settings/email/smtpUsernameError'));
-        $this->service_Template->set('smptPasswordError',t('system/admin/settings/email/smptPasswordError'));
-        $this->service_Template->set('smtpPortError',t('system/admin/settings/email/smtpPortError'));
+        $this->service_Template->set('nameError', t('system/admin/settings/email/senderEmpty'));
+        $this->service_Template->set('emailError', t('system/admin/settings/email/senderEmailEmpty'));
+        $this->service_Template->set('smtpHostError', t('system/admin/settings/email/smtpHostError'));
+        $this->service_Template->set('smtpUsernameError', t('system/admin/settings/email/smtpUsernameError'));
+        $this->service_Template->set('smptPasswordError', t('system/admin/settings/email/smptPasswordError'));
+        $this->service_Template->set('smtpPortError', t('system/admin/settings/email/smtpPortError'));
         $this->service_Template->set('saveButton', t('system/buttons/save'));
     }
 
@@ -289,39 +302,39 @@ class Settings extends \core\AdminLogicClass
         
         $this->service_Template->set('nameSiteText', t('system/admin/settings/general/nameSite'));
         $this->service_Template->set('nameSite', $this->getValue('main/nameSite'));
-        $this->service_Template->set('nameSiteError',t('system/admin/settings/general/siteNameEmpty'));
+        $this->service_Template->set('nameSiteError', t('system/admin/settings/general/siteNameEmpty'));
         $this->service_Template->set('siteUrlText', t('system/admin/settings/general/siteUrl'));
         $this->service_Template->set('siteUrl', $this->getValue('main/url'));
-        $this->service_Template->set('siteUrlError',t('system/admin/settings/general/urlEmpty'));
+        $this->service_Template->set('siteUrlError', t('system/admin/settings/general/urlEmpty'));
         $this->service_Template->set('siteBaseText', t('system/admin/settings/general/basedir'));
         $this->service_Template->set('siteBase', $this->getValue('main/base'));
         $this->service_Template->set('timezoneText', t('system/admin/settings/general/timezone'));
         $this->service_Template->set('timezone', $this->getValue('main/timeZone'));
-        $this->service_Template->set('timezoneError',t('system/admin/settings/general/timezoneInvalid'));
+        $this->service_Template->set('timezoneError', t('system/admin/settings/general/timezoneInvalid'));
         
         /* Templates */
         $this->service_Template->set('templatesHeader', t('system/admin/settings/general/templates'));
         $this->service_Template->set('templateText', 'Template set');
         $s_template = $this->getValue('templates/dir', 'default');
-        $a_templates = $this->service_File->readDirectory(NIV . 'styles');
-        foreach ($a_templates as $s_file) {
-            if ($s_file == '.' || $s_file == '..' || ! is_dir(NIV . 'styles' . DIRECTORY_SEPARATOR . $s_file)) {
-                continue;
-            }
-            
-            ($s_file == $s_template) ? $selected = 'selected="selected"' : $selected = '';
+        
+        $directory = $this->service_FileHandler->readDirectory(NIV . 'styles');
+        $directory = $this->service_FileHandler->directoryFilterName($directory,array('!.','!..'));
+        $templates = new \core\classes\OnlyDirectoryFilterIteractor($directory);
+        
+        foreach ($templates as $dir) {
+            ($dir->getFilename() == $s_template) ? $selected = 'selected="selected"' : $selected = '';
             
             $this->service_Template->setBlock('template', array(
-                'value' => $s_file,
+                'value' => $dir->getFilename(),
                 'selected' => $selected,
-                'text' => $s_file
+                'text' => $dir->getFilename()
             ));
         }
         
         /* Logs */
         $this->service_Template->set('loggerText', t('system/admin/settings/general/logger') . ' (\Psr\Log\LoggerInterface)');
         $this->service_Template->set('logger', $this->getValue('main/logs', 'default'));
-        $this->service_Template->set('loggerError',t('system/admin/settings/general/loggerInvalid'));
+        $this->service_Template->set('loggerError', t('system/admin/settings/general/loggerInvalid'));
         if ($this->getValue('main/logs', 'default') != 'default') {
             $this->service_Template->set('location_log_default', 'style="display:none"');
         }
@@ -334,11 +347,11 @@ class Settings extends \core\AdminLogicClass
             '',
             ''
         ), DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR));
-        $this->service_Template->set('logLocationError',t('system/admin/settings/general/logLocationInvalid'));
+        $this->service_Template->set('logLocationError', t('system/admin/settings/general/logLocationInvalid'));
         $this->service_Template->set('logSizeText', t('system/admin/settings/general/logSize'));
         $model_Config = $this->model_Config;
         $this->service_Template->set('logSize', $this->getValue('main/log_max_size', $model_Config::LOG_MAX_SIZE));
-        $this->service_Template->set('logSizeError',t('system/admin/settings/general/logSizeInvalid'));
+        $this->service_Template->set('logSizeError', t('system/admin/settings/general/logSizeInvalid'));
         
         $this->service_Template->set('saveButton', t('system/buttons/save'));
     }
@@ -437,12 +450,12 @@ class Settings extends \core\AdminLogicClass
         $this->service_Template->set('ldapPortText', t('system/admin/settings/port'));
         $this->service_Template->set('ldapPort', $this->getValue('login/ldap_port', 636));
         
-        $this->service_Template->set('redirectError',t('system/admin/settings/login/redirectError'));
+        $this->service_Template->set('redirectError', t('system/admin/settings/login/redirectError'));
         $this->service_Template->set('saveButton', t('system/buttons/save'));
         $this->service_Template->set('loginChoiceText', t('system/admin/settings/login/loginChoice'));
-        $this->service_Template->set('facebookAppError',t('system/admin/settings/login/facebookAppError'));
-        $this->service_Template->set('ldapServerError',t('system/admin/settings/login/ldapServerError'));
-        $this->service_Template->set('ldapPortError',t('system/admin/settings/login/ldapPortError'));
+        $this->service_Template->set('facebookAppError', t('system/admin/settings/login/facebookAppError'));
+        $this->service_Template->set('ldapServerError', t('system/admin/settings/login/ldapServerError'));
+        $this->service_Template->set('ldapPortError', t('system/admin/settings/login/ldapPortError'));
     }
 
     /**
@@ -539,13 +552,11 @@ class Settings extends \core\AdminLogicClass
         $this->service_Template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
         $this->service_Template->set('typeText', t('system/admin/settings/database/type'));
         $s_type = $this->getValue('SQL/type');
-        $a_database = $this->service_File->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
-        foreach ($a_database as $s_file) {
-            if ($s_file == '.' || $s_file == '..' || $s_file == 'Database.inc.php' || strpos($s_file, 'builder_') !== false || strpos($s_file, '_binded') !== false || substr($s_file, - 8) != '.inc.php') {
-                continue;
-            }
-            
-            $s_name = str_replace('.inc.php', '', $s_file);
+        
+        $directory = $this->service_FileHandler->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
+        $directory = $this->service_FileHandler->directoryFilterName($directory,array('*.inc.php','!_binded','!Database.inc.php','!builder_'));
+        foreach ($directory as $file) {
+            $s_name = str_replace('.inc.php', '', $file->getFilename());
             ($s_name == $s_type) ? $selected = 'selected="selected"' : $selected = '';
             $this->service_Template->setBlock('type', array(
                 'value' => $s_name,
@@ -594,27 +605,26 @@ class Settings extends \core\AdminLogicClass
                 'type' => 'int'
             )
         ), $this->post)) {
-            echo('0');
+            echo ('0');
             die();
         }
         $bo_oke = false;
-        switch ( $this->post['type']) {
+        switch ($this->post['type']) {
             case 'Mysqli':
                 require_once (NIV . 'core/database/Mysqli.inc.php');
                 $bo_oke = \core\database\Database_Mysqli::checkLogin($this->post['username'], $this->post['password'], $this->post['database'], $this->post['host'], $this->post['port']);
                 break;
-        
+            
             case 'PostgreSql':
                 require_once (NIV . 'core/database/PostgreSql.inc.php');
                 $bo_oke = \core\database\Database_PostgreSql::checkLogin($this->post['username'], $this->post['password'], $this->post['database'], $this->post['host'], $this->post['port']);
                 break;
         }
         
-        if( $bo_oke ){
-            echo('1');
-        }
-        else {
-            echo('0');
+        if ($bo_oke) {
+            echo ('1');
+        } else {
+            echo ('0');
         }
         die();
     }
@@ -650,46 +660,87 @@ class Settings extends \core\AdminLogicClass
         
         $s_type = $this->post['type'];
         $this->setValue('SQL/prefix', $this->post['prefix']);
-        $this->setValue('SQL/type',$s_type);
-        $this->setValue('SQL/' . $s_type . '/username',$this->post['username']);
-        $this->setValue('SQL/' . $s_type . '/password',$this->post['password']);
-        $this->setValue('SQL/' . $s_type . '/database',$this->post['database']);
-        $this->setValue('SQL/' . $s_type . '/host',$this->post['host']);
+        $this->setValue('SQL/type', $s_type);
+        $this->setValue('SQL/' . $s_type . '/username', $this->post['username']);
+        $this->setValue('SQL/' . $s_type . '/password', $this->post['password']);
+        $this->setValue('SQL/' . $s_type . '/database', $this->post['database']);
+        $this->setValue('SQL/' . $s_type . '/host', $this->post['host']);
         $this->setValue('SQL/' . $s_type . '/port', $this->post['port']);
         
         $this->service_Settings->save();
     }
-    
-    private function cache(){
-	$this->service_Template->set('cacheTitle',t('system/admin/settings/cache/title'));
-	$this->service_Template->set('cacheActiveText','Caching geactiveerd');
-	if( $this->getValue('cache/status') == 1 ){
-	  $this->service_Template->set('cacheActive','checked="checked"');
-	}
-	else {
-	  //$this->service_Template->set('cacheSettings','style="display:none"');
-	}
-	
-	$this->service_Template->set('cacheExpireText','Cache verloop tijd in seconden');
-	$this->service_Template->set('cacheExpire',$this->getValue('cache/timeout',86400));
-	
-	$this->service_Builder->select('no_cache','*');
+
+    private function cache()
+    {
+        $this->service_Template->set('cacheTitle', t('system/admin/settings/cache/title'));
+        $this->service_Template->set('cacheActiveText', 'Caching geactiveerd');
+        if ($this->getValue('cache/status') == 1) {
+            $this->service_Template->set('cacheActive', 'checked="checked"');
+        } else {
+            // $this->service_Template->set('cacheSettings','style="display:none"');
+        }
+        
+        $this->service_Template->set('cacheExpireText', 'Cache verloop tijd in seconden');
+        $this->service_Template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
+        
+        $this->service_Builder->select('no_cache', '*');
         $service_database = $this->service_Builder->getResult();
-        if( $service_database->num_rows() > 0 ){
-	  $a_pages = $service_database->fetch_assoc();
-	  foreach( $a_pages AS $a_page ){
-	    $this->service_Template->setBlock('noCache',array('id'=>$a_page['id'],'name'=>$a_page['page']));
-	  }
-	}
-		
-	$this->service_Template->set('delete',t('system/buttons/delete'));
-	$this->service_Template->set('saveButton', t('system/buttons/save'));
-	$this->service_Template->set('page','Pagina');
-	$this->service_Template->set('addButton',t('system/buttons/add'));
+        if ($service_database->num_rows() > 0) {
+            $a_pages = $service_database->fetch_assoc();
+            foreach ($a_pages as $a_page) {
+                $this->service_Template->setBlock('noCache', array(
+                    'id' => $a_page['id'],
+                    'name' => $a_page['page']
+                ));
+            }
+        }
+        
+        $this->service_Template->set('delete', t('system/buttons/delete'));
+        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->service_Template->set('page', 'Pagina');
+        $this->service_Template->set('addButton', t('system/buttons/add'));
+    }
+
+    private function cacheSave()
+    {}
+    
+    /**
+     * Displays the languages
+     */
+    private function language(){
+        $this->service_Template->set('languageTitle',t('system/admin/settings/languages/title'));
+        $this->service_Template->set('defaultLanguageText','Standaard taal');
+        
+        $s_defaultLanguage = $this->getValue('defaultLanguage','nl_NL');
+        
+        $languages = $this->service_FileHandler->readDirectory(NIV . 'language');
+        $languages = $this->service_FileHandler->directoryFilterName($languages,array('*_*|*.lang'));
+        
+        foreach($languages AS $language){
+            $s_filename = $language->getFilename();            
+            ($s_filename == $s_defaultLanguage) ? $selected = 'selected="selected"': $selected = '';
+            
+            $this->service_Template->setBlock('defaultLanguage',array('value'=>$s_filename,'text'=>$s_filename,'selected'=>$selected));
+        }
+        
+        $this->service_Template->set('saveButton', t('system/buttons/save'));
     }
     
-    private function cacheSave(){
-    
+    /**
+     * Saves the languages
+     */
+    private function languageSave(){
+        if (! $this->service_Validation->validate(array(
+            'default_language' => array(
+                'required' => 1,
+                'type'=>'string'
+            )
+            ),$this->post) ){
+            return;
+        }
+        
+        $this->setValue('defaultLanguage',$this->post['default_language']);
+        $this->service_Settings->save();
     }
 
     /**
@@ -731,7 +782,6 @@ class Settings extends \core\AdminLogicClass
             $this->service_Settings->set($s_key, $s_value);
         }
     }
-
 }
 
 $obj_Settings = new Settings();

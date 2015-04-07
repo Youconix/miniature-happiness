@@ -29,31 +29,37 @@ abstract class BaseClass
 {
 
     /**
+     *
      * @var \core\models\Config
      */
     protected $model_Config;
 
     /**
+     *
      * @var \core\services\Language
      */
     protected $service_Language;
 
     /**
+     *
      * @var \core\services\Logs
      */
     protected $service_Logs;
 
     /**
+     *
      * @var \core\services\Security
      */
     protected $service_Security;
 
     /**
+     *
      * @var \core\services\Template
      */
     protected $service_Template;
-    
+
     /**
+     *
      * @var \core\services\Validation
      */
     protected $service_Validation;
@@ -118,7 +124,7 @@ abstract class BaseClass
             $s_language = $this->service_Language->getLanguage();
             $this->service_Template->headerLink('<script src="{NIV}js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
             
-            if (! $this->model_Config->isAjax() ) {
+            if (! $this->model_Config->isAjax()) {
                 $this->loadView();
             }
             
@@ -216,8 +222,8 @@ abstract class BaseClass
 /* Set error catcher */
 function exception_handler($exception)
 {
-    if (class_exists('core\Memory')) {
-        \Loader::Inject('core\services\Logs')->exception($exception);
+    if (class_exists('\core\Memory')) {
+        \Loader::Inject('\core\services\Logs')->exception($exception);
     }
     
     if (defined('DEBUG')) {

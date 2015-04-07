@@ -43,23 +43,23 @@ class Cache extends \core\AdminLogicClass
         }
         
         if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'language' :
-                        $this->service_Cache->cleanLanguageCache();
-                        break;
-                        
-                    case 'site' :
-                        $this->service_Cache->clearSiteCache();
-                        break;
-                }
+            switch ($this->post['command']) {
+                case 'language':
+                    $this->service_Cache->cleanLanguageCache();
+                    break;
+                
+                case 'site':
+                    $this->service_Cache->clearSiteCache();
+                    break;
             }
+        }
     }
 
     /**
      * Inits the class Groups
      */
     protected function init()
-    {        
+    {
         parent::init();
         
         $this->service_Cache = \Loader::Inject('\core\services\Cache');

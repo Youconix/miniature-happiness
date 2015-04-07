@@ -165,10 +165,7 @@ class FileCheck
         $a_files = array(
             'DateException',
             'DBException',
-            'GeneralException',
-            'IllegalArgumentException',
             'IOException',
-            'MemoryException',
             'NullPointerException',
             'TemplateException',
             'TypeException',

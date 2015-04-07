@@ -160,7 +160,7 @@ class HTML extends Helper
 
     /**
      * Generates a text input field
-     * 
+     *
      * @deprecated Use getInputFactory
      *            
      * @param String $s_name
@@ -184,7 +184,7 @@ class HTML extends Helper
 
     /**
      * Generates a button
-     * 
+     *
      * @deprecated Use getInputFactory
      *            
      * @param String $s_value

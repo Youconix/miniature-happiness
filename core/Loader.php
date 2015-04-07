@@ -34,8 +34,8 @@ class Loader
             return $s_fileName;
         }
         
-        if( defined('WEBSITE_ROOT') && file_exists(WEBSITE_ROOT.$s_fileName) ){
-            return WEBSITE_ROOT.$s_fileName;
+        if (defined('WEBSITE_ROOT') && file_exists(WEBSITE_ROOT . $s_fileName)) {
+            return WEBSITE_ROOT . $s_fileName;
         }
         
         return null;
@@ -43,7 +43,14 @@ class Loader
 
     public static function autoload($s_className)
     {
-        $s_fileName = Loader::getFileName($s_className);
+        if (preg_match('/Exception$/', $s_className)) {
+            $s_fileName = null;
+            if (file_exists(NIV . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'exceptions' . DIRECTORY_SEPARATOR . $s_className . '.inc.php')) {
+                $s_fileName = NIV . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'exceptions' . DIRECTORY_SEPARATOR . $s_className . '.inc.php';
+            }
+        } else {
+            $s_fileName = Loader::getFileName($s_className);
+        }
         
         if (! is_null($s_fileName)) {
             require NIV . $s_fileName;
@@ -52,14 +59,14 @@ class Loader
 
     public static function Inject($s_className, $a_arguments = array())
     {
-        if( $s_className == 'core\database\DAL' ){
+        if ($s_className == 'core\database\DAL') {
             $s_className = 'core\database\Database';
         }
         
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {
-            echo('can not find file '.$s_className);
+            echo ('can not find file ' . $s_className);
             return null;
         }
         
@@ -82,10 +89,10 @@ class Loader
         
         $object = Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
         
-        if( $s_className == 'core\database\Database' ){
+        if ($s_className == 'core\database\Database') {
             $object = $object->loadDatabase();
             
-            if( !\core\Memory::IsInCache($s_className) ){
+            if (! \core\Memory::IsInCache($s_className)) {
                 \core\Memory::setCache($s_className, $object);
             }
         }
@@ -100,23 +107,22 @@ class Loader
      *            class name
      * @param String $s_filename
      *            source file name
-     * @throws MemoryException the object is not instantiable.
+     * @throws RuntimeException the object is not instantiable.
      * @return Object called object
      */
     private static function injection($s_caller, $s_filename, $a_argumentsGiven)
-    {        
+    {
         $ref = new \ReflectionClass($s_caller);
         if (! $ref->isInstantiable()) {
-            throw new \MemoryException('Can not create a object from class ' . $s_caller . '.');
+            throw new \RuntimeException('Can not create a object from class ' . $s_caller . '.');
         }
         
         $bo_singleton = false;
-        if( method_exists($s_caller, 'isSingleton') && $s_caller::isSingleton() ){
+        if (method_exists($s_caller, 'isSingleton') && $s_caller::isSingleton()) {
             /* Check cache */
-            if( \core\Memory::IsInCache($s_caller) ){
+            if (\core\Memory::IsInCache($s_caller)) {
                 return \core\Memory::getCache($s_caller);
-            }
-            else {
+            } else {
                 $bo_singleton = true;
             }
         }
@@ -167,29 +173,31 @@ class Loader
             } else {
                 $a_arguments[] = Loader::inject($s_name);
                 
-                /* $s_name = end($a_path);
-                $bo_data = false;
-                if ($a_path[2] == 'data') {
-                    $bo_data = true;
-                }
-                
-                if (($a_path[1] == 'helpers') || ($a_path[1] == 'html')) {
-                    $a_arguments[] = \core\Memory::helpers($s_name, $bo_data);
-                } else 
-                    if (($a_path[1] == 'services') || ($a_path[1] == 'database')) {
-                        $a_arguments[] = \core\Memory::services($s_name, $bo_data);
-                    } else 
-                        if ($a_path[1] == 'models') {
-                            $a_arguments[] = \core\Memory::models($s_name, $bo_data);
-                        } */
+                /*
+                 * $s_name = end($a_path);
+                 * $bo_data = false;
+                 * if ($a_path[2] == 'data') {
+                 * $bo_data = true;
+                 * }
+                 *
+                 * if (($a_path[1] == 'helpers') || ($a_path[1] == 'html')) {
+                 * $a_arguments[] = \core\Memory::helpers($s_name, $bo_data);
+                 * } else
+                 * if (($a_path[1] == 'services') || ($a_path[1] == 'database')) {
+                 * $a_arguments[] = \core\Memory::services($s_name, $bo_data);
+                 * } else
+                 * if ($a_path[1] == 'models') {
+                 * $a_arguments[] = \core\Memory::models($s_name, $bo_data);
+                 * }
+                 */
             }
         }
         
         $a_arguments = array_merge($a_arguments, $a_argumentsGiven);
         
-        $object =  $ref->newInstanceArgs($a_arguments);
+        $object = $ref->newInstanceArgs($a_arguments);
         
-        if( $bo_singleton ){
+        if ($bo_singleton) {
             \core\Memory::setCache($s_caller, $object);
         }
         
@@ -242,17 +250,21 @@ class Loader
                 default:
                     /* Check for namespace parent */
                     preg_match('#extends\\s+(\\\\{1}[\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches2);
-                    if( count($a_matches2) > 0 ){
+                    if (count($a_matches2) > 0) {
                         
-                        if( strpos($a_matches2[1],'\core') !== false || strpos($a_matches2[1],'\includes') !== false ){
-                            $s_filename = NIV.$a_matches2[1].'.inc.php';
+                        if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false) {
+                            $s_filename = NIV . $a_matches2[1] . '.inc.php';
+                        } else {
+                            $s_filename = NIV . 'lib' . DIRECTORY_SEPARATOR . $a_matches2[1] . '.php';
                         }
-                        else {
-                            $s_filename = NIV.'lib'.DIRECTORY_SEPARATOR.$a_matches2[1].'.php';
-                        }
-                        $s_filename = str_replace(array('\\',DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR),array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR),$s_filename);
-                    }
-                    else {       
+                        $s_filename = str_replace(array(
+                            '\\',
+                            DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
+                        ), array(
+                            DIRECTORY_SEPARATOR,
+                            DIRECTORY_SEPARATOR
+                        ), $s_filename);
+                    } else {
                         /* Check for namespace */
                         preg_match('#namespace\\s+([\\a-z-_0-9]+);#', $s_file, $a_namespaces);
                         if (count($a_namespaces) > 0) {

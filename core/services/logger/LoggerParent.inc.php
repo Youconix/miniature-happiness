@@ -220,7 +220,7 @@ abstract class LoggerParent extends \core\services\Service implements \Psr\Log\L
         $obj_loglevel = $this->obj_loglevel;
         
         if (($level == $obj_loglevel::EMERGENCY) || ($level == $obj_loglevel::ALERT) || ($level == $obj_loglevel::CRITICAL)) {
-            $this->service_Mailer->logDeamon($message, $this->a_address,$this->s_host);
+            $this->service_Mailer->logDeamon($message, $this->a_address, $this->s_host);
         }
     }
 }
