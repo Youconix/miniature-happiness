@@ -1,4 +1,5 @@
 <?php
+use core\models\Config;
 if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
@@ -26,12 +27,17 @@ class testGroups extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/Groups.inc.php');
+        require_once (NIV . 'core/models/Groups.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
         $this->loadStub('DummySecurity');
         $this->loadStub('DummySession');
         $this->loadStub('DummyModelGroupData');
+        $this->loadStub('DummyValidation');
+        $this->loadStub('DummyConfig');
+        $this->loadStub('DummyFile');
+        $this->loadStub('DummySettings');
+        $this->loadStub('DummyCookie');
     }
 
     public function setUp()
@@ -45,12 +51,17 @@ class testGroups extends GeneralTest
         $this->s_description = 'test group';
         
         $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
+        $service_Validation = new DummyValidation();
+        $service_Security = new DummySecurity($service_Validation);
         $service_Builder = new DummyQueryBuilder($service_Database);
         $service_Session = new DummySession();
+        $service_File = new DummyFile();
+        $service_Settings = new DummySettings();
+        $service_Cookie = new DummyCookie($service_Security);
         $model_GroupData = new DummyModelGroupData();
+        $model_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
         
-        $this->model_Groups = new \core\models\Groups($service_Builder, $service_Security, $service_Session, $model_GroupData);
+        $this->model_Groups = new \core\models\Groups($service_Builder, $service_Validation, $model_GroupData, $model_Config);
     }
 
     public function tearDown()
@@ -108,7 +119,7 @@ class testGroups extends GeneralTest
      */
     public function generateGroup()
     {
-        $this->assertInstanceOf('\core\models\data\Data_Group', $this->model_Groups->generateGroup());
+        $this->assertInstanceOf('\core\models\data\DataGroup', $this->model_Groups->generateGroup());
     }
 
     /**

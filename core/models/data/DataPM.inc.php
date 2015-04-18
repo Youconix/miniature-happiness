@@ -25,7 +25,7 @@ namespace core\models\data;
  *        You should have received a copy of the GNU Lesser General Public License
  *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
-class Data_PM extends \core\models\Model
+class DataPM extends \core\models\Model
 {
 
     protected $model_User;

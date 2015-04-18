@@ -192,6 +192,7 @@ class Input extends CoreHTML_Input
 {
 
     protected $s_type;
+    protected $s_htmlType;
 
     /**
      * Generates a new input element
@@ -203,10 +204,11 @@ class Input extends CoreHTML_Input
      * @param String $s_value
      *            The default text of the field
      * @param String $s_htmlType
-     *            type
+     *            The type of markup language
      */
     public function __construct($s_name, $s_type, $s_value, $s_htmlType)
     {
+        $this->s_htmlType = $s_htmlType;
         $this->checkType($s_type);
         
         parent::__construct($s_name, $s_type, $s_htmlType);
@@ -223,7 +225,7 @@ class Input extends CoreHTML_Input
      * Checks the type
      *
      * @param String $s_type
-     *            The type of the field
+     *            The type of the field     *            
      * @throws \Exception If the type is invalid
      */
     protected function checkType($s_type)
@@ -233,7 +235,7 @@ class Input extends CoreHTML_Input
             'hidden',
             'password'
         );
-        if ($s_htmlType == 'html5') {
+        if ($this->s_htmlType == 'html5') {
             $a_types = array_merge($a_types, array(
                 'search',
                 'email',

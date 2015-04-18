@@ -16,7 +16,7 @@ class testXML extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Xml.inc.php');
+        require_once (NIV . 'core/services/Xml.inc.php');
     }
 
     public function setUp()

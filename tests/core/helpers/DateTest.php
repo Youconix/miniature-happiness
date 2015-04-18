@@ -15,7 +15,7 @@ class testDate extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/Date.inc.php');
+        require_once (NIV . 'core/helpers/Date.inc.php');
     }
 
     public function setUp()
@@ -64,7 +64,7 @@ class testDate extends GeneralTest
      */
     public function getTimeFrom()
     {
-        $this->assertEquals(time(), $this->helper_Date->getTimeFrom());
+        $this->assertEquals(time(), $this->helper_Date->getTimeFrom(0));
         
         $i_seconds = 54352423;
         $this->assertEquals((time() + $i_seconds), $this->helper_Date->getTimeFrom($i_seconds));

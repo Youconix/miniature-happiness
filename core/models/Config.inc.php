@@ -253,8 +253,9 @@ class Config extends Model implements \SplSubject
             if (isset($_POST['command'])) {
                 $this->s_command = $_POST['command'];
             }
-        
-        define('WEBSITE_ROOT', $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $this->s_base);
+        if (! defined('WEBSITE_ROOT')) {
+            define('WEBSITE_ROOT', $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $this->s_base);
+        }
     }
 
     /**

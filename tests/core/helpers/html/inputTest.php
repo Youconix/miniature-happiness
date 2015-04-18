@@ -17,13 +17,15 @@ class testInput extends GeneralTest
     private $s_value = 'defaultValue';
 
     private $s_htmlType = 'html5';
+    
+    private $s_content = 'testContent';
 
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/HTML.inc.php');
-        require_once (NIV . 'include/helpers/html/Input.php');
+        require_once (NIV . 'core/helpers/HTML.inc.php');
+        require_once (NIV . 'core/helpers/html/Input.php');
     }
 
     public function setUp()

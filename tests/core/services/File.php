@@ -20,7 +20,7 @@ class testFile extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/File.inc.php');
+        require_once (NIV . 'core/services/File.inc.php');
     }
 
     public function setUp()

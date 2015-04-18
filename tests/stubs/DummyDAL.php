@@ -1,10 +1,12 @@
 <?php
 if (! interface_exists('DAL')) {
     if (! class_exists('\core\services\Service')) {
-        require (NIV . 'include/services/Service.inc.php');
+        require (NIV . 'core/services/Service.inc.php');
     }
     
-    require (NIV . 'include/services/Database.inc.php');
+    if (! class_exists('\core\database\Database')) {
+        require (NIV . 'core/database/Database.inc.php');
+    }
 }
 
 class DummyDAL implements \core\database\DAL
@@ -17,9 +19,32 @@ class DummyDAL implements \core\database\DAL
     public $a_data = array();
 
     public $i_insertID = 1;
+    
+    private $dataset;
 
+    public function __construct() {
+        $this->clearQueue();
+    }
+    
     public function __destruct()
     {}
+    
+    public function enqueueData($a_data) {
+        $this->dataset->enqueue($a_data);
+    } 
+    
+    public function dequeueData() {
+        if ( $this->dataset->isEmpty() ) {
+            $this->a_data = array();
+        }
+        else {
+            $this->a_data = $this->dataset->dequeue();
+        }
+    }
+    
+    public function clearQueue() {
+        $this->dataset = new \SplQueue();
+    }
 
     public function affected_rows()
     {
@@ -29,7 +54,7 @@ class DummyDAL implements \core\database\DAL
     public function analyse($s_table)
     {}
 
-    public function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1)
+    public static function checkLogin($s_username, $s_password, $s_database, $s_host = '127.0.0.1', $i_port = -1)
     {}
 
     public function commit()
@@ -108,6 +133,13 @@ class DummyDAL implements \core\database\DAL
 
     public function result($i_row, $s_field)
     {
+        if( !array_key_exists($i_row, $this->a_data) ){
+            throw new \DBException("Trying to get data from a not existing field");
+        }
+        if( !array_key_exists($s_field, $this->a_data[$i_row]) ){
+            throw new \DBException("Trying to get data from a not existing field");
+        }
+        
         return $this->a_data[$i_row][$s_field];
     }
 
@@ -119,5 +151,7 @@ class DummyDAL implements \core\database\DAL
 
     public function useDB($s_database)
     {}
+    
+    public function describe($s_table, $bo_addNotExists = false, $bo_dropTable = false){}
 }
 ?>

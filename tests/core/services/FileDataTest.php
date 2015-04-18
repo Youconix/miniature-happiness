@@ -18,7 +18,7 @@ class testFileData extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/FileData.inc.php');
+        require_once (NIV . 'core/services/FileData.inc.php');
     }
 
     public function setUp()
@@ -78,7 +78,7 @@ class testFileData extends GeneralTest
      *
      * @test
      */
-    public function getLastModified($s_file)
+    public function getLastModified()
     {
         $this->assertNotEquals(- 1, $this->service_FileData->getLastModified($this->s_fileName));
     }

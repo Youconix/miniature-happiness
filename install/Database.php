@@ -78,7 +78,7 @@ class Database
         $this->service_QueryBuilder->getResult();
         
         $obj_create = $this->service_QueryBuilder->getCreate('groups', true);
-        $obj_create->addRow('id', 'int', 11);
+        $obj_create->addRow('id', 'int', 11,'',  true,  false, true);
         $obj_create->addRow('name', 'varchar', 100);
         $obj_create->addRow('description', 'text');
         $obj_create->addEnum('automatic', array(

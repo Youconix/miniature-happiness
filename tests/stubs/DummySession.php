@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Session')) {
-    require (NIV . 'include/services/Session.inc.php');
+    require (NIV . 'core/services/Session.inc.php');
 }
 
 class DummySession extends Session

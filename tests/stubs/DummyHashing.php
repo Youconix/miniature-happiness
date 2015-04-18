@@ -1,13 +1,22 @@
 <?php
 if (! class_exists('\core\services\Hashing')) {
-    require (NIV . 'include/services/Hashing.inc.php');
+    require (NIV . 'core/services/Hashing.inc.php');
 }
 
 class DummyHashing extends \core\services\Hashing
 {
 
-    public function __construct()
-    {}
+    private $service_Random;
+     /**
+     * PHP 5 constructor
+     *
+     * @param \core\services\Random $service_Random
+     *            The random generator
+     */
+    public function __construct( \core\services\Random $service_Random)
+    {
+        $this->service_Random = $service_Random;
+    }
 
     public function hash($s_text, $s_salt)
     {
@@ -29,7 +38,7 @@ class DummyHashing extends \core\services\Hashing
         return ($s_stored == $this->hashUserPassword($s_password, $s_username));
     }
 
-    public function createSalt()
+    public static function createSalt()
     {
         return '2193ueoidkjsncv;dnjs8q0wpo9dhicnsd;lfk;dsljihadfdasf';
     }

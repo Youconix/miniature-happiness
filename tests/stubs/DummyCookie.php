@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Cookie')) {
-    require (NIV . 'include/services/Cookie.inc.php');
+    require (NIV . 'core/services/Cookie.inc.php');
 }
 
 class DummyCookie extends \core\services\Cookie

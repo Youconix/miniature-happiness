@@ -351,17 +351,18 @@ class Memory
      *
      * @param String $s_class
      *            class name
+     *   @deprecated
      * @throws RuntimeException the class does not exists in include/class/
      */
     public static function ensureClass($s_class)
     {
         if (! class_exists($s_class)) {
             $service_File = Memory::$a_cache['\core\services\File'];
-            if (! $service_File->exists(Memory::$s_classPath . $s_class . '.inc.php')) {
+            if (! $service_File->exists(Memory::$a_class['systemPath'] . $s_class . '.inc.php')) {
                 throw new \RuntimeException('Can not find class ' . $s_class);
             }
             
-            require_once (Memory::$s_classPath . $s_class . '.inc.php');
+            require_once (Memory::$a_class['systemPath'] . $s_class . '.inc.php');
         }
     }
 
@@ -370,17 +371,18 @@ class Memory
      *
      * @param String $s_interface
      *            interface name
+     *   @deprecated
      * @throws RuntimeException the interface does not exists in include/interface/
      */
     public static function ensureInterface($s_interface)
     {
         if (! interface_exists($s_interface)) {
             $service_File = Memory::$a_cache['\core\services\File'];
-            if (! $service_File->exists(Memory::$s_interfacePath . $s_interface . '.inc.php')) {
+            if (! $service_File->exists(Memory::$a_interface['systemPath'] . $s_interface . '.inc.php')) {
                 throw new \RuntimeException('Can not find interface ' . $s_interface);
             }
             
-            require_once (Memory::$s_interfacePath . $s_interface . '.inc.php');
+            require_once (Memory::$a_interface['systemPath'] . $s_interface . '.inc.php');
         }
     }
 
@@ -477,10 +479,10 @@ class Memory
         $s_fallback = 'Helper';
         
         if ($bo_data) {
-            $s_path = Memory::$s_helperPath . 'data/';
+            $s_path = Memory::$a_helper['systemPath'] . 'data/';
             $s_namespace = 'core\helpers\data';
         } else {
-            $s_path = Memory::$s_helperPath;
+            $s_path = Memory::$a_helper['systemPath'];
             $s_namespace = 'core\helpers';
         }
         

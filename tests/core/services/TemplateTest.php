@@ -5,24 +5,43 @@ require (NIV . 'tests/GeneralTest.php');
 
 class testTemplate extends GeneralTest
 {
-
+    
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Template.inc.php');
+        require_once (NIV . 'core/services/Template.inc.php');
+        
+        $this->loadStub('DummyCache');
+        $this->loadStub('DummyConfig');
+        $this->loadStub('DummyCookie');
+        $this->loadStub('DummyDAL');
         $this->loadStub('DummyFile');
-        $this->loadStub('DummyTemplateSettings');
+        $this->loadStub('DummyHeaders');
+        $this->loadStub('DummyQueryBuilder');
+        $this->loadStub('DummySecurity');
+        $this->loadStub('DummySettings');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Settings = new DummyTemplateSettings();
+        $service_Database = new DummyDAL();
         $service_File = new DummyFile();
+        $service_Settings = new DummySettings();
+        $service_Validation = new DummyValidation;
         
-        $this->service_Template = new \core\services\Template($service_File, $service_Settings);
+        $service_Security = new DummySecurity($service_Validation);
+        $service_Cookie = new DummyCookie($service_Security);
+        $service_QueryBuilder = new DummyQueryBuilder($service_Database);
+        
+        $service_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
+        $service_Headers = new DummyHeaders($service_Config);
+        $service_Cache = new DummyCache($service_File, $service_Config, $service_Headers, $service_QueryBuilder);
+        
+        $this->service_Template = new \core\services\Template($service_File, $service_Config, $service_Cache, $service_Headers);
     }
 
     public function tearDown()

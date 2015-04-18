@@ -1,18 +1,18 @@
 <?php
 if (! class_exists('\core\models\Model')) {
-    require (NIV . 'include/models/Model.inc.php');
+    require (NIV . 'core/models/Model.inc.php');
 }
 if (! class_exists('\core\models\Groups')) {
-    require (NIV . 'include/models/Groups.inc.php');
+    require (NIV . 'core/models/Groups.inc.php');
 }
 if (! class_exists('\core\services\Session')) {
-    require (NIV . 'include/services/Session.inc.php');
+    require (NIV . 'core/services/Session.inc.php');
 }
 
 class DummyGroups extends \core\models\Groups
 {
 
-    public function __construct(\core\models\data\Data_Group $model_DataGroup)
+    public function __construct(\core\models\data\DataGroup $model_DataGroup)
     {
         $this->model_DataGroup = $model_DataGroup;
     }
@@ -25,7 +25,7 @@ class DummyGroups extends \core\models\Groups
      *            The user ID
      * @return int The access level defined in /include/services/Session.inc.php
      */
-    public function getLevel($i_userid)
+    public function getLevel($i_userid, $i_groupid = -1)
     {
         \core\Memory::type('int', $i_userid);
         

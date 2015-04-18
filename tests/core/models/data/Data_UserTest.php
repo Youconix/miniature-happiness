@@ -18,8 +18,8 @@ class testDataUser extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/GeneralUser.inc.php');
-        require_once (NIV . 'include/models/data/DataUser.inc.php');
+        require_once (NIV . 'core/models/GeneralUser.inc.php');
+        require_once (NIV . 'core/models/data/DataUser.inc.php');
         
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');

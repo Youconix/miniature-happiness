@@ -26,24 +26,29 @@ class testSession extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Session.inc.php');
+        require_once (NIV . 'core/services/Session.inc.php');
         
         $this->loadStub('DummySettings');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyModelGroupData');
         $this->loadStub('DummyGroups');
-        
+        $this->loadStub('DummyQueryBuilder');
+       
         $this->service_Settings = new DummySettings();
-        $this->service_Database = new DummyDAL();
-        $model_DataGroups = new DummyModelGroupData();
-        $this->model_Groups = new DummyGroups($model_DataGroups);
+        $this->service_Settings->setValue('settings/session/sessionName', 'phpunit');
+        $this->service_Settings->setValue('settings/session/sessionPath',sys_get_temp_dir());
+        $this->service_Settings->setValue('settings/session/sessionExpire',60);
     }
 
     public function setUp()
     {
         parent::setUp();
-        
-        $this->service_Session = new \core\services\Session($this->service_Settings, $this->service_Database, $this->model_Groups);
+        $this->service_Database = new DummyDAL();
+        $model_DataGroups = new DummyModelGroupData();
+        $this->model_Groups = new DummyGroups($model_DataGroups);
+        $service_Database = new DummyQueryBuilder($this->service_Database);
+
+        $this->service_Session = new \core\services\Session($this->service_Settings, $service_Database, $this->model_Groups);
         
         $this->s_name = 'testSession';
         $this->s_data = 'lalalala';

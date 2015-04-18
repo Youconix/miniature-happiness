@@ -16,23 +16,31 @@ class testLanguage extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Language.inc.php');
-        $this->loadStub('DummySettings');
+        require_once (NIV . 'core/services/Language.inc.php');
+        $this->loadStub('DummyConfig');
         $this->loadStub('DummyCookie');
         $this->loadStub('DummyFile');
+        $this->loadStub('DummySecurity');
+        $this->loadStub('DummySettings');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Settings = new DummySettings();
-        $service_Cookie = new DummyCookie();
         $service_File = new DummyFile();
+        $service_Settings = new DummySettings();
+        
+        $service_Validation = new DummyValidation();
+        $service_Security = new DummySecurity($service_Validation);
+        $service_Cookie = new DummyCookie($service_Security);
+        
+        $service_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
         
         $service_Settings->setValue('settings/defaultLanguage', 'en');
         
-        $this->service_Language = new \core\services\Language($service_Settings, $service_Cookie, $service_File);
+        $this->service_Language = new \core\services\Language($service_Config, $service_Cookie, $service_File);
     }
 
     public function tearDown()

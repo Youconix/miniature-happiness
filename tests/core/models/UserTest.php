@@ -15,36 +15,40 @@ class testUser extends GeneralTest
     private $model_User;
 
     private $s_username;
+    
+    private $service_Database;
 
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/User.inc.php');
+        require_once (NIV . 'core/models/User.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
         $this->loadStub('DummyHashing');
+        $this->loadStub('DummyRandom');
         $this->loadStub('DummySession');
         $this->loadStub('DummyModelGroupData');
         $this->loadStub('DummyGroups');
         $this->loadStub('DummyModelUserData');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
-        $this->service_Builder = new DummyQueryBuilder($service_Database);
-        $service_Hashing = new DummyHashing();
+        $this->service_Database = new DummyDAL();
+        $service_Validation = new DummyValidation();
+        $this->service_Builder = new DummyQueryBuilder($this->service_Database);
+        $service_Random = new DummyRandom();
+        $service_Hashing = new DummyHashing($service_Random);
         $service_Session = new DummySession();
         $model_GroupsData = new DummyModelGroupData();
         $model_Groups = new DummyGroups($model_GroupsData);
         $model_UserData = new DummyModelUserData();
         
-        $this->model_User = new \core\models\User($this->service_Builder, $service_Security, $service_Hashing, $service_Session, $model_Groups, $model_UserData);
+        $this->model_User = new \core\models\User($this->service_Builder, $service_Validation, $service_Hashing, $service_Session, $model_Groups, $model_UserData);
         $this->s_username = 'System';
     }
 

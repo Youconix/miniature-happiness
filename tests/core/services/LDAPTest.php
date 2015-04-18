@@ -21,15 +21,15 @@ class testLDAP extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/exceptions/LdapException.inc.php');
-        require_once (NIV . 'include/services/LDAP.inc.php');
+        require_once (NIV . 'core/exceptions/LdapException.inc.php');
+        require_once (NIV . 'core/services/LDAP.inc.php');
         
         $this->loadStub('DummySettings');
         $this->service_Settings = new DummySettings();
-        $this->service_Settings->setValue('settings_LDAP_server', 'test_server.loc');
-        $this->service_Settings->setValue('settings_LDAP_port', 1050);
-        $this->service_Settings->setValue('settings_LDAP_version', 3);
-        $this->service_Settings->setValue('settings_LDAP_active', 1);
+        $this->service_Settings->setValue('settings/LDAP/server', 'test_server.loc');
+        $this->service_Settings->setValue('settings/LDAP/port', 1050);
+        $this->service_Settings->setValue('settings/LDAP/version', 3);
+        $this->service_Settings->setValue('settings/LDAP/active', 1);
     }
 
     public function setUp()

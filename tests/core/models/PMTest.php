@@ -24,14 +24,14 @@ class testPM extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/PM.inc.php');
+        require_once (NIV . 'core/models/PM.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
         $this->loadStub('DummyModelUser');
         $this->loadStub('DummyModelPmData');
         $this->loadStub('DummyModelUserData');
         $this->loadStub('DummyMailer');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
@@ -42,17 +42,19 @@ class testPM extends GeneralTest
         $this->s_message = 'test message';
         $this->i_sender = 1;
         
+        $service_Validation = new DummyValidation();
         $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
         $service_Builder = new DummyQueryBuilder($service_Database);
         $this->obj_receiver = new DummyModelUserData();
         $this->obj_receiver->i_userid = 0;
         $model_User = new DummyModelUser($this->obj_receiver);
-        $model_PM = new DummyModelPmData($service_Builder, $service_Security, $model_User);
+        $model_PM = new DummyModelPmData($service_Builder, $service_Validation, $model_User);
         $service_Mailer = new DummyMailer();
         
-        $this->model_PM = new \core\models\PM($service_Builder, $service_Security, $model_PM, $service_Mailer);
-        define('USERID', $this->i_sender);
+        $this->model_PM = new \core\models\PM($service_Builder, $service_Validation, $model_PM, $service_Mailer);
+        if ( ! defined('USERID') ) {
+            define('USERID', $this->i_sender);
+        }
     }
 
     public function tearDown()

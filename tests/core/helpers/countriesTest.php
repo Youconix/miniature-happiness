@@ -24,7 +24,7 @@ class testCountries extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/Countries.inc.php');
+        require_once (NIV . 'core/helpers/Countries.inc.php');
         
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
@@ -36,8 +36,10 @@ class testCountries extends GeneralTest
         parent::setUp();
         
         $service_Database = new DummyDAL();
-        $this->service_QueryBuilder = new DummyBuilder($service_Database);
+        $this->service_QueryBuilder = new DummyQueryBuilder($service_Database);
         $this->service_Language = new DummyLanguage();
+        
+        $this->helper_countries = new \core\helpers\Countries($this->service_QueryBuilder, $this->service_Language);
     }
 
     public function tearDown()
@@ -56,17 +58,8 @@ class testCountries extends GeneralTest
      */
     public function emptyList()
     {
-        $this->createHelper();
-        
         $s_expected = '<select id="' . $this->s_id . '" name="' . $this->s_name . '">' . "\n</select>\n";
-        // $this->assertEquals($s_expected,$this->helper_countries->getList($this->s_name,$this->s_id));
+        $this->assertEquals($s_expected,$this->helper_countries->getList($this->s_name,$this->s_id));
     }
-
-    private function createHelper()
-    {
-        echo ("test1");
-        $this->helper_countries = new \core\helpers\Countries();
-        echo ('test2');
-        exit();
-    }
+    
 }

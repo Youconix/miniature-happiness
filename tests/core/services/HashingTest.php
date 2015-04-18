@@ -28,7 +28,7 @@ class testHashing extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Hashing.inc.php');
+        require_once (NIV . 'core/services/Hashing.inc.php');
         $this->loadStub('DummyLogs');
         $this->loadStub('DummySettings');
         $this->loadStub('DummyRandom');

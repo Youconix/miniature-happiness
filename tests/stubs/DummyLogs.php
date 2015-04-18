@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Logs')) {
-    require (NIV . 'include/services/Logs.inc.php');
+    require (NIV . 'core/services/Logs.inc.php');
 }
 
 class DummyLogs extends \core\services\Logs

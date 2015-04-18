@@ -86,7 +86,9 @@ class Language extends Xml
             ));
         }
         
-        require (NIV . 'core/services/data/languageShortcut.php');
+        if( !function_exists('t') ){
+            require (NIV . 'core/services/data/languageShortcut.php');
+        }
     }
 
     public function getLanguageFiles()

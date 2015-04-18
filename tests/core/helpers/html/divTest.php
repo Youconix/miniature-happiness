@@ -18,8 +18,8 @@ class testDiv extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/HTML.inc.php');
-        require_once (NIV . 'include/helpers/html/Div.php');
+        require_once (NIV . 'core/helpers/HTML.inc.php');
+        require_once (NIV . 'core/helpers/html/Div.php');
         
         $this->helper_HTML = new core\helpers\html\HTML();
     }
