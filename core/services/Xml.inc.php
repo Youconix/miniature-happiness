@@ -184,18 +184,53 @@ class Xml extends Service
      */
     public function add($s_path, $s_content)
     {
+        \core\Memory::type('String', $s_path);
         \core\Memory::type('String', $s_content);
         
         if ($this->exists($s_path)) {
             throw new \XMLException("Can not add existing " . $s_path);
         }
         
+        if( substr($s_path,0,9) == 'settings/' ){
+            $s_path = substr($s_path,9); 
+        }
+                    
         $s_parent = substr($s_path, 0, strrpos($s_path, '/'));
-        $s_name = end(explode('/'), $s_path);
-        $element = $this->getBlock($s_parent);
+        $a_path = explode('/', $s_path);
+        $s_name = end($a_path);
         
+        $this->addBlocks($s_parent);
+   
+        $element = $this->getBlock($s_parent);
+        $element = $element->item(0);
         $node = $this->dom_document->createElement($s_name, $s_content);
         $element->appendChild($node);
+    }
+    
+    protected function addBlocks($s_path){
+        $a_path = explode('/', $s_path);
+        
+        $i_length = count($a_path);
+        $s_lastPath = '';
+        $s_path = '';
+        for($i=0; $i<$i_length; $i++ ){
+            $s_lastPath = $s_path;
+            
+            if( !empty($s_path) ){ $s_path .'/'; }
+            $s_path .= $a_path[$i];
+            
+            try {
+                $element = $this->getBlock($s_path);
+            }
+            catch(\XMLException $e){                
+                /* Block does not exist */
+                $element = $this->dom_document->createElement($a_path[$i],'');
+                $parent = $this->getBlock($s_lastPath);
+                
+                $parent = $parent->item(0);
+                $parent->appendChild($element);
+            }
+        }
     }
 
     /**
@@ -212,7 +247,7 @@ class Xml extends Service
         $s_dir = dirname($s_file);
         
         if (! is_writable($s_dir)) {
-            throw new Exception("Can not write directory " . $s_dir . '.');
+            throw new \Exception("Can not write directory " . $s_dir . '.');
         }
         
         $this->dom_document->save($s_file);
@@ -289,6 +324,10 @@ class Xml extends Service
         $i_length = strlen($this->s_startTag);
         if (substr($s_path, 0, $i_length) != $this->s_startTag) {
             $s_path = $this->s_startTag . '/' . $s_path;
+        }
+        
+        if( substr($s_path, -1) == '/' ){
+            $s_path = substr($s_path, 0,-1);
         }
         
         return $s_path;
