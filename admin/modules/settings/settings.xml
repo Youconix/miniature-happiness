@@ -38,5 +38,9 @@
 	<block>
 		<title>system/admin/settings/languages/title</title>
 		<id>admin_settings_languages</id>
-	</block>
+	</block>	
+    <block>
+        <title>system/admin/settings/ssl/title</title>
+        <id>admin_settings_ssl</id>
+    </block>
 </module>

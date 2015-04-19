@@ -1,30 +1,38 @@
 function Settings() {
-	this.address = '../../admin/modules/settings/settings.php';
+	this.address_email = '../../admin/modules/settings/email.php';
+	this.address_session = '../../admin/modules/settings/session.php';
+	this.address_database = '../../admin/modules/settings/database.php';
+	this.address_cache = '../../admin/modules/settings/cache.php';
+	this.address_general = '../../admin/modules/settings/general.php';
+	this.address_language = '../../admin/modules/settings/languages.php';
 }
 Settings.prototype.address = function(){
 	return this.address;
 }
 Settings.prototype.init = function() {
 	$('#admin_settings_email h2').click(function(){
-		admin.show(settings.address+'?command=email',settings.emailInit);
+		admin.show(settings.address_email+'?command=email',settings.emailInit);
 	});
 	$('#admin_settings_general h2').click(function(){
-		admin.show(settings.address+'?command=general',settings.generalInit);
+		admin.show(settings.address_general+'?command=general',settings.generalInit);
 	});
 	$('#admin_settings_login h2').click(function(){
-		admin.show(settings.address+'?command=login',settings.loginInit);
+		admin.show(settings.address_session+'?command=login',settings.loginInit);
 	});
 	$('#admin_settings_sessions h2').click(function(){
-		admin.show(settings.address+'?command=sessions',settings.sessionsInit);
+		admin.show(settings.address_session+'?command=sessions',settings.sessionsInit);
 	});
 	$('#admin_settings_database h2').click(function(){
-		admin.show(settings.address+'?command=database',settings.databaseInit);
+		admin.show(settings.address_database+'?command=database',settings.databaseInit);
 	});
 	$('#admin_settings_cache h2').click(function(){
-		admin.show(settings.address+'?command=cache',settings.cacheInit);
+		admin.show(settings.address_cache+'?command=cache',settings.cacheInit);
 	});
 	$('#admin_settings_languages h2').click(function(){
-		admin.show(settings.address+'?command=language',settings.languagesInit);
+		admin.show(settings.address_language+'?command=language',settings.languagesInit);
+	});
+	$('#admin_settings_ssl h2').click(function(){
+		admin.show(settings.address_general+'?command=ssl',settings.sslInit);
 	});
 }
 Settings.prototype.emailInit = function(){
@@ -64,7 +72,7 @@ Settings.prototype.emailSave = function(){
 		return;
 	}
 	
-	$.post(settings.address,data);
+	$.post(settings.address_email,data);
 	
 	$('#notice').html(languageAdmin.admin_settings_saved);
 }
@@ -89,7 +97,7 @@ Settings.prototype.generalSave = function(){
 		return;
 	}
 	
-	$.post(settings.address,data);
+	$.post(settings.address_general,data);
 	
 	$('#notice').html(languageAdmin.admin_settings_saved);
 }
@@ -159,7 +167,7 @@ Settings.prototype.loginSave = function(){
 		'ldap_server' : $('#ldap_server').val(),'ldap_port' : $('#ldap_port').val()
 	};
 	
-	$.post(settings.address,data);
+	$.post(settings.address_session,data);
 	$('#notice').html(languageAdmin.admin_settings_saved);
 }
 Settings.prototype.sessionsInit = function(){
@@ -173,7 +181,7 @@ Settings.prototype.sessionsSave = function(){
 	
 	var data = {'command': 'sessions', 'session_name': $('#session_name').val(),'session_path' : $('#session_path').val(), '#session_expire' : $('#session_expire').val()};
 		
-	$.post(settings.address,data);
+	$.post(settings.address_session,data);
 	$('#notice').html(languageAdmin.admin_settings_saved);
 }
 Settings.prototype.databaseInit = function(){
@@ -189,7 +197,7 @@ Settings.prototype.databaseCheck = function(){
 	}
 	
 	$('#notice').removeClass('notice errorNotice').html('Bezig met controleren van de database gegevens.');
-	$.post(settings.address,data,function(response){
+	$.post(settings.address_database,data,function(response){
 		if( response == 0 ){
 			$('#notice').addClass('errorNotice').html('De database gegevens zijn incorrect.');
 		}
@@ -203,14 +211,40 @@ Settings.prototype.databaseSave = function(){
 			'database' : $('#database').val(),'host':$('#host').val(),'port' : $('#port').val()};
 	
 	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
-	$.post(settings.address,data);
+	$.post(settings.address_database,data);
 }
 Settings.prototype.cacheInit = function(){
-  
+	$('#settings_cache_save').click(function(){
+		settings.cacheSave();
+	});
+	$('#no_cache_submit').click(function(){
+		settings.addNoCache();  
+	});
 }
 Settings.prototype.cacheSave	= function(){
+	var data = {
+		'command' : 'cache', 'cache' : 0, 'expire' : $('#expire').val()
+	};
+	if( $('#cacheActive').is(':checked') ){
+		data['cache'] = 1;
+	}
   
-  
+	$.post(settings.address_cache,data);
+	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
+}
+Settings.prototype.addNoCache	= function(){
+	var cacheItem = $.trim($('#noCachePage').val());
+	if( cacheItem.indexOf('\.php') == -1 ){
+		return;
+	}
+	
+	$('#noCachePage').val('');
+	$.post(settings.address_cache,{'command':'addNoCache','page':cacheItem},function(response){
+		
+	});
+}
+Settings.prototype.deleteNoCache	= function(){
+	
 }
 Settings.prototype.languagesInit  = function(){
 	$('#settings_database_save').click(function(){
@@ -219,7 +253,13 @@ Settings.prototype.languagesInit  = function(){
 }
 Settings.prototype.languagesSave	=  function(){
 	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
-	$.post(settings.address,{'command':'language','default_language':$('#defaultLanguage').val()});
+	$.post(settings.address_language,{'command':'language','default_language':$('#defaultLanguage').val()});
+}
+Settings.prototype.sslInit	= function(){
+	
+}
+Settings.prototype.sslSave= function(){
+	
 }
 
 var settings = new Settings();
