@@ -31,6 +31,9 @@ class Settings extends \core\services\Xml
 {
 
     private $s_settingsDir;
+    const SSL_DISABLED = 0;
+    const SSL_LOGIN = 1;
+    const SSL_ALL = 2;
 
     /**
      * PHP 5 constructor

@@ -15,7 +15,7 @@ class testUser extends GeneralTest
     private $model_User;
 
     private $s_username;
-    
+
     private $service_Database;
 
     public function __construct()
@@ -82,8 +82,7 @@ class testUser extends GeneralTest
         );
         
         $builder = $this->service_Builder->createBuilder();
-        $builder->getDatabase()->i_numRows = 4;
-        $builder->getDatabase()->a_data = $a_data;
+        $builder->getDatabase()->enqueueData($a_data);
         
         $a_keys = array_keys($a_data);
         $a_users = $this->model_User->getUsersById($a_keys);
@@ -116,11 +115,6 @@ class testUser extends GeneralTest
      */
     public function getUsers()
     {
-        $this->assertEquals(array(
-            'number' => null,
-            'data' => array()
-        ), $this->model_User->getUsers());
-        
         $a_data = array(
             0 => array(
                 'id' => 1,
@@ -138,12 +132,18 @@ class testUser extends GeneralTest
         );
         
         $builder = $this->service_Builder->createBuilder();
-        $builder->getDatabase()->i_numRows = 4;
-        $builder->getDatabase()->a_data = $a_data;
+        $builder->getDatabase()->enqueueData($a_data);
+        $builder->getDatabase()->enqueueData(array(
+            0 => array(
+                'amount' => 4
+            )
+        ));
+        
         
         $a_users = $this->model_User->getUsers();
+
+        $this->assertEquals(4,$a_users['number']);
         
-        $this->assertEquals(4, $a_users['number']);
         foreach ($a_users['data'] as $obj_user) {
             $this->assertInstanceOf('\core\models\data\DataUser', $obj_user);
         }

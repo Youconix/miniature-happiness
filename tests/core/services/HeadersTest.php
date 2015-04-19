@@ -200,7 +200,8 @@ class testHeaders extends GeneralTest
                 gmdate('D, d M Y H:i:s') . ' GMT'
             ),
             array(
-                'Cache-Control: no-store, no-cache, must-revalidate'
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate'
             ),
             array(
                 'Cache-Control',

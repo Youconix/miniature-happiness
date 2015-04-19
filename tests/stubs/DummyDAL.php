@@ -40,6 +40,7 @@ class DummyDAL implements \core\database\DAL
         else {
             $this->a_data = $this->dataset->dequeue();
         }
+        $this->i_numRows = count($this->a_data);
     }
     
     public function clearQueue() {
