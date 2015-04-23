@@ -91,14 +91,14 @@ class Groups extends Model
      *            The group ID
      * @return Data_Group The registrated group
      * @throws TypeException if $i_groupid is not a int
-     * @throws MemoryException if the group does not exist
+     * @throws OutOfBoundsException if the group does not exist
      */
     public function getGroup($i_groupid)
     {
         \core\Memory::type('int', $i_groupid);
         
         if (! array_key_exists($i_groupid, $this->a_groups)) {
-            throw new \MemoryException("Calling non existing group with id " . $i_groupid);
+            throw new \OutOfBoundsException("Calling non existing group with id " . $i_groupid);
         }
         
         return $this->a_groups[$i_groupid];
@@ -242,7 +242,7 @@ class Groups extends Model
      * @param array $a_groups            
      * @param int $i_level
      *            level
-     * @throws IllegalArgumentException the group ID does niet exist
+     * @throws \OutOfBoundsException the group ID does niet exist
      */
     public function editUserLevel($i_userid, $a_groups, $i_level)
     {
@@ -252,7 +252,7 @@ class Groups extends Model
         
         foreach ($a_groups as $i_group) {
             if (! is_int($i_group) || ! array_key_exists($i_group, $this->a_groups)) {
-                throw new \IllegalArgumentException("Only IDs of the members of Data_Group are accepted");
+                throw new \OutOfBoundsException("Unknown group id ".$i_group.'.');
             }
             
             $this->a_groups[$i_group]->editUser($i_userid, $i_level);

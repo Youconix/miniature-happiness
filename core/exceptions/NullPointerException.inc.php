@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
-class NullPointerException extends GeneralException
+class NullPointerException extends LogicException
 {
 
     public function __construct($s_message)

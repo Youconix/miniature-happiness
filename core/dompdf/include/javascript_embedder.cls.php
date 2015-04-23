@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package dompdf
  * @link    http://dompdf.github.com/
@@ -12,26 +13,31 @@
  * @access private
  * @package dompdf
  */
-class Javascript_Embedder {
-  
-  /**
-   * @var DOMPDF
-   */
-  protected $_dompdf;
+class Javascript_Embedder
+{
 
-  function __construct(DOMPDF $dompdf) {
-    $this->_dompdf = $dompdf;
-  }
+    /**
+     *
+     * @var DOMPDF
+     */
+    protected $_dompdf;
 
-  function insert($script) {
-    $this->_dompdf->get_canvas()->javascript($script);
-  }
-
-  function render(Frame $frame) {
-    if ( !$this->_dompdf->get_option("enable_javascript") ) {
-      return;
+    function __construct(DOMPDF $dompdf)
+    {
+        $this->_dompdf = $dompdf;
     }
-      
-    $this->insert($frame->get_node()->nodeValue);
-  }
+
+    function insert($script)
+    {
+        $this->_dompdf->get_canvas()->javascript($script);
+    }
+
+    function render(Frame $frame)
+    {
+        if (! $this->_dompdf->get_option("enable_javascript")) {
+            return;
+        }
+        
+        $this->insert($frame->get_node()->nodeValue);
+    }
 }

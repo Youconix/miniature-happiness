@@ -47,7 +47,7 @@ class Logout extends \core\BaseClass
     {
         \Loader::inject('\core\models\Login')->logout();
         
-	$s_url = \core\Memory::parseUrl('index.php');
+        $s_url = \core\Memory::parseUrl('index.php');
         \Loader::inject('\core\services\Headers')->redirect($s_url);
     }
 }

@@ -7,19 +7,6 @@ if (! class_exists('GeneralTest')) {
     require (NIV . 'tests/GeneralTest.php');
 }
 
-require_once (NIV . 'include/helpers/Helper.inc.php');
-require_once (NIV . 'include/helpers/HTML.inc.php');
-
-class DummyCoreHtmlItem extends core\helpers\html\CoreHtmlItem
-{
-
-    public function __construct($s_tag)
-    {
-        $this->s_tag = $s_tag;
-        $this->s_htmlType = 'html5';
-    }
-}
-
 class testCoreHtmlItem extends GeneralTest
 {
 
@@ -28,6 +15,16 @@ class testCoreHtmlItem extends GeneralTest
     private $s_tag = '<testTag {between}>{value}</testTag>';
 
     private $s_id = 'testID';
+
+    public function __construct()
+    {
+        parent::__construct();
+        
+        require_once (NIV . 'core/helpers/Helper.inc.php');
+        require_once (NIV . 'core/helpers/HTML.inc.php');
+        
+        $this->loadStub('DummyCoreHtmlItem');
+    }
 
     public function setUp()
     {

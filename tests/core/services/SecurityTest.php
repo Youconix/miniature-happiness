@@ -10,30 +10,28 @@ if (! class_exists('GeneralTest')) {
 class testSecurity extends GeneralTest
 {
 
-    private $service_Database;
-
     private $service_Security;
 
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Security.inc.php');
+        require_once (NIV . 'core/services/Security.inc.php');
         
-        $this->loadStub('DummyDAL');
-        $this->service_Database = new DummyDAL();
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $this->service_Security = new \core\services\Security($this->service_Database);
+        $service_Validation = new DummyValidation();
+        $this->service_Security = new \core\services\Security($service_Validation);
     }
 
     public function tearDown()
     {
-        $this->service_FileData = null;
+        $this->service_Security = null;
         
         parent::tearDown();
     }
@@ -85,63 +83,6 @@ class testSecurity extends GeneralTest
         $this->assertNotEquals('gffdgq <script>sdgfvserty3r dfgber5t6423wefv asfsdfsd</script>', $this->service_Security->secureString('gffdgq <script>sdgfvserty3r dfgber5t6423wefv asfsdfsd</script>'));
         $this->assertNotEquals('gffdgq <span onclick="alert(\'test\')">sdgfvserty3r dfgber5t6423wefv asfsdfsd</script>', $this->service_Security->secureString('gffdgq <span onclick="alert(\'test\')">sdgfvserty3r dfgber5t6423wefv asfsdfsd</script>'));
         $this->assertNotEquals('gffdgq sdgfvserty3r & dfgber5t6423wefv & asfsdfsd', $this->service_Security->secureString('gffdgq sdgfvserty3r & dfgber5t6423wefv & asfsdfsd'));
-    }
-
-    /**
-     * Test for validating an email address
-     *
-     * @test
-     */
-    public function checkEmail()
-    {
-        $this->assertTrue($this->service_Security->checkEmail('admin@example.com'));
-        $this->assertTrue($this->service_Security->checkEmail('admin32@example.museum'));
-        $this->assertTrue($this->service_Security->checkEmail('admin_32-new@example-new.museum'));
-        
-        $this->assertFalse($this->service_Security->checkEmail('admin_32-newexample-new.museum'));
-        $this->assertFalse($this->service_Security->checkEmail('admin_32-newe@xample-new'));
-        $this->assertFalse($this->service_Security->checkEmail('admin 32-new@example-new.museum'));
-    }
-
-    /**
-     * Validates the given URI
-     *
-     * @test
-     */
-    public function checkURI()
-    {
-        $this->assertTrue($this->service_Security->checkURI('http://example.com'));
-        $this->assertTrue($this->service_Security->checkURI('http://example.com/sdfsdfs/wtewrfsfg/afsfsadfqw0-sdafsdf/index.cgi'));
-        $this->assertTrue($this->service_Security->checkURI('http://example.com/sdfsdfs/wtewrfsfg/afsfsadfqw0-sdafsdf/index.cgi#top'));
-        
-        $this->assertFalse($this->service_Security->checkURI('http://example.com/sdfsdfs/wtew rfsfg/afsfsa dfqw0-sdafsdf/index.cgi'));
-        $this->assertFalse($this->service_Security->checkURI('http://example#.com/sdfsdfs/wtew#rfsfg/afsfsa@dfqw0-sdafsdf/index.cgi'));
-    }
-
-    /**
-     * Test for validating dutch postal addresses
-     *
-     * @test
-     */
-    public function checkPostalNL()
-    {
-        $this->assertTrue($this->service_Security->checkPostalNL('2341AA'));
-        $this->assertTrue($this->service_Security->checkPostalNL('2341 AA'));
-        $this->assertFalse($this->service_Security->checkPostalNL('AA 2341'));
-        $this->assertFalse($this->service_Security->checkPostalNL('2341'));
-    }
-
-    /**
-     * Test for validating the given belgium postal addresses
-     *
-     * @test
-     */
-    public function checkPostalBE()
-    {
-        $this->assertTrue($this->service_Security->checkPostalBE(1252));
-        $this->assertFalse($this->service_Security->checkPostalBE('sdafsdfsd'));
-        $this->assertFalse($this->service_Security->checkPostalBE(252));
-        $this->assertFalse($this->service_Security->checkPostalBE(10000));
     }
 }
 ?>

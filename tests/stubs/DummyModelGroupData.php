@@ -1,9 +1,9 @@
 <?php
-if (! class_exists('\core\models\data\Data_Group')) {
-    require (NIV . 'include/models/data/Data_Group.inc.php');
+if (! class_exists('\core\models\data\DataGroup')) {
+    require (NIV . 'core/models/data/DataGroup.inc.php');
 }
 
-class DummyModelGroupData extends \core\models\data\Data_Group
+class DummyModelGroupData extends \core\models\data\DataGroup
 {
 
     public function __construct()

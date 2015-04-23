@@ -24,12 +24,13 @@ class testCookie extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Cookie.inc.php');
-        $this->loadStub('DummyDAL');
+        require_once (NIV . 'core/services/Cookie.inc.php');
         $this->loadStub('DummySecurity');
+        $this->loadStub('DummyValidation');
+                
+        $service_Validation = new DummyValidation();
         
-        $service_DAL = new DummyDAL();
-        $this->service_Security = new DummySecurity($service_DAL);
+        $this->service_Security = new DummySecurity($service_Validation);
     }
 
     public function setUp()

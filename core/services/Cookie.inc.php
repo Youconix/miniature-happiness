@@ -98,7 +98,7 @@ class Cookie extends Service
             throw new \Exception("Cookie " . $s_cookieName . " does not exist.");
         }
         
-        setcookie($s_cookieName, "", time() - 3600, $s_domain);
+        @setcookie($s_cookieName, "", time() - 3600, $s_domain);
         if (isset($_COOKIE[$s_cookieName])) {
             unset($_COOKIE[$s_cookieName]);
         }
@@ -130,7 +130,7 @@ class Cookie extends Service
         $s_cookieData = $this->encrypt($s_cookieData);
         $_COOKIE[$s_cookieName] = $s_cookieData;
         
-        if (setcookie($s_cookieName, $s_cookieData, time() + 2592000, $s_domain, $s_url, $i_secure)) {
+        if ( @setcookie($s_cookieName, $s_cookieData, time() + 2592000, $s_domain, $s_url, $i_secure)) {
             return true;
         } else {
             if (! defined('DEBUG')) {

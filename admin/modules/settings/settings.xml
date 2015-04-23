@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-    <name>Settings</name>
-    <author>Youconix</author>
-    <description>Settings module for the framework Miniature-happiness</description>
-    <version>1.0</version>
-    <install>install.php</install>
-    <upgrade/>
-    <deinstall>deinstall.php</deinstall>
+	<name>Settings</name>
+	<author>Youconix</author>
+	<description>Settings module for the framework Miniature-happiness</description>
+	<version>1.0</version>
+	<install>install.php</install>
+	<upgrade />
+	<deinstall>deinstall.php</deinstall>
 	<title>system/menu/settings</title>
 	<js>settings.js</js>
 	<css>settings.css</css>
@@ -30,13 +30,17 @@
 		<title>system/admin/settings/database/title</title>
 		<id>admin_settings_database</id>
 	</block>
-	
+
 	<block>
-	   <title>system/admin/settings/cache/title</title>
-	   <id>admin_settings_cache</id>
+		<title>system/admin/settings/cache/title</title>
+		<id>admin_settings_cache</id>
+	</block>
+	<block>
+		<title>system/admin/settings/languages/title</title>
+		<id>admin_settings_languages</id>
 	</block>	
     <block>
-        <title>system/admin/settings/languages/title</title>
-        <id>admin_settings_languages</id>
+        <title>system/admin/settings/ssl/title</title>
+        <id>admin_settings_ssl</id>
     </block>
 </module>

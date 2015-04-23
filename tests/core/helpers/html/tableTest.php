@@ -18,8 +18,8 @@ class testTable extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/HTML.inc.php');
-        require_once (NIV . 'include/helpers/html/Div.php');
+        require_once (NIV . 'core/helpers/HTML.inc.php');
+        require_once (NIV . 'core/helpers/html/Div.php');
         
         $helper = new core\helpers\html\HTML();
         $this->tableFactory = $helper->tableFactory();

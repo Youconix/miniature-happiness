@@ -52,14 +52,14 @@ class Maintenance extends \core\AdminLogicClass
         } else 
             if (isset($this->post['action'])) {
                 $this->performAction();
-            }
-            else if( isset($this->post['command']) ){
-                switch($this->post['command']){
-                    case 'createBackup' :
-                        $this->createBackup();
-                        break;
+            } else 
+                if (isset($this->post['command'])) {
+                    switch ($this->post['command']) {
+                        case 'createBackup':
+                            $this->createBackup();
+                            break;
+                    }
                 }
-            }
     }
 
     /**
@@ -80,16 +80,16 @@ class Maintenance extends \core\AdminLogicClass
     }
 
     /**
-     * Generates the action menu 
+     * Generates the action menu
      */
     private function view()
     {
-        $this->service_Template->set('moduleTitle',t('system/admin/general/maintenance'));
+        $this->service_Template->set('moduleTitle', t('system/admin/general/maintenance'));
         $this->service_Template->set('checkDatabase', t('system/admin/maintenance/checkDatabase'));
         $this->service_Template->set('optimizeDatabase', t('system/admin/maintenance/optimizeDatabase'));
         $this->service_Template->set('cleanStatsYear', t('system/admin/maintenance/stats'));
-        $this->service_Template->set('backup',t('system/admin/maintenance/createBackup'));        
-        $this->service_Template->set('ready',t('system/admin/maintenance/ready'));
+        $this->service_Template->set('backup', t('system/admin/maintenance/createBackup'));
+        $this->service_Template->set('ready', t('system/admin/maintenance/ready'));
     }
 
     /**
@@ -127,17 +127,18 @@ class Maintenance extends \core\AdminLogicClass
             $this->service_Template->set('result', 0);
         }
     }
-    
+
     /**
      * Creates the backup
      */
-    private function createBackup(){
+    private function createBackup()
+    {
         $s_backup = $this->service_Maintenance->createBackup();
         
-        ( is_null($s_backup) ) ? $bo_result = 0 : $bo_result = 1;
+        (is_null($s_backup)) ? $bo_result = 0 : $bo_result = 1;
         
         $this->service_Template->set('result', $bo_result);
-        $this->service_Template->set('backup',$s_backup);
+        $this->service_Template->set('backup', $s_backup);
     }
 }
 

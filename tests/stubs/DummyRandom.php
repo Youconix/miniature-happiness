@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Random')) {
-    require (NIV . 'include/services/Random.inc.php');
+    require (NIV . 'core/services/Random.inc.php');
 }
 
 class DummyRandom extends \core\services\Random

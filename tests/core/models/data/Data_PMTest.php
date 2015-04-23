@@ -24,13 +24,13 @@ class testData_PM extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/data/Data_PM.inc.php');
+        require_once (NIV . 'core/models/data/DataPM.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
         $this->loadStub('DummyModelUser');
         $this->loadStub('DummyGroups');
         $this->loadStub('DummyModelUserData');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
@@ -38,7 +38,7 @@ class testData_PM extends GeneralTest
         parent::setUp();
         
         $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
+        $service_Validation = new DummyValidation();
         $service_Builder = new DummyQueryBuilder($service_Database);
         $model_UserData = new DummyModelUserData();
         
@@ -48,7 +48,7 @@ class testData_PM extends GeneralTest
         $this->i_receiverID = 0;
         $this->s_title = 'test pm';
         $this->s_message = 'test pm';
-        $this->model_PM = new \core\models\data\Data_PM($service_Builder, $service_Security, $model_User);
+        $this->model_PM = new \core\models\data\DataPM($service_Builder, $service_Validation, $model_User);
     }
 
     public function tearDown()

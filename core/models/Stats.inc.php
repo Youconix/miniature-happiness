@@ -391,19 +391,18 @@ class Stats extends Model
     }
 
     /**
-     * Returns the hits from the given month
+     * Returns the hits pro month
      *
-     * @param int $i_date
-     *            The month as timestamp
-     * @return array The hits
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
+     * @return \core\models\data\HitCollection The hits
      */
-    public function getHits($i_date)
+    public function getHits($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_date);
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
-        $i_end = mktime(0, 0, 0, (date('n', $i_date) + 1), 1, date('Y', $i_date));
-        
-        $a_hits = array();
+        $hits = new \core\models\data\HitCollection($i_startDate,$i_endDate);
         $this->service_QueryBuilder->select('stats_hits', 'amount,datetime')
             ->group('datetime')
             ->getWhere()
@@ -411,8 +410,8 @@ class Stats extends Model
             'i',
             'i'
         ), array(
-            $i_date,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
         $service_Database = $this->service_QueryBuilder->getResult();
         
@@ -420,18 +419,86 @@ class Stats extends Model
             $a_hitsPre = $service_Database->fetch_assoc();
             
             foreach ($a_hitsPre as $a_hit) {
-                $i_day = date('j', $a_hit['datetime']);
-                $i_hours = date('G', $a_hit['datetime']);
-                
-                if (! array_key_exists($i_day, $a_hits)) {
-                    $a_hits[$i_day] = array();
-                }
-                
-                if (! array_key_exists($i_hours, $a_hits[$i_day])) {
-                    $a_hits[$i_day][$i_hours] = $a_hit;
-                } else {
-                    $a_hits[$i_day][$i_hours]['amount'] += $a_hit['amount'];
-                }
+                $item = new \core\models\data\HitItem($a_hit['amount'], $a_hit['datetime']);
+                $hits->add($item);
+            }
+        }
+        
+        return $hits;
+    }
+    
+    /**
+     * Returns the unique visitors from the given month
+     *
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
+     * @return \core\models\data\HitCollection The visitors
+     */
+    public function getUnique($i_startDate,$i_endDate)
+    {
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
+        
+        $unique = new \core\models\data\HitCollection($i_startDate,$i_endDate);
+    
+        $this->service_QueryBuilder->select('stats_unique', 'datetime')
+        ->group('datetime')
+        ->getWhere()
+        ->addAnd('datetime', array(
+            'i',
+            'i'
+        ), array(
+            $i_startDate,
+            $i_endDate
+        ), 'BETWEEN');
+        $service_Database = $this->service_QueryBuilder->getResult();
+    
+        if ($service_Database->num_rows() > 0) {
+            $a_uniquePre = $service_Database->fetch_assoc();
+    
+            foreach ($a_uniquePre as $a_hit) {
+                $item = new \core\models\data\HitItem(1, $a_hit['datetime']);
+                $unique->add($item);
+            }
+        }
+    
+        return $unique;
+    }
+    
+    /**
+     * Returns the hits pro hour
+     * 
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
+     * @return array    The hits
+     */
+    public function getHitsHours($i_startDate,$i_endDate)
+    {
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
+        
+        $a_hits = array();
+        for( $i=0; $i<=23; $i++){
+            $a_hits[$i] = 0;
+        }
+        
+        $this->service_QueryBuilder->select('stats_hits', 'amount,datetime')
+        ->group('datetime')
+        ->getWhere()
+        ->addAnd('datetime', array(
+            'i',
+            'i'
+        ), array(
+            $i_startDate,
+            $i_endDate
+        ), 'BETWEEN');
+        $service_Database = $this->service_QueryBuilder->getResult();
+        
+        if ($service_Database->num_rows() > 0) {
+            $a_hitsPre = $service_Database->fetch_assoc();
+        
+            foreach ($a_hitsPre as $a_hit) {
+                $a_hits[ date('H',$a_hit['datetime'])] += $a_hit['amount'];
             }
         }
         
@@ -439,235 +506,141 @@ class Stats extends Model
     }
 
     /**
-     * Returns the pages from the given month
+     * Returns the pages
      *
-     * @param int $i_date
-     *            The month as timestamp
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The pages
      */
-    public function getPages($i_date)
+    public function getPages($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_date);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_date) + 1), 1, date('Y', $i_date));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_pages = array();
-        $this->service_QueryBuilder->select('stats_pages', 'name,amount')
+        $this->service_QueryBuilder->select('stats_pages', 'name,SUM(amount) AS amount')
             ->group('name')
             ->order('amount', 'DESC');
         $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
-            $i_date,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
-            $a_data = $this->service_Database->fetch_assoc();
-            
-            foreach ($a_data as $a_page) {
-                if (array_key_exists($a_page['name'], $a_pages)) {
-                    $a_pages[$a_page['name']]['amount'] += $a_page['amount'];
-                } else {
-                    $a_pages[$a_page['name']] = $a_page;
-                }
-            }
+            $a_pages = $this->service_Database->fetch_assoc();
         }
         
         return $a_pages;
     }
-
-    /**
-     * Returns the unique visitors from the given month
-     *
-     * @param int $i_date
-     *            The month as timestamp
-     * @return array The unique visitors
-     */
-    public function getUnique($i_date)
-    {
-        \core\Memory::type('int', $i_date);
+    
+    private function sortDate($a_data){
+        $a_items = array();
+        $a_data2 = array();
+        foreach( $a_data AS $a_item ){
+            if( !array_key_exists($a_item['type'], $a_data2) ){
+                $a_data2[ $a_item['type'] ] = array();
+            }
         
-        $i_end = mktime(0, 0, 0, (date('n', $i_date) + 1), 1, date('Y', $i_date));
+            $a_data2[ $a_item['type'] ][ str_replace(' ','',$a_item['name']) ] = $a_item;
+        }
         
-        $a_unique = array();
-        $this->service_QueryBuilder->select('stats_unique', 'id AS amount,datetime')
-            ->group('datetime')
-            ->getWhere()
-            ->addAnd('datetime', array(
-            'i',
-            'i'
-        ), array(
-            $i_date,
-            $i_end
-        ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        ksort($a_data2);
+        foreach( $a_data2 AS $key => $item ){
+            ksort($a_data2[$key]);
+        }
         
-        if ($service_Database->num_rows() > 0) {
-            $a_uniquePre = $service_Database->fetch_assoc();
-            
-            foreach ($a_uniquePre as $a_hit) {
-                $i_day = date('j', $a_hit['datetime']);
-                if (! array_key_exists($i_day, $a_unique)) {
-                    $a_unique[$i_day] = $a_hit;
-                } else {
-                    $a_unique[$i_day]['amount'] += $a_hit['amount'];
-                }
+        
+        foreach( $a_data2 AS $key => $type ){
+            foreach( $a_data2[$key] AS $item ){
+                $a_items[] = $item;
             }
         }
         
-        return $a_unique;
+        return $a_items;
     }
 
     /**
-     * Returns the operating systems from the given month
-     * Grouped by operating system
+     * Returns the operating systems
      *
-     * @param int $i_month
-     *            The month as timestamp
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The operating systems
      */
-    public function getOS($i_month)
+    public function getOS($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_month);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_OS = array();
-        $this->service_QueryBuilder->select('stats_OS', 'name,' . $this->service_QueryBuilder->getSum('amount', 'amount') . ',type')
-            ->group('type')
-            ->order('amount', 'DESC');
-        $this->service_QueryBuilder->getWhere('datetime', array(
-            'i',
-            'i'
-        ), array(
-            $i_month,
-            $i_end
-        ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
-        
-        if ($service_Database->num_rows() > 0) {
-            $a_OS = $service_Database->fetch_assoc_key('name');
-        }
-        
-        return $a_OS;
-    }
-
-    /**
-     * Returns the operating systems from the given month
-     *
-     * @param int $i_month
-     *            The month as timestamp
-     * @return array The operating systems
-     */
-    public function getOSLong($i_month)
-    {
-        \core\Memory::type('int', $i_month);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
-        
-        $a_OS = array();
-        $this->service_QueryBuilder->select('stats_OS', 'name,amount,type')
-            ->order('amount', 'DESC')
+        $this->service_QueryBuilder->select('stats_OS', 'id,name,amount,type')
             ->getWhere()
             ->addAnd('datetime', array(
             'i',
             'i'
         ), array(
-            $i_month,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
-            $a_OS = $service_Database->fetch_assoc();
+            $a_data = $service_Database->fetch_assoc();
+            
+            $a_OS = $this->sortDate($a_data);
         }
-        
+                
         return $a_OS;
     }
 
     /**
-     * Returns the browsers from the given month.
+     * Returns the browsers
      * Grouped by browser
      *
-     * @param int $i_date
-     *            The month as timestamp
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The browsers
      */
-    public function getBrowsers($i_month)
+    public function getBrowsers($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_month);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_browsers = array();
-        $this->service_QueryBuilder->select('stats_browser', 'name,' . $this->service_QueryBuilder->getSum('amount', 'amount') . ',version')
+        $this->service_QueryBuilder->select('stats_browser', 'id,name AS type,amount,CONCAT(name," ",version) AS name')
             ->group('name')
             ->order('amount', 'DESC');
         $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
-            $i_month,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
-            $a_browsers = $service_Database->fetch_assoc_key('name');
+            $a_data = $service_Database->fetch_assoc_key('name');
+            $a_browsers = $this->sortDate($a_data);
         }
         
         return $a_browsers;
     }
 
     /**
-     * Returns the browsers from the given month
+     * Returns the screen colors
      *
-     * @param int $i_date
-     *            The month as timestamp
-     * @return array The browsers
-     */
-    public function getBrowsersLong($i_month)
-    {
-        \core\Memory::type('int', $i_month);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
-        
-        $a_browsers = array();
-        $this->service_QueryBuilder->select('stats_browser', 'name,amount,version')->order('amount', 'DESC');
-        $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
-            'i',
-            'i'
-        ), array(
-            $i_month,
-            $i_end
-        ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
-        
-        if ($service_Database->num_rows() > 0) {
-            $a_browsers = $service_Database->fetch_assoc();
-        }
-        
-        return $a_browsers;
-    }
-
-    /**
-     * Returns the screen colors from the given month
-     *
-     * @param int $i_month
-     *            The month as timestamp
-     * @param int $i_limit
-     *            for limiting the amount of data
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The screen colors
      */
-    public function getScreenColors($i_month, $i_limit = -1)
+    public function getScreenColors($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_month);
-        \core\Memory::type('int', $i_limit);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_screenColors = array();
         $this->service_QueryBuilder->select('stats_screenColors', 'name,amount')
@@ -676,36 +649,29 @@ class Stats extends Model
             'i',
             'i'
         ), array(
-            $i_month,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
-        if ($i_limit > 0) {
-            $this->service_QueryBuilder->limit($i_limit);
-        }
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
-            $a_screenColors = $service_Database->fetch_assoc_key('name');
+            $a_screenColors = $service_Database->fetch_assoc();
         }
         
         return $a_screenColors;
     }
 
     /**
-     * Returns the screen sizes from the given month
+     * Returns the screen sizes
      *
-     * @param int $i_month
-     *            The month as timestamp
-     * @param int $i_limit
-     *            for limiting the amount of data
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The screen sizes
      */
-    public function getScreenSizes($i_month, $i_limit = -1)
+    public function getScreenSizes($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_month);
-        \core\Memory::type('int', $i_limit);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_screenSizes = array();
         $this->service_QueryBuilder->select('stats_screenSizes', 'width,height,amount')->order('width', 'DESC', 'height', 'DESC');
@@ -713,12 +679,9 @@ class Stats extends Model
             'i',
             'i'
         ), array(
-            $i_month,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
-        if ($i_limit > 0) {
-            $this->service_QueryBuilder->limit($i_limit);
-        }
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
@@ -729,32 +692,32 @@ class Stats extends Model
     }
 
     /**
-     * Returns the references from the given month
+     * Returns the references
      *
-     * @param int $i_month
-     *            The month as timestamp
+     * @param int   $i_startDate    The start date as timestamp
+     * @param int   $i_endDate      The end date as timestamp
      * @return array The references
      */
-    public function getReferences($i_month)
+    public function getReferences($i_startDate,$i_endDate)
     {
-        \core\Memory::type('int', $i_month);
-        
-        $i_end = mktime(0, 0, 0, (date('n', $i_month) + 1), 1, date('Y', $i_month));
+        \core\Memory::type('int', $i_startDate);
+        \core\Memory::type('int', $i_endDate);
         
         $a_references = array();
-        $this->service_QueryBuilder->select('stats_reference', $this->service_QueryBuilder->getSum('amount', 'amount') . ',name')
-            ->order('amount', 'DESC');
+        $this->service_QueryBuilder->select('stats_reference','SUM(amount) AS amount,name')
+            ->order('amount', 'DESC')
+            ->group('name');
         $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
-            $i_month,
-            $i_end
+            $i_startDate,
+            $i_endDate
         ), 'BETWEEN');
         $service_Database = $this->service_QueryBuilder->getResult();
         
         if ($service_Database->num_rows() > 0) {
-            $a_references = $service_Database->fetch_assoc_key('name');
+            $a_references = $service_Database->fetch_assoc();
         }
         
         return $a_references;

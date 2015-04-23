@@ -10,7 +10,7 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase
     public function __construct()
     {
         require_once (NIV . 'core/Memory.php');
-        
+        $_SERVER['DOCUMENT_ROOT'] = NIV;
         parent::__construct();
         
         if (! defined('DATA_DIR')) {
@@ -19,6 +19,8 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase
         if (! defined('LEVEL')) {
             define('LEVEL', NIV);
         }
+        
+        $_SERVER['HTTP_HOST'] = 'unittesting';
         
         /* First run for inclusion */
         \core\Memory::setTesting();

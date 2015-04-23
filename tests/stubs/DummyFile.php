@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\File')) {
-    require (NIV . 'include/services/File.inc.php');
+    require (NIV . 'core/services/File.inc.php');
 }
 
 class DummyFile extends \core\services\File

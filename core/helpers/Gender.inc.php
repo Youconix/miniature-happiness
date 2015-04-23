@@ -19,12 +19,12 @@ class Helper_Gender extends Helper
      * Returns the gender's text.
      *
      * @param String $s_code            
-     * @throws IllegalArgumentException
+     * @throws \InvalidArgumentException
      */
     public function getGender($s_code)
     {
         if (! array_key_exists($s_code, $this->a_genders)) {
-            throw new IllegalArgumentException("Illegal gender: " . $s_code . ". Only M, F and O are valid.");
+            throw new \InvalidArgumentException("Illegal gender: " . $s_code . ". Only M, F and O are valid.");
         }
         return $this->a_genders[$s_code];
     }

@@ -79,7 +79,6 @@ class Privileges
      *            level, optional
      * @param int $i_commandLevel
      *            The minimun level for the command, optional
-     * @throws MemoryException the page rights are not defined with arguments or database
      */
     public function checkLogin($i_group = -1, $i_level = -1, $i_commandLevel = -1)
     {
@@ -186,11 +185,8 @@ class Privileges
     private function checkFingerprint($s_page)
     {
         if (! $this->service_Session->exists('fingerprint') || ($this->service_Session->get('fingerprint') != $this->service_Session->getFingerprint())) {
-            // $this->service_Session->destroyLogin();
+            $this->service_Session->destroyLogin();
             
-            echo ('fingerprint fail');
-            echo ($this->service_Session->get('fingerprint') . '  ' . $this->service_Session->getFingerprint());
-            die();
             $this->service_Session->set('page', $s_page);
             $this->service_Headers->http401();
             $this->service_Headers->redirect('authorization/login/index');

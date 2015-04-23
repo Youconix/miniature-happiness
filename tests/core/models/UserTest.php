@@ -16,35 +16,39 @@ class testUser extends GeneralTest
 
     private $s_username;
 
+    private $service_Database;
+
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/User.inc.php');
+        require_once (NIV . 'core/models/User.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
         $this->loadStub('DummyHashing');
+        $this->loadStub('DummyRandom');
         $this->loadStub('DummySession');
         $this->loadStub('DummyModelGroupData');
         $this->loadStub('DummyGroups');
         $this->loadStub('DummyModelUserData');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
-        $this->service_Builder = new DummyQueryBuilder($service_Database);
-        $service_Hashing = new DummyHashing();
+        $this->service_Database = new DummyDAL();
+        $service_Validation = new DummyValidation();
+        $this->service_Builder = new DummyQueryBuilder($this->service_Database);
+        $service_Random = new DummyRandom();
+        $service_Hashing = new DummyHashing($service_Random);
         $service_Session = new DummySession();
         $model_GroupsData = new DummyModelGroupData();
         $model_Groups = new DummyGroups($model_GroupsData);
         $model_UserData = new DummyModelUserData();
         
-        $this->model_User = new \core\models\User($this->service_Builder, $service_Security, $service_Hashing, $service_Session, $model_Groups, $model_UserData);
+        $this->model_User = new \core\models\User($this->service_Builder, $service_Validation, $service_Hashing, $service_Session, $model_Groups, $model_UserData);
         $this->s_username = 'System';
     }
 
@@ -78,8 +82,7 @@ class testUser extends GeneralTest
         );
         
         $builder = $this->service_Builder->createBuilder();
-        $builder->getDatabase()->i_numRows = 4;
-        $builder->getDatabase()->a_data = $a_data;
+        $builder->getDatabase()->enqueueData($a_data);
         
         $a_keys = array_keys($a_data);
         $a_users = $this->model_User->getUsersById($a_keys);
@@ -112,11 +115,6 @@ class testUser extends GeneralTest
      */
     public function getUsers()
     {
-        $this->assertEquals(array(
-            'number' => null,
-            'data' => array()
-        ), $this->model_User->getUsers());
-        
         $a_data = array(
             0 => array(
                 'id' => 1,
@@ -134,12 +132,18 @@ class testUser extends GeneralTest
         );
         
         $builder = $this->service_Builder->createBuilder();
-        $builder->getDatabase()->i_numRows = 4;
-        $builder->getDatabase()->a_data = $a_data;
+        $builder->getDatabase()->enqueueData($a_data);
+        $builder->getDatabase()->enqueueData(array(
+            0 => array(
+                'amount' => 4
+            )
+        ));
+        
         
         $a_users = $this->model_User->getUsers();
+
+        $this->assertEquals(4,$a_users['number']);
         
-        $this->assertEquals(4, $a_users['number']);
         foreach ($a_users['data'] as $obj_user) {
             $this->assertInstanceOf('\core\models\data\DataUser', $obj_user);
         }

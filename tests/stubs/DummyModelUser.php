@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\models\User')) {
-    require (NIV . 'include/models/User.inc.php');
+    require (NIV . 'core/models/User.inc.php');
 }
 
 class DummyModelUser extends \core\models\User

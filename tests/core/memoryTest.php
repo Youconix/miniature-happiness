@@ -120,7 +120,7 @@ class testMemory extends GeneralTest
             \core\Memory::helpers('lalalallaa');
             
             $this->fail('Calling helper lalalallaa must throw a Memory exception.');
-        } catch (MemoryException $e) {}
+        } catch (OutOfBoundsException $e) {}
     }
 
     /**
@@ -145,7 +145,7 @@ class testMemory extends GeneralTest
             \core\Memory::services('lalalallaa');
             
             $this->fail('Calling service lalalallaa must throw a Memory exception.');
-        } catch (MemoryException $e) {}
+        } catch (OutOfBoundsException $e) {}
         
         $service = \core\Memory::services('Random');
         $this->assertInstanceOf('\core\services\Random', $service);
@@ -165,7 +165,7 @@ class testMemory extends GeneralTest
     /**
      * Tests the service loading
      *
-     * @expectedException MemoryException
+     * @expectedException OutOfBoundsException
      * @test
      */
     public function models()

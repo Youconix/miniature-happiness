@@ -16,23 +16,32 @@ class testLanguage extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/Language.inc.php');
-        $this->loadStub('DummySettings');
+        require_once (NIV . 'core/services/Language.inc.php');
+        $this->loadStub('DummyConfig');
         $this->loadStub('DummyCookie');
         $this->loadStub('DummyFile');
+        $this->loadStub('DummySecurity');
+        $this->loadStub('DummySettings');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Settings = new DummySettings();
-        $service_Cookie = new DummyCookie();
         $service_File = new DummyFile();
+        $service_Settings = new DummySettings();
+        
+        $service_Validation = new DummyValidation();
+        $service_Security = new DummySecurity($service_Validation);
+        $service_Cookie = new DummyCookie($service_Security);
+        
+        $service_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
         
         $service_Settings->setValue('settings/defaultLanguage', 'en');
+        $service_Settings->setValue('language/type', 'xml');
         
-        $this->service_Language = new \core\services\Language($service_Settings, $service_Cookie, $service_File);
+        $this->service_Language = new \core\services\Language($service_Config, $service_Cookie, $service_File);
     }
 
     public function tearDown()
@@ -49,7 +58,7 @@ class testLanguage extends GeneralTest
      */
     public function getLanguages()
     {
-        $this->assertEquals(array(), $this->service_Language->getLanguages());
+        $this->assertTrue((is_array( $this->service_Language->getLanguageFiles()) ) );
     }
 
     /**
@@ -70,7 +79,7 @@ class testLanguage extends GeneralTest
      */
     public function getLanguage()
     {
-        $this->assertEquals('en', $this->service_Language->getLanguage());
+        $this->assertEquals('en_UK', $this->service_Language->getLanguage());
     }
 
     /**
@@ -87,6 +96,7 @@ class testLanguage extends GeneralTest
      * Gives the asked part of the loaded file
      *
      * @test
+     * @expectedException   XMLException
      */
     public function get()
     {

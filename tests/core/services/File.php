@@ -20,7 +20,7 @@ class testFile extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/services/File.inc.php');
+        require_once (NIV . 'core/services/File.inc.php');
     }
 
     public function setUp()
@@ -75,8 +75,8 @@ class testFile extends GeneralTest
     {
         $s_file = $this->s_temp . $this->s_file;
         
-        $this->service_File->writeFile($s_file, $this->s_content1, $this->i_rights);
-        
+        $this->createFile($s_file,$this->s_content1,$this->i_rights);
+                
         $this->assertEquals($this->s_content1, $this->service_File->readFile($s_file));
     }
 
@@ -137,13 +137,16 @@ class testFile extends GeneralTest
      */
     public function copyFile()
     {
-        $s_file = './testFile.php';
-        $this->service_File->copyFile($s_file, $this->s_temp);
+        $s_file = 'testFile.php';
+        $this->createFile(NIV.'files/'.$s_file, 'lalalala', $this->i_rights);
+        
+        $this->service_File->copyFile(NIV.'files/'.$s_file, $this->s_temp);
         if (! file_exists($this->s_temp . $s_file)) {
             $this->fail('Copying ' . $s_file . ' to ' . $this->s_temp . ' failed');
         }
         
         unlink($this->s_temp . $s_file);
+        unlink(NIV.'files/'.$s_file);
     }
 
     /**
@@ -152,9 +155,10 @@ class testFile extends GeneralTest
      * @test
      * @expectedException IOException
      */
-    public function moveFile($s_file, $s_target)
+    public function moveFile()
     {
         $s_file = $this->s_temp . $this->s_file;
+        $this->createFile(NIV.'files/'.$s_file, 'lalalala', $this->i_rights);
         
         $this->service_File->moveFile($s_file, '/');
     }
@@ -165,7 +169,7 @@ class testFile extends GeneralTest
      * @test
      * @expectedException IOException
      */
-    public function deleteFile($s_file)
+    public function deleteFile()
     {
         $s_file = $this->s_temp . $this->s_file;
         
@@ -436,5 +440,9 @@ class testFile extends GeneralTest
         } else {
             return false;
         }
+    }
+    
+    private function createFile($s_filename,$s_content,$i_rights){
+        $this->service_File->writeFile($s_filename, $s_content, $i_rights);
     }
 }

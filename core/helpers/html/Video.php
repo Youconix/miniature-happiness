@@ -11,6 +11,8 @@ class Audio extends HtmlItem
     protected $bo_controls = false;
 
     protected $bo_loop = false;
+    
+    protected $bo_muted = false;
 
     protected $s_preload = '';
 

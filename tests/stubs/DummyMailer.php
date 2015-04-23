@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Mailer')) {
-    require (NIV . 'include/services/Mailer.inc.php');
+    require (NIV . 'core/services/Mailer.inc.php');
 }
 
 class DummyMailer extends \core\services\Mailer
@@ -34,7 +34,7 @@ class DummyMailer extends \core\services\Mailer
      *            activation code
      * @return Boolean if the email is send
      */
-    public function registrationMail($s_username, $s_password, $s_email, $s_registrationKey)
+    public function registrationMail($s_username, $s_email, $s_registrationKey)
     {
         return true;
     }

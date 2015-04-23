@@ -20,7 +20,7 @@ class testString extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/classes/String.inc.php');
+        require_once (NIV . 'core/classes/String.inc.php');
     }
 
     public function setUp()

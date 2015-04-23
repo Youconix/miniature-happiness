@@ -18,7 +18,7 @@ class testQueue extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/classes/Queue.inc.php');
+        require_once (NIV . 'core/classes/Queue.inc.php');
     }
 
     public function setUp()

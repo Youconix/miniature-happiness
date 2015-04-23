@@ -100,6 +100,14 @@ class Upgrade extends SettingsMain
                 ))->getResult();
             }
             
+            
+            /*
+             * UPDATE SF_group_pages SET groupID = (groupID + 1);
+             * UPDATE SF_group_users SET groupID = (groupID + 1); 
+             * UPDATE groups SET id = (id + 1);
+             * ALTER TABLE groups CHANGE id id int(11) unsigned PRIMARY_KEY AUTO_INCREMENT;
+             */
+            
             /* Nationalities */
             $obj_create = $service_QueryBuilder->getCreate('nationalities', true);
             $obj_create->addRow('id', 'int', 11, '', false, false, true);

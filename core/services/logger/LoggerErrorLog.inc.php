@@ -19,8 +19,7 @@ class LoggerErrorLog extends \core\services\logger\LoggerParent
         if (! error_log($message)) {
             $message = $this->parseContext($obj_loglevel::CRITICAL, 'Could not write to ' . ini_get('error_log') . '.');
             $this->warnAdmin($obj_loglevel::CRITICAL, $message);
-        }
-        else {
+        } else {
             $this->warnAdmin($level, $message);
         }
     }

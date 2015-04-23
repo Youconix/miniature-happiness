@@ -11,31 +11,32 @@ class testData_Group extends GeneralTest
 {
 
     private $model_Group;
+    private $service_Database;
 
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/data/Data_Group.inc.php');
+        require_once (NIV . 'core/models/data/DataGroup.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
-        $service_Builder = new DummyQueryBuilder($service_Database);
+        $this->service_Database = new DummyDAL();
+        $service_Validation = new DummyValidation();
+        $service_Builder = new DummyQueryBuilder($this->service_Database);
         
         $this->i_id = 10000;
         $this->s_name = 'test group';
         $this->i_default = 1;
         $this->s_description = 'test group';
         
-        $this->model_Group = new \core\models\data\Data_Group($service_Builder, $service_Security);
+        $this->model_Group = new \core\models\data\DataGroup($service_Builder, $service_Validation);
     }
 
     public function tearDown()
@@ -136,6 +137,10 @@ class testData_Group extends GeneralTest
         } catch (ValidationException $ex) {} catch (Exception $ex) {
             $this->fail('Unexpected exception : ' . $ex->getMessage());
         }
+        
+       $this->service_Database->i_numRows = 1;
+       $this->service_Database->a_data  = array(0=>array('id'=>4,'staff'=>0),1=>array('id'=>5,'staff'=>1));
+       
         
         $this->model_Group->setName('test name');
         $this->model_Group->setDescription('test description');

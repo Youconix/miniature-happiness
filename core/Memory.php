@@ -351,17 +351,18 @@ class Memory
      *
      * @param String $s_class
      *            class name
-     * @throws MemoryException the class does not exists in include/class/
+     *   @deprecated
+     * @throws RuntimeException the class does not exists in include/class/
      */
     public static function ensureClass($s_class)
     {
         if (! class_exists($s_class)) {
             $service_File = Memory::$a_cache['\core\services\File'];
-            if (! $service_File->exists(Memory::$s_classPath . $s_class . '.inc.php')) {
-                throw new \MemoryException('Can not find class ' . $s_class);
+            if (! $service_File->exists(Memory::$a_class['systemPath'] . $s_class . '.inc.php')) {
+                throw new \RuntimeException('Can not find class ' . $s_class);
             }
             
-            require_once (Memory::$s_classPath . $s_class . '.inc.php');
+            require_once (Memory::$a_class['systemPath'] . $s_class . '.inc.php');
         }
     }
 
@@ -370,17 +371,18 @@ class Memory
      *
      * @param String $s_interface
      *            interface name
-     * @throws MemoryException the interface does not exists in include/interface/
+     *   @deprecated
+     * @throws RuntimeException the interface does not exists in include/interface/
      */
     public static function ensureInterface($s_interface)
     {
         if (! interface_exists($s_interface)) {
             $service_File = Memory::$a_cache['\core\services\File'];
-            if (! $service_File->exists(Memory::$s_interfacePath . $s_interface . '.inc.php')) {
-                throw new \MemoryException('Can not find interface ' . $s_interface);
+            if (! $service_File->exists(Memory::$a_interface['systemPath'] . $s_interface . '.inc.php')) {
+                throw new \RuntimeException('Can not find interface ' . $s_interface);
             }
             
-            require_once (Memory::$s_interfacePath . $s_interface . '.inc.php');
+            require_once (Memory::$a_interface['systemPath'] . $s_interface . '.inc.php');
         }
     }
 
@@ -436,7 +438,7 @@ class Memory
      * @return Object The module
      * @deprecated
      *
-     * @throws \MemoryException If the requested module does not exist
+     * @throws \RuntimeException If the requested module does not exist
      * @throws \OverrideException If the override module is not a child of the system module
      */
     private static function loadModule($s_name, $s_memoryType, $a_data, $s_fallback = '')
@@ -450,7 +452,7 @@ class Memory
                 $s_caller = $s_fallback . '_' . $s_name;
                 $object = new $s_caller();
             } else {
-                throw new \MemoryException('Can not find ' . $s_memoryType . ' ' . $s_name);
+                throw new \RuntimeException('Can not find ' . $s_memoryType . ' ' . $s_name);
             }
         }
         
@@ -477,10 +479,10 @@ class Memory
         $s_fallback = 'Helper';
         
         if ($bo_data) {
-            $s_path = Memory::$s_helperPath . 'data/';
+            $s_path = Memory::$a_helper['systemPath'] . 'data/';
             $s_namespace = 'core\helpers\data';
         } else {
-            $s_path = Memory::$s_helperPath;
+            $s_path = Memory::$a_helper['systemPath'];
             $s_namespace = 'core\helpers';
         }
         
@@ -641,7 +643,7 @@ class Memory
      * @param String $s_class
      *            The class name
      * @return Object The Object
-     * @throws \MemoryException If the class does not exist
+     * @throws \RuntimeException If the class does not exist
      * @deprecated
      *
      * @throws \OverrideException the override class is not a child of the default class
@@ -676,7 +678,7 @@ class Memory
                 $s_path = Memory::$a_class['systemPath'] . $s_class . '.inc.php';
                 $s_caller = Memory::$a_class['systemNamespace'] . $s_class;
             } else {
-                throw new \MemoryException('Can not find class ' . $s_class);
+                throw new \RuntimeException('Can not find class ' . $s_class);
             }
         
         $object = \Loader::Inject($s_caller);
@@ -694,7 +696,7 @@ class Memory
      *            interface
      * @deprecated
      *
-     * @throws \MemoryException If the interface does not exist
+     * @throws \RuntimeException If the interface does not exist
      */
     public static function loadInterface($s_interface)
     {
@@ -709,7 +711,7 @@ class Memory
             if ($service_File->exists(Memory::$a_interface['systemPath'] . $s_interface . '.inc.php')) {
                 require_once (Memory::$a_interface['systemPath'] . $s_interface . '.inc.php');
             } else {
-                throw new \MemoryException('Can not find interface ' . $s_interface);
+                throw new \RuntimeException('Can not find interface ' . $s_interface);
             }
     }
 
@@ -721,10 +723,12 @@ class Memory
      *            the variable schould be
      * @param object $value
      *            that needs to be checked
+     * @param boolean $bo_required  Set to true to make the value required
+     * @param array $a_values   Set of valid values
      * @throws NullPointerException if $value is null and $s_type is not 'null'.
      * @throws TypeException if $value has the wrong type.
      */
-    public static function type($s_type, $value)
+    public static function type($s_type, $value,$bo_required = false,$a_values = array())
     {
         $bo_oke = true;
         
@@ -738,6 +742,7 @@ class Memory
         
         switch ($s_type) {
             case 'bool':
+            case 'boolean':
                 if (! is_bool($value)) {
                     $bo_oke = false;
                 }
@@ -783,6 +788,16 @@ class Memory
         if (! $bo_oke) {
             throw new \TypeException('Wrong datatype found. Expected ' . $s_type . ' but found ' . gettype($value) . '.');
         }
+        
+        if( empty($value) && $bo_required ){
+            throw new \InvalidArgumentException('Required field is empty.');
+        }
+        if( !is_array($a_values) ){
+            $a_values = array($a_values);
+        }
+        if( count($a_values) > 0 && !in_array($value,$a_values) ){
+            throw new \InvalidArgumentException('Value '.$value.' is invalid. Only the values '.implode(', ',$a_values).' are allowed.');
+        }
     }
 
     /**
@@ -792,6 +807,7 @@ class Memory
      *            The type (helper|helper-data|model|model-data|service|service-data)
      * @param String $s_name
      *            The name of the data
+     * @throws RuntimeException If the value is not in the global memory
      */
     public static function delete($s_type, $s_name)
     {
@@ -801,14 +817,14 @@ class Memory
         $s_type = strtolower($s_type);
         $s_name = ucfirst(strtolower($s_name));
         
-        if ( array_key_exists('\core\\'.$s_type.'\\'.$s_name,Memory::$a_cache)) {
-            unset(Memory::$a_cache['\core\\'.$s_type.'\\'.$s_name]);
-        }
-        else if ( array_key_exists('\includes\\'.$s_type.'\\'.$s_name,Memory::$a_cache)) {
-            unset(Memory::$a_cache['\includes\\'.$s_type.'\\'.$s_name]);
-        } else {
-            throw new \MemoryException("Trying to delete " . $s_type . " " . $s_name . " that does not exist");
-        }
+        if (array_key_exists('\core\\' . $s_type . '\\' . $s_name, Memory::$a_cache)) {
+            unset(Memory::$a_cache['\core\\' . $s_type . '\\' . $s_name]);
+        } else 
+            if (array_key_exists('\includes\\' . $s_type . '\\' . $s_name, Memory::$a_cache)) {
+                unset(Memory::$a_cache['\includes\\' . $s_type . '\\' . $s_name]);
+            } else {
+                throw new \RuntimeException("Trying to delete " . $s_type . " " . $s_name . " that does not exist");
+            }
     }
 
     /**
@@ -917,7 +933,7 @@ class Memory
      * Detects the system base
      * Should only be used on install (redirection)
      *
-     * @throws \MemoryException the base could not be found
+     * @throws \RuntimeException the base could not be found
      * @return string base
      */
     public static function detectBase()
@@ -948,7 +964,7 @@ class Memory
             $i_pos ++;
         }
         
-        throw new \MemoryException('Unable to detect website root for ' . $_SERVER['SCRIPT_NAME'] . '.');
+        throw new \RuntimeException('Unable to detect website root for ' . $_SERVER['SCRIPT_NAME'] . '.');
     }
 }
 

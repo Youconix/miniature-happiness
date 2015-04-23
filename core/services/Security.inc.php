@@ -26,9 +26,11 @@ namespace core\services;
  */
 class Security extends Service
 {
+
     protected $service_Validation;
-    
-    public function __construct(\core\services\Validation $service_Validation){
+
+    public function __construct(\core\services\Validation $service_Validation)
+    {
         $this->service_Validation = $service_Validation;
     }
 
@@ -159,6 +161,7 @@ class Security extends Service
      * @param String $s_email
      *            The email address
      * @deprecated
+     *
      * @return boolean True if the email address is valid, otherwise false
      */
     public function checkEmail($s_email)
@@ -172,6 +175,7 @@ class Security extends Service
      * @param String $s_uri
      *            The URI
      * @deprecated
+     *
      * @return boolean True if the URI is valid, otherwise false
      */
     public function checkURI($s_uri)
@@ -185,6 +189,7 @@ class Security extends Service
      * @param String $s_value
      *            The postal address
      * @deprecated
+     *
      * @return boolean True if the postal address is valid, otherwise false
      */
     public function checkPostalNL($s_value)
@@ -198,6 +203,7 @@ class Security extends Service
      * @param String $s_value
      *            The postal address
      * @deprecated
+     *
      * @return boolean True if the postal address is valid, otherwise false
      */
     public function checkPostalBE($i_value)

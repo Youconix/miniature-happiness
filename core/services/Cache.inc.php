@@ -28,7 +28,7 @@ class Cache extends \core\services\Service
 {
 
     protected $service_QueryBuilder;
-    
+
     protected $service_File;
 
     protected $model_Config;
@@ -38,10 +38,10 @@ class Cache extends \core\services\Service
     protected $service_Headers;
 
     protected $s_language;
-    
+
     protected $bo_cache;
 
-    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Headers $service_Headers,\core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Headers $service_Headers, \core\services\QueryBuilder $service_QueryBuilder)
     {
         $this->model_Config = $model_Config;
         $this->service_File = $service_File;
@@ -92,23 +92,32 @@ class Cache extends \core\services\Service
      */
     protected function shouldCache()
     {
-        if( !is_null($this->bo_cache) ){
+        if (! is_null($this->bo_cache)) {
             return $this->bo_cache;
         }
         
-        if ( !$this->service_Settings->exists('cache/status') || $this->service_Settings->get('cache/status') != 1){
+        if (! $this->service_Settings->exists('cache/status') || $this->service_Settings->get('cache/status') != 1) {
             $this->bo_cache = false;
-        }
-        else {
-            $s_page = $_SERVER['REQUEST_URI']; 
-            $a_pages = explode('?',$s_page);
+        } else {
+            $s_page = $_SERVER['REQUEST_URI'];
+            $a_pages = explode('?', $s_page);
             
-            $this->service_QueryBuilder->select('no_cache','id')->getWhere()->addOr(array('page','page'),array('s','s'),array($s_page,$a_pages[0]));
+            $this->service_QueryBuilder->select('no_cache', 'id')
+                ->getWhere()
+                ->addOr(array(
+                'page',
+                'page'
+            ), array(
+                's',
+                's'
+            ), array(
+                $s_page,
+                $a_pages[0]
+            ));
             $service_database = $this->service_QueryBuilder->getResult();
-            if( $service_database->num_rows() > 0 ){
+            if ($service_database->num_rows() > 0) {
                 $this->bo_cache = false;
-            }
-            else {
+            } else {
                 $this->bo_cache = true;
             }
         }
@@ -192,35 +201,40 @@ class Cache extends \core\services\Service
         $s_target = $this->getCurrentPage();
         $this->service_File->writeFile($s_target, $s_output);
     }
-    
+
     /**
      * Returns the current page address
-     * 
-     * @return string   The address
+     *
+     * @return string The address
      */
-    protected function getCurrentPage(){
+    protected function getCurrentPage()
+    {
         return $this->getAddress($_SERVER['REQUEST_URI']);
     }
-    
+
     /**
      * Returns the full address for the given page
-     * 
-     * @param string $s_page    The page ($_SERVER['REQUEST_URI'])
-     * @return string   The address
+     *
+     * @param string $s_page
+     *            The page ($_SERVER['REQUEST_URI'])
+     * @return string The address
      */
-    protected function getAddress($s_page){
-        return $this->getDirectory() . 'site' . DIRECTORY_SEPARATOR . $s_language . DIRECTORY_SEPARATOR . str_replace('/', '_',$s_page) . '.html';
+    protected function getAddress($s_page)
+    {
+        return $this->getDirectory() . 'site' . DIRECTORY_SEPARATOR . $s_language . DIRECTORY_SEPARATOR . str_replace('/', '_', $s_page) . '.html';
     }
-    
+
     /**
      * Clears the given page from the site cache
-     * 
-     * @param string $s_page    The page ($_SERVER['REQUEST_URI'])
+     *
+     * @param string $s_page
+     *            The page ($_SERVER['REQUEST_URI'])
      */
-    public function clearPage($s_page){
+    public function clearPage($s_page)
+    {
         $s_page = $this->getAddress($s_page);
         
-        if( $this->service_File->exists($s_page) ){
+        if ($this->service_File->exists($s_page)) {
             $this->service_File->deleteFile($s_page);
         }
     }

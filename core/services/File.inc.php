@@ -38,7 +38,7 @@ class File extends Service
         $this->readExceptionsDir($s_directory);
         
         $s_directory = NIV . 'includes/exceptions';
-        $this->readExceptionsDir($s_directory);
+        // $this->readExceptionsDir($s_directory);
     }
 
     /**

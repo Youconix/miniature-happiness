@@ -14,8 +14,27 @@ class MailWrapper extends \core\services\Service
         $this->obj_phpMailer = new PHPMailer();
     }
 
+    /**
+     * Checks the SMTP details
+     * 
+     * @param string $s_host        The host name
+     * @param int $i_port           The port number
+     * @param string $s_username    The username
+     * @param string $s_password    The password
+     * @return booleanean      True if the connection is valid
+     * @throws LogicException If the arguments are invalid
+     */
     public function checkSmtpDetails($s_host, $i_port, $s_username, $s_password)
     {
+        \core\Memory::type('string',$s_host,true);
+        \core\Memory::type('int', $i_port,true);
+        \core\Memory::type('string',$s_username,true);
+        \core\Memory::type('password',$s_password,true);
+        
+        if( $i_port < 1 ){
+            throw new \RangeException('SMTP port number must be a whole number greater then 0.');
+        }
+        
         require_once (NIV . 'core/mailer/class.smtp.php');
         $obj_SMTP = new SMTP();
         
@@ -34,20 +53,26 @@ class MailWrapper extends \core\services\Service
      * If not empty,
      * will be sent via -f to sendmail or as 'MAIL FROM' in smtp mode.
      *
-     * @param string $s_sender            
+     * @param string $s_sender
+     * @throws LogicException If the sender is invalid   
      */
     public function setSender($s_sender)
     {
+        \core\Memory::type('string',$s_sender,true);
+        
         $this->obj_phpMailer->Sender = $s_sender;
     }
 
     /**
      * Sets the Subject of the message.
      *
-     * @param string $s_subject            
+     * @param string $s_subject      
+     * @throws LogicException If the subject is invalid      
      */
     public function setSubject($s_subject)
     {
+        \core\Memory::type('string',$s_subject,true);
+        
         $this->obj_phpMailer->Subject = $s_subject;
     }
 
@@ -58,9 +83,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param
      *            string	The body
+     * @throws LogicException If the body is invalid   
      */
     public function setBody($s_body)
     {
+        \core\Memory::type('string', $s_body,true);
+        
         $this->obj_phpMailer->Body = $s_body;
     }
 
@@ -73,9 +101,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_body
      *            body
+     * @throws LogicException If the body is invalid   
      */
     public function setAltBody($s_body)
     {
+        \core\Memory::type('string', $s_body,true);
+        
         $this->obj_phpMailer->AltBody = $s_body;
         
         $this->setContentType('multipart/alternative');
@@ -88,9 +119,15 @@ class MailWrapper extends \core\services\Service
      *
      * @param int $i_wrap
      *            limit
+     * @throws LogicException If the wrap is invalid   
      */
     public function setWordWrap($i_wrap)
     {
+        \core\Memory::type('int', $i_wrap);
+        if( $i_wrap < 0 ){
+            throw new InvalidArgumentException('Wrap must be a whole number greater of equal to 0.');
+        }
+        
         $this->obj_phpMailer->WordWrap = $i_wrap;
     }
     
@@ -103,6 +140,7 @@ class MailWrapper extends \core\services\Service
      *
      * @param int $i_priority
      *            priority (1 = High, 3 = Normal, 5 = low)
+     * @throws \InvalidArgumentException If the priority is invalid
      */
     public function setPriority($i_priority)
     {
@@ -111,7 +149,7 @@ class MailWrapper extends \core\services\Service
             3,
             5
         ))) {
-            throw new IllegalArgumentException('Setting illegal priority ' . $i_priority . '. Only 1, 3 and 5 are allowed.');
+            throw new \InvalidArgumentException('Setting illegal priority ' . $i_priority . '. Only 1, 3 and 5 are allowed.');
         }
         
         $this->obj_phpMailer->Priority = $i_priority;
@@ -121,10 +159,13 @@ class MailWrapper extends \core\services\Service
      * Sets the CharSet of the message.
      * This value is default iso-8859-1
      *
-     * @param string $s_charset            
+     * @param string $s_charset     
+     * @throws LogicException If the charset is invalid          
      */
     public function setCharset($s_charset)
     {
+        \core\Memory::type('string',$s_charset,true);
+        
         $this->obj_phpMailer->CharSet = $s_charset;
     }
 
@@ -134,9 +175,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_contentType
      *            type
+     * @throws LogicException If the content type is invalid   
      */
     public function setContentType($s_contentType)
     {
+        \core\Memory::type('string', $s_contentType,true);
+        
         $this->obj_phpMailer->ContentType = $s_contentType;
     }
 
@@ -146,7 +190,8 @@ class MailWrapper extends \core\services\Service
      * "8bit", "7bit", "binary", "base64", and "quoted-printable".
      * This value is default 8bit
      *
-     * @param string $s_encoding            
+     * @param string $s_encoding 
+     * @throws \InvalidArgumentException    If the encoding is invalid           
      */
     public function setEncoding($s_encoding)
     {
@@ -157,7 +202,7 @@ class MailWrapper extends \core\services\Service
             "base64",
             "quoted-printable"
         ))) {
-            throw new IllegalArgumentException("Setting illegal encoding " . $s_encoding . '. Only "8bit", "7bit", "binary", "base64" and "quoted-printable" are allowed.');
+            throw new \InvalidArgumentException("Setting illegal encoding " . $s_encoding . '. Only "8bit", "7bit", "binary", "base64" and "quoted-printable" are allowed.');
         }
         
         $this->obj_phpMailer->Encoding = $s_encoding;
@@ -178,6 +223,7 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_type
      *            type
+     * @throws \InvalidArgumentException    If the type is invalid
      */
     public function setType($s_type)
     {
@@ -186,7 +232,7 @@ class MailWrapper extends \core\services\Service
             'sendmail',
             'smtp'
         ))) {
-            throw new IllegalArgumentException('Setting illegal mail type ' . $s_type . '. Only "mail", "sendmail" and "smtp" are allowed.');
+            throw new \InvalidArgumentException('Setting illegal mail type ' . $s_type . '. Only "mail", "sendmail" and "smtp" are allowed.');
         }
         
         $this->obj_phpMailer->Mailer = $s_type;
@@ -196,10 +242,13 @@ class MailWrapper extends \core\services\Service
      * Sets the path of the sendmail program.
      * This value is default /usr/sbin/sendmail
      *
-     * @param string $s_path            
+     * @param string $s_path           
+     * @throws LogicException If the path is invalid    
      */
     public function setSendmail($s_path)
     {
+        \core\Memory::type('string', $s_path,true);
+        
         $this->obj_phpMailer->Sendmail = $s_path;
     }
 
@@ -208,20 +257,26 @@ class MailWrapper extends \core\services\Service
      * Useful if the SMTP class
      * is in a different directory than the PHP include path.
      *
-     * @param string $s_path            
+     * @param string $s_path          
+     * @throws LogicException If the path is invalid     
      */
     public function setPluginDir($s_path)
     {
+        \core\Memory::type('string', $s_path,true);
+        
         $this->obj_phpMailer->PluginDir = $s_path;
     }
 
     /**
      * Sets the email address that a reading confirmation will be sent.
      *
-     * @param string $s_address            
+     * @param string $s_address
+     * @throws LogicException If the address is invalid                
      */
     public function setReadingConfirmation($s_address)
     {
+        \core\Memory::type('string',$s_address,true);
+        
         $this->obj_phpMailer->ConfirmReadingTo = $s_address;
     }
 
@@ -233,9 +288,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_hostname
      *            name
+     * @throws LogicException If the hostname is invalid
      */
     public function setHostName($s_hostname)
     {
+        \core\Memory::type('string',$s_hostname,true);
+        
         $this->obj_phpMailer->Hostname = $s_hostname;
     }
 
@@ -245,9 +303,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_id
      *            ID
+     * @throws LogicException If the message  id is invalid
      */
     public function setMessageID($s_id)
     {
+        \core\Memory::type('string',$s_id,true);
+        
         $this->obj_phpMailer->MessageID = $s_id;
     }
     
@@ -265,10 +326,13 @@ class MailWrapper extends \core\services\Service
      *
      * This value is default localhost
      *
-     * @param string $s_host            
+     * @param string $s_host  
+     * @throws LogicException If the host is invalid          
      */
     public function setSmtpHost($s_host)
     {
+        \core\Memory::type('string',$s_host,true);
+        
         $this->obj_phpMailer->Host = $s_host;
     }
 
@@ -276,12 +340,13 @@ class MailWrapper extends \core\services\Service
      * Sets the default SMTP server port.
      * This value is default 25
      *
-     * @param int $i_port            
+     * @param int $i_port    
+     * @throws \RangeException  If the port is invalid        
      */
     public function setSmtpPort($i_port)
     {
         if (! is_numeric($i_port) || $i_port <= 0) {
-            throw new IllegalArgumentException("Setting illegal port " . $i_port . '. The port number must be 1 or higher.');
+            throw new \RangeException("Setting illegal port " . $i_port . '. The port number must be 1 or higher.');
         }
         
         $this->obj_phpMailer->Port = $i_port;
@@ -292,9 +357,12 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_helo
      *            message
+     * @throws LogicException If the hello is invalid
      */
     public function setSmtpHelo($s_helo)
     {
+        \core\Memory::type('string',$s_helo,true);
+        
         $this->obj_phpMailer->Helo = $s_helo;
     }
 
@@ -303,7 +371,8 @@ class MailWrapper extends \core\services\Service
      * Options are "", "ssl" or "tls"
      * This value is default ""
      *
-     * @param string $s_prefix            
+     * @param string $s_prefix       
+     * @throws InvalidArgumentException If the prefix is invalid     
      */
     public function setSmtpConnectionPrefix($s_prefix)
     {
@@ -312,7 +381,7 @@ class MailWrapper extends \core\services\Service
             "ssl",
             "tsl"
         ))) {
-            throw new IllegalArgumentException('Setting illegal SMTP connection prefix ' . $s_prefix . '. Only "", "ssl" and "tsl" are allowed.');
+            throw new \InvalidArgumentException('Setting illegal SMTP connection prefix ' . $s_prefix . '. Only "", "ssl" and "tsl" are allowed.');
         }
         
         $this->obj_phpMailer->SMTPSecure = $s_prefix;
@@ -326,9 +395,13 @@ class MailWrapper extends \core\services\Service
      * @param string $s_username            
      * @param string $s_password
      *            default empty
+     * @throws LogicException If the arguments are invalid
      */
     public function setSmtpAuthentication($s_username, $s_password = '')
     {
+        \core\Memory::type('string',$s_username,true);
+        \core\Memory::type('string',$s_password);
+        
         $this->obj_phpMailer->SMTPAuth = true;
         $this->obj_phpMailer->Username = $s_username;
         $this->obj_phpMailer->Password = $s_password;
@@ -339,23 +412,29 @@ class MailWrapper extends \core\services\Service
      * This function will not work with the win32 version.
      * This value is default 10 seconds
      *
-     * @param int $i_timeout            
+     * @param int $i_timeout 
+     * @param InvalidArgumentException  If the timeout is invalid           
      */
     public function setTimeout($i_timeout)
     {
+        if( !is_numeric($i_timeout) || $i_timeout < 0  ){
+            throw new \InvalidArgumentException('Timeout must be a int greater of equal to 0.');
+        }
+        
         $this->obj_phpMailer->Timeout = $i_timeout;
     }
 
     /**
      * Sets SMTP class debugging on or off.
      *
-     * @param bool $bo_debugging
+     * @param boolean $bo_debugging
      *            true for SMTP debugging
+     * @param InvalidArgumentException if the debugging is invalid
      */
     public function setSmtpDebugging($bo_debugging)
     {
-        if (! is_bool($bo_debugging)) {
-            throw new IllegalArgumentException('Setting illegal SMTP debugging ' . $bo_debugging . '. Only booleans are allowed.');
+        if (! is_boolean($bo_debugging)) {
+            throw new \InvalidArgumentException('Setting illegal SMTP debugging ' . $bo_debugging . '. Only booleaneans are allowed.');
         }
         $this->obj_phpMailer->SMTPDebug = $bo_debugging;
     }
@@ -366,13 +445,14 @@ class MailWrapper extends \core\services\Service
      * If this is set to true then to close the connection
      * requires an explicit call to SmtpClose().
      *
-     * @param bool $bo_keepAlive
+     * @param boolean $bo_keepAlive
      *            true to keep the connection alive
+     * @throws InvalidArgumentException if the keep alive is invalid
      */
     public function setSmtpKeepAlive($bo_keepAlive)
     {
-        if (! is_bool($bo_keepAlive)) {
-            throw new IllegalArgumentException('Setting illegal SMTP keep alive ' . $bo_keepAlive . '. Only booleans are allowed.');
+        if (! is_boolean($bo_keepAlive)) {
+            throw new \InvalidArgumentException('Setting illegal SMTP keep alive ' . $bo_keepAlive . '. Only booleaneans are allowed.');
         }
         
         $this->obj_phpMailer->SMTPKeepAlive = $bo_keepAlive;
@@ -382,13 +462,14 @@ class MailWrapper extends \core\services\Service
      * Provides the ability to have the TO field process individual
      * emails, instead of sending to entire TO addresses
      *
-     * @param bool $bo_singleTo
+     * @param boolean $bo_singleTo
      *            true for individual to field
+     * @throws InvalidArgumentException if the single to is invalid
      */
     public function setSingleTo($bo_singleTo)
     {
-        if (! is_bool($bo_singleTo)) {
-            throw new IllegalArgumentException('Setting illegal single to ' . $bo_singleTo . '. Only booleans are allowed.');
+        if (! is_boolean($bo_singleTo)) {
+            throw new \InvalidArgumentException('Setting illegal single to ' . $bo_singleTo . '. Only booleaneans are allowed.');
         }
         
         $this->obj_phpMailer->SingleTo = $bo_singleTo;
@@ -425,9 +506,15 @@ class MailWrapper extends \core\services\Service
      *            optional
      * @param string $s_private
      *            private value, optional
+     * @throws LogicException   If the arguments are invalid
      */
     public function setDKIM($s_selector, $s_indentity = '', $s_domain = '', $s_private = '')
     {
+        \core\Memory::type('string',$s_selector,true);
+        \core\Memory::type('string',$s_indentity);
+        \core\Memory::type('string',$s_domain);
+        \core\Memory::type('string',$s_private);
+        
         $this->obj_phpMailer->DKIM_selector = $s_selector;
         $this->obj_phpMailer->DKIM_identity = $s_indentity;
         $this->obj_phpMailer->DKIM_domain = $s_domain;
@@ -438,14 +525,14 @@ class MailWrapper extends \core\services\Service
      * Callback Action function name
      * the function that handles the result of the send email action.
      * Parameters:
-     * bool $result result of the send action
+     * boolean $result result of the send action
      * string $to email address of the recipient
      * string $cc cc email addresses
      * string $bcc bcc email addresses
      * string $subject the subject
      * string $body the email body
      *
-     * @param string $s_callback            
+     * @param string $s_callback         
      */
     public function setCallback($s_callback)
     {
@@ -456,10 +543,13 @@ class MailWrapper extends \core\services\Service
      * Sets message type to HTML.
      *
      * @param
-     *            bool html		Set to true for HTML mail
+     *            boolean html		Set to true for HTML mail
+     * @throws LogicException   If the html setting is invalid
      */
     public function useHTML($bo_html = true)
     {
+        \core\Memory::type('bool',$bo_html);
+        
         return $this->obj_phpMailer->IsHTML($bo_html);
     }
 
@@ -506,7 +596,7 @@ class MailWrapper extends \core\services\Service
      *            email
      * @param string $s_name
      *            name
-     * @return bool True on success, false if the address already used
+     * @return boolean True on success, false if the address already used
      */
     public function addAddress($s_address, $s_name = '')
     {
@@ -521,7 +611,7 @@ class MailWrapper extends \core\services\Service
      *            email
      * @param string $s_name
      *            name
-     * @return bool True on success, false if the address already used
+     * @return boolean True on success, false if the address already used
      */
     public function addCC($s_address, $s_name = '')
     {
@@ -536,7 +626,7 @@ class MailWrapper extends \core\services\Service
      *            email
      * @param string $s_name
      *            name
-     * @return bool True on success, false if the address already used
+     * @return boolean True on success, false if the address already used
      */
     public function addBCC($s_address, $s_name = '')
     {
@@ -550,7 +640,7 @@ class MailWrapper extends \core\services\Service
      *            email
      * @param string $s_name
      *            name
-     * @return bool True on success, false if the address already used
+     * @return boolean True on success, false if the address already used
      */
     public function addReplyTo($s_address, $s_name = '')
     {
@@ -564,7 +654,7 @@ class MailWrapper extends \core\services\Service
      *            email
      * @param string $s_name
      *            name
-     * @return bool True on success, false if the address is invalid
+     * @return boolean True on success, false if the address is invalid
      */
     public function setFrom($s_address, $s_name = '', $auto = 1)
     {
@@ -576,12 +666,12 @@ class MailWrapper extends \core\services\Service
      * Static so it can be used without instantiation
      * Tries to use PHP built-in validator in the filter extension (from PHP 5.2), falls back to a reasonably competent regex validator
      * Conforms approximately to RFC2822
-     * 
+     *
      * @link http://www.hexillion.com/samples/#Regex Original pattern found here
      *      
      * @param string $s_address
      *            The email address to check
-     * @return bool if the email address is valid, otherwise false
+     * @return boolean if the email address is valid, otherwise false
      * @static
      *
      */
@@ -600,7 +690,7 @@ class MailWrapper extends \core\services\Service
      * not sent successfully then it returns false. Use the ErrorInfo
      * variable to view description of the error.
      *
-     * @return bool if the email has been send
+     * @return boolean if the email has been send
      */
     public function send()
     {
@@ -612,7 +702,7 @@ class MailWrapper extends \core\services\Service
      * Returns false if the operation failed.
      *
      * @uses SMTP
-     * @return bool if the connection has made
+     * @return boolean if the connection has made
      */
     public function smtpConnect()
     {
@@ -635,7 +725,7 @@ class MailWrapper extends \core\services\Service
      *            ISO 639-1 2-character language code (e.g. Portuguese: "br")
      * @param string $s_lang_path
      *            Path to the language file directory
-     * @return bool if the language has been changed
+     * @return boolean if the language has been changed
      */
     public function setLanguage($langcode = 'en', $lang_path = 'language/')
     {
@@ -687,7 +777,7 @@ class MailWrapper extends \core\services\Service
      *            to wrap
      * @param int $i_length
      *            length to wrap to
-     * @param bool $bo_qp_mode
+     * @param boolean $bo_qp_mode
      *            run in Quoted-Printable mode
      * @return string wrapped text
      */
@@ -790,7 +880,7 @@ class MailWrapper extends \core\services\Service
      *            encoding (see setEncoding).
      * @param string $s_type
      *            extension (MIME) type.
-     * @return bool if the attachment is attached
+     * @return boolean if the attachment is attached
      */
     public function addAttachment($s_path, $s_name = '', $s_encoding = 'base64', $s_type = 'application/octet-stream')
     {
@@ -826,7 +916,7 @@ class MailWrapper extends \core\services\Service
             'binary',
             'quoted-printable'
         ))) {
-            throw new IllegalArgumentException('Setting illegal encoding ' . $s_encoding . '. Only "base64","7bit", "8bit", "binary" and "quoted-printable" are allowed.');
+            throw new \InvalidArgumentException('Setting illegal encoding ' . $s_encoding . '. Only "base64","7bit", "8bit", "binary" and "quoted-printable" are allowed.');
         }
         
         return $this->obj_phpMailer->EncodeString($s_text, $s_encoding);
@@ -847,7 +937,7 @@ class MailWrapper extends \core\services\Service
             'comment',
             'text'
         ))) {
-            throw new IllegalArgumentException('Setting illegal position ' . $s_position . '. Only "phrase", "comment" and "text" are allowed.');
+            throw new \InvalidArgumentException('Setting illegal position ' . $s_position . '. Only "phrase", "comment" and "text" are allowed.');
         }
         
         return $this->obj_phpMailer->EncodeHeader($s_text, $s_position);
@@ -858,7 +948,7 @@ class MailWrapper extends \core\services\Service
      *
      * @param string $s_text
      *            multi-byte text to wrap encode
-     * @return bool if the string contains multibyte characters
+     * @return boolean if the string contains multibyte characters
      */
     public function hasMultiBytes($s_text)
     {
@@ -887,7 +977,7 @@ class MailWrapper extends \core\services\Service
      *            text to encode
      * @param int $i_line_max
      *            chars allowed on a line before wrapping
-     * @param bool $bo_space_conv
+     * @param boolean $bo_space_conv
      *            true for space conversion
      * @return string encoded text
      */
@@ -900,14 +990,14 @@ class MailWrapper extends \core\services\Service
      * Encode string to RFC2045 (6.7) quoted-printable format
      * Uses a PHP5 stream filter to do the encoding about 64x faster than the old version
      * Also results in same content as you started with after decoding
-     * 
+     *
      * @see EncodeQPphp()
      *
      * @param string $s_text
      *            text to encode
      * @param int $i_line_max
      *            Number of chars allowed on a line before wrapping
-     * @param bool $bo_space_conv
+     * @param boolean $bo_space_conv
      *            for compatibility with existing EncodeQP function
      * @return string encoded text
      */
@@ -918,7 +1008,7 @@ class MailWrapper extends \core\services\Service
 
     /**
      * Encode string to q encoding.
-     * 
+     *
      * @link http://tools.ietf.org/html/rfc2047
      *      
      * @param string $s_text
@@ -934,7 +1024,7 @@ class MailWrapper extends \core\services\Service
             'comment',
             'text'
         ))) {
-            throw new IllegalArgumentException('Setting illegal position ' . $s_position . '. Only "phrase", "comment" and "text" are allowed.');
+            throw new \InvalidArgumentException('Setting illegal position ' . $s_position . '. Only "phrase", "comment" and "text" are allowed.');
         }
         
         return $this->obj_phpMailer->EncodeQ($s_text, $s_position);
@@ -976,7 +1066,7 @@ class MailWrapper extends \core\services\Service
      *            encoding (see setEncoding).
      * @param string $s_type
      *            File extension (MIME) type.
-     * @return bool if the attachment is attached
+     * @return boolean if the attachment is attached
      */
     public function addEmbeddedImage($s_path, $s_cid, $s_name = '', $s_encoding = 'base64', $s_type = 'application/octet-stream')
     {
@@ -986,7 +1076,7 @@ class MailWrapper extends \core\services\Service
     /**
      * Returns true if an inline attachment is present.
      *
-     * @return bool if an inline image exists
+     * @return boolean if an inline image exists
      */
     public function inlineImageExists()
     {
@@ -1083,7 +1173,7 @@ class MailWrapper extends \core\services\Service
     /**
      * Returns true if an error occurred.
      *
-     * @return bool
+     * @return boolean
      */
     public function hasError()
     {

@@ -17,13 +17,28 @@ class testHeaders extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Headers.inc.php');
+        
+        $this->loadStub('DummyConfig');
+        $this->loadStub('DummyCookie');
+        $this->loadStub('DummyFile');
+        $this->loadStub('DummySecurity');
+        $this->loadStub('DummySettings');
+        $this->loadStub('DummyValidation');        
     }
 
     public function setUp()
     {
         parent::setUp();
+        $service_File = new DummyFile();
+        $service_Validation = new DummyValidation();
+        $service_Settings = new DummySettings();
         
-        $this->service_Headers = new \core\services\Headers();
+        $service_Security = new DummySecurity($service_Validation);
+        $service_Cookie = new DummyCookie($service_Security);
+        
+        $service_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
+        
+        $this->service_Headers = new \core\services\Headers($service_Config);
     }
 
     public function tearDown()
@@ -185,7 +200,8 @@ class testHeaders extends GeneralTest
                 gmdate('D, d M Y H:i:s') . ' GMT'
             ),
             array(
-                'Cache-Control: no-store, no-cache, must-revalidate'
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate'
             ),
             array(
                 'Cache-Control',

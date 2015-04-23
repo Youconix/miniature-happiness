@@ -1,10 +1,8 @@
 <?php
 if (! interface_exists('Builder')) {
     if (! class_exists('\core\services\Service')) {
-        require (NIV . 'include/services/Service.inc.php');
+        require (NIV . 'core/services/Service.inc.php');
     }
-    
-    require (NIV . 'include/services/QueryBuilder.inc.php');
 }
 
 class DummyQueryBuilder extends \core\services\QueryBuilder
@@ -343,6 +341,7 @@ class DummyBuilder implements \core\services\Builder
      */
     public function getResult()
     {
+        $this->service_Database->dequeueData();
         return $this->service_Database;
     }
 
@@ -393,6 +392,15 @@ class DummyBuilder implements \core\services\Builder
     {
         return $this->service_Database;
     }
+    
+    /**
+     * Dumps the current active database to a file
+     *
+     * @return string The database dump
+     */
+    public function dumpDatabase(){
+        
+    }
 }
 
 class DummyBuilderWhere implements \core\services\Where
@@ -419,7 +427,7 @@ class DummyBuilderWhere implements \core\services\Where
      *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
      * @throws DBException the key is invalid
      */
-    public function addAnd($a_fields, $a_types, $a_values, $a_keys)
+    public function addAnd($a_fields, $a_types, $a_values, $a_keys = array() )
     {
         return $this;
     }

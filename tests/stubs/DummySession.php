@@ -1,6 +1,6 @@
 <?php
 if (! class_exists('\core\services\Session')) {
-    require (NIV . 'include/services/Session.inc.php');
+    require (NIV . 'core/services/Session.inc.php');
 }
 
 class DummySession extends Session
@@ -133,7 +133,6 @@ class DummySession extends Session
      *            id, optional
      * @param int $i_level
      *            level, optional
-     * @throws MemoryException the page rights are not defined with arguments or database
      */
     public function checkLogin($i_group = -1, $i_level = -1)
     {

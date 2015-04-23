@@ -49,13 +49,14 @@ class QueryBuilder extends Service
         $this->s_type = ucfirst($service_Settings->get('settings/SQL/type'));
         $this->loadBuilder();
     }
-    
+
     /**
      * Returns if the object schould be treated as singleton
      *
-     * @return boolean  True if the object is a singleton
+     * @return boolean True if the object is a singleton
      */
-    public static function isSingleton(){
+    public static function isSingleton()
+    {
         return true;
     }
 
@@ -351,11 +352,11 @@ interface Builder
      * @return DAL The DAL
      */
     public function getDatabase();
-    
+
     /**
      * Dumps the current active database to a file
-     * 
-     * @return string   The database dump
+     *
+     * @return string The database dump
      */
     public function dumpDatabase();
 }

@@ -36,6 +36,7 @@ class DataGroup extends \core\models\Model
     private $a_users;
 
     protected $s_description;
+    
 
     /**
      * PHP5 constructor
@@ -238,29 +239,23 @@ class DataGroup extends \core\models\Model
         }
         $this->performValidation();
         
-        /* Get max Id */
-        $this->service_QueryBuilder->select('groups', $this->service_QueryBuilder->getMaximun('id', 'id'));
-        $this->i_id = $this->service_QueryBuilder->getResult()->result(0, 'id') + 1;
-        
         $this->service_QueryBuilder->insert('groups', array(
-            'id',
             'name',
             'description',
             'automatic'
         ), array(
-            'i',
             's',
             's',
             's'
         ), array(
-            $this->i_id,
             $this->s_name,
             $this->s_description,
-            $this->i_automatic
+            $this->i_default
         ));
         $i_groupID = $this->service_QueryBuilder->getResult()->getID();
+        $this->i_id  = $i_groupID;
         
-        if ($this->i_automatic == 1) {
+        if ($this->i_default == 1) {
             /* Add users to group */
             $this->service_QueryBuilder->select('users', 'id,staff');
             $a_users = $this->service_QueryBuilder->getResult()->fetch_assoc();

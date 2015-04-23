@@ -15,15 +15,18 @@ class testStats extends GeneralTest
     private $model_Stats;
 
     private $i_date;
+    
+    private $i_endDate;
 
     public function __construct()
     {
         parent::__construct();
         
-        require_once (NIV . 'include/models/Stats.inc.php');
+        require_once (NIV . 'core/models/Stats.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
         $this->loadStub('DummySecurity');
+        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
@@ -31,11 +34,13 @@ class testStats extends GeneralTest
         parent::setUp();
         
         $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
+        $service_Validation = new DummyValidation();
+        $service_Security = new DummySecurity($service_Validation);
         $this->service_Builder = new DummyQueryBuilder($service_Database);
         
-        $this->model_Stats = new \core\models\Stats($this->service_Builder, $service_Security);
+        $this->model_Stats = new \core\models\Stats($this->service_Builder, $service_Validation);
         $this->i_date = mktime(0, 0, 0, date("n"), 1, date("Y"));
+        $this->i_endDate = mktime(0, 0, 0, date('n'), 1, date("Y"));
     }
 
     public function tearDown()
@@ -174,7 +179,7 @@ class testStats extends GeneralTest
      */
     public function getHits()
     {
-        $this->assertEquals(array(), $this->model_Stats->getHits($this->i_date));
+        $this->assertInstanceOf('\core\models\data\HitCollection', $this->model_Stats->getHits($this->i_date, $this->i_endDate));
     }
 
     /**
@@ -184,7 +189,7 @@ class testStats extends GeneralTest
      */
     public function getPages()
     {
-        $this->assertEquals(array(), $this->model_Stats->getPages($this->i_date));
+        $this->assertEquals(array(), $this->model_Stats->getPages($this->i_date, $this->i_endDate));
     }
 
     /**
@@ -194,7 +199,7 @@ class testStats extends GeneralTest
      */
     public function getUnique()
     {
-        $this->assertEquals(array(), $this->model_Stats->getUnique($this->i_date));
+        $this->assertInstanceOf('\core\models\data\HitCollection', $this->model_Stats->getUnique($this->i_date, $this->i_endDate));
     }
 
     /**
@@ -206,7 +211,7 @@ class testStats extends GeneralTest
     {
         $this->assertEquals(- 1, $this->model_Stats->getLowestDate());
         
-        $i_expected;
+        $i_expected = 0;
         
         $builder = $this->service_Builder->createBuilder();
         $builder->getDatabase()->i_numRows = 1;

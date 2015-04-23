@@ -135,11 +135,6 @@ class LDAP extends Service
             $i_version = 3;
         }
         
-        if ($this->bo_debug) {
-            $this->obj_connection = '';
-            return;
-        }
-        
         $obj_connection = ldap_connect($s_server, $i_port);
         if ($obj_connection === false) {
             throw new \LdapException('LDAP connection to server ' . $s_server . ' on port ' . $i_port . ' failed.');
@@ -148,8 +143,13 @@ class LDAP extends Service
         ldap_set_option($obj_connection, LDAP_OPT_PROTOCOL_VERSION, $i_version);
         ldap_set_option($obj_connection, LDAP_OPT_REFERRALS, 0);
         
-        if (! ldap_bind($obj_connection, $s_username, $s_password)) {
-            throw new \LdapConnectionException('Username or password is incorrect.');
+        if( $this->bo_debug ){
+            $this->obj_connection = $obj_connection;
+            return;
+        }
+        
+        if (! @ldap_bind($obj_connection, $s_username, $s_password)) {
+            throw new \LdapConnectionException('Could not connect to server '.$s_server.' on port '.$i_port.' with geven username and password is.');
         }
         
         $this->obj_connection = $obj_connection;
@@ -179,7 +179,7 @@ class LDAP extends Service
     {
         $this->checkConnection();
         
-        if (! ldap_add($this->obj_connection, $s_name, $a_data)) {
+        if (!@ ldap_add($this->obj_connection, $s_name, $a_data)) {
             throw new \LdapException('Adding ' . $s_name . ' failed : ' . ldap_error($this->obj_connection));
         }
     }
@@ -195,7 +195,7 @@ class LDAP extends Service
     {
         $this->checkConnection();
         
-        if (! ldap_delete($this->obj_connection, $s_name)) {
+        if (!@ ldap_delete($this->obj_connection, $s_name)) {
             throw new \LdapException('Deleting ' . $s_name . ' failed : ' . ldap_error($this->obj_connection));
         }
     }
@@ -222,7 +222,7 @@ class LDAP extends Service
     {
         $this->checkConnection();
         
-        $search = ldap_search($this->obj_connection, $s_baseDN, $s_filter, $a_attributes, $i_attributesOnly, $i_sizelimit, $i_timelimit);
+        $search = @ldap_search($this->obj_connection, $s_baseDN, $s_filter, $a_attributes, $i_attributesOnly, $i_sizelimit, $i_timelimit);
         if ($search === false) {
             throw new \LdapException('Searching on ' . $s_filter . ' failed : ' . ldap_error($this->obj_connection));
         }
@@ -253,7 +253,7 @@ class LDAP extends Service
     {
         $this->checkConnection();
         
-        $item = ldap_read($this->obj_connection, $s_baseDN, $s_filter, $a_attributes, $i_attributesOnly, $i_sizelimit, $i_timelimit);
+        $item = @ldap_read($this->obj_connection, $s_baseDN, $s_filter, $a_attributes, $i_attributesOnly, $i_sizelimit, $i_timelimit);
         if ($item === false) {
             throw new \LdapException('Reading on ' . $s_filter . ' failed : ' . ldap_error($this->obj_connection));
         }
@@ -274,7 +274,7 @@ class LDAP extends Service
     {
         $this->checkConnection();
         
-        if (! ldap_modify($this->obj_connection, $s_name, $a_data)) {
+        if (! @ldap_modify($this->obj_connection, $s_name, $a_data)) {
             throw new \LdapException('Modifying ' . $s_name . ' failed : ' . ldap_error($this->obj_connection));
         }
     }

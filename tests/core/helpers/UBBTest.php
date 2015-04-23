@@ -15,7 +15,7 @@ class testUBB extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'include/helpers/UBB.inc.php');
+        require_once (NIV . 'core/helpers/UBB.inc.php');
         $this->loadStub('DummyDAL');
         $this->loadStub('DummyQueryBuilder');
     }

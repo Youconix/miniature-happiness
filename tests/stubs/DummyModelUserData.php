@@ -1,10 +1,10 @@
 <?php
 if (! class_exists('\core\models\data\DataUser')) {
     if (! class_exists('\core\models\GeneralUser')) {
-        require (NIV . 'include/models/GeneralUser');
+        require (NIV . 'core/models/GeneralUser');
     }
     
-    require (NIV . 'include/models/data/DataUser.inc.php');
+    require (NIV . 'core/models/data/DataUser.inc.php');
 }
 
 class DummyModelUserData extends \core\models\data\DataUser
@@ -62,7 +62,7 @@ class DummyModelUserData extends \core\models\data\DataUser
      *
      * @return int access level
      */
-    public function getLevel()
+    public function getLevel($i_groupid = -1)
     {
         return \core\services\Session::USER;
     }

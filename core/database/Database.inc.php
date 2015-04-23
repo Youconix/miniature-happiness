@@ -121,7 +121,7 @@ interface DAL
      * Excequetes the given query on the selected database
      *
      * @para String $s_query The query to excequte
-     * 
+     *
      * @throws Exception when the query failes
      */
     public function query($s_query);
@@ -274,15 +274,19 @@ interface DAL
      * @return boolean if the database exists, otherwise false
      */
     public function databaseExists($s_database);
-    
+
     /**
      * Describes the table structure
-     * 
-     * @param string    $s_table    The table name
-     * @param string    The structure
-     * @param boolean   Set to true to add "IF NOT EXISTS"
-     * @param boolean   Set to true to add dropping the table first
+     *
+     * @param string $s_table
+     *            The table name
+     * @param
+     *            string The structure
+     * @param
+     *            boolean Set to true to add "IF NOT EXISTS"
+     * @param
+     *            boolean Set to true to add dropping the table first
      * @throws \DBException If the table does not exists
      */
-    public function describe($s_table,$bo_addNotExists = false,$bo_dropTable = false);
+    public function describe($s_table, $bo_addNotExists = false, $bo_dropTable = false);
 }

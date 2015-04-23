@@ -44,7 +44,8 @@ class Language extends Xml
     /**
      * PHP 5 constructor
      *
-     * @param core\models\Config $model_Config  The configuration
+     * @param core\models\Config $model_Config
+     *            The configuration
      * @param core\services\Cookie $service_Cookie
      *            The cookie handler
      * @param core\services\File $service_File
@@ -85,7 +86,9 @@ class Language extends Xml
             ));
         }
         
-        require (NIV . 'core/services/data/languageShortcut.php');
+        if( !function_exists('t') ){
+            require (NIV . 'core/services/data/languageShortcut.php');
+        }
     }
 
     public function getLanguageFiles()

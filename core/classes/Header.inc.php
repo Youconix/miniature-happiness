@@ -78,7 +78,10 @@ class Header
         foreach ($a_languages as $s_code) {
             $s_language = (array_key_exists($s_code, $a_languagesCodes)) ? $a_languagesCodes[$s_code] : $s_code;
             
-            $this->service_Template->setBlock('header_languages',array('code'=>$s_code,'language'=>$s_language));
+            $this->service_Template->setBlock('header_languages', array(
+                'code' => $s_code,
+                'language' => $s_language
+            ));
         }
     }
 }
