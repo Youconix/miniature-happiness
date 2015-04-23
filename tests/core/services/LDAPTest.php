@@ -54,6 +54,12 @@ class testLDAP extends GeneralTest
      */
     public function bind()
     {
+        if (! extension_loaded('ldap')) {
+            $this->markTestSkipped(
+                'The LDAP extension is not available.'
+                );
+        }
+        
         $this->service_LDAP->bind($this->s_username, $this->s_password);
     }
 
@@ -65,6 +71,12 @@ class testLDAP extends GeneralTest
      */
     public function bindManual()
     {
+        if (! extension_loaded('ldap')) {
+            $this->markTestSkipped(
+                'The LDAP extension is not available.'
+            );
+        }
+        
         $this->service_LDAP->bindManual($this->s_server, $this->i_port, $this->s_username, $this->s_password);
     }
 
@@ -72,6 +84,7 @@ class testLDAP extends GeneralTest
      * Test closing the connection to the current LDAP server
      * Should do nothing
      *
+     * @depends bind
      * @test
      */
     public function unbind()
@@ -82,8 +95,9 @@ class testLDAP extends GeneralTest
     /**
      * Test adding a item to the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function add()
     {
@@ -96,8 +110,9 @@ class testLDAP extends GeneralTest
     /**
      * Tests deleting a item from the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function delete()
     {
@@ -109,8 +124,9 @@ class testLDAP extends GeneralTest
     /**
      * Test searching on the baseDN on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function search()
     {
@@ -122,8 +138,9 @@ class testLDAP extends GeneralTest
     /**
      * Test reading the baseDN on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function readItem()
     {
@@ -135,8 +152,9 @@ class testLDAP extends GeneralTest
     /**
      * Tests modifying a item on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function modify()
     {
@@ -149,8 +167,9 @@ class testLDAP extends GeneralTest
     /**
      * Tests renaming a item to a new name
      *
-     * @expectedException	LdapException
      * @test
+     * @depends bind
+     * @expectedException	LdapException
      */
     public function rename()
     {
@@ -160,9 +179,10 @@ class testLDAP extends GeneralTest
     }
 
     /**
-     * Test cheching if the login to the LDAP is correct
+     * Test checking if the login to the LDAP is correct
      *
      * @test
+     * @depends bind
      */
     public function checkLogin()
     {
