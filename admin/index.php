@@ -54,9 +54,7 @@ class Index extends \core\BaseLogicClass
     protected function init()
     {
         define('LAYOUT', 'admin');
-        
-        $this->forceSSL();
-        
+                
         parent::init();
         
         $this->service_Session = \Loader::Inject('\core\services\Session');

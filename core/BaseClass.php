@@ -140,24 +140,6 @@ abstract class BaseClass
     }
 
     /**
-     * Forces the use of SSL/TSL for this page
-     *
-     * Disabled at default install
-     */
-    protected function forceSSL()
-    {
-        return;
-        /* Check SSL/TSL */
-        if (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
-            /* SSL do nothing */
-        } else {
-            /* force https */
-            header('location: https://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
-            exit();
-        }
-    }
-
-    /**
      * Loads the view
      */
     protected function loadView()

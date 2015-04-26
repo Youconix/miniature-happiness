@@ -92,8 +92,6 @@ class Login extends \core\BaseLogicClass
             'autologin' => 'ignore'
         );
         
-        $this->forceSSL();
-        
         parent::init();
         
         $this->service_Authorization = Memory::services("Authorization");

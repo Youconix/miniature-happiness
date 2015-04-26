@@ -106,6 +106,8 @@ class Privileges
             }
         }
         
+        $this->checkSSL($i_level);
+        
         if ($i_level == \core\services\Session::ANONYMOUS) {
             if (($this->service_Session->exists('login')) && ($this->service_Session->exists('userid'))) {
                 if (! defined('USERID')) {
@@ -234,5 +236,26 @@ class Privileges
             require (NIV . 'errors/403.php');
             exit();
         }
+    }
+    
+    /**
+     * Checks the ssl setting
+     * 
+     * @param int $i_level  The minimun page level
+     */
+    private function checkSSL($i_level){
+        $i_ssl = $this->model_Config->isSslEnabled();
+    
+        if( $this->model_Config->isSLL() || ($i_ssl == \core\services\Settings::SSL_DISABLED) ){
+            return;
+        }        
+        
+        if( ($i_level == \core\services\Session::ANONYMOUS) && ($i_ssl == \core\services\Settings::SSL_LOGIN) ){
+            return;
+        }
+        
+        $this->service_Headers->redirect('https://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+        $this->service_Headers->printHeaders();
+        exit();
     }
 }

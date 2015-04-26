@@ -414,7 +414,7 @@ class Config extends Model implements \SplSubject
         $this->s_command = $s_command;
         $this->s_layout = $s_layout;
         
-        $this->notifyObservers();
+        $this->notify();
     }
 
     /**
@@ -654,5 +654,13 @@ class Config extends Model implements \SplSubject
             'name' => $this->service_Settings->get('main/admin/name'),
             'email' => $this->service_Settings->get('main/admin/email')
         );
+    }
+    
+    public function isSslEnabled(){
+        if( !$this->service_Settings->exists('main/ssl') ){
+            return \core\services\Settings::SSL_DISABLED;
+        }
+        
+        return $this->service_Settings->get('main/ssl');
     }
 }

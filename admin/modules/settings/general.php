@@ -30,29 +30,31 @@ if (! defined('NIV')) {
 include (NIV . 'admin/modules/settings/settings.php');
 
 class General extends \admin\Settings
-{    
+{
+
     /**
      * Calls the functions
      */
-    protected function menu(){
+    protected function menu()
+    {
         if (isset($this->get['command'])) {
-            switch ($this->get['command']) {        
+            switch ($this->get['command']) {
                 case 'general':
                     $this->general();
                     break;
-                    
-                case 'ssl' :
+                
+                case 'ssl':
                     $this->ssl();
                     break;
             }
-        } else
+        } else 
             if (isset($this->post['command'])) {
-                switch ($this->post['command']) {        
+                switch ($this->post['command']) {
                     case 'general':
                         $this->generalSave();
                         break;
-                        
-                    case 'ssl' :
+                    
+                    case 'ssl':
                         $this->sslSave();
                         break;
                 }
@@ -64,7 +66,7 @@ class General extends \admin\Settings
      */
     protected function init()
     {
-        $this->init_post = array(            
+        $this->init_post = array(
             'name_site' => 'string',
             'site_url' => 'string',
             'site_base' => 'string',
@@ -73,6 +75,7 @@ class General extends \admin\Settings
             'logger' => 'string',
             'log_location' => 'string',
             'log_size' => 'int',
+            'ssl' => 'int'
         );
         
         parent::init();
@@ -194,13 +197,78 @@ class General extends \admin\Settings
         
         $this->service_Settings->save();
     }
-    
-    private function ssl(){
+
+    /**
+     * Displays the SSL setting
+     */
+    private function ssl()
+    {
+        /* Check if the host is ssl capable */
+        if (file_get_contents('https://' . $_SERVER['HTTP_HOST'])) {
+            $bo_ssl = true;
+        } else {
+            $bo_ssl = false;
+        }
         
+        $i_currentSSL = $this->getValue('main/ssl', \core\services\Settings::SSL_DISABLED);
+        
+        $s_loginSslValue = '';
+        $s_alwaysSslValue = '';
+        if (! $bo_ssl) {
+            $s_loginSslValue = 'disabled="disabled" ';
+            $s_alwaysSslValue = 'disabled="disabled" ';
+        }
+        
+        if ($i_currentSSL == \core\services\Settings::SSL_DISABLED) {
+            $this->service_Template->set('no_ssl_value', 'checked="checked"');
+        } else 
+            if ($i_currentSSL == \core\services\Settings::SSL_LOGIN) {
+                $s_loginSslValue .= 'checked="checked"';
+            } else {
+                $s_alwaysSslValue .= 'checked="checked"';
+            }
+        
+        $this->service_Template->set('login_ssl_value', $s_loginSslValue);
+        $this->service_Template->set('always_ssl_value', $s_alwaysSslValue);
+        $this->service_Template->set('current_ssl', $i_currentSSL);
+        
+        $this->service_Template->set('no_ssl', \core\services\Settings::SSL_DISABLED);
+        $this->service_Template->set('login_ssl', \core\services\Settings::SSL_LOGIN);
+        $this->service_Template->set('always_ssl', \core\services\Settings::SSL_ALL);
+        
+        $this->service_Template->set('sslTitle', t('system/admin/settings/ssl/title'));
+        $this->service_Template->set('noSslText', t('system/admin/settings/ssl/no_ssl'));
+        $this->service_Template->set('loginSslText', t('system/admin/settings/ssl/login_ssl'));
+        $this->service_Template->set('alwaysSslText',t('system/admin/settings/ssl/always_ssl'));
+        $this->service_Template->set('saveButton', t('system/buttons/save'));
     }
-    
-    private function sslSave(){
+
+    /**
+     * Saves the SSL setting
+     */
+    private function sslSave()
+    {
+        if (! isset($this->post['ssl']) || ! in_array($this->post['ssl'], array(
+            \core\services\Settings::SSL_DISABLED,
+            \core\services\Settings::SSL_LOGIN,
+            \core\services\Settings::SSL_ALL
+        ))) {
+            return;
+        }
         
+        /* Check if the host is ssl capable */
+        if (file_get_contents('https://' . $_SERVER['HTTP_HOST'])) {
+            $bo_ssl = true;
+        } else {
+            $bo_ssl = false;
+        }
+        
+        if( !$bo_ssl && $this->post['ssl'] != \core\services\Settings::SSL_DISABLED ){
+            return;
+        } 
+        
+        $this->setValue('main/ssl',$this->post['ssl']);
+        $this->service_Settings->save();
     }
 }
 

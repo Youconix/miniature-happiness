@@ -49,9 +49,7 @@ class Login extends \includes\BaseLogicClass
             'password2' => 'string-DB',
             'autologin' => 'ignore'
         );
-        
-        $this->forceSSL();
-        
+                
         parent::init();
         
         $this->model_Login = \core\Memory::models('Login');

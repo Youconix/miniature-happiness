@@ -346,6 +346,12 @@
                 <databasePortInvalid>De database poort is ongeldig.</databasePortInvalid>
                 <databaseInvalid>De database gegevens zijn incorrect.</databaseInvalid>
 			 </database>
+			 <ssl>
+			     <title>SSL versleuteling</title>
+			     <no_ssl>Geen versleuteling</no_ssl>
+			     <login_ssl>Vanaf login/registratie</login_ssl>
+			     <always_ssl>Altijd versleutelen</always_ssl>
+			 </ssl>
 			
 			<defaultLanguage>Standaard taal</defaultLanguage>
 			

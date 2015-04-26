@@ -103,9 +103,7 @@ class Registration extends \core\BaseLogicClass
             'type' => 'string',
             'conditions' => 'ignore'
         );
-        
-        $this->forceSSL();
-        
+                
         parent::init();
         
         $this->a_data = array(

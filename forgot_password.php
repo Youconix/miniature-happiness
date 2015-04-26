@@ -63,8 +63,6 @@ class ForgotPassword extends \core\BaseLogicClass
             'email' => 'string-DB'
         );
         
-        $this->forceSSL();
-        
         parent::init();
         
         $this->service_Template->set('forgotTitle', $this->service_Language->get('language/forgotPassword/header'));

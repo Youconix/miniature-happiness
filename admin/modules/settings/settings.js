@@ -5,6 +5,10 @@ function Settings() {
 	this.address_cache = '../../admin/modules/settings/cache.php';
 	this.address_general = '../../admin/modules/settings/general.php';
 	this.address_language = '../../admin/modules/settings/languages.php';
+	
+	this.SSL_DISABLED = 0;
+	this.SSL_LOGIN = 1;
+	this.SSL_ALL = 2;
 }
 Settings.prototype.address = function(){
 	return this.address;
@@ -256,10 +260,25 @@ Settings.prototype.languagesSave	=  function(){
 	$.post(settings.address_language,{'command':'language','default_language':$('#defaultLanguage').val()});
 }
 Settings.prototype.sslInit	= function(){
-	
+	$('#settings_ssl_save').click(function(){
+		settings.sslSave();
+	});
 }
 Settings.prototype.sslSave= function(){
+	var currentSSL = $('#current_ssl').val();
 	
+	var ssl;
+	$('input[name="ssl"]').each(function(){
+		if( $(this).is(':checked') ){
+			ssl = $(this).val();
+		}
+	});
+	
+	if( currentSSL != ssl ){
+		$.post(settings.address_general,{'command':'ssl','ssl':ssl});
+	}
+	
+	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
 }
 
 var settings = new Settings();

@@ -62,8 +62,6 @@ abstract class AdminLogicClass extends BaseClass
     {
         define('LAYOUT', 'admin');
         
-        $this->forceSSL();
-        
         parent::init();
         
         $this->service_Session = \Loader::Inject('core\services\Session');
