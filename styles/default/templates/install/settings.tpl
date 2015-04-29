@@ -27,7 +27,6 @@
 		<label>Normal login</label>
 		<input type="checkbox" id="normalLogin" checked="checked">
 	</fieldset>
-	</fieldset>
 	<fieldset>
 		<label>OpenID support</label>
 		<input type="checkbox" id="openID">
@@ -150,4 +149,4 @@
 <div>
     <p><input type="button" id="settings_save" value="{buttonSave}"></p>
 </div>
-</settings>
+</section>

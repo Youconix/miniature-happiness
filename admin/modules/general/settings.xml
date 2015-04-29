@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../settings.xsd">
 	<name>General</name>
 	<author>Youconix</author>
 	<description>General tasks for the framework Miniature-happiness</description>
 	<version>1.0</version>
-	<install />
-	<upgrade />
-	<deinstall />
+	<install></install>
+	<upgrade></upgrade>
+	<deinstall></deinstall>
 	<title>system/menu/general</title>
 	<js>general.js</js>
 	<css>general.css</css>

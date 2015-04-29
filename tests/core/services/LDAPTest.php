@@ -2,6 +2,10 @@
 define('NIV', dirname(__FILE__) . '/../../../');
 require (NIV . 'tests/GeneralTest.php');
 
+/**
+ * @author roxanna
+ * @requires extension ldap
+ */
 class testLDAP extends GeneralTest
 {
 
@@ -49,8 +53,8 @@ class testLDAP extends GeneralTest
     /**
      * Tests connecting to the default LDAP server
      *
-     * @expectedException LdapConnectionException
      * @test
+     * @expectedException LdapConnectionException
      */
     public function bind()
     {
@@ -60,8 +64,8 @@ class testLDAP extends GeneralTest
     /**
      * Test connection to the given LDAP server
      *
-     * @expectedException	LdapConnectionException
      * @test
+     * @expectedException	LdapConnectionException
      */
     public function bindManual()
     {
@@ -82,8 +86,8 @@ class testLDAP extends GeneralTest
     /**
      * Test adding a item to the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function add()
     {
@@ -96,8 +100,8 @@ class testLDAP extends GeneralTest
     /**
      * Tests deleting a item from the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function delete()
     {
@@ -109,8 +113,8 @@ class testLDAP extends GeneralTest
     /**
      * Test searching on the baseDN on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function search()
     {
@@ -122,8 +126,8 @@ class testLDAP extends GeneralTest
     /**
      * Test reading the baseDN on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function readItem()
     {
@@ -135,8 +139,8 @@ class testLDAP extends GeneralTest
     /**
      * Tests modifying a item on the LDAP server
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function modify()
     {
@@ -149,8 +153,8 @@ class testLDAP extends GeneralTest
     /**
      * Tests renaming a item to a new name
      *
-     * @expectedException	LdapException
      * @test
+     * @expectedException	LdapException
      */
     public function rename()
     {
@@ -160,7 +164,7 @@ class testLDAP extends GeneralTest
     }
 
     /**
-     * Test cheching if the login to the LDAP is correct
+     * Test checking if the login to the LDAP is correct
      *
      * @test
      */

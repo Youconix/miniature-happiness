@@ -120,7 +120,7 @@ class Config extends Model implements \SplSubject
     {
         /* Check language */
         $a_languages = $this->getLanguages();
-        $this->s_language = $this->service_Settings->get('defaultLanguage');
+        $this->s_language = str_replace('-','_',$this->service_Settings->get('defaultLanguage'));
         
         if (isset($_GET['lang'])) {
             if (in_array($_GET['lang'], $a_languages)) {

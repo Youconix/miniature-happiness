@@ -1,0 +1,3 @@
+[submodule "JShrink"]
+	path = lib/tedious
+	url = git@github.com:tedious/JShrink.git

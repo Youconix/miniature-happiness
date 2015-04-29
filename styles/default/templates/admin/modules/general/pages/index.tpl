@@ -5,7 +5,7 @@
     
     <section class="item_body">
         <ul id="page_list">
-            <li><span class="directory_pointer" data-url="/">Site</span><ul>
+            <li><span class="directory_pointer" data-url="/">Site</span>
             {pages}
             </li>
         </ul>
