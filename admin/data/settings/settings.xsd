@@ -6,20 +6,17 @@
       <xs:minLength value="1"/>
     </xs:restriction>
   </xs:simpleType>
-  
   <xs:simpleType name="port-number">
     <xs:restriction base="xs:positiveInteger">
       <xs:maxInclusive value="65536"/>
     </xs:restriction>
   </xs:simpleType>
-  
   <xs:simpleType name="one-or-zero">
     <xs:restriction base="xs:integer">
       <xs:minInclusive value="0"/>
       <xs:maxInclusive value="1"/>
     </xs:restriction>
   </xs:simpleType>
-  
   <xs:element name="settings">
     <xs:complexType>
       <xs:sequence>
@@ -34,14 +31,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:decimal">
               <!-- The element named 'version' must not be a negative. -->
-                <xs:minInclusive value="0"/>
-              </xs:restriction>
+              <xs:minInclusive value="0"/>
+            </xs:restriction>
           </xs:simpleType>
         </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="main">
     <xs:complexType>
       <xs:sequence>
@@ -50,46 +46,47 @@
         <xs:element name="base" type="xs:string"/>
         <xs:element name="timeZone" type="non-empty-string"/>
         <xs:element name="salt" type="non-empty-string"/>
+        <xs:element name="logs" type="non-empty-string" default="default"/>
+        <xs:element name="ssl" type="one-or-zero" default="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="login">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="normalLogin" type="one-or-zero"/>
-        <xs:element name="openID" type="one-or-zero"/>
-        <xs:element name="lDAP" type="one-or-zero"/>
+        <xs:element name="normalLogin" type="one-or-zero" default="1"/>
+        <xs:element name="facebook" type="one-or-zero" default="0"/>
+        <xs:element name="facebook_app_id" type="xs:string"/>
+        <xs:element name="openID" type="one-or-zero" default="0"/>
+        <xs:element name="lDAP" type="one-or-zero" default="0"/>
         <xs:element name="ldap_server" type="xs:string"/>
         <xs:element name="ldap_port" type="port-number" default="389"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="session">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="sessionName" type="xs:string"/>
         <xs:element name="sessionPath" type="xs:string"/>
-        <xs:element name="sessionExpire" type="xs:positiveInteger" default="300"/>
+        <xs:element name="sessionExpire" type="xs:positiveInteger"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="mail">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="senderName" type="xs:string"/>
-        <xs:element name="senderEmail" type="xs:string"/>
+        <xs:element name="senderEmail" type="non-empty-string"/>
         <xs:element name="SMTP" type="one-or-zero"/>
         <xs:element name="host" type="xs:string"/>
         <xs:element name="username" type="xs:string"/>
         <xs:element name="password" type="xs:string"/>
-        <xs:element name="port" type="port-number"/>
+        <xs:element name="port" type="port-number" default="587"/>
+        <xs:element name="ssl" type="one-or-zero"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="templates">
     <xs:complexType>
       <xs:sequence>
@@ -97,7 +94,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="SQL">
     <xs:complexType>
       <xs:sequence>
@@ -107,7 +103,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="Mysqli">
     <xs:complexType>
       <xs:sequence>
@@ -115,7 +110,7 @@
         <xs:element name="password" type="non-empty-string"/>
         <xs:element name="database" type="non-empty-string"/>
         <xs:element name="host" type="non-empty-string"/>
-        <xs:element name="port" type="port-number"/>
+        <xs:element name="port" type="port-number" default="3306"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
