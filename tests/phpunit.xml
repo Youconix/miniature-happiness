@@ -1,5 +1,4 @@
-<phpunit backupGlobals="false" backupStaticAttributes="false"
-	syntaxCheck="false">
+﻿<phpunit backupGlobals="false" backupStaticAttributes="false" syntaxCheck="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="phpunit.xsd">
 	<testsuites>
 		<testsuite name="Tests">
 			<directory suffix="Test.php">../tests</directory>
