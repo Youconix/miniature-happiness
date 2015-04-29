@@ -4,7 +4,7 @@
     </section>
     
     <section class="item_body">
-        <section>
+        <article>
             <fieldset>
                 <label class="label" id="maintenance_optimize_database_label">{optimizeDatabase}</label>
                 <div id="maintenance_optimize_database" class="maintenanceReady">{ready}</div>
@@ -21,5 +21,6 @@
                 <label class="label" id="maintenance_backup_label">{backup}</label>
                 <div id="maintenance_backup" class="maintenanceReady">{ready}</div>
             </fieldset>
-        </section>
+        </article>
+	</section>
 </section>

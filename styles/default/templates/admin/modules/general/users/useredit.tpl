@@ -53,7 +53,6 @@
             <input type="password" name="password2" id="password2" required>
         </fieldset>
         <fieldset>
-            <td colspan="2">
             <input type="hidden" id="userid" value="{id}">
             <input type="submit" value="Aanpassen" id="userUpdateButton">
         </fieldset>
@@ -71,7 +70,7 @@
         
         <h2>Add group</h2>
         
-        <fielset>
+        <fieldset>
         <select id="newGroup" data-id="{id}">
             <option value="">Choose a group</option>
         <block {newGroup}>

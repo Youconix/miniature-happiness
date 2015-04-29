@@ -51,7 +51,6 @@
                 </tr>
               </block>
             </tbody>
-            </tbody>
             </table>
          </if>
 	    
@@ -77,7 +76,7 @@
                 </tr>
               </block>
             </tbody>
-            </tbody>
+            </table>
          </if>
+		</section>
 	</section>
-</section>

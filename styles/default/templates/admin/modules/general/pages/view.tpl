@@ -59,7 +59,7 @@
                     <option value="{value}" {selected}>{text}</option>
                 </block>
             </select>
-        </fielset>
+        </fieldset>
         <fieldset>
             <input type="button" id="pages_template_add" value="{add}">
         </fieldset>

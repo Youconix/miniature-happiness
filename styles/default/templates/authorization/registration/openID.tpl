@@ -5,7 +5,7 @@
 
 	<form action="registration.php" method="post" onsubmit="return site.checkOpenRegistration()">
 		<table id="registrationForm">
-		<tbody
+		<tbody>
 			<tr>
 				<td colspan="2" class="bold">{captchaText}</td>
 			</tr>
