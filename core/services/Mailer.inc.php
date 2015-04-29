@@ -46,8 +46,10 @@ class Mailer extends Service
      *            The language service
      * @param core\services\File $service_File
      *            The file service
+     * @param core\models\Config $model_Config
+     *            The Config model.
      */
-    public function __construct(\core\services\Language $service_Language, \core\services\File $service_File)
+    public function __construct(\core\services\Language $service_Language, \core\services\File $service_File, \core\models\Config $model_Config)
     {
         require_once (NIV . 'core/mailer/MailWrapper.inc.php');
         $this->obj_phpMailer = new \MailWrapper();
@@ -57,7 +59,7 @@ class Mailer extends Service
         $this->service_File = $service_File;
         
         $this->s_domain = $_SERVER['HTTP_HOST'];
-        $this->s_domainUrl = \core\Memory::getProtocol() . $this->s_domain . \core\Memory::getBase();
+        $this->s_domainUrl = $model_Config->getProtocol(). $this->s_domain . $model_Config->getBase();
     }
 
     /**

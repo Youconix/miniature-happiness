@@ -55,15 +55,15 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     protected function showLayout()
     {
         /* Call header */
-        $obj_header = Memory::loadClass('Header');
+        $obj_header = \Loader::inject('\core\classes\Header');
         $obj_header->createHeader();
         
         /* Call Menu */
-        $obj_menu = Memory::loadClass('Menu');
+        $obj_menu = \Loader::inject('\core\classes\Menu');
         $obj_menu->generateMenu();
         
         /* Call footer */
-        $obj_footer = Memory::loadClass('Footer');
+        $obj_footer = \Loader::inject('\core\classes\Footer');
         $obj_footer->createFooter();
     }
 
@@ -76,6 +76,6 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     {
         parent::init();
         
-        $this->service_Session = Memory::services('Session');
+        $this->service_Session = \Loader::Inject('\core\services\Session');
     }
 }

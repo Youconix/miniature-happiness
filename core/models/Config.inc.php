@@ -31,6 +31,8 @@ class Config extends Model implements \SplSubject
     protected $service_File;
 
     protected $service_Cookie;
+    
+    protected $service_QueryBuilder;
 
     protected $s_templateDir;
 
@@ -62,11 +64,13 @@ class Config extends Model implements \SplSubject
      * @param core\services\Cookie $service_Cookie
      *            The cookie service
      */
-    public function __construct(\core\services\File $service_File, \core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie)
+    public function __construct(\core\services\File $service_File, \core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie,
+            \core\services\QueryBuilder $service_QueryBuilder)
     {
         $this->service_File = $service_File;
         $this->service_Settings = $service_Settings;
         $this->service_Cookie = $service_Cookie;
+        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
         
         $this->a_observers = new \SplObjectStorage();
         
@@ -434,6 +438,7 @@ class Config extends Model implements \SplSubject
      */
     public function setAjax()
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $this->bo_ajax = true;
     }
 
@@ -634,14 +639,12 @@ class Config extends Model implements \SplSubject
      */
     public function getAdminAddress()
     {
-        if (! $this->service_Settings->exists('main/admin/email')) {
-            $service_QueryBuilder = \core\Memory::services('QueryBuilder')->createBuilder();
-            
+        if (! $this->service_Settings->exists('main/admin/email')) {            
             /* Send to first user */
-            $service_QueryBuilder->select('users', 'nick,email')
+            $this->service_QueryBuilder->select('users', 'nick,email')
                 ->getWhere()
                 ->addAnd('id', 'i', 1);
-            $database = $service_QueryBuilder->getResult();
+            $database = $this->service_QueryBuilder->getResult();
             $a_data = $database->fetch_assoc();
             
             return array(

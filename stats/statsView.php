@@ -24,12 +24,12 @@ if( !window.innerWidth ){
 	height = window.innerHeight;
 }
 		
-document.getElementById("stats").src = "{NIV}stats/stats.php?page=' . \core\Memory::getPage() . '&colors="+colors+"&width="+width+"&height="+height;
+document.getElementById("stats").src = "{NIV}stats/stats.php?page=' . $this->model_Config->getPage() . '&colors="+colors+"&width="+width+"&height="+height;
 //-->
 </script>
 	
-<noscript><div><img src="{NIV}stats/stats.php?page=' . \core\Memory::getPage() . '" alt=""/></div></noscript>
+<noscript><div><img src="{NIV}stats/stats.php?page=' .$this->model_Config->getPage() . '" alt=""/></div></noscript>
 ';
 
-\core\Memory::services('Template')->set('statisticsImg', $s_stats);
+$this->service_Template->set('statisticsImg', $s_stats);
 ?>

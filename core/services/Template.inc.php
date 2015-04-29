@@ -146,22 +146,24 @@ class Template extends Service implements \SplObserver
     /**
      * Returns the template directory
      *
-     * @deprecated Replaced by include/models/Config:getTemplateDir
+     * @deprecated Replaced by core/models/Config:getTemplateDir
      * @return String The template directory
      */
     public function getTemplateDir()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config:getTemplateDir().",E_USER_DEPRECATED);
         return $this->model_Config->getTemplateDir();
     }
 
     /**
      * Returns the loaded template directory
      *
-     * @deprecated Replaced by include/models/Config:getStylesDir;
+     * @deprecated Replaced by core/models/Config:getStylesDir;
      * @return String template directory
      */
     public function getStylesDir()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config:getStylesDir().",E_USER_DEPRECATED);
         return $this->model_Config->getStylesDir();
     }
 
@@ -351,6 +353,7 @@ class Template extends Service implements \SplObserver
      */
     public function headerLink($s_link)
     {
+        trigger_error("This function has been deprecated in favour of dedicated functions within this class.",E_USER_DEPRECATED);
         if (is_object($s_link) && is_subclass_of($s_link, 'CoreHtmlItem')) {
             $s_link = $s_link->generateItem();
         } else 
@@ -563,7 +566,7 @@ class Template extends Service implements \SplObserver
         $this->set('style_dir', $this->model_Config->getStylesDir());
         $this->set('NIV', $this->model_Config->getBase());
         
-        if (! \core\Memory::isAjax()) {
+        if (! $this->model_Config->isAjax()) {
             /* Write header-blok to template */
             $s_headblock = '';
             $a_keys = array_keys($this->a_headerParser);

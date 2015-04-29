@@ -122,7 +122,7 @@ abstract class BaseClass
             $this->service_Template = \Loader::Inject('core\services\Template');
             
             $s_language = $this->service_Language->getLanguage();
-            $this->service_Template->headerLink('<script src="{NIV}js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
+            $this->service_Template->setJavascriptLink('<script src="{NIV}js/site.php?lang=' . $s_language . '" type="text/javascript"></script>');
             
             if (! $this->model_Config->isAjax()) {
                 $this->loadView();

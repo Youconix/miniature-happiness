@@ -35,6 +35,6 @@ class Index extends \core\BaseLogicClass
      */
     protected function view()
     {
-        $this->service_Template->set('content', Memory::helpers('IndexInstall'));
+        $this->service_Template->set('content',\Loader::inject('\core\helpers\IndexInstall'));
     }
 }

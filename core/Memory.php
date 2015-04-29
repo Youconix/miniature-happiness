@@ -180,8 +180,17 @@ class Memory
             $service_Cookie = new \core\services\Cookie($service_Security);
             Memory::$a_cache['\core\services\Cookie'] = $service_Cookie;
             
+            require_once(NIV.'core/database/Database.inc.php');
+            $service_Database = new \core\database\Database($service_Settings);
+            $service_Database = $service_Database->loadDatabase();
+            Memory::$a_cache['\core\database\DAL'] = $service_Database;
+            
+            require_once(Memory::$a_service['systemPath'] . 'QueryBuilder.inc.php');
+            $service_QueryBuilder = new \core\services\QueryBuilder($service_Settings, $service_Database);
+            Memory::$a_cache['\core\services\QueryBuilder'] = $service_QueryBuilder;
+            
             require_once (Memory::$a_model['systemPath'] . 'Config.inc.php');
-            $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie);
+            $model_Config = new \core\models\Config($service_File, $service_Settings, $service_Cookie,$service_QueryBuilder);
             Memory::$a_cache['\core\models\Config'] = $model_Config;
             
             require_once (Memory::$a_service['systemPath'] . 'Language.inc.php');
@@ -189,7 +198,7 @@ class Memory
             Memory::$a_cache['\core\services\Language'] = $service_Language;
             
             require_once (Memory::$a_service['systemPath'] . 'Mailer.inc.php');
-            $service_Mailer = new \core\services\Mailer($service_Language, $service_File);
+            $service_Mailer = new \core\services\Mailer($service_Language, $service_File, $model_Config);
             
             $obj_logger = $model_Config->logging();
             if (method_exists($obj_logger, 'setMailer')) {
@@ -284,10 +293,11 @@ class Memory
      *
      * @return String protocol
      * @deprecated since version 2.
-     * @see include/models/Config:getProtocol
+     * @see core/models/Config:getProtocol
      */
     public static function getProtocol()
     {
+        trigger_error("This function has been deprecated in favour of Config:getProtocolDir().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getProtocol();
     }
 
@@ -296,10 +306,11 @@ class Memory
      *
      * @return String page
      * @deprecated since version 2.
-     * @see include/models/Config:getPage
+     * @see core/models/Config:getPage
      */
     public static function getPage()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config::getPage().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getPage();
     }
 
@@ -308,10 +319,11 @@ class Memory
      *
      * @return boolean if ajax-mode is active
      * @deprecated since version 2.
-     * @see include/models/Config:isAjax
+     * @see core/models/Config:isAjax
      */
     public static function isAjax()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config::isAjax().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->isAjax();
     }
 
@@ -319,9 +331,11 @@ class Memory
      * Sets the framework in ajax-
      *
      * @deprecated since version 2
+     * @see core/models/Config::setAjax()
      */
     public static function setAjax()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config::setAjax().",E_USER_DEPRECATED);
         Memory::$a_cache['\core\models\Config']->setAjax();
     }
 
@@ -339,10 +353,12 @@ class Memory
      * Returns the base directory
      *
      * @return String directory
-     * @deprecated since version 2. See include/models/Config:getBase
+     * @deprecated since version 2. 
+     * @See core/models/Config:getBase
      */
     public static function getBase()
     {
+        trigger_error("This function has been deprecated in favour of core/models/Config::getBase().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getBase();
     }
 
@@ -356,6 +372,7 @@ class Memory
      */
     public static function ensureClass($s_class)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         if (! class_exists($s_class)) {
             $service_File = Memory::$a_cache['\core\services\File'];
             if (! $service_File->exists(Memory::$a_class['systemPath'] . $s_class . '.inc.php')) {
@@ -376,6 +393,7 @@ class Memory
      */
     public static function ensureInterface($s_interface)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         if (! interface_exists($s_interface)) {
             $service_File = Memory::$a_cache['\core\services\File'];
             if (! $service_File->exists(Memory::$a_interface['systemPath'] . $s_interface . '.inc.php')) {
@@ -400,6 +418,7 @@ class Memory
      */
     private static function isModule($s_name, $a_memoryItems, $s_path, $s_namespace, $s_fallback = '')
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $s_name = ucfirst($s_name);
         
         /* Call class file */
@@ -443,6 +462,7 @@ class Memory
      */
     private static function loadModule($s_name, $s_memoryType, $a_data, $s_fallback = '')
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $s_name = ucfirst($s_name);
         
         $object = \Loader::Inject($a_data['systemNamespace'] . $s_name);
@@ -472,6 +492,7 @@ class Memory
      */
     public static function isHelper($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $a_memoryItems = array(
             'helper',
             'helper-data'
@@ -504,6 +525,7 @@ class Memory
      */
     public static function helpers($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         if ($bo_data) {
             return Memory::loadModule($s_name, 'helper-data', Memory::$a_helperData);
         }
@@ -529,6 +551,7 @@ class Memory
      */
     public static function isService($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated, and will be removed after version 3.",E_USER_DEPRECATED);
         $a_memoryItems = array(
             'service',
             'service-data'
@@ -557,6 +580,7 @@ class Memory
      */
     public static function services($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated in favour of \Loader::inject().",E_USER_DEPRECATED);
         if ($bo_data) {
             return Memory::loadModule($s_name, 'service', Memory::$a_serviceData);
         }
@@ -577,6 +601,7 @@ class Memory
      */
     public static function isModel($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated, and will be removed following version 3.",E_USER_DEPRECATED);
         $a_memoryItems = array(
             'model',
             'model-data'
@@ -605,6 +630,7 @@ class Memory
      */
     public static function models($s_name, $bo_data = false)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         if ($bo_data) {
             return Memory::loadModule($s_name, 'model-data', Memory::$a_modelData);
         }
@@ -625,6 +651,7 @@ class Memory
      */
     public static function isLoaded($s_type, $s_name)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $s_type = strtolower($s_type);
         $s_name = ucfirst($s_name);
         
@@ -650,6 +677,7 @@ class Memory
      */
     public static function loadClass($s_class)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $s_class = ucfirst($s_class);
         
         /* Check model */
@@ -700,6 +728,7 @@ class Memory
      */
     public static function loadInterface($s_interface)
     {
+        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $s_interface = ucfirst($s_interface);
         
         /* Check model */
@@ -911,6 +940,7 @@ class Memory
      */
     public static function generateUrl($s_url)
     {
+        trigger_error("This function has been deprecated in favour of Memory::parseUrl().",E_USER_DEPRECATED);
         return Memory::parseUrl($s_url);
     }
 

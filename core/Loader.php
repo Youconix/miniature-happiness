@@ -58,11 +58,7 @@ class Loader
     }
 
     public static function Inject($s_className, $a_arguments = array())
-    {
-        if ($s_className == 'core\database\DAL') {
-            $s_className = 'core\database\Database';
-        }
-        
+    {        
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {
@@ -88,14 +84,6 @@ class Loader
         }
         
         $object = Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
-        
-        if ($s_className == 'core\database\Database') {
-            $object = $object->loadDatabase();
-            
-            if (! \core\Memory::IsInCache($s_className)) {
-                \core\Memory::setCache($s_className, $object);
-            }
-        }
         
         return $object;
     }
@@ -213,7 +201,7 @@ class Loader
      */
     private static function getConstructor($s_filename)
     {
-        $service_File = \core\Memory::services('File');
+        $service_File = \core\Memory::getCache('\core\services\File');
         
         if ($service_File->exists($s_filename)) {
             $s_file = $service_File->readFile($s_filename);
