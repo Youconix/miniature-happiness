@@ -22,32 +22,10 @@
  * @author    Rachelle Scheijen                                                
  * @since     1.0
  */
-define('NIV', './');
-require (NIV . 'core/BaseLogicClass.php');
+require (NIV . 'includes/BaseLogicClass.php');
 
-class ForgotPassword extends \core\BaseLogicClass
+class Forgot_password extends \includes\BaseLogicClass
 {
-
-    /**
-     * PHP 5 constructor
-     */
-    public function __construct()
-    {
-        $this->init();
-        
-        if (isset($this->get['code'])) {
-            $this->verifyCode();
-        } else 
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $this->sendEmail();
-            } else {
-                $this->form();
-            }
-        
-        $this->header();
-        
-        $this->footer();
-    }
 
     /**
      * Inits the class ForgotPassword
@@ -65,55 +43,59 @@ class ForgotPassword extends \core\BaseLogicClass
         
         parent::init();
         
-        $this->service_Template->set('forgotTitle', $this->service_Language->get('language/forgotPassword/header'));
+        $this->service_Template->set('forgotTitle', t('forgotPassword/header'));
     }
 
     /**
      * Verifies the reset code
      */
-    private function verifyCode()
+    protected function verifyCode()
     {
+        if( !isset($this->get['code']) ){
+            $this->service_Headers->redirect('forgot_password/index');
+        }
+        
         $this->service_Template->loadView('reset.tpl');
         
-        if (! Memory::models('User')->resetPassword($this->get['code'])) {
-            $this->service_Template->set('errorNotice', $this->service_Language->get('language/forgotPassword/verifyCodeFailed'));
+        if (! \Loader::inject('\core\models\Login')->resetPassword($this->get['code'])) {
+            $this->service_Template->set('errorNotice', t('forgotPassword/verifyCodeFailed'));
         } else {
-            $this->service_Template->set('notice', $this->service_Language->get('language/forgotPassword/verifyCodeSuccess'));
+            $this->service_Template->set('notice', t('forgotPassword/verifyCodeSuccess'));
         }
     }
 
     /**
      * Sends the password reset email
      */
-    private function sendEmail()
+    protected function sendEmail()
     {
         if ($this->post['email'] == '') {
             $this->service_Template->loadView('index.tpl');
-            $this->form($this->service_Language->get('language/forgotPassword/fieldsEmpty'));
+            $this->form(t('forgotPassword/fieldsEmpty'));
             return;
         }
-        if (! $this->service_Security->checkEmail($this->post['email'])) {
+        if (! $this->service_Validation->checkEmail($this->post['email'])) {
             $this->service_Template->loadView('index.tpl');
-            $this->form($this->service_Language->get('language/forgotPassword/emailError'));
+            $this->form(t('forgotPassword/emailError'));
             return;
         }
         
-        $i_code = Memory::models('User')->resetPasswordMail($this->post['email']);
+        $i_code = \Loader::inject('\core\models\Login')->resetPasswordMail($this->post['email']);
         if ($i_code == - 1) {
             /* Not a normal account */
             $this->service_Template->loadView('index.tpl');
-            $this->form($this->service_Language->get('language/forgotPassword/openID'));
+            $this->form(t('forgotPassword/openID'));
             return;
         } else 
             if ($i_code == 0) {
                 $this->service_Template->loadView('index.tpl');
-                $this->form($this->service_Language->get('language/forgotPassword/resetFailed'));
+                $this->form(t('forgotPassword/resetFailed'));
                 return;
             }
         
         $this->service_Template->loadView('reset.tpl');
         
-        $this->service_Template->set('notice', $this->service_Language->insert($this->service_Language->get('language/forgotPassword/resetSuccess'), 'email', $this->post['email']));
+        $this->service_Template->set('notice', $this->service_Language->insert(t('forgotPassword/resetSuccess'), 'email', $this->post['email']));
     }
 
     /**
@@ -122,13 +104,10 @@ class ForgotPassword extends \core\BaseLogicClass
      * @param string $s_notice
      *            notice, optional
      */
-    private function form($s_notice = '')
+    protected function index($s_notice = '')
     {
-        $this->service_Template->set('email', $this->service_Language->get('language/registration/email'));
+        $this->service_Template->set('email', t('registration/email'));
         $this->service_Template->set('errorNotice', $s_notice);
-        $this->service_Template->set('loginButton', $this->service_Language->get('language/buttons/reset'));
+        $this->service_Template->set('loginButton', t('system/buttons/reset'));
     }
 }
-
-$obj_ForgotPassword = new ForgotPassword();
-unset($obj_ForgotPassword);

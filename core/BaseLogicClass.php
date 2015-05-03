@@ -32,8 +32,14 @@ if (! class_exists('\core\BaseClass')) {
 
 abstract class BaseLogicClass extends \core\BaseClass implements \Routable
 {
-
+    /**
+     * @var \core\services\Session
+     */
     protected $service_Session;
+    /**
+     * @var \core\services\Headers
+     */
+    protected $service_Headers;
 
     public function __construct()
     {
@@ -77,5 +83,6 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
         parent::init();
         
         $this->service_Session = \Loader::Inject('\core\services\Session');
+        $this->service_Headers = \Loader::inject('\core\services\Headers');
     }
 }

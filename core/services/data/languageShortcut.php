@@ -9,7 +9,7 @@
  */
 function t($s_path)
 {
-    $service_Language = \core\Memory::services('Language');
+    $service_Language = \Loader::inject('\core\services\Language');
     return $service_Language->get($s_path);
 }
 
@@ -23,7 +23,7 @@ function t($s_path)
  */
 function tb($s_path)
 {
-    $service_Language = \core\Memory::services('Language');
+    $service_Language = \Loader::inject('\core\services\Language');
     return $service_Language->getBlock($s_path);
 }
 ?>

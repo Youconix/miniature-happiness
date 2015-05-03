@@ -12,19 +12,29 @@ function lookup($s_router)
         return null;
     }
     require (NIV . 'routes.php');
-    if (! array_key_exists($s_router, $a_routes)) {
-        return null;
-    }
-    $a_data = $a_routes[$s_router];
     
-    if (array_key_exists('query', $a_data)) {
-        populateQuery($a_data['query']);
+    $a_routeNames = array_keys($a_routes);
+
+    $i_length = 0;
+    foreach ($a_routeNames as $s_name) {
+        $i_length = strlen($s_name);
+        if (substr($s_router, 0, $i_length) == $s_name) {
+            $a_item = $a_routes[$s_name];
+            
+            if( !preg_match($a_item['regex'],$s_router,  $a_matches) ){
+                continue;
+            }
+
+            for ($i = 1; $i < count($a_matches); $i ++) {
+                $_GET[$a_item['fields'][($i - 1)]] = $a_matches[$i];
+            }
+            
+            return array(
+                'page' => $a_item['page'],
+                'command' => $a_item['command']
+            );
+        }
     }
-    
-    return array(
-        'page' => $a_data['router'],
-        'command' => $a_data['command']
-    );
 }
 
 function translate($s_router)

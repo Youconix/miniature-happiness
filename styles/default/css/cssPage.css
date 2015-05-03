@@ -63,9 +63,9 @@ header, #content, footer, nav {
 }
 
 header, footer {
-	background-color: #b75d5d;
-	border: 3px outset #b75d5d;
-	border-top: 1px solid #b75d5d;
+	background-color: #b49fb3;
+	border: 3px outset #b49fb3;
+	border-top: 1px solid #b49fb3;
 	padding-left: 10px;
 	padding-right: 10px;
 	color: #efecec;
@@ -103,10 +103,10 @@ nav ul {
 }
 
 nav li {
-	border: 2px outset #e8cbcb;
+	border: 2px outset #8c5489;
 	border-bottom-left-radius: 15px;
 	border-bottom-right-radius: 15px;
-	background-color: #e8cbcb;
+	background-color: #8c5489;
 	padding: 5px 10px;
 	float: left;
 	margin-right: 5px;
@@ -115,11 +115,11 @@ nav li {
 }
 
 nav li:hover {
-	border: 2px inset #e8cbcb;
+	border: 2px inset #8c5489;
 }
 
 nav li a, footer a {
-	color: #111;
+	color: #FFF;
 	font-weight: bold;
 	text-decoration: none;
 }
