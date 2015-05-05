@@ -52,8 +52,8 @@ class Login extends \includes\BaseLogicClass
                 
         parent::init();
         
-        $this->model_Login = \core\Memory::models('Login');
-        $this->model_User = \core\Memory::models('User');
+        $this->model_Login = \Loader::inject('\core\models\Login');
+        $this->model_User = \Loader::inject('\core\models\User');
         
         if (! $this->model_Config->isNormalLogin() && $this->model_Config->isLDAPLogin()) {
             \core\Memory::services('Headers')->redirect('authorization/login_ldap/index');
@@ -71,7 +71,7 @@ class Login extends \includes\BaseLogicClass
             $this->model_Login->checkAutologin();
         }
         
-        $model_Config = \core\Memory::models('Config');
+        $model_Config = \Loader::inject('\core\models\Config');
         
         $this->service_Template->set('usernameText', $this->service_Language->get('system/admin/users/username'));
         $this->service_Template->set('passwordText', $this->service_Language->get('system/admin/users/password'));

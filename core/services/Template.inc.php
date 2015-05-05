@@ -151,7 +151,7 @@ class Template extends Service implements \SplObserver
      */
     public function getTemplateDir()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config:getTemplateDir().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->getTemplateDir().",E_USER_DEPRECATED);
         return $this->model_Config->getTemplateDir();
     }
 
@@ -163,7 +163,7 @@ class Template extends Service implements \SplObserver
      */
     public function getStylesDir()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config:getStylesDir().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->getStylesDir().",E_USER_DEPRECATED);
         return $this->model_Config->getStylesDir();
     }
 

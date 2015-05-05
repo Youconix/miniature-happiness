@@ -14,7 +14,7 @@ class Captcha extends \core\BaseClass
 
     private function displayCaptcha()
     {
-        $helper_Captcha = \core\Memory::helpers('Captcha');
+        $helper_Captcha = \Loader::inject('\core\helpers\Captcha');
         $helper_Captcha->generateCapcha();
     }
 }

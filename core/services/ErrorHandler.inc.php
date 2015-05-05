@@ -40,7 +40,7 @@ class ErrorHandler extends Service
      */
     public function __construct(\core\services\Logs $service_Logs)
     {
-        trigger_error("This class has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This class has been deprecated in favour of \core\services\Logs.",E_USER_DEPRECATED);
         $this->service_Logs = $service_Logs;
     }
 

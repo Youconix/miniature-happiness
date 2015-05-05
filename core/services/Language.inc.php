@@ -227,7 +227,7 @@ class Language extends Xml
     public static function text($s_key)
     {
         if (is_null(Language::$_instance)) {
-            Language::$_instance = \core\Memory::services('Language');
+            Language::$_instance = \Loader::inject('\core\services\Language');
         }
         
         return Language::$_instance->get($s_key);

@@ -2,6 +2,19 @@
 namespace core\helpers;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Helper for generating capchas
  *
  * This file is part of Miniature-happiness
@@ -9,19 +22,6 @@ namespace core\helpers;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Captcha extends Helper
 {
@@ -87,8 +87,8 @@ class Captcha extends Helper
             }
             
             $i_up1 = mt_rand(25, 35); // How much pixels from up?
-            $i_up2 = $i_up1 - 1; // Schade
-            $i_up3 = $i_up1 + 2; // Schade
+            $i_up2 = $i_up1 - 1; // Shade
+            $i_up3 = $i_up1 + 2; // Shade
             
             $i_left = $i_left + 34; // Letters zijn nu eenmaal breed...
             $i_left1 = $i_left; // Hoeveel pixels van links?
@@ -103,15 +103,16 @@ class Captcha extends Helper
         }
         
         ob_clean();
-        /* Write image */
-        header("Expires: Mon, 26 Jul 1990 05:00:00 GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-type: image/png');
-        ImagePng($s_image);
-        
-        ImageDestroy($s_image);
+        /*
+         * Write image */
+         header("Expires: Mon, 26 Jul 1990 05:00:00 GMT");
+         header("Cache-Control: no-store, no-cache, must-revalidate");
+         header("Cache-Control: post-check=0, pre-check=0", false);
+         header("Pragma: no-cache");
+         header('Content-type: image/png');
+         ImagePng($s_image);
+         
+         ImageDestroy($s_image);
     }
 
     /**

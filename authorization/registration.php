@@ -42,7 +42,8 @@
         public function __construct()
         {
             $this->init();
-            
+            /** This should go trough the router
+             * 
             if ($this->model_Config->isAjax()) {
                 if ($this->get['command'] == 'checkUsername') {
                     if (! $this->checkUsername($this->get['username'])) {
@@ -61,11 +62,12 @@
                 return;
             }
             
+            
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $this->process();
             } else {
                 $this->form();
-            }
+            } */
         }
 
         /**
@@ -102,7 +104,7 @@
             );
             $this->s_notice = '';
             
-            $this->model_registration = \core\Memory::models('Registration');
+            $this->model_registration = \Loader::inject('\core\models\Registration');
             
             $this->service_Template->setJavascriptLink('<script src="{NIV}/js/registration.js"></script>');
         }
@@ -110,9 +112,9 @@
         /**
          * Displays the registration form
          */
-        private function form()
+        protected function index()
         {
-            $service_Setting = \core\Memory::services('Settings');
+            $service_Setting = \Loader::inject('\core\services\Settings');
             $a_fields = array(
                 'openID',
                 'facebook'
@@ -141,7 +143,7 @@
             $this->service_Template->set('emailText', $this->service_Language->get('system/admin/users/email'));
             $this->service_Template->set('email', $this->a_data['email']);
             
-            $this->service_Template->set('passwordForm', \core\Memory::helpers('PasswordForm')->generate());
+            $this->service_Template->set('passwordForm', \Loader::inject('\core\helpers\PasswordForm')->generate());
             
             $s_registration = $this->service_Language->get('language/registration/registrationVia');
             
@@ -259,6 +261,4 @@
             return \core\Memory::models('User')->checkEmail($s_email);
         }
     }
-    
-    $obj_Registration = new Registration();
-    unset($obj_Registration);
+    ?>

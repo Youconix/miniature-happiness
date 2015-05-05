@@ -22,6 +22,11 @@
  */
 if (! defined('NIV')) {
     define('NIV', '../');
+    interface Routable
+    {
+    
+        public function route($s_command);
+    }
 }
 define('TEMPLATE', 'errors/404/index');
 
@@ -50,14 +55,16 @@ class Error404 extends \includes\BaseLogicClass
     {
         header("HTTP/1.1 404 Not found");
         
-        $service_Language = Memory::services('Language');
+        $service_Language = \Loader::inject('\core\services\Language');
         
         $this->service_Template->set('title', $service_Language->get('language/errors/error404/notFound'));
         
         $this->service_Template->set('notice', $service_Language->get('language/errors/error404/pageMissing'));
         
         if (isset($_SESSION['error'])) {
-            Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
+            $service_Logs = \Loader::inject('\core\services\Logs');
+            $service_Logs->errorLog($_SESSION['error']);
+            
             if (defined('DEBUG')) {
                 
                 $this->service_Template->set('debug_notice', $_SESSION['error']);

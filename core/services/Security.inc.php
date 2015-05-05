@@ -166,7 +166,7 @@ class Security extends Service
      */
     public function checkEmail($s_email)
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated. Please use \core\services\Validation->checkEmail() instead.",E_USER_DEPRECATED);
         return $this->service_Validation->checkEmail($s_email);
     }
 
@@ -181,7 +181,7 @@ class Security extends Service
      */
     public function checkURI($s_uri)
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated. Please use \core\services\Validation->checkURI() instead.",E_USER_DEPRECATED);
         return $this->service_Validation->checkURI($s_uri);
     }
 
@@ -196,7 +196,7 @@ class Security extends Service
      */
     public function checkPostalNL($s_value)
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated. Please use \core\services\Validation->checkPostalNL() instead.",E_USER_DEPRECATED);
         return $this->service_Validation->checkPostalNL($s_value);
     }
 
@@ -211,7 +211,7 @@ class Security extends Service
      */
     public function checkPostalBE($i_value)
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated. Please use \core\services\Validation->checkPostalBE() instead.",E_USER_DEPRECATED);
         return $this->service_Validation->checkPostalBE($i_value);
     }
 

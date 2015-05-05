@@ -10,7 +10,8 @@ class PasswordForm extends Helper
     {
         $this->service_Language = $service_Language;
         
-        $service_Template->headerLink('<script src="{NIV}js/widgets/password_check.php?lang=' . $this->service_Language->getLanguage() . '"></script>');
+        $s_link = '<script src="{NIV}js/widgets/password_check.php?lang=' . $this->service_Language->getLanguage() . '"></script>';
+        $service_Template->setJavascriptLink($s_link);
     }
 
     public function generate()

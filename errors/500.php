@@ -20,6 +20,14 @@
  * @version 1.0
  * @since 1.0
  */
+if (! defined('NIV')) {
+    define('NIV','../');
+    interface Routable
+    {
+    
+        public function route($s_command);
+    }
+}
 if (! class_exists('\includes\BaseLogicClass')) {
     require (NIV . 'includes/BaseLogicClass.php');
 }
@@ -28,13 +36,13 @@ class Error500 extends \includes\BaseLogicClass
 {
 
     /**
-     * Starts the class Error504
+     * Starts the class Error500
      */
     public function __construct()
     {
         $this->init();
         
-        \Core\Memory::services('Template')->setCss('body {
+        \Loader::inject('\core\services\Template')->setCss('body {
           background-color:black;
           color:#23c44d;
           font-family:Lucida Console, monospace;
@@ -51,17 +59,19 @@ class Error500 extends \includes\BaseLogicClass
     {
         header("HTTP/1.1 500 Internal Server Error");
         
-        $service_Language = \core\Memory::services('Language');
+        $service_Language = \Loader::inject('\core\services\Language');
         
         $this->service_Template->set('title', $service_Language->get('language/errors/error500/serverError'));
         
         $this->service_Template->set('notice', $service_Language->get('language/errors/error500/systemError'));
         
         if (isset($_SESSION['error'])) {
+            $service_Logs = \Loader::Inject('\core\services\Logs');
+            
             if (isset($_SESSION['errorObject'])) {
-                \core\Memory::services('ErrorHandler')->error($_SESSION['errorObject']);
+                $service_Logs->exception($_SESSION['errorObject']);
             } else {
-                \core\Memory::services('ErrorHandler')->errorAsString($_SESSION['error']);
+                $service_Logs->errorLog($_SESSION['error']);
             }
             
             if (defined('DEBUG')) {

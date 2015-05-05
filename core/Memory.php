@@ -297,7 +297,7 @@ class Memory
      */
     public static function getProtocol()
     {
-        trigger_error("This function has been deprecated in favour of Config:getProtocolDir().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->getProtocolDir().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getProtocol();
     }
 
@@ -310,7 +310,7 @@ class Memory
      */
     public static function getPage()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config::getPage().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->getPage().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getPage();
     }
 
@@ -323,7 +323,7 @@ class Memory
      */
     public static function isAjax()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config::isAjax().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->isAjax().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->isAjax();
     }
 
@@ -335,7 +335,7 @@ class Memory
      */
     public static function setAjax()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config::setAjax().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->setAjax().",E_USER_DEPRECATED);
         Memory::$a_cache['\core\models\Config']->setAjax();
     }
 
@@ -358,7 +358,7 @@ class Memory
      */
     public static function getBase()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config::getBase().",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of core/models/Config->getBase().",E_USER_DEPRECATED);
         return Memory::$a_cache['\core\models\Config']->getBase();
     }
 
@@ -630,7 +630,7 @@ class Memory
      */
     public static function models($s_name, $bo_data = false)
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
+        trigger_error("This function has been deprecated in favour of \Loader:inject().",E_USER_DEPRECATED);
         if ($bo_data) {
             return Memory::loadModule($s_name, 'model-data', Memory::$a_modelData);
         }
@@ -936,7 +936,7 @@ class Memory
      * @param String $s_url
      *            The relative url
      * @return String The absolute url
-     * @deprecated See parseUrl
+     * @deprecated See core/Memory::parseUrl()
      */
     public static function generateUrl($s_url)
     {
