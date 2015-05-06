@@ -35,14 +35,14 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function setUp()
+    protected function setUp()
     {
         \core\Memory::setTesting();
         
         ob_start();
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         \core\Memory::reset();
         
