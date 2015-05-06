@@ -5,6 +5,7 @@
       <xs:sequence>
         <xs:element ref="testsuites"/>
       </xs:sequence>
+      <xs:attribute name="bootstrap" type="xs:string"/>
       <xs:attribute name="backupGlobals" type="xs:string" use="required"/>
       <xs:attribute name="backupStaticAttributes" type="xs:string" use="required"/>
       <xs:attribute name="syntaxCheck" type="xs:string" use="required"/>
