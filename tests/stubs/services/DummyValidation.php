@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\services\Validation')) {
-    require (NIV . 'core/services/Validation.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummyValidation extends \core\services\Validation
 {

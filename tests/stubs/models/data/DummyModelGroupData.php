@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\models\data\DataGroup')) {
-    require (NIV . 'core/models/data/DataGroup.inc.php');
-}
+namespace tests\stubs\models\data;
 
 class DummyModelGroupData extends \core\models\data\DataGroup
 {

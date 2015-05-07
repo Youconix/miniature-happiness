@@ -1,11 +1,5 @@
 <?php
-if (! class_exists('\core\models\data\DataUser')) {
-    if (! class_exists('\core\models\GeneralUser')) {
-        require (NIV . 'core/models/GeneralUser');
-    }
-    
-    require (NIV . 'core/models/data/DataUser.inc.php');
-}
+namespace tests\stubs\models\data;
 
 class DummyModelUserData extends \core\models\data\DataUser
 {

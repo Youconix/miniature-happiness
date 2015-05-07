@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\models\User')) {
-    require (NIV . 'core/models/User.inc.php');
-}
+namespace tests\stubs\models;
 
 class DummyModelUser extends \core\models\User
 {

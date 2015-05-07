@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\services\Mailer')) {
-    require (NIV . 'core/services/Mailer.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummyMailer extends \core\services\Mailer
 {

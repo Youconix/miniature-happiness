@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\database;
+
 if (! interface_exists('DAL')) {
     if (! class_exists('\core\services\Service')) {
         require (NIV . 'core/services/Service.inc.php');

@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\services;
+
 if (! class_exists('\core\services\File')) {
     require (NIV . 'core/services/File.inc.php');
 }

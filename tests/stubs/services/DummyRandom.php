@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\services\Random')) {
-    require (NIV . 'core/services/Random.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummyRandom extends \core\services\Random
 {

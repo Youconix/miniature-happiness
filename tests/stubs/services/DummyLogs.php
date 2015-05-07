@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\services;
+
 if (! class_exists('\core\services\Logs')) {
     require (NIV . 'core/services/Logs.inc.php');
 }

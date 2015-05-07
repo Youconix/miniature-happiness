@@ -1,7 +1,5 @@
 <?php
-if (! class_exists('\core\services\Session')) {
-    require (NIV . 'core/services/Session.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummySession extends Session
 {

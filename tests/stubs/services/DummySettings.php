@@ -1,10 +1,5 @@
 <?php
-if (! class_exists('\core\services\Service')) {
-    require (NIV . 'core/services/Service.inc.php');
-}
-if (! class_exists('\core\services\Settings')) {
-    require_once (NIV . 'core/services/Settings.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummySettings extends \core\services\Settings
 {

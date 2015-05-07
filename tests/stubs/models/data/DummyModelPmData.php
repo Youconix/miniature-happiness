@@ -1,9 +1,7 @@
 <?php
-if (! class_exists('\core\models\data\Data_PM')) {
-    require (NIV . 'core/models/data/DataPM.inc.php');
-}
+namespace tests\stubs\models\data;
 
-class DummyModelPmData extends \core\models\data\Data_PM
+class DummyModelPmData extends \core\models\data\DataPM
 {
 
     /**

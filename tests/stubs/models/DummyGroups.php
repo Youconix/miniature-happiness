@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\models;
+
 if (! class_exists('\core\models\Model')) {
     require (NIV . 'core/models/Model.inc.php');
 }

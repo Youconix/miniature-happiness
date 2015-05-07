@@ -1,9 +1,5 @@
 <?php
-if (! interface_exists('Builder')) {
-    if (! class_exists('\core\services\Service')) {
-        require (NIV . 'core/services/Service.inc.php');
-    }
-}
+namespace tests\stubs\services;
 
 class DummyQueryBuilder extends \core\services\QueryBuilder
 {

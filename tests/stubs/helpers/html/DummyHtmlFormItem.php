@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\helpers\html;
+
 class DummyHtmlFormItem extends core\helpers\html\HtmlFormItem
 {
 

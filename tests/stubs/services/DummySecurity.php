@@ -1,10 +1,5 @@
 <?php
-if (! class_exists('\core\services\Service')) {
-    require (NIV . 'core/services/Service.inc.php');
-}
-if (! class_exists('\core\services\Security')) {
-    require_once (NIV . 'core/services/Security.inc.php');
-}
+namespace tests\stubs\services;
 
 class DummySecurity extends \core\services\Security
 {

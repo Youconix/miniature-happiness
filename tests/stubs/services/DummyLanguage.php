@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\services;
+
 if (! class_exists('\core\services\Language')) {
     if (! class_exists('\core\services\Service')) {
         require (NIV . 'core/services/Service.inc.php');

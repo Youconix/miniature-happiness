@@ -1,4 +1,6 @@
 <?php
+namespace tests\stubs\services;
+
 if (! class_exists('\core\services\Hashing')) {
     require (NIV . 'core/services/Hashing.inc.php');
 }
