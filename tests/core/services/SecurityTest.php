@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testSecurity extends GeneralTest
+class testSecurity extends \tests\GeneralTest
 {
 
     private $service_Security;
@@ -17,15 +13,13 @@ class testSecurity extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Security.inc.php');
-        
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Validation = new DummyValidation();
+        $service_Validation = new \tests\stubs\services\Validation();
         $this->service_Security = new \core\services\Security($service_Validation);
     }
 

@@ -1,11 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-if (! class_exists('\core\services\Cookie')) {
-    require (NIV . 'core/services/Cookie.inc.php');
-}
-
-class DummyCookie extends \core\services\Cookie
+class Cookie extends \core\services\Cookie
 {
 
     private $a_data = array();

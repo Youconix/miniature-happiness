@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\models\data;
 
-class DummyModelPmData extends \core\models\data\DataPM
+class ModelPmData extends \core\models\data\DataPM
 {
 
     /**

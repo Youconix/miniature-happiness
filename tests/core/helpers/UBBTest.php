@@ -2,11 +2,8 @@
 if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
 
-class testUBB extends GeneralTest
+class testUBB extends \tests\GeneralTest
 {
 
     private $helper_UBB;
@@ -16,16 +13,14 @@ class testUBB extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/helpers/UBB.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Builder = new DummyQueryBuilder($service_Database);
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
         $this->helper_UBB = new \core\helpers\UBB($service_Builder);
     }
 

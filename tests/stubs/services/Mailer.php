@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummyMailer extends \core\services\Mailer
+class Mailer extends \core\services\Mailer
 {
 
     public function __construct()

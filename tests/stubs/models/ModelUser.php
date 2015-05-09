@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\models;
 
-class DummyModelUser extends \core\models\User
+class ModelUser extends \core\models\User
 {
 
     public function __construct(\core\models\data\DataUser $model_UserData)

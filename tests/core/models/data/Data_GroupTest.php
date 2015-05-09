@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testData_Group extends GeneralTest
+class testData_Group extends \tests\GeneralTest
 {
 
     private $model_Group;
@@ -18,18 +14,15 @@ class testData_Group extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/data/DataGroup.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $this->service_Database = new DummyDAL();
-        $service_Validation = new DummyValidation();
-        $service_Builder = new DummyQueryBuilder($this->service_Database);
+        $this->service_Database = new \tests\stubs\database\DAL();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $service_Builder = new \tests\stubs\services\QueryBuilder($this->service_Database);
         
         $this->i_id = 10000;
         $this->s_name = 'test group';

@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\models\data;
 
-class DummyModelGroupData extends \core\models\data\DataGroup
+class ModelGroupData extends \core\models\data\DataGroup
 {
 
     public function __construct()

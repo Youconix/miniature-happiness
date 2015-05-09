@@ -1,6 +1,6 @@
 <?php
 namespace tests\stubs\services;
 
-class DummyCache extends \core\services\Cache {
+class Cache extends \core\services\Cache {
     
 }

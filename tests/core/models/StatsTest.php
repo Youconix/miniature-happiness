@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testStats extends GeneralTest
+class testStats extends \tests\GeneralTest
 {
 
     private $service_Builder;
@@ -23,20 +19,16 @@ class testStats extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/Stats.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Validation = new DummyValidation();
-        $service_Security = new DummySecurity($service_Validation);
-        $this->service_Builder = new DummyQueryBuilder($service_Database);
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $service_Security = new \tests\stubs\services\Security($service_Validation);
+        $this->service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
         
         $this->model_Stats = new \core\models\Stats($this->service_Builder, $service_Validation);
         $this->i_date = mktime(0, 0, 0, date("n"), 1, date("Y"));

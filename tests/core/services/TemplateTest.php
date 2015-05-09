@@ -11,35 +11,24 @@ class testTemplate extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Template.inc.php');
-        
-        $this->loadStub('DummyCache');
-        $this->loadStub('DummyConfig');
-        $this->loadStub('DummyCookie');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyFile');
-        $this->loadStub('DummyHeaders');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
-        $this->loadStub('DummySettings');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_File = new DummyFile();
-        $service_Settings = new DummySettings();
-        $service_Validation = new DummyValidation;
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_File = new \tests\stubs\services\File();
+        $service_Settings = new \tests\stubs\services\Settings();
+        $service_Validation = new \tests\stubs\services\Validation;
         
-        $service_Security = new DummySecurity($service_Validation);
-        $service_Cookie = new DummyCookie($service_Security);
-        $service_QueryBuilder = new DummyQueryBuilder($service_Database);
+        $service_Security = new \tests\stubs\services\Security($service_Validation);
+        $service_Cookie = new \tests\stubs\services\Cookie($service_Security);
+        $service_QueryBuilder = new \tests\stubs\services\QueryBuilder($service_Database);
         
-        $service_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
-        $service_Headers = new DummyHeaders($service_Config);
-        $service_Cache = new DummyCache($service_File, $service_Config, $service_Headers, $service_QueryBuilder);
+        $service_Config = new \tests\stubs\services\Config($service_File, $service_Settings, $service_Cookie);
+        $service_Headers = new \tests\stubs\services\Headers($service_Config);
+        $service_Cache = new \tests\stubs\services\Cache($service_File, $service_Config, $service_Headers, $service_QueryBuilder);
         
         $this->service_Template = new \core\services\Template($service_File, $service_Config, $service_Cache, $service_Headers);
     }

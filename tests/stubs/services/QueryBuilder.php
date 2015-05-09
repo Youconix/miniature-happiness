@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummyQueryBuilder extends \core\services\QueryBuilder
+class QueryBuilder extends \core\services\QueryBuilder
 {
 
     private $service_Database;

@@ -1,17 +1,7 @@
 <?php
 namespace tests\stubs\models;
 
-if (! class_exists('\core\models\Model')) {
-    require (NIV . 'core/models/Model.inc.php');
-}
-if (! class_exists('\core\models\Groups')) {
-    require (NIV . 'core/models/Groups.inc.php');
-}
-if (! class_exists('\core\services\Session')) {
-    require (NIV . 'core/services/Session.inc.php');
-}
-
-class DummyGroups extends \core\models\Groups
+class Groups extends \core\models\Groups
 {
 
     public function __construct(\core\models\data\DataGroup $model_DataGroup)

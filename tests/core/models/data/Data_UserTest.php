@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testDataUser extends GeneralTest
+class testDataUser extends \tests\GeneralTest
 {
 
     private $obj_User;
@@ -20,27 +16,19 @@ class testDataUser extends GeneralTest
         
         require_once (NIV . 'core/models/GeneralUser.inc.php');
         require_once (NIV . 'core/models/data/DataUser.inc.php');
-        
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
-        $this->loadStub('DummyModelGroupData');
-        $this->loadStub('DummyGroups');
-        $this->loadStub('DummyLanguage');
-        $this->loadStub('DummyHashing');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Security = new DummySecurity($service_Database);
-        $service_Builder = new DummyQueryBuilder($service_Database);
-        $model_GroupsData = new DummyModelGroupData();
-        $model_Groups = new DummyGroups($model_GroupsData);
-        $service_Language = new DummyLanguage();
-        $service_Hashing = new DummyHashing();
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Security = new \tests\stubs\services\Security($service_Database);
+        $service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
+        $model_GroupsData = new \tests\stubs\models\data\ModelGroupData();
+        $model_Groups = new \tests\stubs\models\Groups($model_GroupsData);
+        $service_Language = new \tests\stubs\services\Language();
+        $service_Hashing = new \tests\stubs\services\Hashing();
         
         $this->i_userid = 0;
         $this->obj_User = new \core\models\data\DataUser($service_Builder, $service_Security, $service_Hashing, $model_Groups, $service_Language);

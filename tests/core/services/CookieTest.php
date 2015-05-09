@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testCookie extends GeneralTest
+class testCookie extends \tests\GeneralTest
 {
 
     private $service_Security;
@@ -25,12 +21,10 @@ class testCookie extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Cookie.inc.php');
-        $this->loadStub('DummySecurity');
-        $this->loadStub('DummyValidation');
                 
-        $service_Validation = new DummyValidation();
+        $service_Validation = new \tests\stubs\services\Validation();
         
-        $this->service_Security = new DummySecurity($service_Validation);
+        $this->service_Security = new \tests\stubs\services\Security($service_Validation);
     }
 
     public function setUp()

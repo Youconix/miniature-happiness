@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testTable extends GeneralTest
+class testTable extends \tests\GeneralTest
 {
 
     private $s_content = 'test table cell';

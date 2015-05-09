@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummyValidation extends \core\services\Validation
+class Validation extends \core\services\Validation
 {
     protected $a_errors;
     

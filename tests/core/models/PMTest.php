@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testPM extends GeneralTest
+class testPM extends \tests\GeneralTest
 {
 
     private $model_PM;
@@ -25,13 +21,6 @@ class testPM extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/PM.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummyModelUser');
-        $this->loadStub('DummyModelPmData');
-        $this->loadStub('DummyModelUserData');
-        $this->loadStub('DummyMailer');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
@@ -42,14 +31,14 @@ class testPM extends GeneralTest
         $this->s_message = 'test message';
         $this->i_sender = 1;
         
-        $service_Validation = new DummyValidation();
-        $service_Database = new DummyDAL();
-        $service_Builder = new DummyQueryBuilder($service_Database);
-        $this->obj_receiver = new DummyModelUserData();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
+        $this->obj_receiver = new \tests\stubs\models\data\ModelUserData();
         $this->obj_receiver->i_userid = 0;
-        $model_User = new DummyModelUser($this->obj_receiver);
-        $model_PM = new DummyModelPmData($service_Builder, $service_Validation, $model_User);
-        $service_Mailer = new DummyMailer();
+        $model_User = new \tests\stubs\models\ModelUser($this->obj_receiver);
+        $model_PM = new \tests\stubs\models\data\ModelPmData($service_Builder, $service_Validation, $model_User);
+        $service_Mailer = new \tests\stubs\services\Mailer();
         
         $this->model_PM = new \core\models\PM($service_Builder, $service_Validation, $model_PM, $service_Mailer);
         if ( ! defined('USERID') ) {

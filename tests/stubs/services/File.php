@@ -1,11 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-if (! class_exists('\core\services\File')) {
-    require (NIV . 'core/services/File.inc.php');
-}
-
-class DummyFile extends \core\services\File
+class File extends \core\services\File
 {
 
     public function __construct()

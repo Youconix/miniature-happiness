@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testCoreHtmlItem extends GeneralTest
+class testCoreHtmlItem extends \tests\GeneralTest
 {
 
     private $obj_CoreHtmlItem;
@@ -21,16 +17,14 @@ class testCoreHtmlItem extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/helpers/Helper.inc.php');
-        require_once (NIV . 'core/helpers/HTML.inc.php');
-        
-        $this->loadStub('DummyCoreHtmlItem');
+        require_once (NIV . 'core/helpers/HTML.inc.php');      
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $this->obj_CoreHtmlItem = new DummyCoreHtmlItem($this->s_tag);
+        $this->obj_CoreHtmlItem = new \tests\stubs\services\CoreHtmlItem($this->s_tag);
     }
 
     public function tearDown()

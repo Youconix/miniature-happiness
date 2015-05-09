@@ -1,9 +1,7 @@
 <?php
 define('NIV', dirname(__FILE__) . '/../../../');
 
-require (NIV . 'tests/GeneralTest.php');
-
-class testFile extends GeneralTest
+class testFile extends \tests\GeneralTest
 {
 
     private $service_File;

@@ -1,11 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-if (! class_exists('\core\services\Hashing')) {
-    require (NIV . 'core/services/Hashing.inc.php');
-}
-
-class DummyHashing extends \core\services\Hashing
+class Hashing extends \core\services\Hashing
 {
 
     private $service_Random;

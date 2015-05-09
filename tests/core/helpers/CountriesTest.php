@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testCountries extends GeneralTest
+class testCountries extends \tests\GeneralTest
 {
 
     private $helper_countries;
@@ -25,19 +21,15 @@ class testCountries extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/helpers/Countries.inc.php');
-        
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummyLanguage');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $this->service_QueryBuilder = new DummyQueryBuilder($service_Database);
-        $this->service_Language = new DummyLanguage();
+        $service_Database = new \tests\stubs\database\DAL();
+        $this->service_QueryBuilder = new \tests\stubs\services\QueryBuilder($service_Database);
+        $this->service_Language = new \tests\stubs\services\Language();
         
         $this->helper_countries = new \core\helpers\Countries($this->service_QueryBuilder, $this->service_Language);
     }

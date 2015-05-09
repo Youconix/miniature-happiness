@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummySecurity extends \core\services\Security
+class Security extends \core\services\Security
 {
 
     public function secureString($s_input)

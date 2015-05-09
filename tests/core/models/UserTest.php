@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testUser extends GeneralTest
+class testUser extends \tests\GeneralTest
 {
 
     private $service_Builder;
@@ -23,30 +19,21 @@ class testUser extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/User.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummyHashing');
-        $this->loadStub('DummyRandom');
-        $this->loadStub('DummySession');
-        $this->loadStub('DummyModelGroupData');
-        $this->loadStub('DummyGroups');
-        $this->loadStub('DummyModelUserData');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $this->service_Database = new DummyDAL();
-        $service_Validation = new DummyValidation();
-        $this->service_Builder = new DummyQueryBuilder($this->service_Database);
-        $service_Random = new DummyRandom();
-        $service_Hashing = new DummyHashing($service_Random);
-        $service_Session = new DummySession();
-        $model_GroupsData = new DummyModelGroupData();
-        $model_Groups = new DummyGroups($model_GroupsData);
-        $model_UserData = new DummyModelUserData();
+        $this->service_Database = new \tests\stubs\database\DummyDAL();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $this->service_Builder = new \tests\stubs\services\QueryBuilder($this->service_Database);
+        $service_Random = new \tests\stubs\services\Random();
+        $service_Hashing = new \tests\stubs\services\Hashing($service_Random);
+        $service_Session = new \tests\stubs\services\Session();
+        $model_GroupsData = new \tests\stubs\models\data\ModelGroupData();
+        $model_Groups = new \tests\stubs\models\Groups($model_GroupsData);
+        $model_UserData = new \tests\stubs\models\data\ModelUserData();
         
         $this->model_User = new \core\models\User($this->service_Builder, $service_Validation, $service_Hashing, $service_Session, $model_Groups, $model_UserData);
         $this->s_username = 'System';

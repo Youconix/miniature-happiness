@@ -4,11 +4,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testGroups extends GeneralTest
+class testGroups extends \tests\GeneralTest
 {
 
     private $model_Groups;
@@ -28,16 +24,6 @@ class testGroups extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/Groups.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummySecurity');
-        $this->loadStub('DummySession');
-        $this->loadStub('DummyModelGroupData');
-        $this->loadStub('DummyValidation');
-        $this->loadStub('DummyConfig');
-        $this->loadStub('DummyFile');
-        $this->loadStub('DummySettings');
-        $this->loadStub('DummyCookie');
     }
 
     public function setUp()
@@ -50,16 +36,16 @@ class testGroups extends GeneralTest
         $this->i_default = 1;
         $this->s_description = 'test group';
         
-        $service_Database = new DummyDAL();
-        $service_Validation = new DummyValidation();
-        $service_Security = new DummySecurity($service_Validation);
-        $service_Builder = new DummyQueryBuilder($service_Database);
-        $service_Session = new DummySession();
-        $service_File = new DummyFile();
-        $service_Settings = new DummySettings();
-        $service_Cookie = new DummyCookie($service_Security);
-        $model_GroupData = new DummyModelGroupData();
-        $model_Config = new DummyConfig($service_File, $service_Settings, $service_Cookie);
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $service_Security = new \tests\stubs\services\Security($service_Validation);
+        $service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
+        $service_Session = new \tests\stubs\services\Session();
+        $service_File = new \tests\stubs\services\File();
+        $service_Settings = new \tests\stubs\services\Settings();
+        $service_Cookie = new \tests\stubs\services\Cookie($service_Security);
+        $model_GroupData = new \tests\stubs\models\data\ModelGroupData();
+        $model_Config = new \tests\stubs\services\Config($service_File, $service_Settings, $service_Cookie);
         
         $this->model_Groups = new \core\models\Groups($service_Builder, $service_Validation, $model_GroupData, $model_Config);
     }

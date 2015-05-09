@@ -2,11 +2,8 @@
 if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
 
-class testDate extends GeneralTest
+class testDate extends \tests\GeneralTest
 {
 
     private $helper_Date;

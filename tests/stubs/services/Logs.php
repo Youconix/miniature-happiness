@@ -1,11 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-if (! class_exists('\core\services\Logs')) {
-    require (NIV . 'core/services/Logs.inc.php');
-}
-
-class DummyLogs extends \core\services\Logs
+class Logs extends \core\services\Logs
 {
 
     public $s_loginLog = '';

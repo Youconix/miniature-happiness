@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testSession extends GeneralTest
+class testSession extends \tests\GeneralTest
 {
 
     private $service_Settings;
@@ -27,14 +23,8 @@ class testSession extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Session.inc.php');
-        
-        $this->loadStub('DummySettings');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyModelGroupData');
-        $this->loadStub('DummyGroups');
-        $this->loadStub('DummyQueryBuilder');
        
-        $this->service_Settings = new DummySettings();
+        $this->service_Settings = new \tests\stubs\services\Settings();
         $this->service_Settings->setValue('settings/session/sessionName', 'phpunit');
         $this->service_Settings->setValue('settings/session/sessionPath',sys_get_temp_dir());
         $this->service_Settings->setValue('settings/session/sessionExpire',60);
@@ -43,10 +33,10 @@ class testSession extends GeneralTest
     public function setUp()
     {
         parent::setUp();
-        $this->service_Database = new DummyDAL();
-        $model_DataGroups = new DummyModelGroupData();
-        $this->model_Groups = new DummyGroups($model_DataGroups);
-        $service_Database = new DummyQueryBuilder($this->service_Database);
+        $this->service_Database = new \tests\stubs\database\DAL();
+        $model_DataGroups = new \tests\stubs\models\data\ModelGroupData();
+        $this->model_Groups = new \tests\stubs\models\Groups($model_DataGroups);
+        $service_Database = new \tests\stubs\services\QueryBuilder($this->service_Database);
 
         $this->service_Session = new \core\services\Session($this->service_Settings, $service_Database, $this->model_Groups);
         

@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummySettings extends \core\services\Settings
+class Settings extends \core\services\Settings
 {
 
     private $a_values = array();

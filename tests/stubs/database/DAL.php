@@ -1,17 +1,7 @@
 <?php
 namespace tests\stubs\database;
 
-if (! interface_exists('DAL')) {
-    if (! class_exists('\core\services\Service')) {
-        require (NIV . 'core/services/Service.inc.php');
-    }
-    
-    if (! class_exists('\core\database\Database')) {
-        require (NIV . 'core/database/Database.inc.php');
-    }
-}
-
-class DummyDAL implements \core\database\DAL
+class DAL implements \core\database\DAL
 {
 
     public $i_numRows = 0;

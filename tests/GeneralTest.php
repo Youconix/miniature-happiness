@@ -1,4 +1,5 @@
 <?php
+namespace tests;
 
 abstract class GeneralTest extends PHPUnit_Framework_TestCase
 {
@@ -37,10 +38,11 @@ abstract class GeneralTest extends PHPUnit_Framework_TestCase
         ob_flush();
     }
 
-    protected function loadStub($s_name)
+    // This function should now no longer be used, as far as we know. - Roxanna
+/*     protected function loadStub($s_name)
     {
         if (! class_exists($s_name)) {
             require (NIV . 'tests/stubs/' . $s_name . '.php');
         }
-    }
+    } */
 }

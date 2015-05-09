@@ -1,12 +1,10 @@
 <?php
-define('NIV', dirname(__FILE__) . '/../../../');
-require (NIV . 'tests/GeneralTest.php');
 
 /**
  * @author roxanna
  * @requires extension ldap
  */
-class testLDAP extends GeneralTest
+class testLDAP extends \tests\GeneralTest
 {
 
     private $service_Settings;
@@ -25,11 +23,10 @@ class testLDAP extends GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'core/exceptions/LdapException.inc.php');
-        require_once (NIV . 'core/services/LDAP.inc.php');
+/*         require_once (NIV . 'core/exceptions/LdapException.inc.php');
+        require_once (NIV . 'core/services/LDAP.inc.php'); */
         
-        $this->loadStub('DummySettings');
-        $this->service_Settings = new DummySettings();
+        $this->service_Settings = new \tests\stubs\services\Settings();
         $this->service_Settings->setValue('settings/LDAP/server', 'test_server.loc');
         $this->service_Settings->setValue('settings/LDAP/port', 1050);
         $this->service_Settings->setValue('settings/LDAP/version', 3);

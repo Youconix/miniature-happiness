@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testData_PM extends GeneralTest
+class testData_PM extends \tests\GeneralTest
 {
 
     private $model_PM;
@@ -25,24 +21,18 @@ class testData_PM extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/data/DataPM.inc.php');
-        $this->loadStub('DummyDAL');
-        $this->loadStub('DummyQueryBuilder');
-        $this->loadStub('DummyModelUser');
-        $this->loadStub('DummyGroups');
-        $this->loadStub('DummyModelUserData');
-        $this->loadStub('DummyValidation');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Database = new DummyDAL();
-        $service_Validation = new DummyValidation();
-        $service_Builder = new DummyQueryBuilder($service_Database);
-        $model_UserData = new DummyModelUserData();
+        $service_Database = new \tests\stubs\database\DAL();
+        $service_Validation = new \tests\stubs\services\Validation();
+        $service_Builder = new \tests\stubs\services\QueryBuilder($service_Database);
+        $model_UserData = new \tests\stubs\models\data\ModelUserData();
         
-        $model_User = new DummyModelUser($model_UserData);
+        $model_User = new \tests\stubs\models\ModelUser($model_UserData);
         
         $this->i_sender = 0;
         $this->i_receiverID = 0;

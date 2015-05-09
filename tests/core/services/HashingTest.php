@@ -3,11 +3,7 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testHashing extends GeneralTest
+class testHashing extends \tests\GeneralTest
 {
 
     private $s_text = 'test text';
@@ -29,18 +25,15 @@ class testHashing extends GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/services/Hashing.inc.php');
-        $this->loadStub('DummyLogs');
-        $this->loadStub('DummySettings');
-        $this->loadStub('DummyRandom');
     }
 
     public function setUp()
     {
         parent::setUp();
         
-        $service_Logs = new DummyLogs();
-        $service_Settings = new DummySettings();
-        $service_Random = new DummyRandom();
+        $service_Logs = new \tests\stubs\services\Logs();
+        $service_Settings = new \tests\stubs\services\Settings();
+        $service_Random = new \tests\stubs\services\Random();
         
         $service_Settings->setValue('settings/main/salt', $this->s_salt);
         
