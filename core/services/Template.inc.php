@@ -246,7 +246,8 @@ class Template extends Service implements \SplObserver
      */
     private function parse()
     {
-        preg_match_all('/\<include src="([a-zA-Z\-_\.]+)"\>/', $this->s_template, $a_matches);
+        preg_match_all('/\<include src="([a-zA-Z\-_\.\/]+)"\>/', $this->s_template, $a_matches);
+        
         if (array_key_exists(1, $a_matches)) {
             $s_dir = NIV . 'styles/' . $this->s_templateDir . '/templates/';
             
@@ -654,7 +655,7 @@ class Template extends Service implements \SplObserver
         
         $i_pos = stripos($this->s_template, $s_search);
         if ($i_pos === false) {
-            \Loader::Inject('\core\services\Logs')->exception(new \TemplateException('Notice : Call to undefined template block ' . $s_key . '.'));
+            throw new \TemplateException('Notice : Call to undefined template block ' . $s_key . '.');
             return;
         }
         
