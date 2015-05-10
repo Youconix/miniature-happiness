@@ -37,6 +37,7 @@
 		<month11>November</month11>
 		<month12>December</month12>
 	</months>
+	
 	<monthsShort>
         <month1>Jan</month1>
         <month2>Feb</month2>
@@ -122,21 +123,14 @@
 	       <screen_sizes>Scherm afmetingen</screen_sizes>
 	       <references>Afkomstig van</references>
 	       <pages>Pagina's</pages>
-	   </statistics>
-	   
+	   </statistics>	   
 		<software>
 			<noContact>Er kan geen contact gemaakt worden met de update server.</noContact>
 			<upToDate>Systeem is up to date.</upToDate>
 			<updateAvailable>Er zijn updates beschikbaar.</updateAvailable>
 			<updateFailure>Er is een fout opgetreden tijdens het updaten.</updateFailure>
 			<updateSucceed>Het systeem is bijgewerkt.</updateSucceed>
-		</software>	
-		<index>
-			<title>Beheerderspaneel</title>
-			<portletLoading>Laden.....</portletLoading>
-			<securityTitle>Veiligheid log</securityTitle>
-			<errorTitle>Fout log</errorTitle>
-		</index>
+		</software>
 		<groups>
 		    <memberlist>Ledenlijst</memberlist>
 		    <headerView>Groep</headerView>
@@ -161,7 +155,7 @@
 			</js>
 		</groups>
 		<users>
-		    <searchText>Zoek op gebruikersnaam, email of groep</searchText>
+		    <searchText>Zoek op gebruikersnaam of email</searchText>
 		    <id>ID</id>
 			<title>Gebruiker beheer</title>
 			<users>Gebruikers</users>
@@ -297,6 +291,8 @@
            </sessions>
            <languages>
                 <title>Talen</title>
+                <installLanguages>Talen installeren</installLanguages>
+                <editLanguages>Taalbestanden bewerken</editLanguages>
            </languages>  
            <cache>
                 <title>Cache instellingen</title>
@@ -354,7 +350,7 @@
 			 </ssl>
 			
 			<defaultLanguage>Standaard taal</defaultLanguage>
-			
+			<fallbackLanguage>Backup taal</fallbackLanguage>
 			
 			<username>Gebruikersnaam</username>
 			<password>Wachtwoord</password>
@@ -418,7 +414,6 @@
 		<userWelcome>Welkom </userWelcome>
 		<adminWelcome>Welkom admin </adminWelcome>
 	</header>
-
 	
 	<logout>
 		<title></title>

@@ -24,13 +24,18 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Language extends Xml
+class Language extends Service
 {
-
     private $s_language = null;
 
+    /**
+     * @var \core\services\File
+     */
     private $service_File;
 
+    /**
+     * @var \core\services\Settings
+     */
     private $service_Settings;
 
     private $a_documents = array();
@@ -38,6 +43,8 @@ class Language extends Xml
     private $bo_fallback = false;
 
     private $obj_parser;
+    
+    private $obj_parserFallback = null;
 
     private static $_instance;
 
@@ -52,15 +59,17 @@ class Language extends Xml
      *            The file service
      */
     public function __construct(\core\models\Config $model_Config, \core\services\Cookie $service_Cookie, \core\services\File $service_File)
-    {
-        parent::__construct();
-        
+    {        
         /* Check language */
         $this->service_File = $service_File;
         $this->service_Settings = $model_Config->getSettings();
         $this->s_language = $model_Config->getLanguage();
+        $s_languageFallback = $this->service_Settings->get('fallbackLanguage');
         
-        $this->loadLanguageParser();
+        $this->obj_parser = $this->loadLanguageParser($this->s_language);
+        if( $s_languageFallback != $this->s_language ){
+            $this->obj_parserFallback = $this->loadLanguageParser($s_languageFallback);
+        }
     }
 
     /**
@@ -73,69 +82,79 @@ class Language extends Xml
         return true;
     }
 
-    private function loadLanguageParser()
+    /**
+     * Loads the language parser
+     * @param string $s_language    The language code
+     * @return Object   The language parser
+     */
+    private function loadLanguageParser($s_language)
     {
         if ($this->service_Settings->exists('language/type') && $this->service_Settings->get('language/type') == 'mo') {
-            $this->obj_parser = \Loader::Inject('\core\services\data\LanguageMO', array(
-                $this->s_language
+            $obj_parser = \Loader::Inject('\core\services\data\LanguageMO', array(
+                $s_language
             ));
         } else {
-            $this->obj_parser = \Loader::Inject('\core\services\data\LanguageXML', array(
-                $this->s_language,
+            $obj_parser = \Loader::Inject('\core\services\data\LanguageXML', array(
+                $s_language,
                 $this->bo_fallback
             ));
         }
         
-        if( !function_exists('t') ){
+        if (! function_exists('t')) {
             require (NIV . 'core/services/data/languageShortcut.php');
         }
-    }
-
-    public function getLanguageFiles()
-    {
-        $a_files = array_keys($this->a_documents);
-        $a_data = array(
-            'language' => $this->s_language,
-            'files' => array()
-        );
         
-        foreach ($a_files as $s_file) {
-            if ($s_file == 'site' && $this->bo_fallback) {
-                $a_data['files'][$s_file] = 'language/language_' . $this->s_language . '.lang';
-            } else {
-                $a_data['files'][$s_file] = 'language/' . $this->s_language . '/' . $s_file . '.lang';
-            }
-        }
-        return $a_data;
+        return $obj_parser;
     }
 
+    /**
+     * Gets the name belonging to the language code
+     * 
+     * @param string $s_code    The language code
+     * @return string   The language name
+     */
+    public function getLanguageText($s_code)
+    {
+        $a_codes = $this->getLanguageCodes();
+        if (array_key_exists($s_code, $a_codes)) {
+            return $a_codes[$s_code];
+        }
+        
+        return $s_code;
+    }
+
+    /**
+     * Returns the language codes
+     * 
+     * @return array    The codes
+     */
     public function getLanguageCodes()
     {
         return array(
-            'nl_BE' => 'Vlaams',
-            'nl_NL' => 'Nederlands',
-            'en_AU' => 'English Australia',
-            'en_BW' => 'English (Botswana)',
-            'en_CA' => 'English (Canada)',
-            'en_DK' => 'English (Denmark)',
-            'en_GB' => 'English (Great Brittan)',
-            'en_UK' => 'English (Great Brittan)',
-            'en_HK' => 'English (Hong Kong)',
-            'en_IE' => 'English (Ireland)',
-            'en_IN' => 'English (India)',
-            'en_NZ' => 'English (New Zealand)',
-            'en_PH' => 'English (Philippines)',
-            'en_SG' => 'English (Singapore)',
-            'en_US' => 'English (United States)',
-            'en_ZA' => 'English (South Africa)',
-            'en_ZW' => 'English (Zimbabwe)'
+            'nl-BE' => 'Vlaams',
+            'nl-NL' => 'Nederlands',
+            'en-AU' => 'English Australia',
+            'en-BW' => 'English (Botswana)',
+            'en-CA' => 'English (Canada)',
+            'en-DK' => 'English (Denmark)',
+            'en-GB' => 'English (Great Brittan)',
+            'en-UK' => 'English (Great Brittan)',
+            'en-HK' => 'English (Hong Kong)',
+            'en-IE' => 'English (Ireland)',
+            'en-IN' => 'English (India)',
+            'en-NZ' => 'English (New Zealand)',
+            'en-PH' => 'English (Philippines)',
+            'en-SG' => 'English (Singapore)',
+            'en-US' => 'English (United States)',
+            'en-ZA' => 'English (South Africa)',
+            'en-ZW' => 'English (Zimbabwe)'
         );
     }
 
     /**
      * Sets the language
      *
-     * @param String $s_language
+     * @param string $s_language
      *            code
      * @throws IOException when the language code does not exist
      */
@@ -143,13 +162,13 @@ class Language extends Xml
     {
         $this->s_language = $s_language;
         
-        $this->loadLanguageParser();
+        $this->obj_parser = $this->loadLanguageParser($this->s_language);
     }
 
     /**
      * Returns the set language
      *
-     * @return String The set language
+     * @return string The set language
      */
     public function getLanguage()
     {
@@ -159,7 +178,7 @@ class Language extends Xml
     /**
      * Returns the set encoding
      *
-     * @return String The set encoding
+     * @return string The set encoding
      */
     public function getEncoding()
     {
@@ -169,21 +188,30 @@ class Language extends Xml
     /**
      * Gives the asked part of the loaded file
      *
-     * @param String $s_path
+     * @param string $s_path
      *            The path to the language-part
-     * @return String The content of the requested part
+     * @return string The content of the requested part
      * @throws XMLException when the path does not exist
      */
     public function get($s_path)
     {
-        return $this->obj_parser->get($s_path);
+        try {
+            return $this->obj_parser->get($s_path);
+        }
+        catch(\XMLException $e){
+            if( !is_null($this->obj_parserFallback) ){
+                return $this->obj_parserFallback->get($s_path);
+            }
+            
+            throw $e;
+        }
     }
 
     /**
      * Changes the language-values with the given values
      * Collects the text from the language file via the path
      *
-     * @param String $s_path
+     * @param string $s_path
      *            The path to the language-part
      * @param array $a_fields
      *            accepts also a string
@@ -194,7 +222,16 @@ class Language extends Xml
      */
     public function insertPath($s_path, $a_fields, $a_values)
     {
-        return $this->obj_parser->insertPath($s_path, $a_fields, $a_values);
+        try {
+            return $this->obj_parser->insertPath($s_path, $a_fields, $a_values);
+        }
+        catch(\XMLException $e ){
+            if( !is_null($this->obj_parserFallback) ){
+                return $this->obj_parserFallback->insertPath($s_path, $a_fields, $a_values);
+            }
+            
+            throw $e;
+        }
     }
 
     /**
@@ -215,7 +252,7 @@ class Language extends Xml
     /**
      * Checks of the given part of the loaded file exists
      *
-     * @param String $s_path
+     * @param string $s_path
      *            The path to the language-part
      * @return boolean, true if the part exists otherwise false
      */
