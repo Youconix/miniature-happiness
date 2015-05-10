@@ -6,6 +6,17 @@ interface Routable
     public function route($s_command);
 }
 
+function populateGET(){
+    if( strpos($_SERVER['REQUEST_URI'],'?') !== false ){
+        $a_query = explode('?',$_SERVER['REQUEST_URI']);
+        $a_query = explode('&',$a_query[1]);
+        foreach( $a_query AS $part ){
+            $part = explode('=',$part);
+            $_GET[$part[0]] = $part[1];
+        }
+    }
+}
+
 function lookup($s_router)
 {
     if (! file_exists(NIV . 'routes.php')) {
@@ -14,17 +25,17 @@ function lookup($s_router)
     require (NIV . 'routes.php');
     
     $a_routeNames = array_keys($a_routes);
-
+    
     $i_length = 0;
     foreach ($a_routeNames as $s_name) {
         $i_length = strlen($s_name);
         if (substr($s_router, 0, $i_length) == $s_name) {
             $a_item = $a_routes[$s_name];
             
-            if( !preg_match($a_item['regex'],$s_router,  $a_matches) ){
+            if (! preg_match($a_item['regex'], $s_router, $a_matches)) {
                 continue;
             }
-
+            
             for ($i = 1; $i < count($a_matches); $i ++) {
                 $_GET[$a_item['fields'][($i - 1)]] = $a_matches[$i];
             }
@@ -94,17 +105,26 @@ $s_page = $a_data['page'];
 $s_command = $a_data['command'];
 unset($_GET['router']);
 
-if (! file_exists($s_page . '.php')) {
-    @session_start();
-    $_SESSION['error'] = 'HTTP 404 : can not find page ' . $s_page;
-    include ('errors/404.php');
-    exit();
-}
-
 $_GET['command'] = $s_command;
 $_SERVER['SCRIPT_NAME'] = $s_page . '.php';
 
-require ($s_page . '.php');
+populateGET();
+
+require (NIV . 'core/bootstrap.inc.php');
+
+if (! file_exists($_SERVER['SCRIPT_NAME'])) {
+    @session_start();
+    $_SESSION['error'] = 'HTTP 404 : can not find page ' . $_SERVER['SCRIPT_NAME'];
+    include ('errors/Error404.php');
+    exit();
+}
+
+require ($_SERVER['SCRIPT_NAME']);
+if (defined('LAYOUT')) {
+    \Loader::Inject('\core\models\Config')->setLayout(LAYOUT);
+}
+
+$s_page = str_replace('.php','',$_SERVER['SCRIPT_NAME']);
 
 $a_class = explode('/', $s_page);
 $s_className = UCfirst(end($a_class));
@@ -112,36 +132,37 @@ $s_className = UCfirst(end($a_class));
 $s_namespace = '\\' . str_replace('/', '\\', $s_page);
 $s_namespace = str_replace('\\' . end($a_class), '\\' . $s_className, $s_namespace);
 
-if (! class_exists($s_className)) {
-    if (class_exists($s_namespace)) {
-        $s_className = $s_namespace;
-    } else {
-        @session_start();
-        $_SESSION['error'] = 'HTTP 500 : class ' . $s_className . ' not found.';
-        include ('errors/404.php');
-        exit();
-    }
+@session_start();
+
+if (class_exists($s_namespace)) {
+    $s_className = $s_namespace;
+} else {
+    $_SESSION['error'] = 'HTTP 500 : class ' . $s_className . ' not found.';
+    include ('errors/Error404.php');
+    exit();
 }
 
+$s_command = $_GET['command']; // make sure we have the right one after privileges check
+
 try {
-    $obj_class = new $s_className();
+    $obj_class = \Loader::inject($s_namespace);
     
     if (! is_subclass_of($obj_class, 'Routable')) {
         $_SESSION['error'] = 'HTTP 500 : class ' . $s_className . ' is not routable';
-        include ('errors/404.php');
-        exit();
-    }
-    
-    if (! method_exists($obj_class, $s_command)) {
-        $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command;
-        include (NIV . 'errors/500.php');
+        include ('errors/Error404.php');
         exit();
     }
     
     $obj_class->route($s_command);
-} catch (TemplateException $e) {
-    $_SESSION['error'] = 'HTTP 500 : missing method ' . $s_command . ' on page ' . $s_page . '.';
-    include (NIV . 'errors/404.php');
+}
+catch(BadMethodCallException $e){
+    $_SESSION['errorObject'] = $e;
+    include (NIV . 'errors/Error500.php');
+    exit();
+}
+ catch (TemplateException $e) {
+    $_SESSION['error'] = 'HTTP 500 : '.$e->getMessage();
+    include (NIV . 'errors/Error404.php');
     exit();
 } catch (CoreException $e) {
     header('HTTP/1.1 500 Internal Server Error');
@@ -180,9 +201,9 @@ try {
     $_SESSION['error'] = $e->getMessage() . '</p><p>' . nl2br($e->getTraceAsString()) . '</p>';
     $_SESSION['errorObject'] = $e;
     
-    \Core\Memory::models('Config')->setPage('errors/500', 'index', 'default');
+    \Loader::Inject('\core\models\Config')->setPage('errors/500', 'index', 'default');
     
-    include (NIV . 'errors/500.php');
+    include (NIV . 'errors/Error500.php');
     exit();
 }
 ?>

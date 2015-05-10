@@ -26,50 +26,57 @@ namespace core;
  * @since 1.0
  * @see core/BaseClass.php
  */
-include_once (NIV . 'core/BaseClass.php');
+include_once (NIV . 'core/BaseLogicClass.php');
 
-abstract class AdminLogicClass extends BaseClass
+abstract class AdminLogicClass extends \core\BaseLogicClass
 {
-
-    protected $service_Security;
-
-    protected $service_Session;
-
-    protected $model_User;
-
-    protected $s_language;
-
-    public function __construct()
+    /**
+     * Admin class constructor
+     *
+     * @param \core\services\Security $service_Security
+     * @param \core\models\Config $model_Config
+     * @param \core\services\Language $service_Language
+     * @param \core\services\Template $service_Template
+     */
+    public function __construct(\core\services\Security $service_Security,\core\models\Config $model_Config,
+        \core\services\Language $service_Language,\core\services\Template $service_Template)
     {
-        $this->init();
+        $model_Config->setLayout('admin');
         
-        $this->checkAjax();
+        $this->model_Config = $model_Config;
+        $this->service_Language = $service_Language;
+        $this->service_Template = $service_Template;
+        $this->service_Security = $service_Security;
+        
+        $this->init();
     }
-
-    protected function checkAjax()
+    
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
     {
-        if (! $this->model_Config->isAjax()) {
-            exit();
+        if (! method_exists($this, $s_command)) {
+            throw new \BadMethodCallException('Call to unkown method '.$s_command.' on class '.get_class($this).'.');
         }
+        
+        $this->$s_command();
     }
 
     /**
      * Inits the class AdminLogicClass
      *
-     * @see BaseClass::init()
+     * @see BaseLogicClass::init()
      */
     protected function init()
     {
-        define('LAYOUT', 'admin');
+        if (! $this->model_Config->isAjax()) {
+            exit();
+        }
         
-        parent::init();
-        
-        $this->service_Session = \Loader::Inject('core\services\Session');
-        $this->model_User = \Loader::Inject('core\models\User');
-        
-        $this->s_language = $this->service_Language->getLanguage();
-        if (! $this->model_Config->isAjax())
-            $this->service_Template->set('noscript', '<noscript>' . $this->service_Language->get('language/noscript') . '</noscript>');
+        parent::init();            
     }
 }
 

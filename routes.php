@@ -7,6 +7,14 @@ $a_routes = array(
         ),
         'page' => 'forgot_password',
         'command' => 'verifyCode'
+    ),
+    'activate/code' => array(
+        'regex' =>  '#^activate/code/([a-zA-Z0-9]+)$#',
+        'fields' => array(
+            'key'
+        ),
+        'page' => 'activate',
+        'command' => 'code'
     )
 );
 

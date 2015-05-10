@@ -20,21 +20,37 @@
  * @version	1.0
  * @since		1.0
  */
-use \core\Memory;
-if (! defined('NIV')) {
-    define('NIV', './');
-}
-
-include (NIV . 'core/BaseLogicClass.php');
-
-class Index extends \core\BaseLogicClass
+class Index extends \includes\BaseLogicClass
 {
+
+    /**
+     *
+     * @var \core\helpers\IndexInstall
+     */
+    protected $helper_IndexInstall;
+
+    /**
+     * Constructor
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
+     * @param \core\classes\Header $header            
+     * @param \core\classes\Menu $menu            
+     */
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\helpers\IndexInstall $helper_Index)
+    {
+        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template, $header, $menu, $footer);
+        
+        $this->helper_IndexInstall = $helper_Index;
+    }
 
     /**
      * Sets the index content
      */
     protected function view()
     {
-        $this->service_Template->set('content',\Loader::inject('\core\helpers\IndexInstall'));
+        $this->service_Template->set('content', $this->helper_IndexInstall->generate());
     }
 }

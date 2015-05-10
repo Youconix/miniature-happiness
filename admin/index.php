@@ -28,23 +28,48 @@ include (NIV . 'core/BaseLogicClass.php');
 class Index extends \core\BaseLogicClass
 {
 
-    protected function view()
-    {
-        \Loader::Inject('\core\helpers\ConfirmBox');
-    }
+    /**
+     *
+     * @var \core\classes\HeaderAdmin
+     */
+    protected $headerAdmin;
 
     /**
-     * Routes the controller
      *
-     * @see Routable::route()
+     * @var \core\classes\MenuAdmin
      */
-    public function route($s_command)
+    protected $menuAdmin;
+
+    /**
+     * Base graphic class constructor
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
+     * @param \core\classes\HeaderAdmin $header            
+     * @param \core\classes\MenuAdmin $menu            
+     * @param \core\classes\Footer $footer            
+     * @param \core\helpers\ConfirmBox $confirmbox            
+     */
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \core\classes\Footer $footer, \core\helpers\ConfirmBox $confirmbox)
     {
-        $this->$s_command();
+        $model_Config->setLayout('admin');
         
-        \Loader::Inject('core\classes\MenuAdmin');
-        \Loader::Inject('core\classes\HeaderAdmin');
+        $this->model_Config = $model_Config;
+        $this->service_Language = $service_Language;
+        $this->service_Template = $service_Template;
+        $this->service_Security = $service_Security;
+        
+        $this->headerAdmin = $header;
+        $this->footer = $footer;
+        $this->menuAdmin = $menu;
+        
+        $this->init();
     }
+
+    protected function view()
+    {}
 
     /**
      * Inits the class AdminLogicClass
@@ -52,15 +77,25 @@ class Index extends \core\BaseLogicClass
      * @see BaseClass::init()
      */
     protected function init()
-    {
-        define('LAYOUT', 'admin');
-                
+    {        
         parent::init();
         
-        $this->service_Session = \Loader::Inject('\core\services\Session');
-        $this->model_User = \Loader::Inject('\core\models\User');
-        \Loader::inject('\core\helpers\ConfirmBox');
-        
         $this->service_Template->setJavascriptLink('<script src="{NIV}js/admin/language.php?lang=' . $this->service_Language->getLanguage() . '"></script>');
+        $this->service_Template->set('noscript', '<noscript>' . $this->service_Language->get('language/noscript') . '</noscript>');
+    }
+
+    /**
+     * Shows the header, menu and footer
+     */
+    protected function showLayout()
+    {
+        /* Call header */
+        $this->headerAdmin->createHeader();
+        
+        /* Call Menu */
+        $this->menuAdmin->generateMenu();
+        
+        /* Call footer */
+        $this->footer->createFooter();
     }
 }

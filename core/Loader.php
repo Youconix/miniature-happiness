@@ -25,17 +25,27 @@ class Loader
             return 'lib' . DIRECTORY_SEPARATOR . $s_fileName;
         }
         
-        if (file_exists(NIV . $s_fileName)) {
-            return $s_fileName;
-        }
-        
         $s_fileName = str_replace('.php', '.inc.php', $s_fileName);
+        
         if (file_exists(NIV . $s_fileName)) {
             return $s_fileName;
         }
         
-        if (defined('WEBSITE_ROOT') && file_exists(WEBSITE_ROOT . $s_fileName)) {
-            return WEBSITE_ROOT . $s_fileName;
+        $s_fileName = str_replace('.inc.php', '.php', $s_fileName);
+        if (file_exists(NIV . $s_fileName)) {
+            return $s_fileName;
+        }
+        if (file_exists(NIV . strtolower($s_fileName))) {
+            return strtolower($s_fileName);
+        }
+        
+        if (defined('WEBSITE_ROOT')) {
+            if (file_exists(WEBSITE_ROOT . $s_fileName)) {
+                return WEBSITE_ROOT . $s_fileName;
+            }
+            if (file_exists(WEBSITE_ROOT . strtolower($s_fileName))) {
+                return WEBSITE_ROOT . strtolower($s_fileName);
+            }
         }
         
         return null;
@@ -58,7 +68,7 @@ class Loader
     }
 
     public static function Inject($s_className, $a_arguments = array())
-    {        
+    {
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {

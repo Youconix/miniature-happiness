@@ -28,6 +28,47 @@ class Forgot_password extends \includes\BaseLogicClass
 {
 
     /**
+     *
+     * @var \core\models\Login
+     */
+    protected $model_Login;
+
+    /**
+     *
+     * @var \core\services\Headers
+     */
+    protected $service_Headers;
+
+    /**
+     *
+     * @var \core\services\Validation
+     */
+    protected $service_Validation;
+
+    /**
+     * Base graphic class constructor
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
+     * @param \core\classes\Header $header            
+     * @param \core\classes\Menu $menu            
+     * @param \core\classes\Footer $footer            
+     * @param \core\models\Login $model_Login            
+     * @param \core\services\Headers $service_Headers            
+     * @param \core\services\Validation $service_Validation            
+     */
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\models\Login $model_Login, \core\services\Headers $service_Headers, \core\services\Validation $service_Validation)
+    {
+        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template, $header, $menu, $footer);
+        
+        $this->model_Login = $model_Login;
+        $this->service_Headers = $service_Headers;
+        $this->service_Validation = $service_Validation;
+    }
+
+    /**
      * Inits the class ForgotPassword
      *
      * @see BaseClass::init()
@@ -51,13 +92,13 @@ class Forgot_password extends \includes\BaseLogicClass
      */
     protected function verifyCode()
     {
-        if( !isset($this->get['code']) ){
+        if (! isset($this->get['code'])) {
             $this->service_Headers->redirect('forgot_password/index');
         }
         
         $this->service_Template->loadView('reset.tpl');
         
-        if (! \Loader::inject('\core\models\Login')->resetPassword($this->get['code'])) {
+        if (! $this->model_Login->resetPassword($this->get['code'])) {
             $this->service_Template->set('errorNotice', t('forgotPassword/verifyCodeFailed'));
         } else {
             $this->service_Template->set('notice', t('forgotPassword/verifyCodeSuccess'));
@@ -80,7 +121,7 @@ class Forgot_password extends \includes\BaseLogicClass
             return;
         }
         
-        $i_code = \Loader::inject('\core\models\Login')->resetPasswordMail($this->post['email']);
+        $i_code = $this->model_Login->resetPasswordMail($this->post['email']);
         if ($i_code == - 1) {
             /* Not a normal account */
             $this->service_Template->loadView('index.tpl');
