@@ -33,6 +33,12 @@ class Cache extends \admin\Settings
 {
 
     /**
+     *
+     * @var \core\services\Cache
+     */
+    private $service_Cache;
+
+    /**
      * Calls the functions
      */
     protected function menu()
@@ -49,6 +55,14 @@ class Cache extends \admin\Settings
                     case 'cache':
                         $this->cacheSave();
                         break;
+                    
+                    case 'addNoCache':
+                        $this->addNoCache();
+                        break;
+                        
+                    case 'deleteNoCache' :
+                        $this->deleteNoCache();
+                        break;
                 }
             }
     }
@@ -60,10 +74,14 @@ class Cache extends \admin\Settings
     {
         $this->init_post = array(
             'cache' => 'boolean',
-            'expire' => 'int'
+            'expire' => 'int',
+            'page' => 'string',
+            'id' => 'int'
         );
         
         parent::init();
+        
+        $this->service_Cache = \Loader::Inject('\core\services\Cache');
     }
 
     /**
@@ -76,22 +94,18 @@ class Cache extends \admin\Settings
         if ($this->getValue('cache/status') == 1) {
             $this->service_Template->set('cacheActive', 'checked="checked"');
         } else {
-            // $this->service_Template->set('cacheSettings','style="display:none"');
+            $this->service_Template->set('cacheSettings', 'style="display:none"');
         }
         
         $this->service_Template->set('cacheExpireText', 'Cache verloop tijd in seconden');
         $this->service_Template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
         
-        $this->service_Builder->select('no_cache', '*');
-        $service_database = $this->service_Builder->getResult();
-        if ($service_database->num_rows() > 0) {
-            $a_pages = $service_database->fetch_assoc();
-            foreach ($a_pages as $a_page) {
-                $this->service_Template->setBlock('noCache', array(
-                    'id' => $a_page['id'],
-                    'name' => $a_page['page']
-                ));
-            }
+        $a_pages = $this->service_Cache->getNoCachePages();
+        foreach ($a_pages as $a_page) {
+            $this->service_Template->setBlock('noCache', array(
+                'id' => $a_page['id'],
+                'name' => $a_page['page']
+            ));
         }
         
         $this->service_Template->set('delete', t('system/buttons/delete'));
@@ -123,6 +137,37 @@ class Cache extends \admin\Settings
         $this->setValue('cache/status', $this->post['cache']);
         $this->setValue('cache/timeout', $this->post['expire']);
         $this->service_Settings->save();
+    }
+
+    private function addNoCache()
+    {
+        if (! $this->service_Validation->validate(array(
+            'page' => array(
+                'type'=> 'string',
+                'required' => 1
+            )
+        ), $this->post)) {
+            return;
+        }
+        
+        $i_id = $this->service_Cache->addNoCachePage($this->post['page']);
+        $this->service_Template->set('id',$i_id);
+        $this->service_Template->set('name',$this->post['page']);
+        $this->service_Template->set('delete',t('system/buttons/delete'));
+    }
+    
+    private function deleteNoCache(){
+        if (! $this->service_Validation->validate(array(
+            'id' => array(
+                'type'=> 'int',
+                'required' => 1,
+                'min'=>1
+            )
+        ), $this->post)) {
+            return;
+        }
+        
+        $this->service_Cache->deleteNoCache($this->post['id']);
     }
 }
 

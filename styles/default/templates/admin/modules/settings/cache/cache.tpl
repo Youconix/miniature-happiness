@@ -10,11 +10,11 @@
 	  <label class="label" for="cacheActive">{cacheActiveText}</label>
 	  <input type="checkbox" id="cacheActive" name="cacheActive" {cacheActive}>
         </fieldset>
-        <div id="cacheSettings">
-        <fieldset>
-	  <label class="label" for="expire">{cacheExpireText} *</label>
-	  <input type="number" id="expire" name="expire" min="60" step="1" value="{cacheExpire}" required>
-        </fieldset>
+        <div id="cacheSettings" {cacheSettings}>
+            <fieldset>
+                <label class="label" for="expire">{cacheExpireText} *</label>
+                <input type="number" id="expire" name="expire" min="60" step="1" value="{cacheExpire}" required>
+            </fieldset>
         </div>
         
         <p><input type="button" id="settings_cache_save" value="{saveButton}"></p>
@@ -24,10 +24,10 @@
         <table id="nonCacheList" data-styledir="{NIV}{style_dir}">
         <tbody>
         <block {noCache}>
-	<tr>
-	  <td data-id="{id}">{name}</td>
-	  <td><img src="{NIV}{style_dir}images/icon/delete.png" alt="{delete}" title="{delete}"></td>
-	</tr>
+			<tr data-id="{id}">
+			 <td><img src="{NIV}{style_dir}images/icons/delete.png" alt="{delete}" title="{delete}"></td>
+			 <td>{name}</td>
+			</tr>
         </block>
         </tbody>
         </table>

@@ -31,8 +31,6 @@ class Modules extends \core\AdminLogicClass
 
     private $model_controlPanelModules;
 
-    private $service_Logs;
-
     /**
      * Starts the class Modules
      */
@@ -40,7 +38,7 @@ class Modules extends \core\AdminLogicClass
     {
         $this->init();
         
-        if (! \core\Memory::models('Config')->isAjax()) {
+        if (! $this->model_Config->isAjax()) {
             exit();
         }
         
@@ -76,8 +74,7 @@ class Modules extends \core\AdminLogicClass
         
         parent::init();
         
-        $this->model_controlPanelModules = \core\Memory::models('ControlPanelModules');
-        $this->service_Logs = \core\Memory::services('Logs');
+        $this->model_controlPanelModules = \Loader::inject('\core\models\ControlPanelModules');
     }
 
     /**

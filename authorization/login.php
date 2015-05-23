@@ -1,4 +1,6 @@
 <?php
+namespace Authorization;
+
 /**
  * Log in page
  *
@@ -23,8 +25,10 @@
  */
 if (! defined('NIV')) {
     define('NIV', '../');
+    include (NIV . 'includes/BaseLogicClass.php');
 }
-include (NIV . 'includes/BaseLogicClass.php');
+define('FORCE_SSL',true);
+
 
 class Login extends \includes\BaseLogicClass
 {
@@ -70,15 +74,13 @@ class Login extends \includes\BaseLogicClass
         } else {
             $this->model_Login->checkAutologin();
         }
-        
-        $model_Config = \Loader::inject('\core\models\Config');
-        
+
         $this->service_Template->set('usernameText', $this->service_Language->get('system/admin/users/username'));
         $this->service_Template->set('passwordText', $this->service_Language->get('system/admin/users/password'));
         $this->service_Template->set('autologin', $this->service_Language->get('login/autologin'));
         $this->service_Template->set('loginButton', $this->service_Language->get('login/button'));
         $this->service_Template->set('registration', $this->service_Language->get('login/registration'));
-        if ($model_Config->isNormalLogin()) {
+        if ($this->model_Config->isNormalLogin()) {
             $this->service_Template->set('forgotPassword', $this->service_Language->get('login/forgotPassword'));
         }
         
@@ -86,14 +88,14 @@ class Login extends \includes\BaseLogicClass
             $this->service_Template->set('username', $this->post['username']);
         }
         
-        if ($model_Config->isFacebookLogin()) {
+        if ($this->model_Config->isFacebookLogin()) {
             $this->service_Template->setBlock('login', array(
                 'image' => 'facebook',
                 'key' => 'facebook',
                 'text' => $this->service_Language->get('loginFacebook')
             ));
         }
-        if ($model_Config->isOpenIDLogin()) {
+        if ($this->model_Config->isOpenIDLogin()) {
             $this->service_Template->setBlock('login', array(
                 'image' => 'openID',
                 'key' => 'openID',

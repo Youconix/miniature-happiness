@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,27 +23,39 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 2.0
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
-
 class Cache extends \core\AdminLogicClass
 {
 
+    /**
+     *
+     * @var \core\services\Cache
+     */
     private $service_Cache;
 
     /**
-     * PHP 5 constructor
+     * Starts the class Cache
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
      */
-    public function __construct()
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\services\Cache $service_Cache)
     {
-        $this->init();
+        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template);
         
-        if (! \core\Memory::models('Config')->isAjax()) {
-            exit();
-        }
-        
-        if (isset($this->post['command'])) {
-            switch ($this->post['command']) {
+        $this->service_Cache = $service_Cache;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            switch ($s_command) {
                 case 'language':
                     $this->service_Cache->cleanLanguageCache();
                     break;
@@ -54,17 +66,4 @@ class Cache extends \core\AdminLogicClass
             }
         }
     }
-
-    /**
-     * Inits the class Groups
-     */
-    protected function init()
-    {
-        parent::init();
-        
-        $this->service_Cache = \Loader::Inject('\core\services\Cache');
-    }
 }
-
-$obj_Cache = new Cache();
-unset($obj_Cache);

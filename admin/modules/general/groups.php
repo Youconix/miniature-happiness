@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
-
 class Groups extends \core\AdminLogicClass
 {
 
+    /**
+     *
+     * @var \core\models\Groups
+     */
     private $model_Groups;
 
     private $a_systemGroups = array(
@@ -37,18 +38,30 @@ class Groups extends \core\AdminLogicClass
     );
 
     /**
-     * PHP 5 constructor
+     * Groups constructor
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
+     * @param \core\models\Groups $model_Groups            
      */
-    public function __construct()
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\models\Groups $model_Groups)
     {
-        $this->init();
+        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template);
         
-        if (! \core\Memory::models('Config')->isAjax()) {
-            exit();
-        }
-        
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        $this->model_Groups = $model_Groups;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            switch ($s_command) {
                 case 'view':
                     $this->view();
                     break;
@@ -63,22 +76,21 @@ class Groups extends \core\AdminLogicClass
                     $this->groupview();
                     break;
             }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'add':
-                        $this->add();
-                        break;
-                    
-                    case 'edit':
-                        $this->edit();
-                        break;
-                    
-                    case 'delete':
-                        $this->delete();
-                        break;
-                }
+        } else {
+            switch ($s_command) {
+                case 'add':
+                    $this->add();
+                    break;
+                
+                case 'edit':
+                    $this->edit();
+                    break;
+                
+                case 'delete':
+                    $this->delete();
+                    break;
             }
+        }
     }
 
     /**
@@ -99,8 +111,6 @@ class Groups extends \core\AdminLogicClass
         );
         
         parent::init();
-        
-        $this->model_Groups = \core\Memory::models('Groups');
     }
 
     /**
@@ -293,6 +303,3 @@ class Groups extends \core\AdminLogicClass
         $this->service_Template->set('headerAutomatic', t('system/admin/groups/standard'));
     }
 }
-
-$obj_Groups = new Groups();
-unset($obj_Groups);

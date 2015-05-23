@@ -1,9 +1,17 @@
 <?php
 define('NIV', '../../');
 
-class AdminGroups
+class AdminLanguage
 {
 
+    /**
+     * @var \core\services\Language
+     */
+    private $service_Language;
+    /**
+     * @var \core\services\Builder
+     */
+    private $service_Builder;
     private $a_items = array();
 
     public function __construct()
@@ -11,7 +19,8 @@ class AdminGroups
         require (NIV . 'core/Memory.php');
         \core\Memory::startUp();
         
-        $this->service_Language = \core\Memory::services('Language');
+        $this->service_Language = \Loader::inject('\core\services\Language');
+        $this->service_Builder = \Loader::inject('\core\services\QueryBuilder')->createBuilder();
         
         $this->getItems();
         
@@ -20,9 +29,8 @@ class AdminGroups
 
     private function getItems()
     {
-        $service_QueryBuilder = \core\Memory::services('QueryBuilder')->createBuilder();
-        $service_QueryBuilder->select('language_admin', 'javascript,language');
-        $database = $service_QueryBuilder->getResult();
+        $this->service_Builder->select('language_admin', 'javascript,language');
+        $database = $this->service_Builder->getResult();
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_assoc();
@@ -40,7 +48,7 @@ class AdminGroups
         }
         $s_text .= '};';
         
-        $service_Headers = \core\Memory::services('Headers');
+        $service_Headers = \Loader::inject('\core\services\Headers');
         
         $service_Headers->setJavascript();
         $service_Headers->cache(- 1);
@@ -49,5 +57,5 @@ class AdminGroups
     }
 }
 
-$obj_AdminGroups = new AdminGroups();
+$obj_AdminLanguage = new AdminLanguage();
 ?>

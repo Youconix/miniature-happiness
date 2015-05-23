@@ -85,6 +85,26 @@ class Xml extends Service
         
         $this->obj_document = new \DOMXPath($this->dom_document);
     }
+    
+    public function loadXML($s_content){
+        $this->createDocument($s_encoding, true);
+        
+        if (! $this->dom_document->loadXML($s_content)) {
+            throw new \IOException("Can not load XML content. Content may be invalid.");
+        }
+        
+        $this->obj_document = new \DOMXPath($this->dom_document);
+    }
+    
+    public function loadHTML($s_content){
+        $this->createDocument($s_encoding, true);
+        
+        if (! $this->dom_document->loadHTML($s_content)) {
+            throw new \IOException("Can not load HTML content. Content may be invalid.");
+        }
+        
+        $this->obj_document = new \DOMXPath($this->dom_document);
+    }
 
     /**
      * Gives the asked part of the loaded file

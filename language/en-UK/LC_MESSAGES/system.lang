@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<system>
+	<days>
+		<day0>Sunday</day0>
+		<day1>Monday</day1>
+		<day2>Tuesday</day2>
+		<day3>Wednesday</day3>
+		<day4>Thursday</day4>
+		<day5>Friday</day5>
+		<day6>Saturday</day6>
+	</days>
+	
+	<weekdaysShort>
+		<day0>Su</day0>
+		<day1>Mo</day1>
+		<day2>Tu</day2>
+		<day3>We</day3>
+		<day4>Th</day4>
+		<day5>Fr</day5>
+		<day6>Sa</day6>
+	</weekdaysShort>
+	
+	<months>
+		<month1>January</month1>
+		<month2>February</month2>
+		<month3>March</month3>
+		<month4>April</month4>
+		<month5>May</month5>
+		<month6>June</month6>
+		<month7>July</month7>
+		<month8>August</month8>
+		<month9>September</month9>
+		<month10>October</month10>
+		<month11>November</month11>
+		<month12>December</month12>
+	</months>
+		
+    <monthsShort>
+        <month1>Jan</month1>
+        <month2>Feb</month2>
+        <month3>Ma</month3>
+        <month4>Apr</month4>
+        <month5>May</month5>
+        <month6>Jun</month6>
+        <month7>Jul</month7>
+        <month8>Aug</month8>
+        <month9>Sep</month9>
+        <month10>Oct</month10>
+        <month11>Nov</month11>
+        <month12>Dec</month12>
+    </monthsShort>
+
+	<gender>
+		<male>Male</male>
+		<female>Female</female>
+		<other>Not specified</other>
+	</gender>
+
+	<rights>
+		<level_0>User</level_0>
+		<level_1>Moderator</level_1>
+		<level_2>Administrator</level_2>
+	</rights>
+	
+	<marital>
+		<married>Married</married>
+		<registeredPartner>Registered partner</registeredPartner>
+		<divorced>Divorced</divorced>
+		<unknown>Else</unknown>
+		<single>Single</single>
+		<livingTogetherContract>Living together with a contract</livingTogetherContract>
+		<livingTogether>Living together</livingTogether>
+		<widow>Widow/Widower</widow>
+	</marital>
+	
+    <menu>
+       <adminPanel>Control panel</adminPanel>
+       <general>General</general>
+       <settings>Settings</settings>
+       <statistics>Statistics</statistics>
+    </menu>
+	
+	<admin>
+	   <general>
+           <users>Users</users>
+           <groups>Groups</groups>
+           <page_rights>Page rights</page_rights>
+           <logs>Logs</logs>
+           <updates>Updates</updates>
+           <backup>Backup</backup>
+           <maintenance>Maintenance</maintenance>
+           <cache>Cache</cache>
+           <modules>Modules</modules>
+       </general>
+       <modules>
+           <moduleTitle>Modules</moduleTitle>
+           <headerName>Module</headerName>
+           <headerAuthor>Author</headerAuthor>
+           <headerVersion>Version</headerVersion>
+           <headerDescription>Description</headerDescription>
+           <installedModulesTitle><![CDATA[ Installed modules ]]></installedModulesTitle>
+           <upgradableModulesTitle>Upgrades</upgradableModulesTitle>
+           <headerVersionAvaiable>New version</headerVersionAvaiable>
+           <newModulesTitle>Available modules</newModulesTitle>
+           <deleteConfirmTitle>Delete moodule</deleteConfirmTitle>   
+           <deleteConfirm>Are you sure you want to remove module [name]?</deleteConfirm>
+           <upgradeConfirmTitle>Update module</upgradeConfirmTitle>
+           <upgradeConfirm>Are you sure you want to update module [name]?</upgradeConfirm>
+           <installConfirmTitle>Install module</installConfirmTitle>
+           <installConfirm>Are you sure you want to install [name]?</installConfirm>
+       </modules>       
+       <statistics>
+           <hits>Visitors</hits>
+           <visitors>Uniqe visitors</visitors>
+           <hits_hours>Visitors pro hour</hits_hours>
+           <os>Operating systems</os>
+           <browsers>Browsers</browsers>
+           <screen_colors>Screen colors</screen_colors>
+           <screen_sizes>Screen sizes</screen_sizes>
+           <references>Coming from</references>
+           <pages>Pages</pages>
+       </statistics>	
+		<software>
+			<noContact>Could not connect to the update server.</noContact>
+			<upToDate>System is up to date.</upToDate>
+			<updateAvailable>Updates are available.</updateAvailable>
+			<updateFailure>An error has occurred during updating.</updateFailure>
+			<updateSucceed>The system has been updated succesfully.</updateSucceed>
+		</software>
+		<groups>
+			<title>Manage groups</title>
+			<id>ID</id>
+			<name>Name</name>
+			<group>Group</group>
+			<groups>Groups</groups>
+			<viewUsers>View users</viewUsers>
+			<description>Description</description>
+			<standard>Standard</standard>
+			<user>User</user>
+			<rights>Rights</rights>
+			<headerAdd>Add group</headerAdd>
+			<headerEdit>Edit group</headerEdit>
+			<headerUsers>Group users</headerUsers>
+			<js>
+				<nameEmpty>The name has not been filled in.</nameEmpty>
+				<descriptionEmpty>The description has not been filled in.</descriptionEmpty>
+			</js>
+		</groups>
+		<users>
+		    <searchText>Search on username or E-mail</searchText>
+			<title>Manage users</title>			
+			<users>Users</users>
+			<user>User</user>
+			<bot>Bot</bot>
+			<username>Nickname</username>
+			<forname>First name</forname>
+			<nameBetween>Name between</nameBetween>
+			<surname>Surname</surname>
+			<email>Email</email>
+			<bot>System bot</bot>
+			<activated>Activated</activated>
+			<blocked>Blocked</blocked>
+			<headerPassword>Reset password</headerPassword>
+			<profile>Profile text</profile>
+			<password>Password</password>
+			<passwordAgain>Repeat password</passwordAgain>
+			<registrated>Registered on</registrated>
+			<nationality>Nationality</nationality>
+			<telephone>Telephone</telephone>
+			<headerGroups>Groups</headerGroups>
+			<headerAdd>Add user</headerAdd>
+			<headerView>View User</headerView>
+			<headerEdit>Edit user</headerEdit>
+			<headerSearch>Search user</headerSearch>
+			<registratedTrough>This user is registered via</registratedTrough>
+			<yes>Yes</yes>
+			<no>No</no>
+			<js>
+				<nickNotice>This username is already in use.</nickNotice>
+				<emailNotice>This email address is already in use.</emailNotice>
+				<usernameEmpty>The username has not been filled in.</usernameEmpty>
+				<passwordEmpty>The password has not been filled in.</passwordEmpty>
+				<passwordInvalid>The passwords do not match.</passwordInvalid>
+				<passwordChanged>The password has been changed.</passwordChanged>
+				<firstNameEmpty>The first name has not been filled in.</firstNameEmpty>
+				<surnameEmpty>The surname has not been filled in.</surnameEmpty>
+				<nationalityEmpty>The nationality has not been filled in.</nationalityEmpty>
+            	<telephoneEmpty>The telephone number has not been filled in.</telephoneEmpty>
+				<emailInvalid>The email address is invalid.</emailInvalid>
+				<blockRejected>Are you attempting to block yourself?</blockRejected>
+				<blockConfirm>Are you sure that you want to block this user? \nHe/she can not not log in, from that moment on.</blockConfirm>
+				<deleteRejected>Are you attempting to delete yourself?</deleteRejected>
+				<deleteConfirm>Are you sure you want to permantly delete this user?</deleteConfirm>
+				<groupAdminRejected>You cannot remove yourself from the Admin group. You need this group for access to the control panel.</groupAdminRejected>
+				<groupAdminConfirm>Are you sure that you want to give this user access to the control panel?</groupAdminConfirm>
+			</js>
+		</users>
+		<stats>
+			<title>Statistics</title>
+			<visitors>Visitors</visitors>
+			<uniqueVisitors>Uniqe visitors</uniqueVisitors>
+			<OSses>Operating systems</OSses>
+			<OS>Operating system</OS>
+			<browsers>Browsers</browsers>
+			<browser>Browser</browser>
+			<version>Version</version>
+			<screenColors>Screen colors</screenColors>
+			<colors>Colors</colors>
+			<screenSizes>Screen sizes</screenSizes>
+			<amount>Amount</amount>
+			<size>Size</size>
+			<fullList>Full list</fullList>			
+			<reference>Connection to the site from</reference>
+			<bookmark>Direct address / Bookmarks</bookmark>
+			<pages>Visitors per page</pages>			
+			<domains>Visitors per domain</domains>
+		</stats>
+		<messages>
+			<screenTitle>Messages</screenTitle>
+			<noMessages>No messages</noMessages>
+			<title>Title</title>
+			<date>Date</date>
+		</messages>
+		<updates>
+			<title>Updates</title>
+			<checkUpdate>Check for updates</checkUpdate>
+		</updates>
+		<logs>
+			<title>Logbooks</title>				
+			<name>Name</name>
+			<date>Date</date>
+			<download>Download</download>
+			<jsDelete>Are you sure to delete the log "+name+"?</jsDelete>
+		</logs>
+		<maintenance>
+			<compressCSS>Join CSS files</compressCSS>
+			<compressJS>Join Javascript files</compressJS>
+			<checkDatabase><![CDATA[ Check database &amp; repair ]]></checkDatabase>
+			<optimizeDatabase>Optimize database</optimizeDatabase>
+			<cleanLogs>Remove old logs</cleanLogs>
+			<systemUpdate>System update</systemUpdate>
+			<cleanStatsYear>Remove statistics older than one year</cleanStatsYear>
+			<cleanStatsMonth>Remove statistics older than a month</cleanStatsMonth>
+			<ready>Ready</ready>
+			<pending>Pending</pending>
+			<error>Error, see log</error>
+			<createBackup>Create backup</createBackup>
+            <restoreBackup>Restore from backup</restoreBackup>
+            <stats>Delete old statistics</stats>
+		</maintenance>
+		<notices>
+			<screenTitle>Control panel : view system notices</screenTitle>
+			<notices>System notices</notices>
+		</notices>
+		<settings>
+			<smtp>SMTP</smtp>
+           <login>
+                <title>Login</title>
+                <loginRedirect>Redirect after login</loginRedirect>
+                <logoutRedirect>Redirect after logout</logoutRedirect>
+                <registrationRedirect>Redirect after registration</registrationRedirect>
+                <normalLogin>Standard login</normalLogin>
+                <openidLogin>OpenID login</openidLogin>
+                <facebookLogin>Facebook login</facebookLogin>
+                <facebookAppID>App ID</facebookAppID>
+                <ldapLogin>LDAP login</ldapLogin>
+                <loginChoice>You must choose at least 1.</loginChoice>
+                <redirectError>The redirect can not be empty.</redirectError>
+                <facebookAppError>The Facebook app ID is not filled in.</facebookAppError>
+                <ldapServerError>The LDAP server can not be empty.</ldapServerError>
+                <ldapPortError>The LDAP poort can not be empty.</ldapPortError>
+           </login>
+           <sessions>
+                <title>Sessions</title>
+                <name>Session name</name>
+                <path>Session object location</path>
+                <expire>Session lifetime in seconds</expire>
+                <sessionInvalid>The session lifetime is invalid.</sessionInvalid>
+           </sessions>
+           <languages>
+                <title>Languages</title>
+                <installLanguages>Install languages</installLanguages>
+                <editLanguages>Edit language files</editLanguages>
+           </languages>  
+           <cache>
+                <title>Cache settings</title>
+           </cache>
+           <email>
+              <title>E-mail</title>
+              <generalTitle>General E-mail settings</generalTitle>
+              <senderName>Sender name</senderName>
+              <senderEmail>Sender E-mail</senderEmail>
+              <smtp>SMTP</smtp>
+              <useSmtp>Use SMTP</useSmtp>
+              <adminSenderTitle>Administrator E-mail</adminSenderTitle>
+              <adminSenderName>Administrator name</adminSenderName>
+              <adminSenderEmail>Administrator E-mail</adminSenderEmail>
+              <senderEmpty>The name from the sender can not be empty.</senderEmpty>
+              <senderEmailEmpty>The E-mail from the sender can not be empty.</senderEmailEmpty>
+              <smtpHostError>The host can not be empty.</smtpHostError>
+              <smtpUsernameError>The username can not be empty.</smtpUsernameError>
+              <smptPasswordError>The password can not be empty.</smptPasswordError>
+              <smtpPortError>The port number can not be empty.</smtpPortError>
+            </email>
+            <title>Settings</title>
+            <general>
+                <title2>General</title2>
+                <title>General settings</title>
+                <nameSite>Site name</nameSite>
+                <basedir>Submap</basedir>
+                <siteUrl>Site url</siteUrl>
+                <timezone>Timezone</timezone>
+                <logger>Logger</logger>
+                <logLocation>Log location</logLocation>
+                <logSize>Maximun log size (Bytes)</logSize>
+                <templates>Templates</templates>
+                <siteNameEmpty>The site name can not be empty.</siteNameEmpty>
+                <urlEmpty>The site url can not be empty.</urlEmpty>
+                <timezoneInvalid>The timezone can not be empty.</timezoneInvalid>
+                <loggerInvalid>The logger is invalid.</loggerInvalid>
+                <logLocationInvalid>The log location can not be empty.</logLocationInvalid>
+                <logSizeInvalid>The maximun log size must be a whole positive number.</logSizeInvalid>
+            </general>
+            <database>
+                 <title>Database</title>
+                 <database>Database</database>
+                 <prefix>Table prefix</prefix>
+                 <type>Database type</type> 
+                 <databaseEmpty>Not all database fields are filled in.</databaseEmpty>
+                <databasePortInvalid>The database port is invalid.</databasePortInvalid>
+                <databaseInvalid>The database credentials are invalid.</databaseInvalid>
+             </database>
+             <ssl>
+                 <title>SSL encryption</title>
+                 <no_ssl>No encryption</no_ssl>
+                 <login_ssl>From login/registration</login_ssl>
+                 <always_ssl>Encrypt always</always_ssl>
+             </ssl>
+            
+            <defaultLanguage>Default language</defaultLanguage>
+            <fallbackLanguage>Fallback language</fallbackLanguage>            
+            
+            <username>Username</username>
+            <password>Password</password>
+            
+            <host>Server (host)</host>
+            <port>Port</port>
+            <type>Type</type>
+            <ftpSettings>FTP settings</ftpSettings>
+            <disable>Disable</disable>
+
+            <ftpEmpty>Not all the FTP fields are filled in.</ftpEmpty>
+            <ftpPortInvalid>The FTP port is invalid.</ftpPortInvalid>
+            <ftpInvalid>The FTP credentials are invalid.</ftpInvalid>
+            <saved>The settings are saved.</saved>
+		</settings>
+        <menu>
+            <groups>Groups</groups>
+            <users>Users</users>
+            <logs>Logs</logs>
+            <settings>Settings</settings>
+            <stats>Statistics</stats>
+            <maintenance>Maintenance</maintenance>
+            <close>Close</close>
+            <logout>Logout</logout>
+            <adminMenuLink>Menu</adminMenuLink>
+            <loginHeader>Logged in as [name]</loginHeader>
+        </menu>
+        <cache>
+          <languageCache>Remove language cache files</languageCache>
+          <siteCache>Remove site cache files</siteCache>
+          <title>Remove cache</title>
+          <language>Are you sure you want to delete the language cache?</language>
+          <site>Are you sure you want to delete the site cache?</site>
+        </cache>
+	</admin>
+
+	<bann>
+		<bann1>1 Day</bann1>
+		<bann2>1 Week</bann2>
+		<bann3>1 Month</bann3>
+		<bann4>Permanent</bann4>
+	</bann>
+	
+	<buttons>
+	   <add>Add</add>
+	   <reset>Reset</reset>
+	   <cancel>Cancel</cancel>
+	   <edit>Edit</edit>
+	   <save>Save</save>
+	   <delete>Delete</delete>
+		<back>Back</back>
+		<view>View</view>
+		<send>Send</send>
+		<upload>Upload</upload>
+		<download>Download</download>		
+	   <close>Close</close>
+	</buttons>
+    
+	<header>
+		<userWelcome>Welcome </userWelcome>
+		<adminWelcome>Welcome admin </adminWelcome>
+	</header>
+	
+	<logout>
+		<title></title>
+		<logoutSucceed>You have just been logged out.</logoutSucceed>
+		<logoutFailed>Logging out has failed.</logoutFailed>
+	</logout>
+
+	<index>
+		<title>Default index page</title>
+	</index>
+	
+	<title>Miniature-happiness</title>
+	<slogan>Default slogan</slogan>
+</system>

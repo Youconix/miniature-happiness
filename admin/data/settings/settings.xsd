@@ -24,6 +24,7 @@
         <xs:element ref="login"/>
         <xs:element ref="session"/>
         <xs:element name="defaultLanguage" type="xs:language"/>
+        <xs:element name="fallbackLanguage" type="xs:language"/>
         <xs:element ref="mail"/>
         <xs:element ref="templates"/>
         <xs:element ref="SQL"/>

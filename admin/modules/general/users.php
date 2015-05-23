@@ -1,7 +1,20 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Admin user configuration class
  *
  * This file is part of Miniature-happiness
@@ -9,41 +22,89 @@ namespace admin;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
-
 class Users extends \core\AdminLogicClass
 {
 
+    /**
+     *
+     * @var \core\models\User
+     */
+    private $model_User;
+
+    /**
+     *
+     * @var \core\services\Logs
+     */
+    private $service_Logs;
+
+    /**
+     *
+     * @var \core\models\Groups
+     */
     private $model_Groups;
 
     /**
-     * Starts the class Users
+     *
+     * @var \core\services\Session
      */
-    public function __construct()
+    private $service_Session;
+
+    /**
+     *
+     * @var \core\models\Login
+     */
+    private $model_Login;
+
+    /**
+     *
+     * @var \core\services\Mailer
+     */
+    private $service_Mailer;
+
+    /**
+     *
+     * @var \core\helpers\AdminUserViews
+     */
+    private $helper_view;
+
+    /**
+     * Starts the class Users
+     *
+     * @param \core\services\Security $service_Security            
+     * @param \core\models\Config $model_Config            
+     * @param \core\services\Language $service_Language            
+     * @param \core\services\Template $service_Template            
+     * @param \core\models\Groups $model_Groups            
+     * @param \core\models\User $model_User            
+     * @param \core\services\Logs $service_Logs            
+     * @param \core\services\Session $service_Session            
+     * @param \core\models\Login $model_Login            
+     * @param \core\services\Mailer $service_Mailer            
+     * @param \core\helpers\AdminUserViews $helper_view            
+     */
+    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\models\Groups $model_Groups, \core\models\User $model_User, \core\services\Logs $service_Logs, \core\services\Session $service_Session, \core\models\Login $model_Login, \core\services\Mailer $service_Mailer, \core\helpers\AdminUserViews $helper_view)
     {
-        $this->init();
+        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template);
         
-        if (! \core\Memory::models('Config')->isAjax()) {
-            exit();
-        }
-        
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        $this->model_Groups = $model_Groups;
+        $this->model_User = $model_User;
+        $this->service_Logs = $service_Logs;
+        $this->service_Session = $service_Session;
+        $this->model_Login = $model_Login;
+        $this->service_Mailer = $service_Mailer;
+        $this->helper_view = $helper_view;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_route)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            switch ($s_route) {
                 case 'view':
                     $this->view();
                     break;
@@ -77,35 +138,40 @@ class Users extends \core\AdminLogicClass
                 case 'editScreen':
                     $this->editScreen();
                     break;
+                
+                default:
+                    throw new \BadFunctionCallException('Call to unkown GET call ' . $s_route . '.');
             }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'add':
-                        $this->add();
-                        break;
+        } else {
+            switch ($s_route) {
+                case 'add':
+                    $this->add();
+                    break;
+                
+                case 'edit':
+                    $this->edit();
+                    break;
+                
+                case 'delete':
+                    $this->delete();
+                    break;
+                
+                case 'addGroup':
+                    $this->addGroup();
+                    break;
+                
+                case 'deleteGroup':
+                    $this->deleteGroup();
+                    break;
+                
+                case 'login':
+                    $this->login();
+                    break;
                     
-                    case 'edit':
-                        $this->edit();
-                        break;
-                    
-                    case 'delete':
-                        $this->delete();
-                        break;
-                    
-                    case 'addGroup':
-                        $this->addGroup();
-                        break;
-                    
-                    case 'deleteGroup':
-                        $this->deleteGroup();
-                        break;
-                    
-                    case 'login':
-                        $this->login();
-                        break;
-                }
+                default:
+                    throw new \BadFunctionCallException('Call to unkown POST call ' . $s_route . '.');
             }
+        }
     }
 
     /**
@@ -135,25 +201,22 @@ class Users extends \core\AdminLogicClass
         );
         
         parent::init();
-        
-        $this->model_Groups = \core\Memory::models('Groups');
     }
 
     /**
      * Adds the user access rights to the group
      */
-    private function addGroup()
+    protected function addGroup()
     {
         try {
             $obj_User = $this->model_User->get($this->post['userid']);
-        } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->post['userid']);
+        } catch (\Exception $e) {
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->post['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
         
-        $model_Group = \core\Memory::models('Group');
-        $model_Group->editUserLevel($obj_User->getID(), array(
+        $this->model_Groups->editUserLevel($obj_User->getID(), array(
             $this->post['group']
         ), $this->post['level']);
     }
@@ -161,18 +224,17 @@ class Users extends \core\AdminLogicClass
     /**
      * Deletes the user access rights to the group
      */
-    private function deleteGroup()
+    protected function deleteGroup()
     {
         try {
             $obj_User = $this->model_User->get($this->post['userid']);
         } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->service_Session->securityLog('Call to unknown user ' . $this->post['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
         
-        $model_Group = \core\Memory::models('Group');
-        $model_Group->editUserLevel($obj_User->getID(), array(
+        $this->model_Groups->editUserLevel($obj_User->getID(), array(
             $this->post['group']
         ), $this->post['level']);
     }
@@ -185,27 +247,20 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->model_User->get($this->post['userid']);
         } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->post['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
         
-        \core\Memory::models('Login')->loginAs($this->post['userid']);
+        $this->model_Login->loginAs($this->post['userid']);
     }
 
     /**
      * Generates the user overview
      */
-    private function index()
+    protected function index()
     {
-        $i_page = 1;
-        if (isset($this->get['page']) && $this->get['page'] > 0) {
-            $i_page = $this->get['page'];
-        }
-        
-        $i_start = $i_page * 25 - 25;
-        
-        $a_users = $this->model_User->getUsers($i_start);
+        $a_users = $this->model_User->getUsers(0);
         $this->service_Template->set('userid', USERID);
         
         $this->service_Template->set('headerText', t('system/admin/users/users'));
@@ -229,18 +284,12 @@ class Users extends \core\AdminLogicClass
             
             $this->service_Template->setBlock('users', $a_data);
         }
-        
-        $helper_Nav = \core\Memory::helpers('PageNavigation');
-        $helper_Nav->setAmount($a_users['number'])
-            ->setPage($i_page)
-            ->setUrl('javascript:adminUsers.view({page})');
-        $this->service_Template->set('nav', $helper_Nav->generateCode());
     }
 
     /**
      * Generates the search overview
      */
-    private function search()
+    protected function search()
     {
         $a_usersRaw = $this->model_User->searchUser($this->get['username']);
         $a_users = array();
@@ -266,57 +315,56 @@ class Users extends \core\AdminLogicClass
     /**
      * Generates the user detail view
      */
-    private function view()
+    protected function view()
     {
         try {
             $obj_User = $this->model_User->get($this->get['userid']);
-        } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->get['userid']);
+        } catch (\Exception $e) {
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->get['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
         
-        $helper_view = \core\Memory::helpers('AdminUserView');
-        $helper_view->setData($obj_User);
-        $helper_view->run();
+        $this->helper_view->setModus('view');
+        $this->helper_view->setData($obj_User);
+        $this->helper_view->run();
     }
 
     /**
      * Generates the edit screen
      */
-    private function editScreen()
+    protected function editScreen()
     {
         try {
             $obj_User = $this->model_User->get($this->get['userid']);
-        } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->get['userid']);
+        } catch (\Exception $e) {
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->get['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
         
-        $helper_view = \core\Memory::helpers('AdminUserEdit');
-        $helper_view->setData($obj_User);
-        $helper_view->run();
+        $this->helper_view->setModus('edit');
+        $this->helper_view->setData($obj_User);
+        $this->helper_view->run();
     }
 
     /**
      * Generates the add screen
      */
-    private function addScreen()
+    protected function addScreen()
     {
-        $helper_view = \core\Memory::helpers('AdminUserAdd');
-        $helper_view->run();
+        $this->helper_view->run();
     }
 
     /**
      * Edits the given user
      */
-    private function edit()
+    protected function edit()
     {
         try {
             $obj_User = $this->model_User->get($this->post['userid']);
-        } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->post['userid']);
+        } catch (\Exception $e) {
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->post['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
@@ -330,11 +378,10 @@ class Users extends \core\AdminLogicClass
                 return;
             
             $obj_User->setPassword($this->post['password'], true);
-            $obj_mailer = \core\Memory::services('Mailer');
             if ($obj_User->getEmail() != $this->post['email']) {
-                $obj_mailer->adminPasswordReset($obj_User->getUsername(), $obj_User->getEmail(), $this->post['password']);
+                $this->service_Mailer->adminPasswordReset($obj_User->getUsername(), $obj_User->getEmail(), $this->post['password']);
             }
-            $obj_mailer->adminPasswordReset($obj_User->getUsername(), $this->post['email'], $this->post['password']);
+            $this->service_Mailer->adminPasswordReset($obj_User->getUsername(), $this->post['email'], $this->post['password']);
         }
         
         /* Edit user */
@@ -347,7 +394,7 @@ class Users extends \core\AdminLogicClass
     /**
      * Adds a new user to the database
      */
-    private function add()
+    protected function add()
     {
         if (! isset($this->post['username']) || $this->post['username'] == '' || ! isset($this->post['email']) || ! isset($this->post['bot']) || ($this->post['bot'] != 0 && $this->post['bot'] != 1) || ! isset($this->post['password']) || $this->post['password'] == '' || ! isset($this->post['password2']) || $this->post['password2'] == '')
             return;
@@ -368,21 +415,21 @@ class Users extends \core\AdminLogicClass
         $obj_User->persist();
         
         /* Send notification email */
-        \core\Memory::services('Mailer')->adminAdd($this->post['username'], $this->post['password'], $this->post['email']);
+        $this->service_Mailer->adminAdd($this->post['username'], $this->post['password'], $this->post['email']);
     }
 
     /**
      * Deletes the given user
      */
-    private function delete()
+    protected function delete()
     {
         if ($this->post['userid'] == USERID)
             exit();
         
         try {
             $obj_User = $this->model_User->get($this->post['userid']);
-        } catch (Exception $e) {
-            \core\Memory::services('Logs')->securityLog('Call to unknown user ' . $this->post['userid']);
+        } catch (\Exception $e) {
+            $this->service_Logs->securityLog('Call to unknown user ' . $this->post['userid']);
             $this->service_Session->destroyLogin();
             exit();
         }
@@ -396,7 +443,7 @@ class Users extends \core\AdminLogicClass
      *
      * @return boolean if the username is available
      */
-    private function checkUsername($s_username)
+    protected function checkUsername($s_username)
     {
         return $this->model_User->checkUsername($s_username);
     }
@@ -406,11 +453,8 @@ class Users extends \core\AdminLogicClass
      *
      * @return boolean if the email is available
      */
-    private function checkEmail($s_email)
+    protected function checkEmail($s_email)
     {
         return $this->model_User->checkEmail($s_email);
     }
 }
-
-$obj_Users = new Users();
-unset($obj_Users);

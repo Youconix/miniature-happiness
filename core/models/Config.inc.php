@@ -124,7 +124,7 @@ class Config extends Model implements \SplSubject
     {
         /* Check language */
         $a_languages = $this->getLanguages();
-        $this->s_language = str_replace('-','_',$this->service_Settings->get('defaultLanguage'));
+        $this->s_language = $this->service_Settings->get('defaultLanguage');
         
         if (isset($_GET['lang'])) {
             if (in_array($_GET['lang'], $a_languages)) {
@@ -132,16 +132,17 @@ class Config extends Model implements \SplSubject
                 $this->service_Cookie->set('language', $this->s_language, '/');
             }
             unset($_GET['lang']);
-        } else 
+        } else {
             if ($this->service_Cookie->exists('language')) {
                 if (in_array($this->service_Cookie->get('language'), $a_languages)) {
                     $this->s_language = $this->service_Cookie->get('language');
                     /* Renew cookie */
                     $this->service_Cookie->set('language', $this->s_language, '/');
                 } else {
-                    $this->service_Cookie->delete('language');
+                    $this->service_Cookie->delete('language','/');
                 }
             }
+        }
     }
 
     /**
@@ -420,6 +421,12 @@ class Config extends Model implements \SplSubject
         
         $this->notify();
     }
+    
+    public function setLayout($s_layout){
+        $this->s_layout = $s_layout;
+        
+        $this->notify();
+    }
 
     /**
      * Checks if ajax-mode is active
@@ -501,6 +508,16 @@ class Config extends Model implements \SplSubject
         
         if ($this->service_Settings->exists('main/registration')) {
             $s_page = $this->getBase() . $this->service_Settings->get('main/registration');
+        }
+        
+        return $s_page;
+    }
+    
+    public function getActivationRedirect(){
+        $s_page = $this->getBase() . 'index/view';
+        
+        if ($this->service_Settings->exists('main/activation')) {
+            $s_page = $this->getBase() . $this->service_Settings->get('main/activation');
         }
         
         return $s_page;
@@ -659,6 +676,12 @@ class Config extends Model implements \SplSubject
         );
     }
     
+    /**
+     * Returns if SSL is enabled
+     * 
+     * @return int  The SSL code
+     * @see \core\services\Settings
+     */
     public function isSslEnabled(){
         if( !$this->service_Settings->exists('main/ssl') ){
             return \core\services\Settings::SSL_DISABLED;

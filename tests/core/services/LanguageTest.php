@@ -42,16 +42,6 @@ class testLanguage extends \tests\GeneralTest
     }
 
     /**
-     * Collects the installed languages
-     *
-     * @test
-     */
-    public function getLanguages()
-    {
-        $this->assertTrue((is_array( $this->service_Language->getLanguageFiles()) ) );
-    }
-
-    /**
      * Sets the language
      *
      * @test

@@ -22,5 +22,5 @@
  * @since     2.0
  */
 define('NIV', './');
-header('location: ' . NIV . 'authorization/registration.php');
+header('location: ' . NIV . 'authorization/registration/index');
 ?>
