@@ -22,7 +22,7 @@
 				<td><a href="{NIV}forgot_password/index">{forgotPassword}</a>
 				</td>
 			</tr>
-			<block {login}>
+			<block {specialLogin}>
 			<tr>
 				<td colspan="2"><a href="{NIV}authorization/login_{key}/index"><img src="{NIV}{style_dir}images/icons/{image}.png" alt="{key}" title="{key}">{text}</a></td>
 			</tr>

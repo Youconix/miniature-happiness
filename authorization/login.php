@@ -89,14 +89,14 @@ class Login extends \includes\BaseLogicClass
         }
         
         if ($this->model_Config->isFacebookLogin()) {
-            $this->service_Template->setBlock('login', array(
+            $this->service_Template->setBlock('specialLogin', array(
                 'image' => 'facebook',
                 'key' => 'facebook',
                 'text' => $this->service_Language->get('loginFacebook')
             ));
         }
         if ($this->model_Config->isOpenIDLogin()) {
-            $this->service_Template->setBlock('login', array(
+            $this->service_Template->setBlock('specialLogin', array(
                 'image' => 'openID',
                 'key' => 'openID',
                 'text' => $this->service_Language->get('loginOpenID')

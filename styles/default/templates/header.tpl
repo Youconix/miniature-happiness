@@ -1,5 +1,5 @@
 <header>
-	<div id="headerLogo"><a href="{LEVEL}"><img src="{style_dir}/images/logo.png" alt=""/></a></div>
+	<div id="headerLogo"><a href="{LEVEL}"><img src="/{style_dir}/images/logo.png" alt=""/></a></div>
 	
 	<section id="headerLanguages">
 	   <ul>

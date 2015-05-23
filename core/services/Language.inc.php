@@ -101,7 +101,7 @@ class Language extends Service
         }
         
         if (! function_exists('t')) {
-            require (NIV . 'core/services/data/languageShortcut.php');
+            require (NIV . 'core/services/data/languageShortcut.inc.php');
         }
         
         return $obj_parser;

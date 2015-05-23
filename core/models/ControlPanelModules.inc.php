@@ -1,7 +1,7 @@
 <?php
 namespace core\models;
 
-class ControlPanelModules.inc extends \core\models\Model
+class ControlPanelModules extends \core\models\Model
 {
 
     private $service_File;
