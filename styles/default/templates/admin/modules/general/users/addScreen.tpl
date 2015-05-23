@@ -1,3 +1,3 @@
 <section id="users">
-	{[adminUserView]}
+	<include src="admin/modules/general/users/useradd.tpl">
 </section>

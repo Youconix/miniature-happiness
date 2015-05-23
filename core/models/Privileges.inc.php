@@ -125,9 +125,13 @@ class Privileges
             $s_page = str_replace($s_base, '', $s_page);
         }
         
-        $this->checkloginStatus($s_page);
+        if( !$this->checkloginStatus($s_page) ){
+            return;
+        }
         
-        $this->checkFingerprint($s_page);
+        if( !$this->checkFingerprint($s_page) ){
+            return;
+        }
         
         /* Check fingerprint */
         $i_userid = $this->service_Session->get('userid');
@@ -137,10 +141,10 @@ class Privileges
             /*
              * Insuffient rights or no access too the group No access
              */
-            $this->service_Headers->http403();
-            $this->service_Headers->printHeaders();
-            include (NIV . 'errors/403.php');
-            exit();
+            $_GET['command'] = 'index';
+            $_SERVER['SCRIPT_NAME'] = 'errors/Error403.php';
+            $this->model_Config->setAjax(false);
+            return;
         }
         
         $this->checkCommand($i_commandLevel, $i_userid);
@@ -159,23 +163,24 @@ class Privileges
     private function checkloginStatus($s_page)
     {
         if ($this->service_Session->exists('login')) {
-            return;
+            return true;
         }
         
-        $this->service_Headers->http401();
-        $this->service_Headers->printHeaders();
-        
         if ($this->model_Config->isAjax()) {
+            $this->service_Headers->http401();
+            $this->service_Headers->printHeaders();
             die();
         }
         
         $this->service_Session->set('page', $s_page);
         $this->model_Config->setPage('authorization/login', 'index');
+        $this->service_Headers->http401();
+        $this->service_Headers->printHeaders();
         
-        require (NIV . 'authorization/login.php');
-        $obj_login = new \Login();
-        $obj_login->route('index');
-        exit();
+        $_GET['command'] = 'index';
+        $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
+       
+        return false;
     }
 
     /**
@@ -191,8 +196,16 @@ class Privileges
             
             $this->service_Session->set('page', $s_page);
             $this->service_Headers->http401();
-            $this->service_Headers->redirect('authorization/login/index');
+            $this->service_Headers->printHeaders();
+            
+            $_GET['command'] = 'index';
+            $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
+            $this->model_Config->setAjax(false);
+            
+            return false;
         }
+        
+        return true;
     }
 
     /**
@@ -231,10 +244,9 @@ class Privileges
             /*
              * Insuffient rights No access
              */
-            $this->service_Headers->http403();
-            $this->service_Headers->printHeaders();
-            require (NIV . 'errors/403.php');
-            exit();
+            $_GET['command'] = 'index';
+            $_SERVER['SCRIPT_NAME'] = 'errors/Error403.php';
+            $this->model_Config->setAjax(false);
         }
     }
     
@@ -245,6 +257,9 @@ class Privileges
      */
     private function checkSSL($i_level){
         $i_ssl = $this->model_Config->isSslEnabled();
+        if( defined('FORCE_SSL') ){
+            $i_ssl = \core\services\Settings::SSL_ALL;
+        }
     
         if( $this->model_Config->isSLL() || ($i_ssl == \core\services\Settings::SSL_DISABLED) ){
             return;

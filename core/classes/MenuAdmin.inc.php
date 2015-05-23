@@ -43,7 +43,9 @@ class MenuAdmin
         $this->service_XML = $service_XML;
         $this->model_ControlPanelModules = $model_ControlPanelModules;
         $this->service_Template = $service_Template;
-        
+    }
+    
+    public function generateMenu(){
         $this->modules();
     }
 

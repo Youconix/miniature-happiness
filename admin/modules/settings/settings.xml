@@ -38,6 +38,14 @@
 	<block>
 		<title>system/admin/settings/languages/title</title>
 		<id>admin_settings_languages</id>
+        <link>
+            <title>system/admin/settings/languages/installLanguages</title>
+            <id>admin_settings_newlanguages</id>
+        </link>
+        <link>
+            <title>system/admin/settings/languages/editLanguages</title>
+            <id>admin_settings_editLanguages</id>
+        </link>
 	</block>	
     <block>
         <title>system/admin/settings/ssl/title</title>

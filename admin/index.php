@@ -66,6 +66,8 @@ class Index extends \core\BaseLogicClass
         $this->menuAdmin = $menu;
         
         $this->init();
+        
+        $confirmbox->create();
     }
 
     protected function view()

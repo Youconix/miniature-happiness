@@ -26,16 +26,16 @@ General.prototype.init = function() {
 	maintenance.init();
 }
 General.prototype.showUsers = function() {
-	admin.show(this.address + 'users.php?command=index', users.init);
+	admin.show(this.address + 'users/index', users.init);
 }
 General.prototype.showGroups = function() {
-	admin.show(this.address + 'groups.php?command=index', groups.init);
+	admin.show(this.address + 'groups/index', groups.init);
 }
 General.prototype.showPageRights = function() {
-	admin.show(this.address + 'pages.php?command=index', pageRights.init);
+	admin.show(this.address + 'pages/index', pageRights.init);
 }
 General.prototype.showModules = function() {
-	admin.show(this.address + 'modules.php?command=index', modules.init);
+	admin.show(this.address + 'modules/index', modules.init);
 }
 
 var general = new General();
@@ -45,7 +45,7 @@ $(document).ready(function() {
 
 /* Cache */
 function Cache(){
-	this.address = '../modules/general/cache.php';
+	this.address = '../modules/general/cache/';
 }
 Cache.prototype.init	= function(){
 	$('#admin_general_cache_language').click(function(){
@@ -58,10 +58,10 @@ Cache.prototype.init	= function(){
 	});
 }
 Cache.prototype.language	= function(){
-	$.post(cache.address,{'command':'language'});
+	$.post(cache.address+'language');
 }
 Cache.prototype.site	= function(){
-	$.post(cache.address,{'command':'site'});
+	$.post(cache.address+'site');
 }
 
 var cache = new Cache();
@@ -561,7 +561,7 @@ var pageRights = new PageRights();
 
 /* Users */
 function Users() {
-	this.url = '../modules/general/users.php';
+	this.url = '../modules/general/users/';
 }
 Users.prototype.init = function() {
 	$('#newUserButton, #newUserButton2').click(function() {
@@ -573,7 +573,7 @@ Users.prototype.init = function() {
 	users.setUserListEvents();
 }
 Users.prototype.showAddUserScreen = function() {
-	admin.show(users.url + "?command=addScreen", users.addUserScreen());
+	admin.show(users.url + "addScreen", users.addUserScreen());
 }
 Users.prototype.filterUserList = function() {
 	var value = $.trim($('#searchUsername').val());
@@ -581,7 +581,7 @@ Users.prototype.filterUserList = function() {
 		return;
 	}
 
-	$.get(users.url + '?command=searchResults&username=' + value, function(
+	$.get(users.url + 'searchResults?username=' + value, function(
 			response) {
 		users.filterUserListCallback(response);
 	});
@@ -610,7 +610,7 @@ Users.prototype.setUserListEvents = function() {
 							var id = $(this).data('id');
 
 							admin.show(
-									users.url + '?command=view&userid=' + id,
+									users.url + 'view?&userid=' + id,
 									users.showUserEvents);
 						});
 			});
@@ -622,7 +622,7 @@ Users.prototype.showUserEvents = function() {
 	$('#users_edit').click(
 			function() {
 				var id = $(this).data('id');
-				admin.show(users.url + '?command=editScreen&userid=' + id,
+				admin.show(users.url + 'editScreen?userid=' + id,
 						users.editUserScreen);
 			});
 
@@ -653,8 +653,7 @@ Users.prototype.showUserEvents = function() {
 		}
 
 		if (confirm(languageAdmin.login_as.replace('[username]', username))) {
-			$.post(users.url, {
-				'command' : 'login',
+			$.post(users.url+'login', {
 				'userid' : id
 			}, function(response) {
 				location.href = "/";
@@ -664,8 +663,7 @@ Users.prototype.showUserEvents = function() {
 }
 Users.prototype.deleteConfirm = function() {
 	var id = $('#users_delete').data('id');
-	$.post(users.url, {
-		'command' : 'delete',
+	$.post(users.url+'delete', {
 		'userid' : id
 	}, function() {
 		general.showUsers();
@@ -707,8 +705,7 @@ Users.prototype.addGroup = function() {
 					+ level + '"></fieldset>');
 	this.setGrouplistEvents();
 
-	$.post(users.url, {
-		'command' : 'addGroup',
+	$.post(users.url+'addGroup', {
 		'userid' : userid,
 		'group' : group,
 		'level' : level
@@ -726,8 +723,7 @@ Users.prototype.removeGroup = function(item) {
 				'<option value="' + group + '">' + text[0] + '</option>');
 		item.remove();
 
-		$.post(users.url, {
-			'command' : 'deleteGroup',
+		$.post(users.url+'deleteGroup', {
 			'groupID' : group,
 			'userid' : userid,
 			'level' : level
@@ -817,7 +813,7 @@ Users.prototype.checkUsername = function() {
 
 	var username = $.trim($('#username').val());
 	if (username != '') {
-		$.get(users.url + '?command=checkUsername&username=' + username,
+		$.get(users.url + 'checkUsername?username=' + username,
 				function(response) {
 					if (response != '1') {
 						$('#username').addClass('invalid');
@@ -833,7 +829,7 @@ Users.prototype.checkEmail = function() {
 
 	var email = $.trim($('#email').val());
 	if (email != '') {
-		$.get(users.url + '?command=checkEmail&email=' + email, function(
+		$.get(users.url + 'checkEmail?email=' + email, function(
 				response) {
 			if (response != '1') {
 				$('#email').addClass('invalid');
@@ -872,15 +868,14 @@ Users.prototype.add = function() {
 		return;
 	}
 
-	$.post(users.url, {
-		'command' : 'add',
+	$.post(users.url+'add', {
 		'username' : username,
 		'email' : email,
 		'bot' : bot,
 		'password' : password1,
 		'password2' : password2
 	}, function(userid) {
-		admin.show(users.url + '?command=view&userid=' + userid,
+		admin.show(users.url + 'view?userid=' + userid,
 				users.showUserEvents);
 	});
 }

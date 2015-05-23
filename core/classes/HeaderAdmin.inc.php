@@ -40,8 +40,6 @@ class HeaderAdmin extends \core\classes\Header
     public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Config $model_Config)
     {
         parent::__construct($service_Template, $service_Language, $model_User, $model_Config);
-        
-        $this->createHeader();
     }
 
     /**

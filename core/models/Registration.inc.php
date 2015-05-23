@@ -2,6 +2,19 @@
 namespace core\models;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Account authorization service
  * Handles registration and login from the accounts
  *
@@ -11,19 +24,6 @@ namespace core\models;
  * @author Rachelle Scheijen
  * @see core/openID/OpenAuth.inc.php
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Registration extends Model
 {
@@ -115,7 +115,7 @@ class Registration extends Model
             $this->service_QueryBuilder->commit();
             
             if (! $bo_skipActivation) {
-                $this->model_User->activateUser($s_registrationKey);
+                $this->activateUser($s_registrationKey);
             }
             
             return true;
@@ -129,13 +129,12 @@ class Registration extends Model
     /**
      * Activates the user
      *
-     *
      * @param String $s_code
      *            The activation code
      * @return boolean True if the user is activated
      * @throws Exception If activating the user failes
      */
-    public function activateUser($s_type, $s_code)
+    public function activateUser($s_code)
     {
         $this->service_QueryBuilder->select('users', 'id')
             ->getWhere()
@@ -438,8 +437,8 @@ class Registration extends Model
      * @param String $s_email
      *            email address
      * @return int status code
-     *         0	Email address unknown
-     *         -1	OpenID account
+     *         0 Email address unknown
+     *         -1 OpenID account
      *         1 Email send
      */
     public function resetPasswordMail($s_email)

@@ -26,15 +26,29 @@ namespace core\services;
  */
 class Cache extends \core\services\Service
 {
-
+    /**
+     * @var \core\database\Builder_mysqli
+     */
     protected $service_QueryBuilder;
 
+    /**
+     * @var \core\services\File
+     */
     protected $service_File;
 
+    /**
+     * @var \core\models\Config
+     */
     protected $model_Config;
 
+    /**
+     * @var \core\services\Settings
+     */
     protected $service_Settings;
 
+    /**
+     * @var \core\services\Headers
+     */
     protected $service_Headers;
 
     protected $s_language;
@@ -47,7 +61,7 @@ class Cache extends \core\services\Service
         $this->service_File = $service_File;
         $this->service_Settings = $model_Config->getSettings();
         $this->service_Headers = $service_Headers;
-        $this->service_QueryBuilder = $service_QueryBuilder;
+        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
         
         $s_directory = $this->getDirectory();
         if (! $this->service_File->exists($s_directory . 'site')) {
@@ -268,5 +282,64 @@ class Cache extends \core\services\Service
                 $this->service_File->deleteFile($s_dir . DIRECTORY_SEPARATOR . $s_file);
             }
         }
+    }
+    
+    /**
+     * Returns the no cache pages
+     * 
+     * @return array    The pages
+     */
+    public function getNoCachePages(){
+        $a_pages = array();
+        
+        $this->service_QueryBuilder->select('no_cache', '*');
+        $service_database = $this->service_QueryBuilder->getResult();
+        if ($service_database->num_rows() > 0) {
+            $a_pages = $service_database->fetch_assoc();
+        }
+        
+        return $a_pages;
+    }
+    
+    /**
+     * Adds a no-cache page
+     * 
+     * @param string $s_page    The page address
+     */
+    public function addNoCachePage($s_page){
+        \core\Memory::type('string', $s_page);
+        
+        if( substr($s_page, -4) != '.php' ){
+            $s_page .= '.php';
+        }
+        
+        if( !$this->service_File->exists(NIV.$s_page) ){
+            return;
+        }
+        
+        $this->service_QueryBuilder->select('no_cache', 'id')->getWhere()->addAnd('page', 's', $s_page);
+        $service_database = $this->service_QueryBuilder->getResult();
+        if ($service_database->num_rows() != 0) {
+            return;
+        }
+        
+        
+        
+        $this->service_QueryBuilder->insert('no_cache','page','s',$s_page);
+        $database = $this->service_QueryBuilder->getResult();
+        
+        return $database->getId();
+    }
+    
+    /**
+     * Deletes the given no-cache page
+     * 
+     * @param int $i_id The page ID
+     */
+    public function deleteNoCache($i_id){
+        \core\Memory::type('int',$i_id);
+        
+        $this->service_QueryBuilder->delete('no_cache')->getWhere()->addAnd('id','i',$i_id);
+        $this->service_QueryBuilder->getResult();
     }
 }

@@ -1,0 +1,1 @@
+{"id":{id},"name":"{name}","style_dir":"{NIV}{style_dir}","deleteText":"{delete}"}

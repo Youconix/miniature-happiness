@@ -46,6 +46,11 @@ abstract class Settings extends \core\AdminLogicClass
      * @var \core\services\Builder
      */
     protected $service_Builder;
+    
+    /**
+     * @var \core\services\Headers
+     */
+    protected $service_Headers;
 
     /**
      * PHP 5 constructor
@@ -54,7 +59,7 @@ abstract class Settings extends \core\AdminLogicClass
     {
         $this->init();
         
-        if (! \core\Memory::models('Config')->isAjax()) {
+        if (! $this->model_Config->isAjax()) {
             exit();
         }
         
@@ -76,6 +81,7 @@ abstract class Settings extends \core\AdminLogicClass
         $this->service_Settings = \Loader::Inject('\core\services\Settings');
         $this->service_FileHandler = \Loader::Inject('\core\services\FileHandler');
         $this->service_Builder = \Loader::Inject('\core\services\QueryBuilder')->createBuilder();
+        $this->service_Headers = \Loader::Inject('\core\services\Headers');
     }
 
     /**

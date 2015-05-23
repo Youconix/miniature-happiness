@@ -12,7 +12,7 @@
 			</tr>
 			<tr>
 				<td><label>{emailText} *</label></td>
-				<td><input type="email" name="email" id="reg_email" value="{email}" onblur="site.checkEmail(this.value)" required></td>
+				<td><input type="email" name="email" id="reg_email" value="{email}" onblur="registration.checkEmail(this.value)" required></td>
 			</tr>
 			</tbody>
 			</table>
