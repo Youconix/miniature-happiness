@@ -2,6 +2,19 @@
 namespace core\classes;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Site footer
  *
  * This file is part of Miniature-happiness
@@ -9,38 +22,32 @@ namespace core\classes;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Footer
 {
 
-    protected $service_Language;
-
-    protected $service_Template;
-
-    protected $service_Settings = null;
+    /**
+     * 
+     * @var \core\services\Template
+     */
+    protected $template;
+    
+    /**
+     * 
+     * @var \core\services\Settings
+     */
+    protected $settings;
 
     /**
      * Starts the class footer
+     * 
+     * @param core\services\Template $template
+     * @param core\services\Settings  $settings
      */
-    public function __construct(\core\services\Language $service_Language, \core\services\Template $service_Template, \core\services\Settings $service_Settings)
+    public function __construct(\core\services\Template $template,\core\services\Settings $settings)
     {
-        $this->service_Language = $service_Language;
-        $this->service_Template = $service_Template;
-        $this->service_Settings = $service_Settings;
+        $this->template = $template;
+        $this->settings = $settings;
     }
 
     /**
@@ -48,6 +55,6 @@ class Footer
      */
     public function createFooter()
     {
-        $this->service_Template->set('version', $this->service_Settings->get('version'));
+        $this->template->set('version', $this->settings->get('version'));
     }
 }

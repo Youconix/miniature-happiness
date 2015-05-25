@@ -26,23 +26,36 @@ namespace core\classes;
 class Menu
 {
 
-    protected $service_Template;
+    /**
+     *
+     * @var \core\services\Template
+     */
+    protected $template;
 
-    protected $service_Language;
+    /**
+     *
+     * @var \core\services\Language
+     */
+    protected $language;
 
-    protected $obj_User;
-
-    protected $model_Groups;
+    /**
+     *
+     * @var \core\models\data\DataUser
+     */
+    protected $user;
 
     /**
      * Starts the class menu
+     *
+     * @param \core\services\Template $template            
+     * @param \core\services\Language $language            
+     * @param \core\models\User $user          
      */
-    public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Groups $model_Groups)
+    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $user)
     {
-        $this->service_Template = $service_Template;
-        $this->service_Language = $service_Language;
-        $this->obj_User = $model_User->get();
-        $this->model_Groups = $model_Groups;
+        $this->template = $template;
+        $this->language = $language;
+        $this->user = $user->get();
     }
 
     /**
@@ -50,10 +63,10 @@ class Menu
      */
     public function generateMenu()
     {
-        $this->service_Template->set('home', $this->service_Language->get('menu/home'));
+        $this->template->set('home', $this->language->get('menu/home'));
         
         if (defined('USERID')) {
-            $this->service_Template->displayPart('menuLoggedIn');
+            $this->template->displayPart('menuLoggedIn');
             
             $this->loggedIn();
         } else {
@@ -66,8 +79,8 @@ class Menu
      */
     protected function loggedout()
     {
-        $this->service_Template->set('login', $this->service_Language->get('menu/login'));
-        $this->service_Template->set('registration', $this->service_Language->get('menu/registration'));
+        $this->template->set('login', $this->language->get('menu/login'));
+        $this->template->set('registration', $this->language->get('menu/registration'));
     }
 
     /**
@@ -75,12 +88,12 @@ class Menu
      */
     protected function loggedIn()
     {
-        $this->service_Template->set('logout', $this->service_Language->get('menu/logout'));
+        $this->template->set('logout', $this->language->get('menu/logout'));
         
-        if ($this->obj_User->isAdmin(GROUP_ADMIN)) {
-            $this->service_Template->displayPart('menuAdmin');
+        if ($this->user->isAdmin(GROUP_ADMIN)) {
+            $this->template->displayPart('menuAdmin');
             
-            $this->service_Template->set('adminPanel', $this->service_Language->get('system/menu/adminPanel'));
+            $this->template->set('adminPanel', $this->language->get('system/menu/adminPanel'));
         }
     }
 }

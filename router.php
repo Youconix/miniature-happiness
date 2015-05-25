@@ -1,11 +1,5 @@
 <?php
 
-interface Routable
-{
-
-    public function route($s_command);
-}
-
 function populateGET(){
     if( strpos($_SERVER['REQUEST_URI'],'?') !== false ){
         $a_query = explode('?',$_SERVER['REQUEST_URI']);

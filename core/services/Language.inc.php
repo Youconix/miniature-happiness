@@ -261,6 +261,15 @@ class Language extends Service
         return $this->obj_parser->exists($s_path);
     }
 
+    /**
+     * Returns the text
+     * Alias of get()
+     * 
+     * @param string $s_path
+     *            The path to the language-part
+     * @return string The content of the requested part
+     * @throws XMLException when the path does not exist
+     */
     public static function text($s_key)
     {
         if (is_null(Language::$_instance)) {

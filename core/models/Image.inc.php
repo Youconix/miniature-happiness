@@ -26,28 +26,29 @@ namespace core\models;
 class Image extends Model
 {
 
-    private $service_FileData;
+    /**
+     * 
+     * @var \core\services\FileData
+     */
+    private $fileData;
 
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\services\FileData $service_Filedata
-     *            The file details service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
+     * @param \core\services\FileData $fileData
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\FileData $service_Filedata)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\services\FileData $fileData)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $validation);
         
-        $this->service_FileData = $service_Filedata;
+        $this->fileData = $fileData;
     }
 
     public function getMimeType($s_file)
     {
-        return $this->service_FileData->getMimeType($s_file, true);
+        return $this->fileData->getMimeType($s_file, true);
     }
 
     /**
@@ -64,7 +65,7 @@ class Image extends Model
      */
     public function resizeImage($s_file, $i_maxWidth, $i_maxHeight)
     {
-        $a_mimetype = explode('/', $this->service_FileData->getMimeType($s_file));
+        $a_mimetype = explode('/', $this->fileData->getMimeType($s_file));
         $obj_image = null;
         
         if ($a_mimetype[1] == 'jpg' || $a_mimetype[1] == 'jpeg') {
@@ -141,7 +142,7 @@ class Image extends Model
      */
     public function makeTrumb($s_file)
     {
-        $a_mimetype = explode('/', $this->service_FileData->getMimeType($s_file));
+        $a_mimetype = explode('/', $this->fileData->getMimeType($s_file));
         
         $s_extension = substr($s_file, strrpos($s_file, '.'));
         $s_destination = str_replace($s_extension, '_trumb' . $s_extension, $s_file);

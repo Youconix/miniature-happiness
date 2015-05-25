@@ -40,15 +40,15 @@ class Groups extends \core\AdminLogicClass
     /**
      * Groups constructor
      *
-     * @param \core\services\Security $service_Security            
+     * @param \core\Input $Input    The input parser  
      * @param \core\models\Config $model_Config            
      * @param \core\services\Language $service_Language            
      * @param \core\services\Template $service_Template            
      * @param \core\models\Groups $model_Groups            
      */
-    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\models\Groups $model_Groups)
+    public function __construct(\core\Input $Input, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\models\Groups $model_Groups)
     {
-        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template);
+        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
         
         $this->model_Groups = $model_Groups;
     }

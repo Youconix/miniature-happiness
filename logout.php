@@ -21,36 +21,48 @@
  * @author    Rachelle Scheijen
  * @since     1.0
  */
-define('NIV', './');
-define('SH', '1');
-define('PROCESS', '1');
+if( strpos($_SERVER['REQUEST_URI'],'logout.php') !== false ){
+    $s_url = str_replace('logout.php', 'logout/performLogout', $_SERVER['REQUEST_URI']);
+    header('location: '.$s_url);
+    die();
+}
 
-include (NIV . 'core/BaseClass.php');
-
-class Logout extends \core\BaseClass
+class Logout extends \core\BaseClass implements \Routable
 {
-
+    /**
+     * 
+     * @var \core\models\Login
+     */
+    private $login;
+    
+    
     /**
      * Starts the class Logout
+     *
+     * @param \core\Input $input    The input parser           
      */
-    public function __construct()
+    public function __construct(\core\Input $input,\core\models\Login $login)
     {
-        $this->init();
+        parent::__construct($input);
         
-        $this->logout();
+        $this->login = $login;
+    }
+    
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        $this->performLogout();
     }
 
     /**
      * Logs the user out
      */
-    private function logout()
+    protected function performLogout()
     {
-        \Loader::inject('\core\models\Login')->logout();
-        
-        $s_url = \core\Memory::parseUrl('index.php');
-        \Loader::inject('\core\services\Headers')->redirect($s_url);
+        $this->login->logout();
     }
 }
-
-$obj_Logout = new Logout();
-unset($obj_Logout);

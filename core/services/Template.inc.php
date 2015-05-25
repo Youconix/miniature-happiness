@@ -27,12 +27,28 @@ namespace core\services;
 class Template extends Service implements \SplObserver
 {
 
+    /**
+     * 
+     * @var \core\services\Headers
+     */
     private $service_Headers;
 
+    /**
+     * 
+     * @var \core\services\Cache
+     */
     private $service_Cache;
 
+    /**
+     * 
+     * @var \core\models\Config
+     */
     private $model_Config;
 
+    /**
+     * 
+     * @var \core\services\File
+     */
     private $service_File;
 
     private $s_layout;
@@ -147,7 +163,7 @@ class Template extends Service implements \SplObserver
      * Returns the template directory
      *
      * @deprecated Replaced by core/models/Config:getTemplateDir
-     * @return String The template directory
+     * @return string The template directory
      */
     public function getTemplateDir()
     {
@@ -159,7 +175,7 @@ class Template extends Service implements \SplObserver
      * Returns the loaded template directory
      *
      * @deprecated Replaced by core/models/Config:getStylesDir;
-     * @return String template directory
+     * @return string template directory
      */
     public function getStylesDir()
     {
@@ -191,7 +207,7 @@ class Template extends Service implements \SplObserver
     /**
      * Loads the given view into the parser
      *
-     * @param String $s_view
+     * @param string $s_view
      *            The view relative to the template-directory
      * @throws TemplateException if the view does not exist
      * @throws IOException if the view is not readable
@@ -265,7 +281,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes a script link to the head
      *
-     * @param String $s_link
+     * @param string $s_link
      *            The link
      */
     public function setJavascriptLink($s_link)
@@ -278,7 +294,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes javascript code to the head
      *
-     * @param String $s_javascript
+     * @param string $s_javascript
      *            The code
      */
     public function setJavascript($s_javascript)
@@ -297,7 +313,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes a stylesheet link to the head
      *
-     * @param String $s_link
+     * @param string $s_link
      *            The link
      */
     public function setCssLink($s_link)
@@ -310,7 +326,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes CSS code to the head
      *
-     * @param String $s_css
+     * @param string $s_css
      *            The code
      */
     public function setCSS($s_css)
@@ -329,7 +345,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes a metatag to the head
      *
-     * @param String $s_meta
+     * @param string $s_meta
      *            The metatag
      */
     public function setMetaLink($s_meta)
@@ -342,7 +358,7 @@ class Template extends Service implements \SplObserver
     /**
      * Sets the link to the page-header
      *
-     * @param String/CoreHtmlItem $s_link
+     * @param string/CoreHtmlItem $s_link
      *            The link
      * @throws Exception if $s_link is not a string and not a subclass of CoreHtmlItem
      * @deprecated Use one of the next functions :
@@ -383,9 +399,9 @@ class Template extends Service implements \SplObserver
     /**
      * Loads a subtemplate into the template
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The key in the template
-     * @param String $s_url
+     * @param string $s_url
      *            The URI of the subtemplate
      * @throws TemplateException if the view does not exist
      * @throws IOException if the view is not readable
@@ -411,9 +427,9 @@ class Template extends Service implements \SplObserver
     /**
      * Sets a subtemplate into the template
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The key in the template
-     * @param String $s_template
+     * @param string $s_template
      *            The template to add
      */
     public function setTemplate($s_key, $s_template)
@@ -427,11 +443,11 @@ class Template extends Service implements \SplObserver
     /**
      * Loads a template and returns it as a string
      *
-     * @param String $s_url
+     * @param string $s_url
      *            The URI of the template
-     * @param String $s_dir
+     * @param string $s_dir
      *            to search from, optional
-     * @return String template
+     * @return string template
      * @throws TemplateException if the view does not exist
      * @throws IOException if the view is not readable
      */
@@ -460,9 +476,9 @@ class Template extends Service implements \SplObserver
     /**
      * Sets the given value in the template on the given key
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The key in template
-     * @param String/CoreHtmlItem $s_value
+     * @param string/CoreHtmlItem $s_value
      *            The value to write in the template
      * @throws TemplateException if no template is loaded yet
      * @throws Exception if $s_value is not a string and not a subclass of CoreHtmlItem
@@ -492,7 +508,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes a repeating block to the template
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The key in template
      * @param array $a_data
      *            block data
@@ -520,7 +536,7 @@ class Template extends Service implements \SplObserver
     /**
      * Displays the if part with the given key
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The key in template
      */
     public function displayPart($s_key)
@@ -535,9 +551,9 @@ class Template extends Service implements \SplObserver
      *
      * @param array $a_keys            
      * @param array $a_values            
-     * @param String $s_template
+     * @param string $s_template
      *            The template to parse
-     * @return String parsed template
+     * @return string parsed template
      */
     public function writeTemplate($a_keys, $a_values, $s_template)
     {
@@ -645,7 +661,7 @@ class Template extends Service implements \SplObserver
     /**
      * Writes the block with the given key
      *
-     * @param String $s_key
+     * @param string $s_key
      *            The block key
      */
     private function writeBlock($s_key)
@@ -772,6 +788,11 @@ class Template extends Service implements \SplObserver
         }
     }
 
+    /**
+     * Removes the unused else blocks
+     * 
+     * @param int $i_start  The start position to search on
+     */
     private function removeElse($i_start)
     {
         $i_else = strpos($this->s_template, '<else>', $i_start);
@@ -818,62 +839,5 @@ class Template extends Service implements \SplObserver
         }
         
         return $i_end;
-    }
-
-    /**
-     * Writes the if blocks
-     *
-     * @throws TemplateException
-     */
-    private function writeIFSOld()
-    {
-        $a_matches = array();
-        $i_start = preg_match_all('#<if#', $this->s_template, $a_matches);
-        $i_end = preg_match_all('#</if>#', $this->s_template, $a_matches);
-        
-        if ($i_start > $i_end) {
-            throw new \TemplateException("Template validation error : number of &lt;if&gt; is bigger than the number of &lt;/if>.");
-        } else 
-            if ($i_end > $i_start) {
-                throw new \TemplateException("Template validation error : number of &lt;/if&gt; is bigger than the number of &lt;if&gt;.");
-            } else 
-                if ($i_start == 0)
-                    return;
-            
-            /* Write ifs to the template */
-        $i_start = strrpos($this->s_template, '<if');
-        while ($i_start !== false) {
-            $i_end = strpos($this->s_template, '</if>', $i_start);
-            $s_key = substr($this->s_template, $i_start + 5, (strpos($this->s_template, "}", $i_start) - $i_start - 5));
-            
-            if ($i_end === false) {
-                throw new \TemplateException("Template validation error : found <if {" . $s_key . "}> without matching </if>.");
-            }
-            
-            if (in_array($s_key, $this->a_parts)) {
-                $this->s_template = substr_replace($this->s_template, '', ($i_end), 5);
-                $this->s_template = substr_replace($this->s_template, '', $i_start, strlen('<if {' . $s_key . '}>'));
-                
-                $this->a_partsUsed[] = $s_key;
-            } else {
-                /* Check for else block */
-                $i_else = strpos($this->s_template, '<else>', $i_start);
-                $i_nextIf = strrpos($this->s_template, '<if', $i_start);
-                
-                if ($i_else < $i_nextIf) {
-                    echo ('else found');
-                }
-                
-                $this->s_template = substr_replace($this->s_template, '', $i_start, ($i_end - $i_start + 5));
-            }
-            
-            $i_start = strrpos($this->s_template, '<if');
-        }
-        
-        foreach ($this->a_parts as $s_key) {
-            if (! in_array($s_key, $this->a_partsUsed)) {
-                \Loader::Inject('\core\services\Logs')->exception(new \TemplateException('Notice : Call to undefined template if ' . $s_key . '.'));
-            }
-        }
     }
 }

@@ -28,32 +28,35 @@ namespace core;
 abstract class BaseClass
 {
 
-    /**
-     *
-     * @var \core\services\Security
-     */
-    protected $service_Security;
-
     protected $init_post = array();
 
     protected $init_get = array();
 
     protected $init_request = array();
 
-    protected $post = array();
+    /**
+     * @var \core\Input
+     */
+    protected $post;
 
-    protected $get = array();
+    /**
+     * @var \core\Input
+     */
+    protected $get;
 
-    protected $request = array();
+    /**
+     * @var \core\Input
+     */
+    protected $request;
 
     /**
      * Base class constructor
      *
-     * @param \core\services\Security $service_Security           
+     * @param \core\Input $input    The input parser           
      */
-    public function __construct(\core\services\Security $service_Security)
+    public function __construct(\core\Input $input)
     {
-        $this->service_Security = $service_Security;
+        $this->prepareInput($input);
         
         $this->init();
     }
@@ -67,6 +70,17 @@ abstract class BaseClass
             Memory::endProgram();
         }
     }
+    
+    /**
+     * Prepares the inputs
+     * 
+     * @param \core\Input $input    The input parser
+     */
+    protected function prepareInput(\core\Input $input){
+        $this->post = clone $input;
+        $this->get = clone $input;
+        $this->request = clone $input;
+    }
 
     /**
      * Inits the class BaseClass
@@ -74,8 +88,8 @@ abstract class BaseClass
     protected function init()
     {   
         /* Secure input */
-        $this->get = $this->service_Security->secureInput('GET', $this->init_get);
-        $this->post = $this->service_Security->secureInput('POST', $this->init_post);
-        $this->request = $this->service_Security->secureInput('REQUEST', $this->init_request);
+        $this->get->parse('GET', $this->init_get);
+        $this->post->parse('POST', $this->init_post);
+        $this->request->parse('REQUEST', $this->init_request);
     }
 }

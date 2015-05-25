@@ -4,28 +4,32 @@ namespace core\models;
 class ControlPanelModules extends \core\models\Model
 {
 
-    private $service_File;
+    /**
+     * 
+     * @var \core\services\File
+     */
+    private $file;
 
-    private $service_XML;
+    /**
+     * 
+     * @var \core\services\Xml
+     */
+    private $xml;
 
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\services\File $service_File
-     *            The file service
-     * @param \core\services\XML $service_XML
-     *            The XML service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
+     * @param \core\services\File $file
+     * @param \core\services\XML $xml
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\File $service_File, \core\services\Xml $service_XML)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\services\File $file, \core\services\Xml $xml)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $validation);
         
-        $this->service_File = $service_File;
-        $this->service_XML = $service_XML;
+        $this->file = $file;
+        $this->xml = $xml;
     }
 
     /**
@@ -46,11 +50,11 @@ class ControlPanelModules extends \core\models\Model
     private function getModules()
     {
         $s_dir = $this->getDirectory();
-        $a_directory = $this->service_File->readDirectory($s_dir, false, true);
+        $a_directory = $this->file->readDirectory($s_dir, false, true);
         
         $a_files = array();
         foreach ($a_directory as $s_module) {
-            if (! is_dir($s_dir . DIRECTORY_SEPARATOR . $s_module) || ! $this->service_File->exists($s_dir . DIRECTORY_SEPARATOR . $s_module . '/settings.xml')) {
+            if (! is_dir($s_dir . DIRECTORY_SEPARATOR . $s_module) || ! $this->file->exists($s_dir . DIRECTORY_SEPARATOR . $s_module . '/settings.xml')) {
                 continue;
             }
             
@@ -70,8 +74,8 @@ class ControlPanelModules extends \core\models\Model
         $a_filesRaw = $this->getModules();
         $a_files = array();
         
-        $this->service_QueryBuilder->select('admin_modules', 'name');
-        $database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('admin_modules', 'name');
+        $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
             $data = $database->fetch_assoc();
@@ -98,15 +102,15 @@ class ControlPanelModules extends \core\models\Model
             'upgrades' => array()
         );
         
-        $this->service_QueryBuilder->select('admin_modules', '*');
-        $database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('admin_modules', '*');
+        $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_assoc();
             $s_dir = $this->getDirectory();
             
             foreach ($a_data as $a_item) {
-                $obj_settings = $this->service_XML->cloneService();
+                $obj_settings = $this->xml->cloneService();
                 $obj_settings->load($s_dir . DIRECTORY_SEPARATOR . $a_item['name'] . DIRECTORY_SEPARATOR . 'settings.xml');
                 if ($obj_settings->get('module/version') > $a_item['version']) {
                     $a_item['versionNew'] = $obj_settings->get('module/version');
@@ -130,8 +134,8 @@ class ControlPanelModules extends \core\models\Model
         $a_filesRaw = $this->getModules();
         $a_files = array();
         
-        $this->service_QueryBuilder->select('admin_modules', 'name');
-        $database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('admin_modules', 'name');
+        $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_row();
@@ -173,7 +177,7 @@ class ControlPanelModules extends \core\models\Model
         
         $s_dir = $this->getDirectory();
         
-        $obj_settings = $this->service_XML->cloneService();
+        $obj_settings = $this->xml->cloneService();
         $obj_settings->load($s_dir . DIRECTORY_SEPARATOR . $s_module . DIRECTORY_SEPARATOR . 'settings.xml');
         
         foreach ($a_data as $s_key => $value) {
@@ -206,22 +210,22 @@ class ControlPanelModules extends \core\models\Model
     public function installModule($s_name)
     {
         /* Check if module not exists */
-        $this->service_QueryBuilder->select('admin_modules', 'id')
+        $this->builder->select('admin_modules', 'id')
             ->getWhere()
             ->addAnd('name', 's', $s_name);
-        $database = $this->service_QueryBuilder->getResult();
+        $database = $this->builder->getResult();
         if ($database->num_rows() != 0) {
             return;
         }
         
         $s_dir = $this->getDirectory();
-        if (! $this->service_File->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
+        if (! $this->file->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
             return;
         }
         
         $a_data = $this->getModuleData($s_name, true);
         
-        $this->service_QueryBuilder->insert('admin_modules', array(
+        $this->builder->insert('admin_modules', array(
             'name',
             'installed',
             'author',
@@ -240,7 +244,7 @@ class ControlPanelModules extends \core\models\Model
             $a_data['description'],
             $a_data['version']
         ));
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
         
         if (! empty($a_data['install'])) {
             /* Run module installer */
@@ -258,10 +262,10 @@ class ControlPanelModules extends \core\models\Model
     public function removeModule($i_id)
     {
         /* Check if module exists */
-        $this->service_QueryBuilder->select('admin_modules', 'name')
+        $this->builder->select('admin_modules', 'name')
             ->getWhere()
             ->addAnd('name', 's', $s_name);
-        $database = $this->service_QueryBuilder->getResult();
+        $database = $this->builder->getResult();
         if ($database->num_rows() == 0) {
             return;
         }
@@ -281,12 +285,12 @@ class ControlPanelModules extends \core\models\Model
         
         $s_dir = $this->getDirectory();
         
-        $this->service_QueryBuilder->delete('admin_modules')
+        $this->builder->delete('admin_modules')
             ->getWhere()
             ->addAnd('id', 'i', $i_id);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
         
-        if ($this->service_File->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
+        if ($this->file->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
             $a_data = $this->getModuleData($s_name, true);
             
             if (! empty($a_data['deinstall'])) {
@@ -295,7 +299,7 @@ class ControlPanelModules extends \core\models\Model
             }
         }
         
-        $this->service_File->deleteDirectory($s_dir . DIRECTORY_SEPARATOR . $s_name);
+        $this->file->deleteDirectory($s_dir . DIRECTORY_SEPARATOR . $s_name);
     }
 
     /**
@@ -308,10 +312,10 @@ class ControlPanelModules extends \core\models\Model
     public function updateModule($i_id)
     {
         /* Check if module exists */
-        $this->service_QueryBuilder->select('admin_modules', 'name')
+        $this->builder->select('admin_modules', 'name')
             ->getWhere()
             ->addAnd('name', 's', $s_name);
-        $database = $this->service_QueryBuilder->getResult();
+        $database = $this->builder->getResult();
         if ($database->num_rows() == 0) {
             return;
         }
@@ -319,14 +323,14 @@ class ControlPanelModules extends \core\models\Model
         $s_name = $database->result(0, 'name');
         $s_dir = $this->getDirectory();
         
-        if (! $this->service_File->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
+        if (! $this->file->exists($s_dir . DIRECTORY_SEPARATOR . $s_name . DIRECTORY_SEPARATOR . 'settings.xml')) {
             return;
         }
         
-        $this->service_QueryBuilder->update('admin_modules', 'version', 's', $a_data['version'])
+        $this->builder->update('admin_modules', 'version', 's', $a_data['version'])
             ->getWhere()
             ->addAnd('id', 'i', $i_id);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
         
         $a_data = $this->getModuleData($s_name, true);
         

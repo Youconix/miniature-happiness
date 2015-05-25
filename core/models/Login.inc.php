@@ -14,80 +14,76 @@ namespace core\models;
  * @author Rachelle Scheijen
  * @since 2.0
  */
-class Login extends Model
+class Login extends LoginParent
 {
 
-    protected $service_Cookie;
-
-    protected $service_QueryBuilder;
-
-    protected $service_Logs;
-
-    protected $service_Hashing;
-
-    protected $service_Session;
-
-    protected $service_Mailer;
-
-    protected $service_Random;
-
-    protected $service_Headers;
-
-    protected $model_Config;
+    /**
+     *
+     * @var \core\services\Hashing
+     */
+    protected $hashing;
 
     /**
-     * Inits the service Autorization
      *
-     * @param \core\services\Cookie $service_Cookie
-     *            The cookie handler
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Logs $service_Logs
-     *            The log service
-     * @param \core\services\Hashing $service_Hashing
-     *            The hashing service
-     * @param \core\services\Session $service_Session
-     *            The session service
-     * @param \core\services\Mailer $service_Mailer
-     *            The mailer service
-     * @param \core\services\Random $service_Random
-     *            The random service
-     * @param \core\services\Headers $service_Headers
-     *            The headers service
-     * @param \core\models\Config $model_Config
-     *            The site config
+     * @var \core\services\Mailer
      */
-    public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\services\Mailer $service_Mailer, \core\services\Random $service_Random, \core\services\Headers $service_Headers, \core\models\Config $model_Config)
+    protected $mailer;
+
+    /**
+     *
+     * @var \core\services\Random
+     */
+    protected $random;
+
+    /**
+     * Inits the autorization model
+     *
+     * @param \core\services\Cookie $cookie            
+     * @param \core\services\QueryBuilder $builder            
+     * @param \core\services\Logs $logs            
+     * @param \core\services\Hashing $hashing            
+     * @param \core\services\Session $session            
+     * @param \core\services\Mailer $mailer            
+     * @param \core\services\Random $random            
+     * @param \core\services\Headers $headers            
+     * @param \core\models\Config $config            
+     * @param \core\models\User $user;            
+     */
+    public function __construct(\core\services\Cookie $cookie, \core\services\QueryBuilder $builder, \core\services\Logs $logs, \core\services\Hashing $hashing, \core\services\Session $session, \core\services\Mailer $mailer, \core\services\Random $random, \core\services\Headers $headers, \core\models\Config $config, \core\models\User $user)
     {
-        $this->service_Cookie = $service_Cookie;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
-        $this->service_Database = $this->service_QueryBuilder->getDatabase();
-        $this->service_Logs = $service_Logs;
-        $this->service_Hashing = $service_Hashing;
-        $this->service_Session = $service_Session;
-        $this->service_Mailer = $service_Mailer;
-        $this->service_Random = $service_Random;
-        $this->service_Headers = $service_Headers;
-        $this->model_Config = $model_Config;
+        parent::__construct($cookie, $builder, $logs, $session, $headers, $config, $user);
+        
+        $this->hashing = $hashing;
+        $this->mailer = $mailer;
+        $this->random = $random;
     }
 
     /**
      * Logs the user in
      *
-     * @param String $s_username            
-     * @param String $s_password
+     * @param string $s_username
+     *            The username
+     * @param string $s_password
      *            text password
-     * @param Boolean $bo_autologin
+     * @param boolean $bo_autologin
      *            true for auto login
      */
     public function do_login($s_username, $s_password, $bo_autologin = false)
     {
-        $s_password = $this->service_Hashing->hashUserPassword($s_password, $s_username);
-        $i_tries = $this->registerLoginTries();
+        if (! $this->checkTries($s_username)) {
+            return;
+        }
+        
+        $s_salt = $this->user->getSalt($s_username, 'normal');
+        if (is_null($s_salt)) {
+            return;
+        }
+        
+        $s_passwordHash = $this->hashing->hashUserPassword($s_password, $s_salt);
         
         /* Check the login combination */
-        $this->service_QueryBuilder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
-        $this->service_QueryBuilder->getWhere()->addAnd(array(
+        $this->builder->select('users', '*');
+        $this->builder->getWhere()->addAnd(array(
             'nick',
             'password',
             'active',
@@ -99,234 +95,61 @@ class Login extends Model
             's'
         ), array(
             $s_username,
-            $s_password,
+            $s_passwordHash,
             '1',
             'normal'
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
-            return;
-        }
-        
-        $a_data = $service_Database->fetch_assoc();
-        
-        if ($a_data[0]['bot'] == '1' || $a_data[0]['active'] == '0' || $a_data[0]['blocked'] == '1') {
-            return;
-        }
-        
-        /* Check the number of tries */
-        if ($i_tries >= 5) {
-            if ($i_tries == 5) {
-                $this->service_QueryBuilder->select('users', 'email')
-                    ->getWhere()
-                    ->addAnd(array(
-                    'username',
-                    'active'
-                ), array(
-                    's',
-                    's'
-                ), array(
-                    $s_username,
-                    '1'
-                ));
-                $service_Database = $this->service_QueryBuilder->getResult();
-                
-                if ($service_Database->num_rows() > 0) {
-                    $s_email = $service_Database->result(0, 'email');
-                    
-                    $this->service_QueryBuilder->update('users', 'active', '0')
-                        ->getWhere()
-                        ->addAnd('username', 's', $s_username);
-                    $this->service_QueryBuilder->getResult();
-                    
-                    $this->service_Mailer->accountDisableMail($s_username, $s_email);
-                }
-                
-                $this->service_Logs->accountBlockLog($s_username, 3);
-            } else 
-                if ($i_tries == 10) {
-                    $this->service_QueryBuilder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
-                    $this->service_Logs->ipBlockLog(6);
-                } else {
-                    $this->service_Logs->loginLog($s_username, 'failed', $i_tries);
-                }
-            
-            return;
-        }
-        
-        $this->clearLoginTries();
-        $this->service_Logs->loginLog($s_username, 'success', $i_tries);
-        
-        if ($bo_autologin) {
-            /* Set auto login for the next time */
-            $this->service_QueryBuilder->delete('autologin')
-                ->getWhere()
-                ->addAnd('userID', 'i', $a_data[0]['id']);
-            $this->service_QueryBuilder->getResult();
-            
-            $this->service_QueryBuilder->insert('autologin', array(
-                'userID',
-                'username',
-                'type',
-                'IP'
+            /* Check old way */
+            $s_password = $this->hashPassword($s_password, $s_username);
+            $this->builder->select('users', '*');
+            $this->builder->getWhere()->addAnd(array(
+                'nick',
+                'password',
+                'active',
+                'loginType'
             ), array(
-                'i',
+                's',
                 's',
                 's',
                 's'
             ), array(
-                $a_data[0]['id'],
-                $a_data[0]['nick'],
-                $a_data[0]['userType'],
-                $_SERVER['REMOTE_ADDR']
+                $s_username,
+                $s_passwordHash,
+                '1',
+                'normal'
             ));
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
+            if ($service_Database->num_rows() == 0) {
+                return;
+            }
             
-            $s_fingerprint = $this->service_Session->getFingerprint();
-            $this->service_Cookie->set('autologin', $s_fingerprint . ';' . $service_Database->getID(), '/');
-        }
-        
-        if ($a_data[0]['password_expired'] == 1) {
-            /* Password is expired */
-            $this->service_Session->set('expired', $a_data[0]);
-            $this->service_Headers->redirect('/authorisation/login/expired');
-        }
-        
-        $this->setLogin($a_data[0]);
-    }
-
-    /**
-     * Checks if auto login is present and valid.
-     * If so, the user is logged in
-     */
-    public function checkAutologin()
-    {
-        if (! $this->service_Cookie->exists('autologin')) {
-            return;
-        }
-        
-        $s_fingerprint = $this->service_Session->getFingerprint();
-        $a_data = explode(';', $this->service_Cookie->get('autologin'));
-        
-        if ($a_data[0] != $s_fingerprint) {
-            $this->service_Cookie->delete('autologin', '/');
-            return;
-        }
-        
-        /* Check auto login */
-        $a_login = $this->performAutoLogin($a_data[1]);
-        if (is_null($a_login)) {
-            $this->service_Cookie->delete('autologin', '/');
-            return;
-        }
-        
-        $this->service_Cookie->set('autologin', implode(';', $a_data), '/');
-        $this->setLogin($a_login);
-    }
-
-    /**
-     * Sets the login session and redirects to the given page or the set default
-     *
-     * @param array $a_login
-     *            The login data
-     */
-    public function setLogin($a_login)
-    {
-        $s_redirection = $this->model_Config->getLoginRedirect();
-        
-        if ($this->service_Session->exists('page')) {
-            if ($this->service_Session->get('page') != 'logout.php')
-                $s_redirection = $this->service_Session->get('page');
-            
-            $this->service_Session->delete('page');
-        }
-        
-        while (strpos($s_redirection, '//') !== false) {
-            $s_redirection = str_replace('//', '/', $s_redirection);
-        }
-        
-        $this->service_QueryBuilder->update('users', 'lastLogin', 'i', time())
-            ->getWhere()
-            ->addAnd('id', 'i', $a_login['id']);
-        $this->service_QueryBuilder->getResult();
-        
-        $this->service_Session->setLogin($a_login['id'], $a_login['nick'], $a_login['lastLogin']);
-        
-        $this->service_Headers->redirect($s_redirection);
-    }
-
-    /**
-     * Performs the auto login
-     *
-     * @param int $i_id
-     *            auto login ID
-     * @return array id, username and password_expired if the login is correct, otherwise null
-     */
-    private function performAutoLogin($i_id)
-    {
-        $this->service_QueryBuilder->select('users u', 'u.id, u.nick,u.bot,u.active,u.blocked,u.password_expired,u.lastLogin,u.userType');
-        $this->service_QueryBuilder->innerJoin('autologin al', 'u.id', 'al.userID')
-            ->getWhere()
-            ->addAnd(array(
-            'al.id',
-            'al.IP'
-        ), array(
-            'i',
-            's'
-        ), array(
-            $i_id,
-            $_SERVER['REMOTE_ADDR']
-        ));
-        
-        $service_Database = $this->service_QueryBuilder->getResult();
-        if ($service_Database->num_rows() == 0) {
-            return null;
+            /* Update user record */
+            $i_id = $service_Database->result(0, 'id');
+            $builder = clone $this->service_QueryBuilder;
+            $builder->update('users', 'password', 's', $s_passwordHash)
+                ->getWhere()
+                ->addAnd('id', 'i', $i_id);
+            $builder->getResult();
         }
         
         $a_data = $service_Database->fetch_assoc();
         
-        if ($a_data[0]['bot'] == '1' || $a_data[0]['active'] == '0' || $a_data[0]['blocked'] == '1') {
-            $this->service_QueryBuilder->delete('autologin')
-                ->getWhere()
-                ->addAnd('id', 'i', $i_id);
-            $this->service_QueryBuilder->getResult();
-            return null;
-        }
-        
-        $this->service_Logs->loginLog($a_data[0]['nick'], 'success', 1);
-        
-        return $a_data[0];
-    }
-
-    /**
-     * Logs the user out
-     */
-    public function logout()
-    {
-        if ($this->service_Cookie->exists('autologin')) {
-            $this->service_Cookie->delete('autologin', '/');
-            $this->service_QueryBuilder->delete('autologin')
-                ->getWhere()
-                ->addAnd('userID', 'i', USERID);
-            $this->service_QueryBuilder->getResult();
-        }
-        
-        $this->service_Session->destroyLogin();
-        
-        $this->service_Headers->redirect($this->model_Config->getLogoutRedirect());
+        return parent::do_login($a_data[0], $bo_autologin);
     }
 
     /**
      * Registers the password reset request
      *
-     * @param String $s_email
+     * @param string $s_email
      *            email address
-     * @return int status code 0	Email address unknown -1	OpenID account 1 Email send
+     * @return int status code 0 Email address unknown -1 OpenID account 1 Email send
      */
     public function resetPasswordMail($s_email)
     {
-        $this->service_QueryBuilder->select('users', 'id,loginType,nick')
+        $this->builder->select('users', 'id,loginType,nick')
             ->getWhere()
             ->addAnd(array(
             'active',
@@ -341,7 +164,7 @@ class Login extends Model
             0,
             $s_email
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
             return 0;
@@ -355,11 +178,11 @@ class Login extends Model
             return - 1;
         }
         
-        $s_newPassword = $this->service_Random->numberLetter(10, true);
-        $s_hash = sha1($s_username . $this->service_Random->numberLetter(20, true) . $s_email);
+        $s_newPassword = $this->random->numberLetter(10, true);
+        $s_hash = sha1($s_username . $this->random->numberLetter(20, true) . $s_email);
         
         $s_passwordHash = $this->hashPassword($s_newPassword, $s_username);
-        $this->service_QueryBuilder->insert('password_codes', array(
+        $this->builder->insert('password_codes', array(
             'userid',
             'code',
             'password',
@@ -376,7 +199,7 @@ class Login extends Model
             (time() + 86400)
         ))->getResult();
         
-        $this->service_Mailer->passwordResetMail($s_username, $s_email, $s_newPassword, $s_hash);
+        $this->mailer->passwordResetMail($s_username, $s_email, $s_newPassword, $s_hash);
         
         return 1;
     }
@@ -384,13 +207,13 @@ class Login extends Model
     /**
      * Resets the password
      *
-     * @param String $s_hash
+     * @param string $s_hash
      *            reset hash
      * @return boolean if the hash is correct, otherwise false
      */
     public function resetPassword($s_hash)
     {
-        $this->service_QueryBuilder->select('password_codes', 'userid,password')
+        $this->builder->select('password_codes', 'userid,password')
             ->getWhere()
             ->addAnd(array(
             'code',
@@ -406,7 +229,7 @@ class Login extends Model
             '>'
         ));
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() == 0) {
             return false;
         }
@@ -414,9 +237,9 @@ class Login extends Model
         $i_userid = $service_Database->result(0, 'userid');
         $s_password = $service_Database->result(0, 'password');
         try {
-            $this->service_QueryBuilder->transaction();
+            $this->builder->transaction();
             
-            $this->service_QueryBuilder->delete('password_codes')
+            $this->builder->delete('password_codes')
                 ->getWhere()
                 ->addOr(array(
                 'code',
@@ -431,15 +254,15 @@ class Login extends Model
                 '=',
                 '<'
             ));
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->delete('ipban')
+            $this->builder->delete('ipban')
                 ->getWhere()
                 ->addAnd('ip', 's', $_SERVER['REMOTE_ADDR']);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             $this->clearLoginTries();
             
-            $this->service_QueryBuilder->update('users', array(
+            $this->builder->update('users', array(
                 'password',
                 'active',
                 'password_expired'
@@ -452,13 +275,13 @@ class Login extends Model
                 '1',
                 '1'
             ));
-            $this->service_QueryBuilder->getWhere()->addAnd('id', 'i', $i_userid);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getWhere()->addAnd('id', 'i', $i_userid);
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->commit();
+            $this->builder->commit();
             return true;
         } catch (\DBException $e) {
-            $this->service_QueryBuilder->rollback();
+            $this->builder->rollback();
             throw $e;
         }
     }
@@ -466,7 +289,7 @@ class Login extends Model
     /**
      * Disables the account by the username Sends a notification email
      *
-     * @param String $s_username
+     * @param string $s_username
      *            username
      */
     public function disableAccount($s_username)
@@ -474,132 +297,135 @@ class Login extends Model
         \core\Memory::type('string', $s_username);
         
         try {
-            $this->service_QueryBuilder->select('users', 'email')
+            $this->builder->select('users', 'email')
                 ->getWhere()
                 ->addAnd('nick', 's', $s_username);
             
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             if ($service_Database->num_rows() == 0)
                 return;
             
             $s_email = $service_Database->result(0, 'email');
             
-            $this->service_QueryBuilder->transaction();
+            $this->builder->transaction();
             
-            $this->service_QueryBuilder->update('users', 'active', 's', '0')
+            $this->builder->update('users', 'active', 's', '0')
                 ->getWhere()
                 ->addAnd('nick', 's', $s_username);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             
             /* Send mail to user */
-            $this->service_Mailer->accountDisableMail($s_username, $s_email);
+            $this->mailer->accountDisableMail($s_username, $s_email);
             
-            $this->service_QueryBuilder->commit();
+            $this->builder->commit();
         } catch (\Exception $e) {
-            $this->service_QueryBuilder->rollback();
+            $this->builder->rollback();
             throw $e;
         }
     }
 
     /**
-     * Registers the login try
+     * Hashes the given password with the set salt and sha1
+     * Old hashing method
      *
-     * @return int number of tries done including this one
+     * @param string $s_password
+     *            The password
+     * @param string $s_username
+     *            The username
+     * @return string The hashed password
      */
-    private function registerLoginTries()
+    protected function hashPassword($s_password, $s_username)
     {
-        $s_fingerprint = $this->service_Session->getFingerprint();
+        $settings = $this->config->getSettings();
         
-        $this->service_QueryBuilder->select('login_tries', 'tries')
-            ->getWhere()
-            ->addAnd('hash', 's', $s_fingerprint);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $s_salt = $settings->get('settings/main/salt');
         
-        if ($service_Database->num_rows() == 0) {
-            $i_tries = 1;
-            $this->service_QueryBuilder->select('login_tries', 'tries')
-                ->getWhere()
-                ->addAnd(array(
-                'ip',
-                'timestamp'
-            ), array(
-                's',
-                'i',
-                'i'
-            ), array(
-                $_SERVER['REMOTE_ADDR'],
-                time(),
-                (time() - 3)
-            ), array(
-                '=',
-                'BETWEEN'
-            ));
-            $service_Database = $this->service_QueryBuilder->getResult();
-            if ($service_Database->num_rows() > 10) {
-                $i_tries = 6; // reject login to be sure
+        return sha1(substr(md5($s_username), 5, 30) . $s_password . $s_salt);
+    }
+
+    /**
+     * Registers the user
+     *
+     * @param array $a_data
+     *            data
+     * @param bool $bo_skipActivation
+     *            true to skip sending the activation email (auto activation)
+     * @return bool if the user is registrated
+     * @throws \Exception If registrating failes
+     */
+    public function register($a_data, $bo_skipActivation = false)
+    {
+        $s_username = $a_data['username'];
+        $s_password = $a_data['password'];
+        $s_email = $a_data['email'];
+        
+        try {
+            $this->builder->transaction();
+            
+            $s_registrationKey = sha1(time() . ' ' . $s_username . ' ' . $s_email);
+            
+            $obj_User = $this->user->createUser();
+            $obj_User->setUsername($s_username);
+            $obj_User->setEmail($s_email);
+            $obj_User->setLoginType('normal');
+            $obj_User->setPassword($s_password,'normal');
+            $obj_User->setActivation($s_registrationKey);
+            $obj_User->setBot(false);
+            $obj_User->save();
+            
+            if (! $bo_skipActivation) {
+                $this->sendActivationEmail($s_username, $s_email, $s_registrationKey);
             }
             
-            $this->service_QueryBuilder->insert('login_tries', array(
-                'hash',
-                'ip',
-                'tries',
-                'timestamp'
-            ), array(
-                's',
-                's',
-                'i',
-                'i'
-            ), array(
-                $s_fingerprint,
-                $_SERVER['REMOTE_ADDR'],
-                1,
-                time()
-            ))->getResult();
+            $this->builder->commit();
             
-            return $i_tries;
+            if (! $bo_skipActivation) {
+                $obj_User->activate($s_registrationKey);
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->builder->rollback();
+            
+            throw $e;
         }
-        
-        $i_tries = ($service_Database->result(0, 'tries') + 1);
-        $this->service_QueryBuilder->update('login_tries', 'tries', 'l', 'tries + 1')
-            ->getWhere()
-            ->addAnd('hash', 's', $s_fingerprint);
-        $this->service_QueryBuilder->getResult();
-        return $i_tries;
     }
 
     /**
-     * Clears the login tries
-     */
-    private function clearLoginTries()
-    {
-        $s_fingerprint = $this->service_Session->getFingerprint();
-        
-        $this->service_QueryBuilder->delete('login_tries')
-            ->getWhere()
-            ->addAnd('hash', 's', $s_fingerprint);
-        $this->service_QueryBuilder->getResult();
-    }
-
-    /**
-     * Logs the user in as the given user
-     * Control panel only function
+     * Resends the activation email
      *
-     * @param int $i_userid
-     *            The user ID
+     * @param string $s_username
+     *            username
+     * @param string $s_email
+     *            email address
+     * @return boolean True if the email has been send
      */
-    public function loginAs($i_userid)
+    public function resendActivationEmail($s_username, $s_email)
     {
-        $this->service_QueryBuilder->select('users', 'id, nick,lastLogin')
-            ->getWhere()
-            ->addAnd('id', 'i', $i_userid);
-        $service_Database = $this->service_QueryBuilder->getResult();
-        
-        if ($service_Database->num_rows() == 0) {
-            return;
+        $user = $this->user->getByName($s_username, $s_email);
+        if (is_null($user)) {
+            return false;
         }
         
-        $a_data = $service_Database->fetch_assoc();
-        
-        $this->service_Session->setLoginTakeover($a_data[0]['id'], $a_data[0]['nick'], $a_data[0]['lastLogin']);
+        try {
+            $this->sendActivationEmail($user);
+            
+            return true;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
+     * Sends the activation email
+     *
+     * @param \core\models\data\DataUser $user            
+     * @throws \RuntimeException If the sending of the email failes
+     */
+    private function sendActivationEmail(\core\models\data\DataUser $user)
+    {
+        if (! $this->mailer->registrationMail($user->getUsername(), $user->getEmail(), $user->getActivation())) {
+            throw new \RuntimeException("Sending registration mail to '.$user->getEmail().' failed.");
+        }
     }
 }

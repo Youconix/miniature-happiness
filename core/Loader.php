@@ -19,10 +19,28 @@ class Loader
             $s_className = substr($s_className, $i_lastNsPos + 1);
             $s_fileName = str_replace('\\', DIRECTORY_SEPARATOR, $s_namespace) . DIRECTORY_SEPARATOR;
         }
+        
+        /* Check for website files */
+        $s_name = strtolower($s_fileName.DIRECTORY_SEPARATOR.$s_className.'.php');
+        if (file_exists(NIV . $s_name)) {
+            return $s_name;
+        }
+        
+        if (defined('WEBSITE_ROOT')) {
+            if (file_exists(WEBSITE_ROOT . $s_name)) {
+                return WEBSITE_ROOT . $s_name;
+            }
+        }
+        
+        /* Check for libs */
         $s_fileName .= str_replace('_', DIRECTORY_SEPARATOR, $s_className) . '.php';
         
         if (file_exists(NIV . 'lib' . DIRECTORY_SEPARATOR . $s_fileName)) {
             return 'lib' . DIRECTORY_SEPARATOR . $s_fileName;
+        }
+        
+        if (file_exists(NIV . $s_fileName)) {
+            return $s_fileName;
         }
         
         $s_fileName = str_replace('.php', '.inc.php', $s_fileName);
@@ -31,22 +49,7 @@ class Loader
             return $s_fileName;
         }
         
-        $s_fileName = str_replace('.inc.php', '.php', $s_fileName);
-        if (file_exists(NIV . $s_fileName)) {
-            return $s_fileName;
-        }
-        if (file_exists(NIV . strtolower($s_fileName))) {
-            return strtolower($s_fileName);
-        }
-        
-        if (defined('WEBSITE_ROOT')) {
-            if (file_exists(WEBSITE_ROOT . $s_fileName)) {
-                return WEBSITE_ROOT . $s_fileName;
-            }
-            if (file_exists(WEBSITE_ROOT . strtolower($s_fileName))) {
-                return WEBSITE_ROOT . strtolower($s_fileName);
-            }
-        }
+        trigger_error('Can not find '.NIV.$s_fileName);
         
         return null;
     }
@@ -170,24 +173,6 @@ class Loader
                         }
             } else {
                 $a_arguments[] = Loader::inject($s_name);
-                
-                /*
-                 * $s_name = end($a_path);
-                 * $bo_data = false;
-                 * if ($a_path[2] == 'data') {
-                 * $bo_data = true;
-                 * }
-                 *
-                 * if (($a_path[1] == 'helpers') || ($a_path[1] == 'html')) {
-                 * $a_arguments[] = \core\Memory::helpers($s_name, $bo_data);
-                 * } else
-                 * if (($a_path[1] == 'services') || ($a_path[1] == 'database')) {
-                 * $a_arguments[] = \core\Memory::services($s_name, $bo_data);
-                 * } else
-                 * if ($a_path[1] == 'models') {
-                 * $a_arguments[] = \core\Memory::models($s_name, $bo_data);
-                 * }
-                 */
             }
         }
         

@@ -2,6 +2,19 @@
 namespace core\services;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Random generator service
  *
  * This file is part of Miniature-happiness
@@ -10,19 +23,6 @@ namespace core\services;
  * @author Rachelle Scheijen
  * @version 1.0
  * @since 1.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Random extends Service
 {
@@ -34,7 +34,7 @@ class Random extends Service
      *            The length of the code
      * @param boolean $bo_uppercase
      *            Set to true to use also uppercase letters
-     * @return String A random letter-string
+     * @return string A random letter-string
      */
     public function letter($i_length, $bo_uppercase = false)
     {
@@ -59,7 +59,7 @@ class Random extends Service
      *
      * @param int $i_length
      *            The length of the code
-     * @return String A random number-string
+     * @return string A random number-string
      */
     public function number($i_length)
     {
@@ -82,7 +82,7 @@ class Random extends Service
      *            The length of the code
      * @param boolean $bo_uppercase
      *            Set to true to use also uppercase letters
-     * @return String A random letter and number-string
+     * @return string A random letter and number-string
      */
     public function numberLetter($i_length, $bo_uppercase)
     {
@@ -107,7 +107,7 @@ class Random extends Service
      *
      * @param int $i_length
      *            The length of the code
-     * @return String A random letter and number-string
+     * @return string A random letter and number-string
      */
     public function numberLetterCaptcha($i_length)
     {
@@ -129,7 +129,7 @@ class Random extends Service
      *
      * @param int $i_length
      *            The length of the code
-     * @return String A random sign-string
+     * @return string A random sign-string
      */
     public function randomAll($i_length)
     {

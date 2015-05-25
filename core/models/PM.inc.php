@@ -27,29 +27,33 @@ namespace core\models;
 class PM extends Model
 {
 
-    private $service_Mailer;
+    /**
+     * 
+     * @var \core\services\Mailer
+     */
+    private $mailer;
 
-    private $model_PmData;
+    /**
+     * 
+     * @var \core\models\data\DataPM
+     */
+    private $pm;
 
     private $a_messages = array();
 
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\models\data\Data_PM $model_PM
-     *            PM data model
-     * @param \core\services\Mailer $service_Mailer
-     *            Mailer service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
+     * @param \core\models\data\Data_PM $pm
+     * @param \core\services\Mailer $mailer
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\models\data\Data_PM $model_PM, \core\services\Mailer $service_Mailer)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\data\Data_PM $pm, \core\services\Mailer $mailer)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
-        $this->model_PmData = $model_PM;
-        $this->service_Mailer = $service_Mailer;
+        parent::__construct(builder, $validation);
+        $this->pm = $pm;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -69,14 +73,14 @@ class PM extends Model
         
         $i_receiver = $obj_receiver->getID();
         
-        $obj_message = $this->model_PmData->cloneModel();
+        $obj_message = $this->pm->cloneModel();
         $obj_message->setSender(0); // system as sender
         $obj_message->setReceiver($i_receiver);
         $obj_message->setTitle($s_title);
         $obj_message->setMessage($s_message);
         $obj_message->save();
         
-        $this->service_Mailer->PM($obj_receiver);
+        $this->mailer->PM($obj_receiver);
         
         $this->a_messages[$obj_message->getID()] = $obj_message;
         
@@ -106,7 +110,7 @@ class PM extends Model
         
         $i_receiver = $obj_receiver->getID();
         
-        $obj_message = $this->model_PmData->cloneModel();
+        $obj_message = $this->pm->cloneModel();
         $obj_message->setSender($i_sender);
         $obj_message->setReceiver($i_receiver);
         $obj_message->setTitle($s_title);
@@ -116,7 +120,7 @@ class PM extends Model
         if ($i_receiver == USERID) {
             $this->a_messages[$obj_message->getID()] = $obj_message;
         } else {
-            $this->service_Mailer->PM($obj_receiver);
+            $this->mailer->PM($obj_receiver);
         }
         
         $this->a_messages[$obj_message->getID()] = $obj_message;
@@ -139,17 +143,17 @@ class PM extends Model
         
         /* Get messages send to the logged in user */
         $this->a_messages = array();
-        $this->service_QueryBuilder->select('pm', '*')
+        $this->builder->select('pm', '*')
             ->order('send', 'DESC')
             ->getWhere()
             ->addAnd('toUserid', 'i', $i_receiver);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         $a_messages = array();
         if ($service_Database->num_rows() != 0) {
             $a_preMessages = $service_Database->fetch_assoc();
             foreach ($a_preMessages as $a_message) {
-                $obj_message = $this->model_PmData->cloneModel();
+                $obj_message = $this->pm->cloneModel();
                 $obj_message->setData($a_message);
                 $a_messages[$a_message['id']] = $obj_message;
                 
@@ -176,7 +180,7 @@ class PM extends Model
             return $this->a_messages[$i_id];
         }
         
-        $obj_message = $this->model_PmData->cloneModel();
+        $obj_message = $this->pm->cloneModel();
         $obj_message->loadData($i_id);
         $this->a_messages[$i_id] = $obj_message;
         

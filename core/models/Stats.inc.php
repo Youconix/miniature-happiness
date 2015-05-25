@@ -32,14 +32,12 @@ class Stats extends Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $validation);
         
         $this->i_date = mktime(0, 0, 0, date("n"), 1, date("Y"));
     }
@@ -47,9 +45,9 @@ class Stats extends Model
     /**
      * Counts the visitor hit
      *
-     * @param String $s_ip
+     * @param string $s_ip
      *            The IP address
-     * @param String $s_page
+     * @param string $s_page
      *            current page
      * @return Boolean True if the visitor is unique, otherwise false
      */
@@ -59,12 +57,12 @@ class Stats extends Model
         \core\Memory::type('string', $s_page);
         
         $i_datetime = mktime(date("H"), 0, 0, date("n"), date('j'), date("Y"));
-        $this->service_QueryBuilder->update('stats_hits', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_hits', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd('datetime', 'i', $i_datetime);
         
-        if ($this->service_QueryBuilder->getResult()->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_hits', array(
+        if ($this->builder->getResult()->affected_rows() == 0) {
+            $this->builder->insert('stats_hits', array(
                 'amount',
                 'datetime'
             ), array(
@@ -76,8 +74,8 @@ class Stats extends Model
             ))->getResult();
         }
         
-        $this->service_QueryBuilder->update('stats_pages', 'amount', 'l', 'amount = amount + 1');
-        $this->service_QueryBuilder->getWhere()->addAnd(array(
+        $this->builder->update('stats_pages', 'amount', 'l', 'amount = amount + 1');
+        $this->builder->getWhere()->addAnd(array(
             'datetime',
             'name'
         ), array(
@@ -87,10 +85,10 @@ class Stats extends Model
             $i_datetime,
             $s_page
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_pages', array(
+            $this->builder->insert('stats_pages', array(
                 'amount',
                 'datetime',
                 'name'
@@ -108,7 +106,7 @@ class Stats extends Model
         /* Check unique */
         $i_begin = mktime(0, 0, 0, date("n"), date('j'), date("Y"));
         $i_end = mktime(23, 59, 59, date("n"), date('j'), date("Y"));
-        $this->service_QueryBuilder->select('stats_unique', 'id')
+        $this->builder->select('stats_unique', 'id')
             ->getWhere()
             ->addAnd(array(
             'ip',
@@ -126,13 +124,13 @@ class Stats extends Model
             'BETWEEN'
         ));
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() != 0) {
             return false;
         }
         
         /* Unique visitor */
-        $this->service_QueryBuilder->insert('stats_unique', array(
+        $this->builder->insert('stats_unique', array(
             'ip',
             'datetime'
         ), array(
@@ -149,9 +147,9 @@ class Stats extends Model
     /**
      * Saves the visitors OS
      *
-     * @param String $s_os
+     * @param string $s_os
      *            The OS
-     * @param String $s_osType
+     * @param string $s_osType
      *            OS family
      */
     public function saveOS($s_os, $s_osType)
@@ -159,7 +157,7 @@ class Stats extends Model
         \core\Memory::type('string', $s_os);
         \core\Memory::type('string', $s_osType);
         
-        $this->service_QueryBuilder->update('stats_OS', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_OS', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd(array(
             'datetime',
@@ -174,10 +172,10 @@ class Stats extends Model
             $s_os,
             $s_osType
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_OS', array(
+            $this->builder->insert('stats_OS', array(
                 'name',
                 'amount',
                 'datetime',
@@ -199,9 +197,9 @@ class Stats extends Model
     /**
      * Saves the visitors browser
      *
-     * @param String $s_browser
+     * @param string $s_browser
      *            The browser
-     * @param String $s_version
+     * @param string $s_version
      *            browser version
      */
     public function saveBrowser($s_browser, $s_version)
@@ -209,7 +207,7 @@ class Stats extends Model
         \core\Memory::type('string', $s_browser);
         \core\Memory::type('string', $s_version);
         
-        $this->service_QueryBuilder->update('stats_browser', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_browser', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd(array(
             'datetime',
@@ -225,9 +223,9 @@ class Stats extends Model
             $s_version
         ));
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_browser', array(
+            $this->builder->insert('stats_browser', array(
                 'name',
                 'amount',
                 'datetime',
@@ -249,7 +247,7 @@ class Stats extends Model
     /**
      * Saves the visitors reference
      *
-     * @param String $s_reference
+     * @param string $s_reference
      *            The reference
      */
     public function saveReference($s_reference)
@@ -268,7 +266,7 @@ class Stats extends Model
         $a_reference = explode('/', $s_reference);
         $s_reference = $a_reference[0];
         
-        $this->service_QueryBuilder->update('stats_reference', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_reference', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd(array(
             'datetime',
@@ -280,10 +278,10 @@ class Stats extends Model
             $this->i_date,
             $s_reference
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_reference', array(
+            $this->builder->insert('stats_reference', array(
                 'name',
                 'amount',
                 'datetime'
@@ -312,7 +310,7 @@ class Stats extends Model
         \core\Memory::type('int', $i_width);
         \core\Memory::type('int', $i_height);
         
-        $this->service_QueryBuilder->update('stats_screenSizes', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_screenSizes', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd(array(
             'datetime',
@@ -327,10 +325,10 @@ class Stats extends Model
             $i_width,
             $i_height
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_screenSizes', array(
+            $this->builder->insert('stats_screenSizes', array(
                 'width',
                 'height',
                 'amount',
@@ -352,14 +350,14 @@ class Stats extends Model
     /**
      * Saves the visitors screen colors
      *
-     * @param String $s_screenColors
+     * @param string $s_screenColors
      *            The screen colors
      */
     public function saveScreenColors($s_screenColors)
     {
         \core\Memory::type('string', $s_screenColors);
         
-        $this->service_QueryBuilder->update('stats_screenColors', 'amount', 'l', 'amount + 1')
+        $this->builder->update('stats_screenColors', 'amount', 'l', 'amount + 1')
             ->getWhere()
             ->addAnd(array(
             'datetime',
@@ -371,10 +369,10 @@ class Stats extends Model
             $this->i_date,
             $s_screenColors
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->affected_rows() == 0) {
-            $this->service_QueryBuilder->insert('stats_screenColors', array(
+            $this->builder->insert('stats_screenColors', array(
                 'name',
                 'amount',
                 'datetime'
@@ -403,7 +401,7 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $hits = new \core\models\data\HitCollection($i_startDate,$i_endDate);
-        $this->service_QueryBuilder->select('stats_hits', 'amount,datetime')
+        $this->builder->select('stats_hits', 'amount,datetime')
             ->group('datetime')
             ->getWhere()
             ->addAnd('datetime', array(
@@ -413,7 +411,7 @@ class Stats extends Model
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_hitsPre = $service_Database->fetch_assoc();
@@ -441,7 +439,7 @@ class Stats extends Model
         
         $unique = new \core\models\data\HitCollection($i_startDate,$i_endDate);
     
-        $this->service_QueryBuilder->select('stats_unique', 'datetime')
+        $this->builder->select('stats_unique', 'datetime')
         ->group('datetime')
         ->getWhere()
         ->addAnd('datetime', array(
@@ -451,7 +449,7 @@ class Stats extends Model
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
     
         if ($service_Database->num_rows() > 0) {
             $a_uniquePre = $service_Database->fetch_assoc();
@@ -482,7 +480,7 @@ class Stats extends Model
             $a_hits[$i] = 0;
         }
         
-        $this->service_QueryBuilder->select('stats_hits', 'amount,datetime')
+        $this->builder->select('stats_hits', 'amount,datetime')
         ->group('datetime')
         ->getWhere()
         ->addAnd('datetime', array(
@@ -492,7 +490,7 @@ class Stats extends Model
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_hitsPre = $service_Database->fetch_assoc();
@@ -518,17 +516,17 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_pages = array();
-        $this->service_QueryBuilder->select('stats_pages', 'name,SUM(amount) AS amount')
+        $this->builder->select('stats_pages', 'name,SUM(amount) AS amount')
             ->group('name')
             ->order('amount', 'DESC');
-        $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
+        $this->builder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_pages = $this->service_Database->fetch_assoc();
@@ -576,7 +574,7 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_OS = array();
-        $this->service_QueryBuilder->select('stats_OS', 'id,name,amount,type')
+        $this->builder->select('stats_OS', 'id,name,amount,type')
             ->getWhere()
             ->addAnd('datetime', array(
             'i',
@@ -585,7 +583,7 @@ class Stats extends Model
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_data = $service_Database->fetch_assoc();
@@ -610,17 +608,17 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_browsers = array();
-        $this->service_QueryBuilder->select('stats_browser', 'id,name AS type,amount,CONCAT(name," ",version) AS name')
+        $this->builder->select('stats_browser', 'id,name AS type,amount,CONCAT(name," ",version) AS name')
             ->group('name')
             ->order('amount', 'DESC');
-        $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
+        $this->builder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_data = $service_Database->fetch_assoc_key('name');
@@ -643,7 +641,7 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_screenColors = array();
-        $this->service_QueryBuilder->select('stats_screenColors', 'name,amount')
+        $this->builder->select('stats_screenColors', 'name,amount')
             ->getWhere()
             ->addAnd('datetime', array(
             'i',
@@ -652,7 +650,7 @@ class Stats extends Model
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_screenColors = $service_Database->fetch_assoc();
@@ -674,15 +672,15 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_screenSizes = array();
-        $this->service_QueryBuilder->select('stats_screenSizes', 'width,height,amount')->order('width', 'DESC', 'height', 'DESC');
-        $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
+        $this->builder->select('stats_screenSizes', 'width,height,amount')->order('width', 'DESC', 'height', 'DESC');
+        $this->builder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_screenSizes = $service_Database->fetch_assoc();
@@ -704,17 +702,17 @@ class Stats extends Model
         \core\Memory::type('int', $i_endDate);
         
         $a_references = array();
-        $this->service_QueryBuilder->select('stats_reference','SUM(amount) AS amount,name')
+        $this->builder->select('stats_reference','SUM(amount) AS amount,name')
             ->order('amount', 'DESC')
             ->group('name');
-        $this->service_QueryBuilder->getWhere()->addAnd('datetime', array(
+        $this->builder->getWhere()->addAnd('datetime', array(
             'i',
             'i'
         ), array(
             $i_startDate,
             $i_endDate
         ), 'BETWEEN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_references = $service_Database->fetch_assoc();
@@ -731,8 +729,8 @@ class Stats extends Model
     public function getLowestDate()
     {
         $i_date = - 1;
-        $this->service_QueryBuilder->select('stats_hits', $this->service_QueryBuilder->getMinimun('datetime', 'date'));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('stats_hits', $this->builder->getMinimun('datetime', 'date'));
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $i_date = (int) $service_Database->result(0, 'date');
@@ -775,44 +773,44 @@ class Stats extends Model
         \core\Memory::type('int', $i_maxDate);
         
         try {
-            $this->service_QueryBuilder->transaction();
+            $this->builder->transaction();
             
-            $this->service_QueryBuilder->delete('stats_hits')
+            $this->builder->delete('stats_hits')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_pages')
+            $this->builder->getResult();
+            $this->builder->delete('stats_pages')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_unique')
+            $this->builder->getResult();
+            $this->builder->delete('stats_unique')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_screenSizes')
+            $this->builder->getResult();
+            $this->builder->delete('stats_screenSizes')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_screenColors')
+            $this->builder->getResult();
+            $this->builder->delete('stats_screenColors')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_browser')
+            $this->builder->getResult();
+            $this->builder->delete('stats_browser')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_reference')
+            $this->builder->getResult();
+            $this->builder->delete('stats_reference')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
-            $this->service_QueryBuilder->delete('stats_OS')
+            $this->builder->getResult();
+            $this->builder->delete('stats_OS')
                 ->getWhere()
                 ->addAnd('datetime', 'i', $i_maxDate, '<');
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->commit();
+            $this->builder->commit();
         } catch (\DBException $e) {
-            $this->service_QueryBuilder->rollback();
+            $this->builder->rollback();
             throw $e;
         }
     }

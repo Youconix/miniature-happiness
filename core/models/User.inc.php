@@ -24,43 +24,30 @@ namespace core\models;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! class_exists('GeneralUser')) {
-    require (NIV . 'core/models/GeneralUser.inc.php');
-}
-
-class User extends GeneralUser
+class User extends \core\models\Model
 {
-
-    protected $service_Session;
-
-    protected $model_Groups;
 
     protected $a_userModels;
 
-    protected $model_UserData;
+    /**
+     * 
+     * @var \core\models\data\DataUser
+     */
+    protected $userData;
 
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\services\Hashing $service_Hashing
-     *            The hashing service
-     * @param \core\services\Session $service_Session
-     *            The session service
-     * @param \core\models\Groups $model_Groups
-     *            The groups model
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
+     * @param \core\models\data\DataUser $userData
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\Hashing $service_Hashing, \core\services\Session $service_Session, \core\models\Groups $model_Groups, \core\models\data\DataUser $model_UserData)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\data\DataUser $userData)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation, $service_Hashing);
+        parent::__construct($builder,$validation);
         
         $this->a_userModels = array();
-        $this->model_Groups = $model_Groups;
-        $this->model_UserData = $model_UserData;
-        $this->service_Session = $service_Session;
+        $this->userData = $userData;
     }
 
     /**
@@ -85,12 +72,12 @@ class User extends GeneralUser
         \core\Memory::type('array', $a_userid);
         
         $a_users = array();
-        $this->service_QueryBuilder->select('users', '*')
+        $this->builder->select('users', '*')
             ->getWhere()
             ->addAnd('id', 'i', array(
             0 => $a_userid
         ), 'IN');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             $a_data = $service_Database->fetch_assoc();
@@ -101,7 +88,7 @@ class User extends GeneralUser
                 if (array_key_exists($i_userid, $this->a_userModels)) {
                     $a_users[$i_userid] = $this->a_userModels[$i_userid];
                 } else {
-                    $obj_User = $this->model_UserData->cloneModel();
+                    $obj_User = $this->userData->cloneModel();
                     $obj_User->loadData($i_userid);
                     $a_users[$i_userid] = $obj_User;
                 }
@@ -115,7 +102,7 @@ class User extends GeneralUser
      *
      * @param int $i_userid
      *            The userid, leave empty for logged in user
-     * @return DataUser The data object of a empty data object if the user is not logged in
+     * @return \core\models\data\DataUser The user object of a empty data object if the user is not logged in
      * @throws DBException If the userid is invalid
      */
     public function get($i_userid = -1)
@@ -123,18 +110,42 @@ class User extends GeneralUser
         $i_userid = (int) $this->checkUserid($i_userid);
         
         if ($i_userid == - 1) {
-            return $this->model_UserData->cloneModel();
+            return $this->userData->cloneModel();
         }
         
         if (array_key_exists($i_userid, $this->a_userModels)) {
             return $this->a_userModels[$i_userid];
         }
         
-        $obj_User = $this->model_UserData->cloneModel();
+        $obj_User = $this->userData->cloneModel();
         $obj_User->loadData($i_userid);
         $this->a_userModels[$i_userid] = $obj_User;
         
         return $this->a_userModels[$i_userid];
+    }
+    
+    /**
+     * Returns the user with the given username and email
+     * 
+     * @param string $s_username    The username
+     * @param string $s_email   The email address
+     * @return \core\models\Model   The user object or null if the user does not exist
+     */
+    public function getByName($s_username,$s_email = ''){
+        $this->builder->select('users','*')->getWhere()->addAnd(array('username','active','blocked'),array('s','s','s'),
+            array($s_username,'1','0'));
+        if( !empty($s_email) ){
+            $this->builder->getWhere()->addAnd('email','s',$s_email);
+        }
+        $database = $this->builder->getResult();
+        if( $database->num_rows() == 0 ){
+            return null;
+        }
+        
+        $a_data = $database->fetch_assoc();
+        $obj_User = $this->userData->cloneModel();
+        $obj_User->setData($a_data[0]);
+        return $obj_User;
     }
 
     /**
@@ -165,10 +176,10 @@ class User extends GeneralUser
     {
         \core\Memory::type('int', $i_start);
         
-        $this->service_QueryBuilder->select('users', '*')
+        $this->builder->select('users', '*')
             ->order('nick', 'ASC')
             ->limit(25, $i_start);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         $a_users = $service_Database->fetch_assoc();
         $a_result = array(
@@ -177,13 +188,13 @@ class User extends GeneralUser
         );
         
         foreach ($a_users as $a_user) {
-            $obj_User = $this->model_UserData->cloneModel();
+            $obj_User = $this->userData->cloneModel();
             $obj_User->setData($a_user);
             $a_result['data'][] = $obj_User;
         }
         
-        $this->service_QueryBuilder->select('users', $this->service_QueryBuilder->getCount('id', 'amount'));
-        $a_result['number'] = $this->service_QueryBuilder->getResult()->result(0, 'amount');
+        $this->builder->select('users', $this->builder->getCount('id', 'amount'));
+        $a_result['number'] = $this->builder->getResult()->result(0, 'amount');
         
         return $a_result;
     }
@@ -192,7 +203,7 @@ class User extends GeneralUser
      * Searches the user(s)
      * Limitated on 25 results
      *
-     * @param String $s_username
+     * @param string $s_username
      *            username to search on
      * @return array The users
      */
@@ -200,7 +211,7 @@ class User extends GeneralUser
     {
         \core\Memory::type('string', $s_username);
         
-        $this->service_QueryBuilder->select('users', '*')
+        $this->builder->select('users', '*')
             ->order('nick', 'ASC')
             ->limit(25)
             ->getWhere()
@@ -218,79 +229,88 @@ class User extends GeneralUser
             'LIKE'
         ));
         
-        $a_users = $this->service_QueryBuilder->getResult()->fetch_assoc();
+        $a_users = $this->builder->getResult()->fetch_assoc();
         $a_result = array(
             'number' => 0,
             'data' => array()
         );
         
         foreach ($a_users as $a_user) {
-            $obj_User = $this->model_UserData->cloneModel();
+            $obj_User = $this->userData->cloneModel();
             $obj_User->setData($a_user);
             $a_result['data'][] = $obj_User;
         }
         
         return $a_result;
     }
-
+    
     /**
-     * Changes the saved password
-     *
-     * @param int $i_userid
-     *            ID
-     * @param String $s_username            
-     * @param String $s_passwordOld
-     *            plain text password
-     * @param String $s_password
-     *            plain text password
-     * @return bool True if the password is changed
+     * Returns the user salt 
+     * 
+     * @see \core\models\data\DataUser::getSalt()
+     * @param string $s_username    The username
+     * @param string $s_loginType   The login type
+     * @return NULL|string  The salt if the user exists
      */
-    public function changePassword($i_userid, $s_username, $s_passwordOld, $s_password)
-    {
-        $s_passwordOld = $this->hashPassword($s_passwordOld, $s_username);
-        $s_password = $this->hashPassword($s_password, $s_username);
-        
-        $this->service_QueryBuilder->select('users', 'id')
-            ->getWhere()
-            ->addAnd(array(
-            'id',
-            'password'
-        ), array(
-            'i',
-            's'
-        ), array(
-            $i_userid,
-            $s_passwordOld
-        ));
-        $service_Database = $this->service_QueryBuilder->getResult();
-        
-        if ($service_Database->num_rows() == 0) {
+    public function getSalt($s_username,$s_loginType){
+        return $this->userData->getSalt($s_username,$s_loginType);
+    }
+    
+    /**
+     * Activates the user
+     *
+     * @param string $s_code
+     *            The activation code
+     * @return boolean True if the user is activated
+     * @throws Exception If activating the user failes
+     */
+    public function activate($s_code){
+        $this->builder->select('users', 'id')
+        ->getWhere()
+        ->addAnd('activation', 's', $s_code);
+        $service_Database = $this->builder->getResult();
+        if ($service_Database->num_rows() == 0)
             return false;
-        }
         
-        $this->service_QueryBuilder->update('users', array(
-            'password',
-            'password_expired'
-        ), array(
-            's',
-            's'
-        ), array(
-            $s_password,
-            '0'
-        ));
-        $this->service_QueryBuilder->getWhere()->addAnd('id', 'i', $i_userid);
-        $this->service_QueryBuilder->getResult();
-        return true;
+        $i_userid = $service_Database->result(0, 'id');
+        
+        try {
+            $this->builder->transaction();
+        
+            $this->builder->insert('profile', 'userid', 'i', $i_userid)->getResult();
+        
+            $this->builder->update('users', array(
+                'activation',
+                'active'
+            ), array(
+                's',
+                's'
+            ), array(
+                '',
+                '1'
+            ));
+            $this->builder->getWhere()->addAnd('id', 'i', $i_userid);
+            $this->builder->getResult();
+        
+            define('USERID', $i_userid);
+        
+            $this->builder->commit();
+        
+            return true;
+        } catch (\Exception $e) {
+            $this->builder->rollback();
+            throw $e;
+        }
     }
 
     /**
      * Creates a new user object
      *
-     * @return DataUser The user object
+     * @return \core\models\data\DataUser The user object
      */
     public function createUser()
     {
-        return $this->model_UserData->cloneModel();
+        return $this->userData->cloneModel();
     }
 
     /**
@@ -311,7 +331,7 @@ class User extends GeneralUser
         \core\Memory::type('string', $s_type);
         
         if ($i_userid != - 1) {
-            $this->service_QueryBuilder->select('users', 'id')
+            $this->builder->select('users', 'id')
                 ->getWhere()
                 ->addAnd(array(
                 'nick',
@@ -331,7 +351,7 @@ class User extends GeneralUser
                 '<>'
             ));
         } else {
-            $this->service_QueryBuilder->select('users', 'id')
+            $this->builder->select('users', 'id')
                 ->getWhere()
                 ->addAnd(array(
                 'nick',
@@ -345,7 +365,7 @@ class User extends GeneralUser
             ));
         }
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() != 0) {
             return false;
         }
@@ -368,7 +388,7 @@ class User extends GeneralUser
         \core\Memory::type('int', $i_userid);
         
         if ($i_userid != - 1) {
-            $this->service_QueryBuilder->select('users', 'id')
+            $this->builder->select('users', 'id')
                 ->getWhere()
                 ->addAnd(array(
                 'email',
@@ -384,12 +404,12 @@ class User extends GeneralUser
                 '<>'
             ));
         } else {
-            $this->service_QueryBuilder->select('users', 'id')
+            $this->builder->select('users', 'id')
                 ->getWhere()
                 ->addAnd('email', 's', $s_email);
         }
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() != 0) {
             return false;
         }
@@ -404,11 +424,11 @@ class User extends GeneralUser
      */
     public function getSiteAdmins()
     {
-        $this->service_QueryBuilder->select('users u', 'u.id,u.nick')->innerJoin('group_users g', 'u.id', 'g.userid');
-        $this->service_QueryBuilder->order('u.nick')
+        $this->builder->select('users u', 'u.id,u.nick')->innerJoin('group_users g', 'u.id', 'g.userid');
+        $this->builder->order('u.nick')
             ->getWhere()
             ->addAnd('g.groupID', 'i', 0);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         return $service_Database->fetch_assoc();
     }
@@ -420,7 +440,7 @@ class User extends GeneralUser
      */
     public function getUserIDs()
     {
-        $this->service_QueryBuilder->select('users', 'id')
+        $this->builder->select('users', 'id')
             ->getWhere()
             ->addAnd(array(
             'active',
@@ -432,7 +452,7 @@ class User extends GeneralUser
             '1',
             '0'
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         $a_users = $service_Database->fetch_assoc();
         

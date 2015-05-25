@@ -27,7 +27,11 @@ namespace core\services;
 class Session extends Service
 {
 
-    private $service_QueryBuilder;
+    /**
+     * 
+     * @var \core\services\Builder
+     */
+    private $queryBuilder;
 
     const FORBIDDEN = - 1; // Stil here for backwards compatibility
 
@@ -52,17 +56,17 @@ class Session extends Service
     /**
      * PHP 5 constructor
      *
-     * @param core\services\Settings $service_Settings
+     * @param core\services\Settings $settings
      *            The settings service
-     * @param core\services\QueryBuilder $service_QueryBuilder
+     * @param core\services\QueryBuilder $queryBuilder
      *            The query builder
      */
-    public function __construct(\core\services\Settings $service_Settings, \core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\core\services\Settings $settings, \core\services\QueryBuilder $queryBuilder)
     {
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
-        $s_sessionSetName = $service_Settings->get('settings/session/sessionName');
-        $s_sessionSetPath = $service_Settings->get('settings/session/sessionPath');
-        $s_sessionExpire = $service_Settings->get('settings/session/sessionExpire');
+        $this->queryBuilder = $queryBuilder->createBuilder();
+        $s_sessionSetName = $settings->get('settings/session/sessionName');
+        $s_sessionSetPath = $settings->get('settings/session/sessionPath');
+        $s_sessionExpire = $settings->get('settings/session/sessionExpire');
         
         if ($s_sessionSetName != '') {
             @session_name($s_sessionSetName);
@@ -98,7 +102,7 @@ class Session extends Service
     /**
      * Sets the session with the given name and content
      *
-     * @param String $s_sessionName
+     * @param string $s_sessionName
      *            of the session
      * @param mixed $s_sessionData
      *            of the session
@@ -114,7 +118,7 @@ class Session extends Service
     /**
      * Deletes the session with the given name
      *
-     * @param String $s_sessionName
+     * @param string $s_sessionName
      *            of the session
      * @throws IOException if the session does not exist
      */
@@ -132,9 +136,9 @@ class Session extends Service
     /**
      * Collects the content of the given session
      *
-     * @param String $s_sessionName
+     * @param string $s_sessionName
      *            name of the session
-     * @return String asked session
+     * @return string asked session
      * @throws IOException if the session does not exist
      */
     public function get($s_sessionName)
@@ -153,7 +157,7 @@ class Session extends Service
     /**
      * Checks or the given session exists
      *
-     * @param String $s_sessionName
+     * @param string $s_sessionName
      *            name of the session
      * @return boolean True if the session exists, false if it does not
      */
@@ -171,7 +175,7 @@ class Session extends Service
     /**
      * Renews the given session
      *
-     * @param String $s_sessionName
+     * @param string $s_sessionName
      *            The name of the session
      */
     public function renew($s_sessionName)
@@ -198,7 +202,7 @@ class Session extends Service
      *
      * @param int $i_userid
      *            of the user
-     * @param String $s_username
+     * @param string $s_username
      *            of the user
      * @param int $i_lastLogin
      *            login as a timestamp
@@ -206,10 +210,10 @@ class Session extends Service
     public function setLogin($i_userid, $s_username, $i_lastLogin)
     {
         /* Get data */
-        $this->service_QueryBuilder->update('users', 'lastLogin', 'i', time())
+        $this->queryBuilder->update('users', 'lastLogin', 'i', time())
             ->getWhere()
             ->addAnd('id', 'i', $i_userid);
-        $this->service_QueryBuilder->getResult();
+        $this->queryBuilder->getResult();
         
         session_regenerate_id(true);
         $_SESSION = array();
@@ -228,7 +232,7 @@ class Session extends Service
      *
      * @param int $i_userid
      *            of the user
-     * @param String $s_username
+     * @param string $s_username
      *            of the user
      * @param int $i_lastLogin
      *            login as a timestamp

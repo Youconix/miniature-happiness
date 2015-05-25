@@ -41,14 +41,12 @@ class DataGroup extends \core\models\Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $validation);
         
         $this->a_validation = array(
             's_name' => array(
@@ -184,7 +182,7 @@ class DataGroup extends \core\models\Model
         }
         
         /* Get groupname */
-        $this->service_QueryBuilder->select('group_users', 'level')
+        $this->builder->select('group_users', 'level')
             ->getWhere()
             ->addAnd(array(
             'groupID',
@@ -196,7 +194,7 @@ class DataGroup extends \core\models\Model
             $this->i_id,
             $i_userid
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
             /* No record found. Access denied */
@@ -215,11 +213,11 @@ class DataGroup extends \core\models\Model
      */
     public function getMembersByGroup()
     {
-        $this->service_QueryBuilder->select('group_users g', 'g.level,u.nick AS username,u.id')
+        $this->builder->select('group_users g', 'g.level,u.nick AS username,u.id')
             ->innerJoin('users u', 'g.userid', 'u.id')
             ->order('u.nick', 'ASC');
-        $this->service_QueryBuilder->getWhere()->addAnd('g.groupID', 'i', $this->i_id);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $this->builder->getWhere()->addAnd('g.groupID', 'i', $this->i_id);
+        $service_Database = $this->builder->getResult();
         
         $a_result = array();
         if ($service_Database->num_rows() > 0) {
@@ -239,7 +237,7 @@ class DataGroup extends \core\models\Model
         }
         $this->performValidation();
         
-        $this->service_QueryBuilder->insert('groups', array(
+        $this->builder->insert('groups', array(
             'name',
             'description',
             'automatic'
@@ -252,20 +250,20 @@ class DataGroup extends \core\models\Model
             $this->s_description,
             $this->i_default
         ));
-        $i_groupID = $this->service_QueryBuilder->getResult()->getID();
+        $i_groupID = $this->builder->getResult()->getID();
         $this->i_id  = $i_groupID;
         
         if ($this->i_default == 1) {
             /* Add users to group */
-            $this->service_QueryBuilder->select('users', 'id,staff');
-            $a_users = $this->service_QueryBuilder->getResult()->fetch_assoc();
+            $this->builder->select('users', 'id,staff');
+            $a_users = $this->builder->getResult()->fetch_assoc();
             
             foreach ($a_users as $a_user) {
                 $i_level = 0;
                 if ($a_user['staff'] == \core\services\Session::ADMIN)
                     $i_level = 2;
                 
-                $this->service_QueryBuilder->insert('group_users', array(
+                $this->builder->insert('group_users', array(
                     'groupID',
                     'userid',
                     'level'
@@ -278,7 +276,7 @@ class DataGroup extends \core\models\Model
                     $a_user['id'],
                     $i_level
                 ));
-                $this->service_QueryBuilder->getResult();
+                $this->builder->getResult();
             }
         }
     }
@@ -293,7 +291,7 @@ class DataGroup extends \core\models\Model
         }
         $this->performValidation();
         
-        $this->service_QueryBuilder->update('groups', array(
+        $this->builder->update('groups', array(
             'name',
             'description',
             'automatic'
@@ -320,14 +318,14 @@ class DataGroup extends \core\models\Model
             return;
         }
         
-        $this->service_QueryBuilder->delete("group_users")
+        $this->builder->delete("group_users")
             ->getWhere()
             ->addAnd('groupID', 'i', $this->i_id);
-        $this->service_QueryBuilder->getResult();
-        $this->service_QueryBuilder->delete("groups")
+        $this->builder->getResult();
+        $this->builder->delete("groups")
             ->getWhere()
             ->addAnd('id', 'i', $this->i_id);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
     }
 
     /**
@@ -347,7 +345,7 @@ class DataGroup extends \core\models\Model
             $i_level = 0;
         
         if ($this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS) {
-            $this->service_QueryBuilder->insert("group_users", array(
+            $this->builder->insert("group_users", array(
                 'groupID',
                 'userid',
                 'level'
@@ -385,13 +383,13 @@ class DataGroup extends \core\models\Model
             return;
         
         if ($i_level == - 1) {
-            $this->service_QueryBuilder->delete("group_users")
+            $this->builder->delete("group_users")
                 ->getWhere()
                 ->addAnd('userid', 'i', $i_userid);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
         } else 
             if ($this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS) {
-                $this->service_QueryBuilder->insert("group_users", array(
+                $this->builder->insert("group_users", array(
                     'groupID',
                     'userid',
                     'level'
@@ -405,10 +403,10 @@ class DataGroup extends \core\models\Model
                     $i_level
                 ))->getResult();
             } else {
-                $this->service_QueryBuilder->update("group_users", 'level', 's', $i_level)
+                $this->builder->update("group_users", 'level', 's', $i_level)
                     ->getWhere()
                     ->addAnd('userid', 'i', $i_userid);
-                $this->service_QueryBuilder->getResult();
+                $this->builder->getResult();
             }
     }
 
@@ -422,10 +420,10 @@ class DataGroup extends \core\models\Model
         
         $a_users = Memory::models('Users')->getUserIDs();
         $a_currentUsers = array();
-        $this->service_QueryBuilder->select("group_users", "userid")
+        $this->builder->select("group_users", "userid")
             ->getWhere()
             ->addAnd("groupID", 'i', $this->i_id);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() > 0) {
             $a_currentUsers = $service_Database->fetch_assoc_key('userid');
         }
@@ -435,7 +433,7 @@ class DataGroup extends \core\models\Model
             if (array_key_exists($i_user, $a_currentUsers))
                 continue;
             
-            $this->service_QueryBuilder->insert("group_users", array(
+            $this->builder->insert("group_users", array(
                 'groupID',
                 'userid',
                 'level'
@@ -462,7 +460,7 @@ class DataGroup extends \core\models\Model
         \core\Memory::type('int', $i_userid);
         
         if ($this->getLevelByGroupID($i_userid) != \core\services\Session::ANONYMOUS) {
-            $this->service_QueryBuilder->delete('group_users')
+            $this->builder->delete('group_users')
                 ->getWhere()
                 ->addAnd(array(
                 'groupID',
@@ -474,7 +472,7 @@ class DataGroup extends \core\models\Model
                 $this->i_id,
                 $i_userid
             ));
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
         }
     }
 
@@ -488,10 +486,10 @@ class DataGroup extends \core\models\Model
         if (is_null($this->i_id))
             return false;
         
-        $this->service_QueryBuilder->select('group_users', 'id')
+        $this->builder->select('group_users', 'id')
             ->getWhere()
             ->addAnd('groupID', 'i', $this->i_id);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() == 0)
             return false;
         

@@ -44,13 +44,10 @@ class Stats extends \core\AdminLogicClass
     /**
      * Starts the class Stats
      */
-    public function __construct()
+    public function __construct(\core\Input $Input,\core\models\Config $model_Config,
+        \core\services\Language $service_Language,\core\services\Template $service_Template)
     {
-        $this->init();
-        
-        if (! $this->model_Config->isAjax() || ! isset($this->get['command'])) {
-            exit();
-        }
+        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
         
         switch ($this->get['command']) {
             case 'hits':

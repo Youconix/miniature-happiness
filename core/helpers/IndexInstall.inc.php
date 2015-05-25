@@ -6,9 +6,9 @@ class IndexInstall extends Helper implements Display
 
     private $s_content = '';
 
-    public function __construct(\core\services\Template $service_Template)
+    public function __construct(\core\services\Template $template)
     {
-        $service_Template->setCssLink('<link rel="stylesheet" href="{STYLE_DIR}/css/installIndex.css">');
+        $template->setCssLink('<link rel="stylesheet" href="{STYLE_DIR}/css/installIndex.css">');
     }
 
     public function generate()

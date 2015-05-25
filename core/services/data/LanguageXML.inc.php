@@ -31,6 +31,10 @@ class LanguageXML extends \core\services\Xml
 
     private $s_encoding = null;
 
+    /**
+     * 
+     * @var \core\services\File
+     */
     private $service_File;
 
     private $a_documents = array();
@@ -44,6 +48,7 @@ class LanguageXML extends \core\services\Xml
      *            The file service
      * @param string $s_lanugage
      *            language
+     * @param boolean   $bo_fallback    Set to true for version 1 mode
      */
     public function __construct(\core\services\File $service_File, $s_language, $bo_fallback)
     {

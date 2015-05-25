@@ -33,12 +33,12 @@ abstract class AdminLogicClass extends \core\BaseLogicClass
     /**
      * Admin class constructor
      *
-     * @param \core\services\Security $service_Security
+     * @param \core\Input $Input    The input parser
      * @param \core\models\Config $model_Config
      * @param \core\services\Language $service_Language
      * @param \core\services\Template $service_Template
      */
-    public function __construct(\core\services\Security $service_Security,\core\models\Config $model_Config,
+    public function __construct(\core\Input $Input,\core\models\Config $model_Config,
         \core\services\Language $service_Language,\core\services\Template $service_Template)
     {
         $model_Config->setLayout('admin');
@@ -46,7 +46,8 @@ abstract class AdminLogicClass extends \core\BaseLogicClass
         $this->model_Config = $model_Config;
         $this->service_Language = $service_Language;
         $this->service_Template = $service_Template;
-        $this->service_Security = $service_Security;
+        
+        $this->prepareInput($Input);
         
         $this->init();
     }

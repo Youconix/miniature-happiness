@@ -26,13 +26,29 @@ namespace core\models;
 class Config extends Model implements \SplSubject
 {
 
-    protected $service_Settings;
+    /**
+     * 
+     * @var \core\services\Settings
+     */
+    protected $settings;
 
-    protected $service_File;
+    /**
+     * 
+     * @var \core\services\File
+     */
+    protected $file;
 
-    protected $service_Cookie;
+    /**
+     * 
+     * @var \core\services\Cookie
+     */
+    protected $cookie;
     
-    protected $service_QueryBuilder;
+    /**
+     * 
+     * @var \core\services\Builder
+     */
+    protected $builder;
 
     protected $s_templateDir;
 
@@ -57,20 +73,17 @@ class Config extends Model implements \SplSubject
     /**
      * PHP 5 constructor
      *
-     * @param core\services\File $service_File
-     *            The File service
-     * @param core\services\Settings $service_Settings
-     *            The settings service
-     * @param core\services\Cookie $service_Cookie
-     *            The cookie service
+     * @param core\services\File $file
+     * @param core\services\Settings $settings
+     * @param core\services\Cookie $cookie
      */
-    public function __construct(\core\services\File $service_File, \core\services\Settings $service_Settings, \core\services\Cookie $service_Cookie,
-            \core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\core\services\File $file, \core\services\Settings $settings, \core\services\Cookie $cookie,
+            \core\services\QueryBuilder $builder)
     {
-        $this->service_File = $service_File;
-        $this->service_Settings = $service_Settings;
-        $this->service_Cookie = $service_Cookie;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
+        $this->file = $file;
+        $this->settings = $settings;
+        $this->cookie = $cookie;
+        $this->builder = $builder->createBuilder();
         
         $this->a_observers = new \SplObjectStorage();
         
@@ -78,7 +91,7 @@ class Config extends Model implements \SplSubject
         
         $this->loadLanguage();
         
-        $this->setDefaultValues($service_Settings);
+        $this->setDefaultValues($settings);
     }
 
     /**
@@ -88,7 +101,7 @@ class Config extends Model implements \SplSubject
      */
     public function getSettings()
     {
-        return $this->service_Settings;
+        return $this->settings;
     }
 
     /**
@@ -101,15 +114,30 @@ class Config extends Model implements \SplSubject
         return true;
     }
 
+    /**
+     * Adds the observer
+     * 
+     * @see SplSubject::attach()
+     */
     public function attach(\SplObserver $observer)
     {
         $this->a_observers->attach($observer);
     }
     
+    /**
+     * Removes the observer
+     * 
+     * @see SplSubject::detach()
+     */
     public function detach(\SplObserver $observer) {
         $this->_observers->detach($observer);
     }
 
+    /**
+     * Notifies the observers
+     * 
+     * @see SplSubject::notify()
+     */
     public function notify()
     {
         foreach ($this->a_observers as $observer) {
@@ -124,22 +152,22 @@ class Config extends Model implements \SplSubject
     {
         /* Check language */
         $a_languages = $this->getLanguages();
-        $this->s_language = $this->service_Settings->get('defaultLanguage');
+        $this->s_language = $this->settings->get('defaultLanguage');
         
         if (isset($_GET['lang'])) {
             if (in_array($_GET['lang'], $a_languages)) {
                 $this->s_language = $_GET['lang'];
-                $this->service_Cookie->set('language', $this->s_language, '/');
+                $this->cookie->set('language', $this->s_language, '/');
             }
             unset($_GET['lang']);
         } else {
-            if ($this->service_Cookie->exists('language')) {
-                if (in_array($this->service_Cookie->get('language'), $a_languages)) {
-                    $this->s_language = $this->service_Cookie->get('language');
+            if ($this->cookie->exists('language')) {
+                if (in_array($this->cookie->get('language'), $a_languages)) {
+                    $this->s_language = $this->cookie->get('language');
                     /* Renew cookie */
-                    $this->service_Cookie->set('language', $this->s_language, '/');
+                    $this->cookie->set('language', $this->s_language, '/');
                 } else {
-                    $this->service_Cookie->delete('language','/');
+                    $this->cookie->delete('language','/');
                 }
             }
         }
@@ -153,7 +181,7 @@ class Config extends Model implements \SplSubject
     public function getLanguages()
     {
         $a_languages = array();
-        $a_languageFiles = $this->service_File->readDirectory(NIV . 'language');
+        $a_languageFiles = $this->file->readDirectory(NIV . 'language');
         
         foreach ($a_languageFiles as $s_languageFile) {
             if (strpos($s_languageFile, 'language_') !== false) {
@@ -180,7 +208,7 @@ class Config extends Model implements \SplSubject
     protected function getLanguagesOld()
     {
         $a_languages = array();
-        $a_languageFiles = $this->service_File->readDirectory(NIV . 'include/language');
+        $a_languageFiles = $this->file->readDirectory(NIV . 'include/language');
         
         foreach ($a_languageFiles as $s_languageFile) {
             if (strpos($s_languageFile, 'language_') === false)
@@ -205,16 +233,16 @@ class Config extends Model implements \SplSubject
     /**
      * Sets the default values
      *
-     * @param core\services\Settings $service_Settings
+     * @param core\services\Settings $settings
      *            The settings service
      */
-    protected function setDefaultValues($service_Settings)
+    protected function setDefaultValues($settings)
     {
         if (! defined('DB_PREFIX')) {
-            define('DB_PREFIX', $service_Settings->get('settings/SQL/prefix'));
+            define('DB_PREFIX', $settings->get('settings/SQL/prefix'));
         }
         
-        $s_base = $service_Settings->get('settings/main/base');
+        $s_base = $settings->get('settings/main/base');
         if (substr($s_base, 0, 1) != '/') {
             $this->s_base = '/' . $s_base;
         } else {
@@ -285,25 +313,25 @@ class Config extends Model implements \SplSubject
      */
     protected function loadTemplateDir()
     {
-        $s_templateDir = $this->service_Settings->get('settings/templates/dir');
+        $s_templateDir = $this->settings->get('settings/templates/dir');
         
         if (isset($_GET['protected_style_dir'])) {
             $s_styleDir = $this->clearLocation($_GET['protected_style_dir']);
-            if ($this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
+            if ($this->file->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
                 $s_templateDir = $s_styleDir;
-                $this->service_Cookie->set('protected_style_dir', $s_templateDir, '/');
+                $this->cookie->set('protected_style_dir', $s_templateDir, '/');
             } else 
-                if ($this->service_Cookie->exists('protected_style_dir')) {
-                    $this->service_Cookie->delete('protected_style_dir', '/');
+                if ($this->cookie->exists('protected_style_dir')) {
+                    $this->cookie->delete('protected_style_dir', '/');
                 }
         } else 
-            if ($this->service_Cookie->exists('protected_style_dir')) {
-                $s_styleDir = $this->clearLocation($this->service_Cookie->get('protected_style_dir'));
-                if ($this->service_File->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
+            if ($this->cookie->exists('protected_style_dir')) {
+                $s_styleDir = $this->clearLocation($this->cookie->get('protected_style_dir'));
+                if ($this->file->exists(NIV . 'styles/' . $s_styleDir . '/templates/layouts')) {
                     $s_templateDir = $s_styleDir;
-                    $this->service_Cookie->set('protected_style_dir', $s_templateDir, '/');
+                    $this->cookie->set('protected_style_dir', $s_templateDir, '/');
                 } else {
-                    $this->service_Cookie->delete('protected_style_dir', '/');
+                    $this->cookie->delete('protected_style_dir', '/');
                 }
             }
         $this->s_templateDir = $s_templateDir;
@@ -422,6 +450,11 @@ class Config extends Model implements \SplSubject
         $this->notify();
     }
     
+    /**
+     * Sets the layout
+     * 
+     * @param string $s_layout  The layout
+     */
     public function setLayout($s_layout){
         $this->s_layout = $s_layout;
         
@@ -439,13 +472,10 @@ class Config extends Model implements \SplSubject
     }
 
     /**
-     * Sets the framework in ajax-
-     *
-     * @deprecated since version 2
+     * Sets the framework in ajax-mode
      */
     public function setAjax()
     {
-        trigger_error("This function has been deprecated.",E_USER_DEPRECATED);
         $this->bo_ajax = true;
     }
 
@@ -480,44 +510,64 @@ class Config extends Model implements \SplSubject
         return $this->s_base;
     }
 
+    /**
+     * Returns the login redirect url
+     * 
+     * @return string   The url
+     */
     public function getLoginRedirect()
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->service_Settings->exists('main/login')) {
-            $s_page = $this->getBase() . $this->service_Settings->get('main/login');
+        if ($this->settings->exists('main/login')) {
+            $s_page = $this->getBase() . $this->settings->get('main/login');
         }
         
         return $s_page;
     }
 
+    /**
+     * Returns the logout redirect url
+     * 
+     * @return string   The url
+     */
     public function getLogoutRedirect()
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->service_Settings->exists('main/logout')) {
-            $s_page = $this->getBase() . $this->service_Settings->get('main/logout');
+        if ($this->settings->exists('main/logout')) {
+            $s_page = $this->getBase() . $this->settings->get('main/logout');
         }
         
         return $s_page;
     }
 
+    /**
+     * Returns the registration redirect url
+     * 
+     * @return string   The url
+     */
     public function getRegistrationRedirect()
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->service_Settings->exists('main/registration')) {
-            $s_page = $this->getBase() . $this->service_Settings->get('main/registration');
+        if ($this->settings->exists('main/registration')) {
+            $s_page = $this->getBase() . $this->settings->get('main/registration');
         }
         
         return $s_page;
     }
     
+    /**
+     * Returns the activation redirect url
+     * 
+     * @return string   The url
+     */
     public function getActivationRedirect(){
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->service_Settings->exists('main/activation')) {
-            $s_page = $this->getBase() . $this->service_Settings->get('main/activation');
+        if ($this->settings->exists('main/activation')) {
+            $s_page = $this->getBase() . $this->settings->get('main/activation');
         }
         
         return $s_page;
@@ -530,7 +580,7 @@ class Config extends Model implements \SplSubject
      */
     public function isNormalLogin()
     {
-        if (! $this->service_Settings->exists('login/normalLogin') || $this->service_Settings->get('login/normalLogin') != 1) {
+        if (! $this->settings->exists('login/normalLogin') || $this->settings->get('login/normalLogin') != 1) {
             return false;
         }
         return true;
@@ -543,7 +593,7 @@ class Config extends Model implements \SplSubject
      */
     public function isFacebookLogin()
     {
-        if (! $this->service_Settings->exists('login/facebook') || $this->service_Settings->get('login/facebook') != 1) {
+        if (! $this->settings->exists('login/facebook') || $this->settings->get('login/facebook') != 1) {
             return false;
         }
         return true;
@@ -556,7 +606,7 @@ class Config extends Model implements \SplSubject
      */
     public function isOpenIDLogin()
     {
-        if (! $this->service_Settings->exists('login/openID') || $this->service_Settings->get('login/openID') != 1) {
+        if (! $this->settings->exists('login/openID') || $this->settings->get('login/openID') != 1) {
             return false;
         }
         return true;
@@ -569,7 +619,7 @@ class Config extends Model implements \SplSubject
      */
     public function isLDAPLogin()
     {
-        if (! $this->service_Settings->exists('login/ldap') || $this->service_Settings->get('login/ldap') != 1) {
+        if (! $this->settings->exists('login/ldap') || $this->settings->get('login/ldap') != 1) {
             return false;
         }
         return true;
@@ -592,10 +642,10 @@ class Config extends Model implements \SplSubject
             $s_type = LOGGER;
         }
         
-        if (! $this->service_Settings->exists('main/logs')) {
+        if (! $this->settings->exists('main/logs')) {
             $s_type = 'default';
         } else {
-            $s_type = $this->service_Settings->get('main/logs');
+            $s_type = $this->settings->get('main/logs');
         }
         
         switch ($s_type) {
@@ -628,11 +678,11 @@ class Config extends Model implements \SplSubject
      */
     public function getLogLocation()
     {
-        if (! $this->service_Settings->exists('main/log_location')) {
+        if (! $this->settings->exists('main/log_location')) {
             return str_replace(NIV, WEBSITE_ROOT, DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR;
         }
         
-        return $this->service_Settings->get('main/log_location');
+        return $this->settings->get('main/log_location');
     }
 
     /**
@@ -642,11 +692,11 @@ class Config extends Model implements \SplSubject
      */
     public function getLogfileMaxSize()
     {
-        if (! $this->service_Settings->exists('main/log_max_size')) {
+        if (! $this->settings->exists('main/log_max_size')) {
             return Config::LOG_MAX_SIZE;
         }
         
-        return $this->service_Settings->get('main/log_max_size');
+        return $this->settings->get('main/log_max_size');
     }
 
     /**
@@ -656,12 +706,12 @@ class Config extends Model implements \SplSubject
      */
     public function getAdminAddress()
     {
-        if (! $this->service_Settings->exists('main/admin/email')) {            
+        if (! $this->settings->exists('main/admin/email')) {            
             /* Send to first user */
-            $this->service_QueryBuilder->select('users', 'nick,email')
+            $this->builder->select('users', 'nick,email')
                 ->getWhere()
                 ->addAnd('id', 'i', 1);
-            $database = $this->service_QueryBuilder->getResult();
+            $database = $this->builder->getResult();
             $a_data = $database->fetch_assoc();
             
             return array(
@@ -671,8 +721,8 @@ class Config extends Model implements \SplSubject
         }
         
         return array(
-            'name' => $this->service_Settings->get('main/admin/name'),
-            'email' => $this->service_Settings->get('main/admin/email')
+            'name' => $this->settings->get('main/admin/name'),
+            'email' => $this->settings->get('main/admin/email')
         );
     }
     
@@ -683,10 +733,10 @@ class Config extends Model implements \SplSubject
      * @see \core\services\Settings
      */
     public function isSslEnabled(){
-        if( !$this->service_Settings->exists('main/ssl') ){
+        if( !$this->settings->exists('main/ssl') ){
             return \core\services\Settings::SSL_DISABLED;
         }
         
-        return $this->service_Settings->get('main/ssl');
+        return $this->settings->get('main/ssl');
     }
 }

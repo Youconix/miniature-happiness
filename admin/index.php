@@ -43,7 +43,7 @@ class Index extends \core\BaseLogicClass
     /**
      * Base graphic class constructor
      *
-     * @param \core\services\Security $service_Security            
+     * @param \core\Input $Input    The input parser       
      * @param \core\models\Config $model_Config            
      * @param \core\services\Language $service_Language            
      * @param \core\services\Template $service_Template            
@@ -52,18 +52,19 @@ class Index extends \core\BaseLogicClass
      * @param \core\classes\Footer $footer            
      * @param \core\helpers\ConfirmBox $confirmbox            
      */
-    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \core\classes\Footer $footer, \core\helpers\ConfirmBox $confirmbox)
+    public function __construct(\core\Input $Input, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \core\classes\Footer $footer, \core\helpers\ConfirmBox $confirmbox)
     {
         $model_Config->setLayout('admin');
         
         $this->model_Config = $model_Config;
         $this->service_Language = $service_Language;
         $this->service_Template = $service_Template;
-        $this->service_Security = $service_Security;
         
         $this->headerAdmin = $header;
         $this->footer = $footer;
         $this->menuAdmin = $menu;
+        
+        $this->prepareInput($Input);
         
         $this->init();
         

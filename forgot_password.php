@@ -22,7 +22,9 @@
  * @author    Rachelle Scheijen                                                
  * @since     1.0
  */
-require (NIV . 'includes/BaseLogicClass.php');
+if (! class_exists('\includes\BaseLogicClass')) {
+    require (NIV . 'includes/BaseLogicClass.php');
+}
 
 class Forgot_password extends \includes\BaseLogicClass
 {
@@ -31,41 +33,41 @@ class Forgot_password extends \includes\BaseLogicClass
      *
      * @var \core\models\Login
      */
-    protected $model_Login;
+    protected $login;
 
     /**
      *
      * @var \core\services\Headers
      */
-    protected $service_Headers;
+    protected $headers;
 
     /**
      *
      * @var \core\services\Validation
      */
-    protected $service_Validation;
+    protected $validation;
 
     /**
      * Base graphic class constructor
      *
-     * @param \core\services\Security $service_Security            
-     * @param \core\models\Config $model_Config            
-     * @param \core\services\Language $service_Language            
-     * @param \core\services\Template $service_Template            
+     * @param \core\Input $input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
      * @param \core\classes\Header $header            
      * @param \core\classes\Menu $menu            
      * @param \core\classes\Footer $footer            
-     * @param \core\models\Login $model_Login            
-     * @param \core\services\Headers $service_Headers            
-     * @param \core\services\Validation $service_Validation            
+     * @param \core\models\Login $login            
+     * @param \core\services\Headers $headers            
+     * @param \core\services\Validation $validation            
      */
-    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\models\Login $model_Login, \core\services\Headers $service_Headers, \core\services\Validation $service_Validation)
+    public function __construct(\core\Input $input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\models\Login $login, \core\services\Headers $headers, \core\services\Validation $validation)
     {
-        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template, $header, $menu, $footer);
+        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         
-        $this->model_Login = $model_Login;
-        $this->service_Headers = $service_Headers;
-        $this->service_Validation = $service_Validation;
+        $this->login = $login;
+        $this->headers = $headers;
+        $this->validation = $validation;
     }
 
     /**
@@ -84,7 +86,7 @@ class Forgot_password extends \includes\BaseLogicClass
         
         parent::init();
         
-        $this->service_Template->set('forgotTitle', t('forgotPassword/header'));
+        $this->template->set('forgotTitle', t('forgotPassword/header'));
     }
 
     /**
@@ -93,15 +95,15 @@ class Forgot_password extends \includes\BaseLogicClass
     protected function verifyCode()
     {
         if (! isset($this->get['code'])) {
-            $this->service_Headers->redirect('forgot_password/index');
+            $this->headers->redirect('forgot_password/index');
         }
         
-        $this->service_Template->loadView('reset.tpl');
+        $this->template->loadView('reset.tpl');
         
-        if (! $this->model_Login->resetPassword($this->get['code'])) {
-            $this->service_Template->set('errorNotice', t('forgotPassword/verifyCodeFailed'));
+        if (! $this->login->resetPassword($this->get['code'])) {
+            $this->template->set('errorNotice', t('forgotPassword/verifyCodeFailed'));
         } else {
-            $this->service_Template->set('notice', t('forgotPassword/verifyCodeSuccess'));
+            $this->template->set('notice', t('forgotPassword/verifyCodeSuccess'));
         }
     }
 
@@ -111,32 +113,32 @@ class Forgot_password extends \includes\BaseLogicClass
     protected function sendEmail()
     {
         if ($this->post['email'] == '') {
-            $this->service_Template->loadView('index.tpl');
+            $this->template->loadView('index.tpl');
             $this->form(t('forgotPassword/fieldsEmpty'));
             return;
         }
-        if (! $this->service_Validation->checkEmail($this->post['email'])) {
-            $this->service_Template->loadView('index.tpl');
+        if (! $this->validation->checkEmail($this->post['email'])) {
+            $this->template->loadView('index.tpl');
             $this->form(t('forgotPassword/emailError'));
             return;
         }
         
-        $i_code = $this->model_Login->resetPasswordMail($this->post['email']);
+        $i_code = $this->login->resetPasswordMail($this->post['email']);
         if ($i_code == - 1) {
             /* Not a normal account */
-            $this->service_Template->loadView('index.tpl');
+            $this->template->loadView('index.tpl');
             $this->form(t('forgotPassword/openID'));
             return;
         } else 
             if ($i_code == 0) {
-                $this->service_Template->loadView('index.tpl');
+                $this->template->loadView('index.tpl');
                 $this->form(t('forgotPassword/resetFailed'));
                 return;
             }
         
-        $this->service_Template->loadView('reset.tpl');
+        $this->template->loadView('reset.tpl');
         
-        $this->service_Template->set('notice', $this->service_Language->insert(t('forgotPassword/resetSuccess'), 'email', $this->post['email']));
+        $this->template->set('notice', $this->language->insert(t('forgotPassword/resetSuccess'), 'email', $this->post['email']));
     }
 
     /**
@@ -147,8 +149,8 @@ class Forgot_password extends \includes\BaseLogicClass
      */
     protected function index($s_notice = '')
     {
-        $this->service_Template->set('email', t('registration/email'));
-        $this->service_Template->set('errorNotice', $s_notice);
-        $this->service_Template->set('loginButton', t('system/buttons/reset'));
+        $this->template->set('email', t('registration/email'));
+        $this->template->set('errorNotice', $s_notice);
+        $this->template->set('loginButton', t('system/buttons/reset'));
     }
 }

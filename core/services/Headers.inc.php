@@ -27,7 +27,7 @@ namespace core\services;
 class Headers extends Service
 {
 
-    private $model_Config;
+    private $config;
 
     private $a_headers = array();
 
@@ -36,12 +36,12 @@ class Headers extends Service
     /**
      * PHP5 constructor
      *
-     * @param core\models\Config $model_Config
+     * @param core\models\Config $config
      *            The config model
      */
-    public function __construct(\core\models\Config $model_Config)
+    public function __construct(\core\models\Config $config)
     {
-        $this->model_Config = $model_Config;
+        $this->config = $config;
         
         $this->clear();
     }
@@ -327,9 +327,9 @@ class Headers extends Service
             if (substr($s_location, 0, 4) == 'www.') {
                 $s_location = 'http://' . $s_location;
             } else {
-                $s_host = $this->model_Config->getProtocol() . $this->model_Config->getHost();
-                if ($this->model_Config->getBase() != '/') {
-                    $s_host .= $this->model_Config->getBase();
+                $s_host = $this->config->getProtocol() . $this->config->getHost();
+                if ($this->config->getBase() != '/') {
+                    $s_host .= $this->config->getBase();
                 }
                 if (substr($s_host, - 1) != '/') {
                     $s_host .= '/';
@@ -377,6 +377,10 @@ class Headers extends Service
         return $this->a_headers;
     }
 
+    /**
+     * Returns if the template should be skipped
+     * @return boolean
+     */
     public function skipTemplate()
     {
         if ($this->isForceDownload() || $this->isRedirect() || (array_key_exists('http', $this->a_headers) && $this->a_headers['http'][1] == '500 Internal Server Error')) {

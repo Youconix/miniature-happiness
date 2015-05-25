@@ -35,17 +35,17 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     /**
      * @var \core\models\Config 
      */
-    protected $model_Config;
+    protected $config;
     
     /**
      * @var \core\services\Template
      */
-    protected $service_Template;
+    protected $template;
     
     /**
      * @var \core\services\Language
      */
-    protected $service_Language;
+    protected $language;
     
     /**
      * @var \core\classes\Header
@@ -65,26 +65,26 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     /**
      * Base graphic class constructor
      * 
-     * @param \core\services\Security $service_Security
-     * @param \core\models\Config $model_Config
-     * @param \core\services\Language $service_Language
-     * @param \core\services\Template $service_Template
+     * @param \core\Input $input    The input parser
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
      * @param \core\classes\Header $header
      * @param \core\classes\Menu $menu
      * @param \core\classes\Footer $footer
      */
-    public function __construct(\core\services\Security $service_Security,\core\models\Config $model_Config,
-        \core\services\Language $service_Language,\core\services\Template $service_Template,
+    public function __construct(\core\Input $input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,
         \core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer)
     {
-        $this->model_Config = $model_Config;
-        $this->service_Language = $service_Language;
-        $this->service_Template = $service_Template;
+        $this->config = $config;
+        $this->language = $language;
+        $this->template = $template;
         $this->header = $header;
         $this->menu = $menu;
         $this->footer = $footer;
         
-        parent::__construct($service_Security);
+        parent::__construct($input);
     }
 
     /**
@@ -127,16 +127,16 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     {
         parent::init();
         
-        $s_language = $this->service_Language->getLanguage();
-        $this->service_Template->setJavascriptLink('<script src="{NIV}js/language.php?lang='.$s_language.'" type="text/javascript"></script>');
-        $this->service_Template->setJavascriptLink('<script src="{NIV}js/site.js" type="text/javascript"></script>');
+        $s_language = $this->language->getLanguage();
+        $this->template->setJavascriptLink('<script src="{NIV}js/language.php?lang='.$s_language.'" type="text/javascript"></script>');
+        $this->template->setJavascriptLink('<script src="{NIV}js/site.js" type="text/javascript"></script>');
         
-        if (! $this->model_Config->isAjax()) {
+        if (! $this->config->isAjax()) {
             $this->loadView();
         }
         
         /* Call statistics */
-        if (! $this->model_Config->isAjax() && stripos($_SERVER['PHP_SELF'], 'admin/') === false)
+        if (! $this->config->isAjax() && stripos($_SERVER['PHP_SELF'], 'admin/') === false)
             require (NIV . 'stats/statsView.php');
     }
 
@@ -146,10 +146,10 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
     protected function loadView()
     {
         /* Set language and encoding */
-        $this->service_Template->set('lang', $this->service_Language->getLanguage());
-        $this->service_Template->set('encoding', $this->service_Language->getEncoding());
-        if ($this->service_Language->exists('title')) {
-            $this->service_Template->set('mainTitle', $this->service_Language->get('title') . ',  ');
+        $this->template->set('lang', $this->language->getLanguage());
+        $this->template->set('encoding', $this->language->getEncoding());
+        if ($this->language->exists('title')) {
+            $this->template->set('mainTitle', $this->language->get('title') . ',  ');
         }
     }
 }

@@ -29,11 +29,37 @@ namespace core\models;
 abstract class Model extends \core\Object
 {
 
-    protected $service_Validation;
+    /**
+     * 
+     * @var \core\services\Validation
+     */
+    protected $validation;
 
+    /**
+     * 
+     * @var \core\database\DAL
+     * @deprecated
+     */
     protected $service_Database;
-
+    
+    /**
+     *
+     * @var \core\services\Builder
+     * @deprecated
+     */
     protected $service_QueryBuilder;
+    
+    /**
+     *
+     * @var \core\database\DAL
+     */
+    protected $database;
+    
+    /**
+     *
+     * @var \core\services\Builder
+     */
+    protected $builder;
 
     protected $a_validation = array();
 
@@ -42,16 +68,16 @@ abstract class Model extends \core\Object
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation)
     {
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
-        $this->service_Database = $this->service_QueryBuilder->getDatabase();
-        $this->service_Validation = $service_Validation;
+        $this->builder = $builder->createBuilder();
+        $this->service_QueryBuilder = $this->builder;
+        $this->database = $this->builder->getDatabase();
+        $this->service_Database = $this->database;
+        $this->validation = $validation;
     }
 
     /**
@@ -138,10 +164,10 @@ abstract class Model extends \core\Object
                 )) && ! preg_match("/" . $this->a_validation[$s_key]['pattern'] . "/", $this->$s_key)) {
                     $bo_pattern = false;
                 } else 
-                    if (($this->a_validation[$s_key]['pattern'] == 'email' && ! $this->service_Validation->checkEmail($this->$s_key))) {
+                    if (($this->a_validation[$s_key]['pattern'] == 'email' && ! $this->validation->checkEmail($this->$s_key))) {
                         $bo_pattern = false;
                     } else 
-                        if ($this->a_validation[$s_key]['pattern'] == 'url' && ! $this->service_Validation->checkURI($this->$s_key)) {
+                        if ($this->a_validation[$s_key]['pattern'] == 'url' && ! $this->validation->checkURI($this->$s_key)) {
                             $bo_pattern = false;
                         }
                 

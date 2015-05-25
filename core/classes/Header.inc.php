@@ -2,6 +2,19 @@
 namespace core\classes;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Site header
  *
  * This file is part of Miniature-happiness
@@ -9,43 +22,48 @@ namespace core\classes;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *       
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 class Header
 {
 
-    protected $service_Template;
+    /**
+     *
+     * @var \core\services\Template
+     */
+    protected $template;
 
-    protected $service_Language;
+    /**
+     *
+     * @var \core\services\Language
+     */
+    protected $language;
 
-    protected $model_User;
+    /**
+     *
+     * @var \core\models\U
+     */
+    protected $user;
 
-    protected $model_Config;
-
-    protected $s_template;
+    /**
+     *
+     * @var \core\models\Config
+     */
+    protected $config;
 
     /**
      * Starts the class header
+     * 
+     * @param \core\services\Template $template
+     * @param \core\services\Language $language
+     * @param \core\models\User $user
+     * @param \core\models\Config $config
      */
-    public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Config $model_Config)
+    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $user, \core\models\Config $config)
     {
-        $this->service_Template = $service_Template;
-        $this->service_Language = $service_Language;
-        $this->model_User = $model_User;
-        $this->model_Config = $model_Config;
+        $this->template = $template;
+        $this->language = $language;
+        $this->user = $user;
+        $this->config = $config;
     }
 
     /**
@@ -53,18 +71,20 @@ class Header
      */
     public function createHeader()
     {
-        $obj_User = $this->model_User->get();
+        $this->displayLanguageFlags();
+        
+        $obj_User = $this->user->get();
         if (is_null($obj_User->getID())) {
             return;
         }
         
         if ($obj_User->isAdmin(GROUP_SITE)) {
-            $s_welcome = $this->service_Language->get('system/header/adminWelcome');
+            $s_welcome = $this->language->get('system/header/adminWelcome');
         } else {
-            $s_welcome = $this->service_Language->get('system/header/userWelcome');
+            $s_welcome = $this->language->get('system/header/userWelcome');
         }
         
-        $this->service_Template->set('welcomeHeader', '<a href="{NIV}profile/view/details/id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
+        $this->template->set('welcomeHeader', '<a href="{NIV}profile/view/details/id=' . $obj_User->getID() . '" style="color:' . $obj_User->getColor() . '">' . $s_welcome . ' ' . $obj_User->getUsername() . '</a>');
     }
 
     /**
@@ -72,13 +92,13 @@ class Header
      */
     protected function displayLanguageFlags()
     {
-        $a_languages = $this->model_Config->getLanguages();
-        $a_languagesCodes = $this->service_Language->getLanguageCodes();
+        $a_languages = $this->config->getLanguages();
+        $a_languagesCodes = $this->language->getLanguageCodes();
         
         foreach ($a_languages as $s_code) {
             $s_language = (array_key_exists($s_code, $a_languagesCodes)) ? $a_languagesCodes[$s_code] : $s_code;
             
-            $this->service_Template->setBlock('header_languages', array(
+            $this->template->setBlock('headerLanguage', array(
                 'code' => $s_code,
                 'language' => $s_language
             ));

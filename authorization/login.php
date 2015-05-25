@@ -9,33 +9,78 @@ namespace Authorization;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *       
+ *        Miniature-happiness is free software: you can redistribute it and/or modify
+ *        it under the terms of the GNU Lesser General Public License as published by
+ *        the Free Software Foundation, either version 3 of the License, or
+ *        (at your option) any later version.
+ *       
+ *        Miniature-happiness is distributed in the hope that it will be useful,
+ *        but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *        GNU General Public License for more details.
+ *       
+ *        You should have received a copy of the GNU Lesser General Public License
+ *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
 if (! defined('NIV')) {
     define('NIV', '../');
     include (NIV . 'includes/BaseLogicClass.php');
 }
-define('FORCE_SSL',true);
-
+define('FORCE_SSL', true);
 
 class Login extends \includes\BaseLogicClass
 {
 
-    private $model_Login;
+    /**
+     *
+     * @var \core\models\Login
+     */
+    private $login;
 
-    private $model_User;
+    /**
+     *
+     * @var \core\models\User
+     */
+    private $user;
+
+    /**
+     *
+     * @var \core\services\Headers
+     */
+    private $headers;
+
+    /**
+     *
+     * @var \core\services\Session
+     */
+    private $session;
+
+    /**
+     * Base graphic class constructor
+     *
+     * @param \core\Input $input
+     *            The input parser
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\classes\Header $header            
+     * @param \core\classes\Menu $menu            
+     * @param \core\classes\Footer $footer            
+     * @param \core\models\Login $login            
+     * @param \core\models\User $user            
+     * @param \core\services\Headers $headers            
+     * @param \core\services\Session $session            
+     */
+    public function __construct(\core\Input $input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\models\Login $login, \core\models\User $user, \core\services\Headers $headers, \core\services\Session $session)
+    {
+        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
+        
+        $this->login = $login;
+        $this->user = $user;
+        $this->headers = $headers;
+        $this->session = $session;
+    }
 
     /**
      * Inits the class Login
@@ -53,14 +98,11 @@ class Login extends \includes\BaseLogicClass
             'password2' => 'string-DB',
             'autologin' => 'ignore'
         );
-                
+        
         parent::init();
         
-        $this->model_Login = \Loader::inject('\core\models\Login');
-        $this->model_User = \Loader::inject('\core\models\User');
-        
-        if (! $this->model_Config->isNormalLogin() && $this->model_Config->isLDAPLogin()) {
-            \core\Memory::services('Headers')->redirect('authorization/login_ldap/index');
+        if (! $this->config->isNormalLogin() && $this->config->isLDAPLogin()) {
+            $this->headers->redirect('authorization/login_ldap/index');
         }
     }
 
@@ -70,36 +112,36 @@ class Login extends \includes\BaseLogicClass
     protected function index($bo_callback = false)
     {
         if ($bo_callback) {
-            $this->service_Template->loadView('index');
+            $this->template->loadView('index');
         } else {
-            $this->model_Login->checkAutologin();
+            $this->login->checkAutologin();
         }
-
-        $this->service_Template->set('usernameText', $this->service_Language->get('system/admin/users/username'));
-        $this->service_Template->set('passwordText', $this->service_Language->get('system/admin/users/password'));
-        $this->service_Template->set('autologin', $this->service_Language->get('login/autologin'));
-        $this->service_Template->set('loginButton', $this->service_Language->get('login/button'));
-        $this->service_Template->set('registration', $this->service_Language->get('login/registration'));
-        if ($this->model_Config->isNormalLogin()) {
-            $this->service_Template->set('forgotPassword', $this->service_Language->get('login/forgotPassword'));
+        
+        $this->template->set('usernameText', t('system/admin/users/username'));
+        $this->template->set('passwordText', t('system/admin/users/password'));
+        $this->template->set('autologin', t('login/autologin'));
+        $this->template->set('loginButton', t('login/button'));
+        $this->template->set('registration', t('login/registration'));
+        if ($this->config->isNormalLogin()) {
+            $this->template->set('forgotPassword', t('login/forgotPassword'));
         }
         
         if ($bo_callback) {
-            $this->service_Template->set('username', $this->post['username']);
+            $this->template->set('username', $this->post['username']);
         }
         
-        if ($this->model_Config->isFacebookLogin()) {
-            $this->service_Template->setBlock('specialLogin', array(
+        if ($this->config->isFacebookLogin()) {
+            $this->template->setBlock('specialLogin', array(
                 'image' => 'facebook',
                 'key' => 'facebook',
-                'text' => $this->service_Language->get('loginFacebook')
+                'text' => t('loginFacebook')
             ));
         }
-        if ($this->model_Config->isOpenIDLogin()) {
-            $this->service_Template->setBlock('specialLogin', array(
+        if ($this->config->isOpenIDLogin()) {
+            $this->template->setBlock('specialLogin', array(
                 'image' => 'openID',
                 'key' => 'openID',
-                'text' => $this->service_Language->get('loginOpenID')
+                'text' => t('loginOpenID')
             ));
         }
     }
@@ -109,13 +151,20 @@ class Login extends \includes\BaseLogicClass
      */
     protected function do_login()
     {
-        if (trim($this->post['username']) == '' || trim($this->post['password']) == '') {
+        if (! $this->post->validate(array(
+            'username' => array(
+                'required' => 1
+            ),
+            'password' => array(
+                'required' => 1
+            )
+        ))) {
             $this->index(true);
             return;
         }
         
         (isset($this->post['autologin'])) ? $bo_autologin = true : $bo_autologin = false;
-        $bo_login = $this->model_Login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
+        $bo_login = $this->login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
         
         /* No redirect, so the login was incorrect */
         $this->index(true);
@@ -130,14 +179,14 @@ class Login extends \includes\BaseLogicClass
      */
     protected function expired($s_notice = '')
     {
-        $this->service_Template->set('expired_title', $this->service_Language->get('login/editPassword'));
-        $this->service_Template->set('password', $this->service_Language->get('login/currentPassword'));
-        $this->service_Template->set('newPassword', $this->service_Language->get('login/newPassword'));
-        $this->service_Template->set('newPassword2', $this->service_Language->get('login/newPasswordAgain'));
-        $this->service_Template->set('loginButton', $this->service_Language->get('login/editPassword'));
+        $this->template->set('expired_title', t('login/editPassword'));
+        $this->template->set('password', t('login/currentPassword'));
+        $this->template->set('newPassword', t('login/newPassword'));
+        $this->template->set('newPassword2', t('login/newPasswordAgain'));
+        $this->template->set('loginButton', t('login/editPassword'));
         
         if (! empty($s_notice)) {
-            $this->service_Template->set('errorNotice', $s_notice);
+            $this->template->set('errorNotice', $s_notice);
         }
     }
 
@@ -147,28 +196,30 @@ class Login extends \includes\BaseLogicClass
      */
     private function update()
     {
-        if (! $this->service_Session->exists('expired')) {
-            \core\Memory::services('Headers')->redirect('index/view');
-            exit();
+        if (! $this->session->exists('expired')) {
+            $this->headers->redirect('index/view');
         }
         
-        $a_data = $this->service_Session->get('expired');
+        $a_data = $this->session->get('expired');
         
         if ($this->post['password_old'] == '' || $this->post['password'] == '' || $this->post['password2'] == '') {
-            $this->expiredScreen($this->service_Language->get('registration/addHint/fieldsEmpty'));
+            $this->expiredScreen(t('registration/addHint/fieldsEmpty'));
             return;
         }
         if ($this->post['password'] != $this->post['password2']) {
-            $this->expiredScreen($this->service_Language->get('registration/passwordIncorrect'));
+            $this->expiredScreen(t('registration/passwordIncorrect'));
             return;
         }
         
-        if (! $this->model_User->changePassword($a_data['id'], $a_data['nick'], $this->post['password_old'], $this->post['password'])) {
-            $this->expiredScreen($this->service_Language->get('login/currentPasswordIncorrect'));
+        $user = $this->user->createUser();
+        $user->setData($a_data);
+        
+        if (! $user->changePassword($this->post['password_old'], $this->post['password'])) {
+            $this->expiredScreen(t('login/currentPasswordIncorrect'));
             return;
         }
         
-        $this->service_Session->delete('expired');
-        $this->model_Login->setLogin($a_data);
+        $this->session->delete('expired');
+        $this->login->setLogin($user);
     }
 }

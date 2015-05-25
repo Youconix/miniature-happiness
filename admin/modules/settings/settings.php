@@ -53,15 +53,15 @@ abstract class Settings extends \core\AdminLogicClass
     protected $service_Headers;
 
     /**
-     * PHP 5 constructor
+     * @param \core\Input $Input    The input parser
+     * @param \core\models\Config $model_Config
+     * @param \core\services\Language $service_Language
+     * @param \core\services\Template $service_Template
      */
-    public function __construct()
+    public function __construct(\core\Input $Input,\core\models\Config $model_Config,
+        \core\services\Language $service_Language,\core\services\Template $service_Template)
     {
-        $this->init();
-        
-        if (! $this->model_Config->isAjax()) {
-            exit();
-        }
+        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
         
         $this->menu();
     }

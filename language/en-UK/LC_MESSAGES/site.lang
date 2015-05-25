@@ -43,7 +43,7 @@
         <registrationVia>Registration via</registrationVia>
     </registration>
     <activate>
-       <accountActivated><![CDATA[ Your account has been activated. It is now posible <a href="{NIV}login.php">to log in.</a> ]]></accountActivated>
+       <accountActivated><![CDATA[ Your account has been activated. It is now posible <a href="{NIV}authorization/login/index">to log in.</a> ]]></accountActivated>
        <accountNotActivated>The activation link is invalid. Maybe the account is already activated?</accountNotActivated>
     </activate>
     <forgotPassword>

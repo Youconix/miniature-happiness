@@ -27,6 +27,10 @@ namespace core\services\data;
 class LanguageMO extends \core\services\service
 {
 
+    /**
+     * 
+     * @var \core\services\File
+     */
     private $service_File;
 
     private $s_language = null;

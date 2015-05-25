@@ -45,7 +45,7 @@
 		<registration_facebook>Registratie via Facebook</registration_facebook>
 	</registration>
 	<activate>
-	   <accountActivated><![CDATA[ Je account is geactiveerd. Je kan nu <a href="{LEVEL}login">inloggen.</a> ]]></accountActivated>
+	   <accountActivated><![CDATA[ Je account is geactiveerd. Je kan nu <a href="{LEVEL}authorization/login/index">inloggen.</a> ]]></accountActivated>
 	   <accountNotActivated>De activerings-link is ongeldig. Mogelijk is het account al geactiveerd.</accountNotActivated>
 	</activate>
 	<forgotPassword>

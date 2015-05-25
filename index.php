@@ -27,23 +27,25 @@ class Index extends \includes\BaseLogicClass
      *
      * @var \core\helpers\IndexInstall
      */
-    protected $helper_IndexInstall;
+    protected $indexInstall;
 
     /**
      * Constructor
      *
-     * @param \core\services\Security $service_Security            
-     * @param \core\models\Config $model_Config            
-     * @param \core\services\Language $service_Language            
-     * @param \core\services\Template $service_Template            
+     * @param \core\Input $Input    The input parser       
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
      * @param \core\classes\Header $header            
-     * @param \core\classes\Menu $menu            
+     * @param \core\classes\Menu $menu    
+     * @param \core\classes\Footer $footer
+     * @param \core\helpers\IndexInstall $index        
      */
-    public function __construct(\core\services\Security $service_Security, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\helpers\IndexInstall $helper_Index)
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\helpers\IndexInstall $index)
     {
-        parent::__construct($service_Security, $model_Config, $service_Language, $service_Template, $header, $menu, $footer);
+        parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
         
-        $this->helper_IndexInstall = $helper_Index;
+        $this->indexInstall = $index;
     }
 
     /**
@@ -51,6 +53,6 @@ class Index extends \includes\BaseLogicClass
      */
     protected function view()
     {
-        $this->service_Template->set('content', $this->helper_IndexInstall->generate());
+        $this->template->set('content', $this->indexInstall->generate());
     }
 }

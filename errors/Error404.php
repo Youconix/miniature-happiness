@@ -33,33 +33,32 @@ class Error404 extends \includes\BaseLogicClass
     /**
      * @var \core\services\Headers
      */
-    protected $service_Headers;
+    protected $headers;
     
     /**
      * @var \core\services\Logs
      */
-    protected $service_Logs;
+    protected $logs;
 
     /**
      * Starts the class Error404
      * 
-     * @param \core\services\Security $service_Security
-     * @param \core\models\Config $model_Config
-     * @param \core\services\Language $service_Language
-     * @param \core\services\Template $service_Template
+     * @param \core\Input $input
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
      * @param \core\classes\Header $header
      * @param \core\classes\Menu $menu
-     * @param \core\services\Headers $service_Headers
-     * @param \core\services\Logs $service_Logs
+     * @param \core\services\Headers $headers
+     * @param \core\services\Logs $logs
      */
-    public function __construct(\core\services\Security $service_Security,\core\models\Config $model_Config,
-        \core\services\Language $service_Language,\core\services\Template $service_Template,\core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,
-        \core\services\Headers $service_Headers,\core\services\Logs $service_Logs)
+    public function __construct(\core\Input $input,\core\models\Config $config,\core\services\Language $language,\core\services\Template $template,
+        \core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,\core\services\Headers $headers,\core\services\Logs $logs)
     {
-        parent::__construct($service_Security,$model_Config,$service_Language,$service_Template,$header,$menu,$footer);
+        parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
         
-        $this->service_Headers = $service_Headers;
-        $this->service_Logs = $service_Logs;
+        $this->headers = $headers;
+        $this->logs = $logs;
         
         $this->showLayout();
         
@@ -71,18 +70,18 @@ class Error404 extends \includes\BaseLogicClass
      */
     private function displayError()
     {
-        $this->service_Headers->http404();
-        $this->service_Headers->printHeaders();
+        $this->headers->http404();
+        $this->headers->printHeaders();
         
-        $this->service_Template->set('title', t('errors/error404/notFound'));
+        $this->template->set('title', t('errors/error404/notFound'));
         
-        $this->service_Template->set('notice', t('errors/error404/pageMissing'));
+        $this->template->set('notice', t('errors/error404/pageMissing'));
         
         if (isset($_SESSION['error'])) {
-            $this->service_Logs->errorLog($_SESSION['error']);
+            $this->logs->errorLog($_SESSION['error']);
             if (defined('DEBUG')) {
                 
-                $this->service_Template->set('debug_notice', $_SESSION['error']);
+                $this->template->set('debug_notice', $_SESSION['error']);
             }
         }
     }

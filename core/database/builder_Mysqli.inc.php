@@ -81,6 +81,13 @@ class Builder_mysqli implements \core\services\Builder
         $this->obj_create->reset();
         $this->obj_having->reset();
     }
+    
+    public function __clone(){
+        $this->obj_where = new Where_Mysqli();
+        $this->obj_create = new Create_Mysqli();
+        $this->obj_having = new Having_Mysqli();
+        $this->reset();
+    }
 
     /**
      * Shows the tables in the current database

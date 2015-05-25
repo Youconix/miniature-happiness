@@ -24,12 +24,26 @@ namespace core\models\data;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class DataUser extends \core\models\GeneralUser
+class DataUser extends \core\models\Model
 {
 
-    private $model_Groups;
+    /**
+     * 
+     * @var \core\models\Groups
+     */
+    protected $groups;
 
-    private $service_Language;
+    /**
+     * 
+     * @var \core\services\Language
+     */
+    protected $language;
+    
+    /**
+     * 
+     * @var \core\services\hashing
+     */
+    protected $hashing;
 
     protected $i_userid = null;
 
@@ -46,6 +60,8 @@ class DataUser extends \core\models\GeneralUser
     protected $i_active = 0;
 
     protected $i_blocked = 0;
+    
+    protected $i_passwordExpired = 0;
 
     protected $s_password;
 
@@ -62,22 +78,19 @@ class DataUser extends \core\models\GeneralUser
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\services\Hashing $service_Hashing
-     *            The hashing service
-     * @param \core\models\Groups $model_Groups
-     *            The groups model
-     * @param \core\services\Language $service_Language
-     *            The language service
+     * @param \core\services\QueryBuilder $queryBuilder
+     * @param \core\services\Validation $validation
+     * @param \core\services\Hashing $hashing
+     * @param \core\models\Groups $groups
+     * @param \core\services\Language $language
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\Hashing $service_Hashing, \core\models\Groups $model_Groups, \core\services\Language $service_Language)
+    public function __construct(\core\services\QueryBuilder $queryBuilder, \core\services\Validation $validation, 
+        \core\services\Hashing $hashing, \core\models\Groups $groups, \core\services\Language $language)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation, $service_Hashing);
-        $this->model_Groups = $model_Groups;
-        $this->service_Language = $service_Language;
+        parent::__construct($queryBuilder, $validation);
+        $this->groups = $groups;
+        $this->language = $language;
+        $this->hashing = $hashing;
         
         $this->a_validation = array(
             's_username' => array(
@@ -148,10 +161,10 @@ class DataUser extends \core\models\GeneralUser
     {
         \core\Memory::type('int', $i_userid);
         
-        $this->service_QueryBuilder->select('users', '*')
+        $this->builder->select('users', '*')
             ->getWhere()
             ->addAnd('id', 'i', $i_userid);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
             throw new \DBException("Unknown user with userid " . $i_userid);
@@ -183,14 +196,15 @@ class DataUser extends \core\models\GeneralUser
         $this->i_blocked = (int) $a_data['blocked'];
         $this->s_loginType = $a_data['loginType'];
         $this->s_language = $a_data['language'];
+        $this->i_passwordExpired = $a_data['password_expired'];
         
-        $s_systemLanguage = $this->service_Language->getLanguage();
+        $s_systemLanguage = $this->language->getLanguage();
         if (defined('USERID') && USERID == $this->i_userid && $this->s_language != $s_systemLanguage) {
             if ($this->getLanguage() != $this->s_language) {
-                $this->service_QueryBuilder->update('users', 'language', 's', $s_systemLanguage)
+                $this->builder->update('users', 'language', 's', $s_systemLanguage)
                     ->getWhere()
                     ->addAnd('id', 'i', $this->i_userid);
-                $this->service_QueryBuilder->getResult();
+                $this->builder->getResult();
             }
         }
     }
@@ -208,7 +222,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Returns the username
      *
-     * @return String The username
+     * @return string The username
      */
     public function getUsername()
     {
@@ -218,7 +232,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Sets the username
      *
-     * @param String $s_username
+     * @param string $s_username
      *            The new username
      */
     public function setUsername($s_username)
@@ -230,7 +244,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Returns the email address
      *
-     * @return String The email address
+     * @return string The email address
      */
     public function getEmail()
     {
@@ -240,7 +254,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Sets the email address
      *
-     * @param String $s_email
+     * @param string $s_email
      *            email address
      */
     public function setEmail($s_email)
@@ -253,19 +267,21 @@ class DataUser extends \core\models\GeneralUser
      * Sets a new password
      * Note : username has to be set first!
      *
-     * @param String $s_password
+     * @param string $s_password
      *            plain text password
-     * @param Boolean $bo_expired
+     * @param boolean $bo_expired
      *            true to set the password to expired
      */
     public function setPassword($s_password, $bo_expired = false)
     {
         \core\Memory::type('string', $s_password);
         
-        $this->s_password = $this->hashPassword($s_password, $this->s_username);
+        $s_salt = $this->getSalt($this->getUsername(), $this->s_loginType);
+        
+        $this->s_password = $this->hashing->hashUserPassword($s_password,$s_salt);
         
         if ($bo_expired) {
-            $this->service_QueryBuilder->update('users', array(
+            $this->builder->update('users', array(
                 'password',
                 'password_expired'
             ), array(
@@ -275,14 +291,105 @@ class DataUser extends \core\models\GeneralUser
                 $this->s_password,
                 '1'
             ));
-            $this->service_QueryBuilder->getWhere()->addAnd('id', 'i', $this->i_userid);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getWhere()->addAnd('id', 'i', $this->i_userid);
+            $this->builder->getResult();
         } else {
-            $this->service_QueryBuilder->update('users', 'password', 's', $this->s_password)
+            $this->builder->update('users', 'password', 's', $this->s_password)
                 ->getWhere()
                 ->addAnd('id', 'i', $this->i_userid);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
         }
+    }
+    
+    /**
+     * Changes the saved password
+     *
+     * @param string $s_passwordOld
+     *            plain text password
+     * @param string $s_password
+     *            plain text password
+     * @return bool True if the password is changed
+     */
+    public function changePassword($s_passwordOld, $s_password)
+    {
+        $s_salt = $this->getSalt($this->getUsername(), $this->s_loginType);
+        if( is_null($s_salt) ){
+            return false;
+        }
+    
+        $s_passwordOld = $this->hashing->hashUserPassword($s_passwordOld, $s_salt);
+        $s_password = $this->hashing->hashUserPassword($s_password, $s_salt);
+    
+        $this->builder->select('users', 'id')
+        ->getWhere()
+        ->addAnd(array(
+            'id',
+            'password'
+        ), array(
+            'i',
+            's'
+        ), array(
+            $this->getID(),
+            $s_passwordOld
+        ));
+        $service_Database = $this->builder->getResult();
+    
+        if ($service_Database->num_rows() == 0) {
+            return false;
+        }
+    
+        $this->builder->update('users', array(
+            'password',
+            'password_expired'
+        ), array(
+            's',
+            's'
+        ), array(
+            $s_password,
+            '0'
+        ));
+        $this->builder->getWhere()->addAnd('id', 'i', $i_userid);
+        $this->builder->getResult();
+        return true;
+    }
+    
+    /**
+     * Returns the user salt
+     *
+     * @param string $s_username    The username
+     * @param string $s_loginType   The login type
+     * @return NULL|string  The salt if the user exists
+     */
+    public function getSalt($s_username,$s_loginType){
+        $this->builder->select('users','salt,id')->getWhere()->addAnd(array(
+            'nick',
+            'active',
+            'loginType'
+        ), array(
+            's',
+            's',
+            's',
+            's'
+        ), array(
+            $s_username,
+            '1',
+            $s_loginType
+        ));
+        $service_Database = $this->builder->getResult();
+    
+        if ($service_Database->num_rows() == 0) {
+            return null;
+        }
+    
+        $a_data = $service_Database->fetch_assoc();
+    
+        if( empty($a_data[0]['salt']) ){
+            $s_salt = $this->hashing->createSalt();
+            $this->builder->update('users', 'salt', 's',$a_data[0]['salt'])->getWhere('id','i',$a_data[0]['id']);
+            $this->builder->getResult();
+        }
+    
+        return $a_data[0]['salt'];
     }
 
     /**
@@ -310,6 +417,10 @@ class DataUser extends \core\models\GeneralUser
         } else {
             $this->i_bot = 0;
         }
+    }
+    
+    public function isPasswordExpired(){
+        return ($this->i_passwordExpired == 1);
     }
 
     /**
@@ -341,11 +452,24 @@ class DataUser extends \core\models\GeneralUser
     {
         return $this->i_loggedIn;
     }
+    
+    /**
+     * Updates the last login date
+     */
+    public function updateLastLoggedIn(){
+        $i_time = time();
+        $this->i_loggedIn = $i_time;
+        
+        $this->builder->update('users', 'lastLogin', 'i', $i_time)
+        ->getWhere()
+        ->addAnd('id', 'i', $this->getID());
+        $this->builder->getResult();
+    }
 
     /**
      * Checks if the account is blocked
      *
-     * @return Boolean if the account is blocked
+     * @return boolean if the account is blocked
      */
     public function isBlocked()
     {
@@ -355,7 +479,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * (Un)Blocks the account
      *
-     * @param Boolean $bo_blocked
+     * @param boolean $bo_blocked
      *            to true to block the account, otherwise false
      */
     public function setBlocked($bo_blocked)
@@ -372,18 +496,27 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Sets the activation code
      *
-     * @param String $s_activation
+     * @param string $s_activation
      *            activation code
      */
     public function setActivation($s_activation)
     {
         $this->s_activation = $s_activation;
     }
+    
+    /**
+     * Returns the activation code
+     * 
+     * @return string   The code
+     */
+    public function getActivation(){
+        return $this->s_activation;
+    }
 
     /**
      * Returns the profile text
      *
-     * @return String text
+     * @return string text
      */
     public function getProfile()
     {
@@ -393,7 +526,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Sets the profile text
      *
-     * @param String $s_text
+     * @param string $s_text
      *            text
      */
     public function setProfile($s_profile)
@@ -404,11 +537,11 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Returns the groups where the user is in
      *
-     * @return arrays groups
+     * @return arrays The groups
      */
     public function getGroups()
     {
-        $a_groups = $this->model_Groups->getGroups();
+        $a_groups = $this->groups->getGroups();
         $a_groupsUser = array();
         
         foreach ($a_groups as $obj_group) {
@@ -438,29 +571,8 @@ class DataUser extends \core\models\GeneralUser
             return \core\services\Session::ANONYMOUS;
         }
         
-        $this->a_levels[$i_groupid] = $this->model_Groups->getLevel($this->i_userid, $i_groupid);
+        $this->a_levels[$i_groupid] = $this->groups->getLevel($this->i_userid, $i_groupid);
         return $this->a_levels[$i_groupid];
-    }
-
-    /**
-     * Changes the password
-     *
-     * @param String $s_password
-     *            The new password
-     * @throws Exception the account is not saved yet
-     */
-    public function changePassword($s_password)
-    {
-        \core\Memory::type('string', $s_password);
-        
-        if (is_null($this->i_userid)) {
-            throw new \Exeception("Can not change password from a not existing account");
-        }
-        
-        $this->service_QueryBuilder->update('users', 'password', 's', $s_password)
-            ->getWhere()
-            ->addAnd('id', 'i', $this->i_userid);
-        $this->service_QueryBuilder->getResult();
     }
 
     /**
@@ -484,7 +596,7 @@ class DataUser extends \core\models\GeneralUser
      *
      * @param int $i_groupid
      *            The groupid, leave empty for site group
-     * @return String The color
+     * @return string The color
      */
     public function getColor($i_groupid = -1)
     {
@@ -512,7 +624,7 @@ class DataUser extends \core\models\GeneralUser
      *
      * @param int $i_groupid
      *            The group ID, leave empty for site group
-     * @return Boolean True if the visitor has moderator rights, otherwise false
+     * @return boolean True if the visitor has moderator rights, otherwise false
      */
     public function isModerator($i_groupid = -1)
     {
@@ -546,7 +658,7 @@ class DataUser extends \core\models\GeneralUser
      *            groupID, may be -1 for site group
      * @return int group ID
      */
-    private function checkGroup($i_groupid)
+    protected function checkGroup($i_groupid)
     {
         if ($i_groupid == - 1) {
             $i_groupid = GROUP_SITE;
@@ -561,14 +673,16 @@ class DataUser extends \core\models\GeneralUser
      */
     public function expirePassword()
     {
-        $this->service_QueryBuilder->update('users', 'password_expires', 's', 'i')
+        $this->builder->update('users', 'password_expires', 's', 'i')
             ->getWhere()
             ->addAnd('id', 'i', $this->i_userid);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
     }
 
     /**
      * Returns the set user language
+     * 
+     * @return string
      */
     public function getLanguage()
     {
@@ -578,7 +692,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Returns the login type
      *
-     * @return String type
+     * @return string
      */
     public function getLoginType()
     {
@@ -588,7 +702,7 @@ class DataUser extends \core\models\GeneralUser
     /**
      * Sets the login type
      *
-     * @return String type
+     * @return string type
      */
     public function setLoginType($s_type)
     {
@@ -609,7 +723,7 @@ class DataUser extends \core\models\GeneralUser
         
         $this->i_registrated = time();
         
-        $this->service_QueryBuilder->insert('users', array(
+        $this->builder->insert('users', array(
             'nick',
             'email',
             'password',
@@ -644,13 +758,13 @@ class DataUser extends \core\models\GeneralUser
             $this->s_loginType
         ));
         
-        $this->i_userid = (int) $this->service_QueryBuilder->getResult()->getId();
+        $this->i_userid = (int) $this->builder->getResult()->getId();
         
         if ($this->i_userid == - 1) {
             return;
         }
         
-        $this->model_Groups->addUserDefaultGroups($this->i_userid);
+        $this->groups->addUserDefaultGroups($this->i_userid);
     }
 
     /**
@@ -665,7 +779,7 @@ class DataUser extends \core\models\GeneralUser
         
         $this->performValidation();
         
-        $this->service_QueryBuilder->update('users', array(
+        $this->builder->update('users', array(
             'nick',
             'email',
             'bot',
@@ -687,8 +801,8 @@ class DataUser extends \core\models\GeneralUser
             $this->i_blocked,
             $this->s_profile
         ));
-        $this->service_QueryBuilder->getWhere()->addAnd('id', 'i', $this->i_userid);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getWhere()->addAnd('id', 'i', $this->i_userid);
+        $this->builder->getResult();
     }
 
     /**
@@ -701,12 +815,12 @@ class DataUser extends \core\models\GeneralUser
         }
         
         /* Delete user from groups */
-        $this->model_Groups->deleteGroupsUser($this->i_userid);
+        $this->groups->deleteGroupsUser($this->i_userid);
         
-        $this->service_QueryBuilder->delete('users')
+        $this->builder->delete('users')
             ->getWhere()
             ->addAnd('id', 'i', $this->i_userid);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
         $this->i_userid = null;
     }
 }

@@ -26,37 +26,52 @@ namespace core\models;
 class Privileges
 {
 
-    private $service_Headers;
+    /**
+     * 
+     * @var \core\services\Headers
+     */
+    private $headers;
 
-    private $model_Config;
+    /**
+     * 
+     * @var \core\models\Config
+     */
+    private $config;
 
-    private $service_QueryBuilder;
+    /**
+     * 
+     * @var \core\services\Builder
+     */
+    private $builder;
 
-    private $service_Session;
+    /**
+     * 
+     * @var \core\services\Session
+     */
+    private $session;
 
-    private $model_Groups;
+    /**
+     * 
+     * @var \core\models\Groups
+     */
+    private $groups;
 
     /**
      * PHP 5 constructor
      *
-     * @param core\services\Headers $service_Headers
-     *            header service
-     * @param core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param core\models\Groups $model_Groups
-     *            The groups model
-     * @param core\services\Session $service_Session
-     *            The session service
-     * @param core\models\Config $model_Config
-     *            The config model
+     * @param core\services\Headers $headers
+     * @param core\services\QueryBuilder $builder
+     * @param core\models\Groups $groups
+     * @param core\services\Session $session
+     * @param core\models\Config $config
      */
-    public function __construct(\core\services\Headers $service_Headers, \core\services\QueryBuilder $service_QueryBuilder, \core\models\Groups $model_Groups, \core\services\Session $service_Session, \core\models\Config $model_Config)
+    public function __construct(\core\services\Headers $headers, \core\services\QueryBuilder $builder, \core\models\Groups $groups, \core\services\Session $session, \core\models\Config $config)
     {
-        $this->service_Headers = $service_Headers;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
-        $this->model_Groups = $model_Groups;
-        $this->service_Session = $service_Session;
-        $this->model_Config = $model_Config;
+        $this->headers = $headers;
+        $this->builder = $builder->createBuilder();
+        $this->groups = $groups;
+        $this->session = $session;
+        $this->config = $config;
     }
 
     /**
@@ -86,16 +101,16 @@ class Privileges
         \core\Memory::type('int', $i_level);
         \core\Memory::type('int', $i_commandLevel);
         
-        if (stripos($this->model_Config->getPage(), '/phpunit') !== false) {
+        if (stripos($this->config->getPage(), '/phpunit') !== false) {
             /* Unit test */
             return;
         }
         
         if ($i_group == - 1 || $i_level == - 1) {
-            $this->service_QueryBuilder->select('group_pages', 'groupID,minLevel')
+            $this->builder->select('group_pages', 'groupID,minLevel')
                 ->getWhere()
-                ->addAnd('page', 's', $this->model_Config->getPage());
-            $service_Database = $this->service_QueryBuilder->getResult();
+                ->addAnd('page', 's', $this->config->getPage());
+            $service_Database = $this->builder->getResult();
             
             $i_group = 1;
             $i_level = \core\services\Session::ANONYMOUS;
@@ -109,9 +124,9 @@ class Privileges
         $this->checkSSL($i_level);
         
         if ($i_level == \core\services\Session::ANONYMOUS) {
-            if (($this->service_Session->exists('login')) && ($this->service_Session->exists('userid'))) {
+            if (($this->session->exists('login')) && ($this->session->exists('userid'))) {
                 if (! defined('USERID')) {
-                    define('USERID', $this->service_Session->get('userid'));
+                    define('USERID', $this->session->get('userid'));
                 }
             }
             
@@ -119,7 +134,7 @@ class Privileges
         }
         
         /* Get redict url */
-        $s_base = $this->model_Config->getBase();
+        $s_base = $this->config->getBase();
         $s_page = $_SERVER['REQUEST_URI'];
         if ($s_base != '/') {
             $s_page = str_replace($s_base, '', $s_page);
@@ -134,8 +149,8 @@ class Privileges
         }
         
         /* Check fingerprint */
-        $i_userid = $this->service_Session->get('userid');
-        $i_userLevel = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
+        $i_userid = $this->session->get('userid');
+        $i_userLevel = $this->groups->getLevelByGroupID($i_group, $i_userid);
         
         if (($i_userLevel < $i_level)) {
             /*
@@ -143,7 +158,7 @@ class Privileges
              */
             $_GET['command'] = 'index';
             $_SERVER['SCRIPT_NAME'] = 'errors/Error403.php';
-            $this->model_Config->setAjax(false);
+            $this->config->setAjax(false);
             return;
         }
         
@@ -162,20 +177,20 @@ class Privileges
      */
     private function checkloginStatus($s_page)
     {
-        if ($this->service_Session->exists('login')) {
+        if ($this->session->exists('login')) {
             return true;
         }
         
-        if ($this->model_Config->isAjax()) {
-            $this->service_Headers->http401();
-            $this->service_Headers->printHeaders();
+        if ($this->config->isAjax()) {
+            $this->headers->http401();
+            $this->headers->printHeaders();
             die();
         }
         
-        $this->service_Session->set('page', $s_page);
-        $this->model_Config->setPage('authorization/login', 'index');
-        $this->service_Headers->http401();
-        $this->service_Headers->printHeaders();
+        $this->session->set('page', $s_page);
+        $this->config->setPage('authorization/login', 'index');
+        $this->headers->http401();
+        $this->headers->printHeaders();
         
         $_GET['command'] = 'index';
         $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
@@ -191,16 +206,16 @@ class Privileges
      */
     private function checkFingerprint($s_page)
     {
-        if (! $this->service_Session->exists('fingerprint') || ($this->service_Session->get('fingerprint') != $this->service_Session->getFingerprint())) {
-            $this->service_Session->destroyLogin();
+        if (! $this->session->exists('fingerprint') || ($this->session->get('fingerprint') != $this->session->getFingerprint())) {
+            $this->session->destroyLogin();
             
-            $this->service_Session->set('page', $s_page);
-            $this->service_Headers->http401();
-            $this->service_Headers->printHeaders();
+            $this->session->set('page', $s_page);
+            $this->headers->http401();
+            $this->headers->printHeaders();
             
             $_GET['command'] = 'index';
             $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
-            $this->model_Config->setAjax(false);
+            $this->config->setAjax(false);
             
             return false;
         }
@@ -219,7 +234,7 @@ class Privileges
     private function checkCommand($i_commandLevel, $i_userid)
     {
         if ($i_commandLevel != - 1) {
-            $this->service_QueryBuilder->select('group_pages_command', 'groupID,minLevel')
+            $this->builder->select('group_pages_command', 'groupID,minLevel')
                 ->getWhere()
                 ->addAnd(array(
                 'page',
@@ -228,15 +243,15 @@ class Privileges
                 's',
                 's'
             ), array(
-                $this->model_Config->getPage(),
-                $this->model_Config->getCommand()
+                $this->config->getPage(),
+                $this->config->getCommand()
             ));
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             if ($service_Database->num_rows() > 0) {
                 $i_commandLevel = (int) $service_Database->result(0, 'minLevel');
                 $i_group = (int) $service_Database->result(0, 'groupID');
                 
-                $i_level = $this->model_Groups->getLevelByGroupID($i_group, $i_userid);
+                $i_level = $this->groups->getLevelByGroupID($i_group, $i_userid);
             }
         }
         
@@ -246,7 +261,7 @@ class Privileges
              */
             $_GET['command'] = 'index';
             $_SERVER['SCRIPT_NAME'] = 'errors/Error403.php';
-            $this->model_Config->setAjax(false);
+            $this->config->setAjax(false);
         }
     }
     
@@ -256,12 +271,12 @@ class Privileges
      * @param int $i_level  The minimun page level
      */
     private function checkSSL($i_level){
-        $i_ssl = $this->model_Config->isSslEnabled();
+        $i_ssl = $this->config->isSslEnabled();
         if( defined('FORCE_SSL') ){
             $i_ssl = \core\services\Settings::SSL_ALL;
         }
     
-        if( $this->model_Config->isSLL() || ($i_ssl == \core\services\Settings::SSL_DISABLED) ){
+        if( $this->config->isSLL() || ($i_ssl == \core\services\Settings::SSL_DISABLED) ){
             return;
         }        
         
@@ -269,8 +284,8 @@ class Privileges
             return;
         }
         
-        $this->service_Headers->redirect('https://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
-        $this->service_Headers->printHeaders();
+        $this->headers->redirect('https://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+        $this->headers->printHeaders();
         exit();
     }
 }

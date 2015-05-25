@@ -30,40 +30,44 @@ namespace core\models;
 class Groups extends Model
 {
 
-    protected $model_DataGroup;
+    /**
+     * 
+     * @var \core\models\data\DataGroup
+     */
+    protected $group;
+    
+    /**
+     * 
+     * @var \core\models\Config
+     */
+    protected $config;
 
     protected $a_groups;
-
-    protected $model_Config;
 
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The query builder
-     * @param \core\services\Validation $service_Validation
-     *            The validation service
-     * @param \core\models\data\DataGroup $model_DataGroup
-     *            The group data model
-     * @param \core\models\Config $model_Config
-     *            The config model
+     * @param \core\services\QueryBuilder $builder
+     * @param \core\services\Validation $validation
+     * @param \core\models\data\DataGroup $group
+     * @param \core\models\Config $config
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\models\data\DataGroup $model_DataGroup, \core\models\Config $model_Config)
+    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\data\DataGroup $group, \core\models\Config $config)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $validation);
         
-        $this->model_DataGroup = $model_DataGroup;
-        $this->model_Config = $model_Config;
+        $this->group = $group;
+        $this->config = $config;
         
         $this->a_groups = array();
         
         /* Load group-names */
-        $this->service_QueryBuilder->select('groups', '*')->order('id');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('groups', '*')->order('id');
+        $service_Database = $this->builder->getResult();
         
         $a_groups = $service_Database->fetch_assoc();
         foreach ($a_groups as $a_group) {
-            $model = $this->model_DataGroup->cloneModel();
+            $model = $this->group->cloneModel();
             $model->setData($a_group);
             $this->a_groups[$a_group['id']] = $model;
             
@@ -118,11 +122,11 @@ class Groups extends Model
         \core\Memory::type('int', $i_groupid);
         
         if ($i_groupid == - 1) {
-            $s_page = $this->model_Config->getPage();
-            $this->service_QueryBuilder->select('group_pages', 'groupID')
+            $s_page = $this->config->getPage();
+            $this->builder->select('group_pages', 'groupID')
                 ->getWhere()
                 ->addAnd('page', 's', $s_page);
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             
             if ($service_Database->num_rows() == 0) {
                 return \core\services\Session::ANONYMOUS;
@@ -148,7 +152,7 @@ class Groups extends Model
         \core\Memory::type('int', $i_groupid);
         \core\Memory::type('int', $i_userid);
         
-        $this->service_QueryBuilder->select('group_users', 'level')
+        $this->builder->select('group_users', 'level')
             ->getWhere()
             ->addAnd(array(
             'userid',
@@ -160,7 +164,7 @@ class Groups extends Model
             $i_userid,
             $i_groupid
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() > 0) {
             return $service_Database->result(0, 'level');
@@ -176,7 +180,7 @@ class Groups extends Model
      */
     public function generateGroup()
     {
-        return $this->model_DataGroup->cloneModel();
+        return $this->group->cloneModel();
     }
 
     /**

@@ -37,6 +37,12 @@ function exception_handler($exception)
 
 set_exception_handler('exception_handler');
 
+interface Routable
+{
+
+    public function route($s_command);
+}
+
 /**
  * Start framework
  */
