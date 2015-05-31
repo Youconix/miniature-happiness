@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,22 +23,42 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
-
-include (NIV . 'admin/modules/settings/settings.php');
-
-class General extends \admin\Settings
+class General extends \admin\modules\settings\Settings
 {
 
     /**
-     * Calls the functions
+     *
+     * @var \core\services\FileHandler
      */
-    protected function menu()
+    private $fileHandler;
+
+    /**
+     * Constructor
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\services\Settings $settings            
+     * @param \core\services\FileHandler $fileHandler            
+     */
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\services\Settings $settings, \core\services\FileHandler $fileHandler)
     {
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        parent::__construct($Input, $config, $language, $template, $logs, $settings);
+        
+        $this->fileHandler = $fileHandler;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            switch ($s_command) {
                 case 'general':
                     $this->general();
                     break;
@@ -47,18 +67,17 @@ class General extends \admin\Settings
                     $this->ssl();
                     break;
             }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'general':
-                        $this->generalSave();
-                        break;
-                    
-                    case 'ssl':
-                        $this->sslSave();
-                        break;
-                }
+        } else {
+            switch ($s_command) {
+                case 'general':
+                    $this->generalSave();
+                    break;
+                
+                case 'ssl':
+                    $this->sslSave();
+                    break;
             }
+        }
     }
 
     /**
@@ -86,27 +105,27 @@ class General extends \admin\Settings
      */
     private function general()
     {
-        $this->service_Template->set('generalTitle', t('system/admin/settings/general/title'));
+        $this->template->set('generalTitle', t('system/admin/settings/general/title'));
         
-        $this->service_Template->set('nameSiteText', t('system/admin/settings/general/nameSite'));
-        $this->service_Template->set('nameSite', $this->getValue('main/nameSite'));
-        $this->service_Template->set('nameSiteError', t('system/admin/settings/general/siteNameEmpty'));
-        $this->service_Template->set('siteUrlText', t('system/admin/settings/general/siteUrl'));
-        $this->service_Template->set('siteUrl', $this->getValue('main/url'));
-        $this->service_Template->set('siteUrlError', t('system/admin/settings/general/urlEmpty'));
-        $this->service_Template->set('siteBaseText', t('system/admin/settings/general/basedir'));
-        $this->service_Template->set('siteBase', $this->getValue('main/base'));
-        $this->service_Template->set('timezoneText', t('system/admin/settings/general/timezone'));
-        $this->service_Template->set('timezone', $this->getValue('main/timeZone'));
-        $this->service_Template->set('timezoneError', t('system/admin/settings/general/timezoneInvalid'));
+        $this->template->set('nameSiteText', t('system/admin/settings/general/nameSite'));
+        $this->template->set('nameSite', $this->getValue('main/nameSite'));
+        $this->template->set('nameSiteError', t('system/admin/settings/general/siteNameEmpty'));
+        $this->template->set('siteUrlText', t('system/admin/settings/general/siteUrl'));
+        $this->template->set('siteUrl', $this->getValue('main/url'));
+        $this->template->set('siteUrlError', t('system/admin/settings/general/urlEmpty'));
+        $this->template->set('siteBaseText', t('system/admin/settings/general/basedir'));
+        $this->template->set('siteBase', $this->getValue('main/base'));
+        $this->template->set('timezoneText', t('system/admin/settings/general/timezone'));
+        $this->template->set('timezone', $this->getValue('main/timeZone'));
+        $this->template->set('timezoneError', t('system/admin/settings/general/timezoneInvalid'));
         
         /* Templates */
-        $this->service_Template->set('templatesHeader', t('system/admin/settings/general/templates'));
-        $this->service_Template->set('templateText', 'Template set');
+        $this->template->set('templatesHeader', t('system/admin/settings/general/templates'));
+        $this->template->set('templateText', 'Template set');
         $s_template = $this->getValue('templates/dir', 'default');
         
-        $directory = $this->service_FileHandler->readDirectory(NIV . 'styles');
-        $directory = $this->service_FileHandler->directoryFilterName($directory, array(
+        $directory = $this->fileHandler->readDirectory(NIV . 'styles');
+        $directory = $this->fileHandler->directoryFilterName($directory, array(
             '!.',
             '!..'
         ));
@@ -115,7 +134,7 @@ class General extends \admin\Settings
         foreach ($templates as $dir) {
             ($dir->getFilename() == $s_template) ? $selected = 'selected="selected"' : $selected = '';
             
-            $this->service_Template->setBlock('template', array(
+            $this->template->setBlock('template', array(
                 'value' => $dir->getFilename(),
                 'selected' => $selected,
                 'text' => $dir->getFilename()
@@ -123,28 +142,28 @@ class General extends \admin\Settings
         }
         
         /* Logs */
-        $this->service_Template->set('loggerText', t('system/admin/settings/general/logger') . ' (\Psr\Log\LoggerInterface)');
-        $this->service_Template->set('logger', $this->getValue('main/logs', 'default'));
-        $this->service_Template->set('loggerError', t('system/admin/settings/general/loggerInvalid'));
+        $this->template->set('loggerText', t('system/admin/settings/general/logger') . ' (\Psr\Log\LoggerInterface)');
+        $this->template->set('logger', $this->getValue('main/logs', 'default'));
+        $this->template->set('loggerError', t('system/admin/settings/general/loggerInvalid'));
         if ($this->getValue('main/logs', 'default') != 'default') {
-            $this->service_Template->set('location_log_default', 'style="display:none"');
+            $this->template->set('location_log_default', 'style="display:none"');
         }
         
-        $this->service_Template->set('logLocationText', t('system/admin/settings/general/logLocation'));
-        $this->service_Template->set('logLocation', $this->getValue('main/log_location', str_replace(array(
+        $this->template->set('logLocationText', t('system/admin/settings/general/logLocation'));
+        $this->template->set('logLocation', $this->getValue('main/log_location', str_replace(array(
             '../',
             './'
         ), array(
             '',
             ''
         ), DATA_DIR) . 'logs' . DIRECTORY_SEPARATOR));
-        $this->service_Template->set('logLocationError', t('system/admin/settings/general/logLocationInvalid'));
-        $this->service_Template->set('logSizeText', t('system/admin/settings/general/logSize'));
+        $this->template->set('logLocationError', t('system/admin/settings/general/logLocationInvalid'));
+        $this->template->set('logSizeText', t('system/admin/settings/general/logSize'));
         $model_Config = $this->model_Config;
-        $this->service_Template->set('logSize', $this->getValue('main/log_max_size', $model_Config::LOG_MAX_SIZE));
-        $this->service_Template->set('logSizeError', t('system/admin/settings/general/logSizeInvalid'));
+        $this->template->set('logSize', $this->getValue('main/log_max_size', $model_Config::LOG_MAX_SIZE));
+        $this->template->set('logSizeError', t('system/admin/settings/general/logSizeInvalid'));
         
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -152,33 +171,15 @@ class General extends \admin\Settings
      */
     private function generalSave()
     {
-        if (! $this->service_Validation->validate(array(
-            'name_site' => array(
-                'required' => 1
-            ),
-            'site_url' => array(
-                'required' => 1,
-                'pattern' => 'url'
-            ),
-            "timezone" => array(
-                'required' => 1,
-                'pattern' => '#^[a-zA-Z]+/[a-zA-Z]+$#'
-            ),
-            "template" => array(
-                'required' => 1
-            ),
-            'logger' => array(
-                'required' => 1
-            ),
-            'log_location' => array(
-                'type' => 'string'
-            ),
-            'log_size' => array(
-                'required' => 1,
-                'type' => 'int',
-                'min-value' => 1000
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'name_site' => 'required',
+            'site_url' => 'required|pattern:url',
+            "timezone" => 'required|pattern:#^[a-zA-Z]+/[a-zA-Z]+$#',
+            "template" => 'required',
+            'logger' => 'required',
+            'log_location' => 'type:string',
+            'log_size' => 'required|type:int|min:1000'
+        ))) {
             return;
         }
         
@@ -195,7 +196,7 @@ class General extends \admin\Settings
         $this->setValue('main/log_location', str_replace(DATA_DIR, '', $this->post['log_location']));
         $this->setValue('main/log_max_size', $this->post['log_size']);
         
-        $this->service_Settings->save();
+        $this->settings->save();
     }
 
     /**
@@ -220,7 +221,7 @@ class General extends \admin\Settings
         }
         
         if ($i_currentSSL == \core\services\Settings::SSL_DISABLED) {
-            $this->service_Template->set('no_ssl_value', 'checked="checked"');
+            $this->template->set('no_ssl_value', 'checked="checked"');
         } else 
             if ($i_currentSSL == \core\services\Settings::SSL_LOGIN) {
                 $s_loginSslValue .= 'checked="checked"';
@@ -228,19 +229,19 @@ class General extends \admin\Settings
                 $s_alwaysSslValue .= 'checked="checked"';
             }
         
-        $this->service_Template->set('login_ssl_value', $s_loginSslValue);
-        $this->service_Template->set('always_ssl_value', $s_alwaysSslValue);
-        $this->service_Template->set('current_ssl', $i_currentSSL);
+        $this->template->set('login_ssl_value', $s_loginSslValue);
+        $this->template->set('always_ssl_value', $s_alwaysSslValue);
+        $this->template->set('current_ssl', $i_currentSSL);
         
-        $this->service_Template->set('no_ssl', \core\services\Settings::SSL_DISABLED);
-        $this->service_Template->set('login_ssl', \core\services\Settings::SSL_LOGIN);
-        $this->service_Template->set('always_ssl', \core\services\Settings::SSL_ALL);
+        $this->template->set('no_ssl', \core\services\Settings::SSL_DISABLED);
+        $this->template->set('login_ssl', \core\services\Settings::SSL_LOGIN);
+        $this->template->set('always_ssl', \core\services\Settings::SSL_ALL);
         
-        $this->service_Template->set('sslTitle', t('system/admin/settings/ssl/title'));
-        $this->service_Template->set('noSslText', t('system/admin/settings/ssl/no_ssl'));
-        $this->service_Template->set('loginSslText', t('system/admin/settings/ssl/login_ssl'));
-        $this->service_Template->set('alwaysSslText',t('system/admin/settings/ssl/always_ssl'));
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('sslTitle', t('system/admin/settings/ssl/title'));
+        $this->template->set('noSslText', t('system/admin/settings/ssl/no_ssl'));
+        $this->template->set('loginSslText', t('system/admin/settings/ssl/login_ssl'));
+        $this->template->set('alwaysSslText', t('system/admin/settings/ssl/always_ssl'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -263,14 +264,11 @@ class General extends \admin\Settings
             $bo_ssl = false;
         }
         
-        if( !$bo_ssl && $this->post['ssl'] != \core\services\Settings::SSL_DISABLED ){
+        if (! $bo_ssl && $this->post['ssl'] != \core\services\Settings::SSL_DISABLED) {
             return;
-        } 
+        }
         
-        $this->setValue('main/ssl',$this->post['ssl']);
-        $this->service_Settings->save();
+        $this->setValue('main/ssl', $this->post['ssl']);
+        $this->settings->save();
     }
 }
-
-$obj_General = new General();
-unset($obj_General);

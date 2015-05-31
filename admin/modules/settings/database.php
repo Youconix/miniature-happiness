@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,36 +23,53 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
+class Database extends \admin\modules\settings\Settings
+{
 
-include (NIV . 'admin/modules/settings/settings.php');
-
-class Database extends \admin\Settings
-{    
     /**
-     * Calls the functions
+     *
+     * @var \core\services\FileHandler
      */
-    protected function menu(){
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
-                  case 'database':
-                    $this->database();
+    private $fileHandler;
+
+    /**
+     * Constructor
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\services\Settings $settings            
+     * @param \core\services\FileHandler $fileHandler            
+     */
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\services\Settings $settings, \core\services\FileHandler $fileHandler)
+    {
+        parent::__construct($Input, $config, $language, $template, $logs, $settings);
+        
+        $this->fileHandler = $fileHandler;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->database();
+        } else {
+            switch ($s_command) {
+                case 'databaseCheck':
+                    $this->databaseCheck();
+                    break;
+                
+                case 'database':
+                    $this->databaseSave();
                     break;
             }
-        } else
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'databaseCheck':
-                        $this->databaseCheck();
-                        break;
-        
-                    case 'database':
-                        $this->databaseSave();
-                        break;
-                }
-            }
+        }
     }
 
     /**
@@ -67,25 +84,25 @@ class Database extends \admin\Settings
             'password' => 'string',
             'database' => 'string',
             'host' => 'string',
-            'port' => 'int',
+            'port' => 'int'
         );
         
         parent::init();
     }
-    
+
     /**
      * Displays the database settings
      */
     private function database()
     {
-        $this->service_Template->set('databaseTitle', t('system/admin/settings/database/title'));
-        $this->service_Template->set('prefixText', t('system/admin/settings/database/prefix'));
-        $this->service_Template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
-        $this->service_Template->set('typeText', t('system/admin/settings/database/type'));
+        $this->template->set('databaseTitle', t('system/admin/settings/database/title'));
+        $this->template->set('prefixText', t('system/admin/settings/database/prefix'));
+        $this->template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
+        $this->template->set('typeText', t('system/admin/settings/database/type'));
         $s_type = $this->getValue('SQL/type');
         
-        $directory = $this->service_FileHandler->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
-        $directory = $this->service_FileHandler->directoryFilterName($directory, array(
+        $directory = $this->fileHandler->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
+        $directory = $this->fileHandler->directoryFilterName($directory, array(
             '*.inc.php',
             '!_binded',
             '!Database.inc.php',
@@ -94,25 +111,25 @@ class Database extends \admin\Settings
         foreach ($directory as $file) {
             $s_name = str_replace('.inc.php', '', $file->getFilename());
             ($s_name == $s_type) ? $selected = 'selected="selected"' : $selected = '';
-            $this->service_Template->setBlock('type', array(
+            $this->template->setBlock('type', array(
                 'value' => $s_name,
                 'selected' => $selected,
                 'text' => $s_name
             ));
         }
         
-        $this->service_Template->set('usernameText', t('system/admin/settings/username'));
-        $this->service_Template->set('username', $this->getValue('SQL/' . $s_type . '/username'));
-        $this->service_Template->set('passwordText', t('system/admin/settings/password'));
-        $this->service_Template->set('password', $this->getValue('SQL/' . $s_type . '/password'));
-        $this->service_Template->set('databaseText', t('system/admin/settings/database/database'));
-        $this->service_Template->set('database', $this->getValue('SQL/' . $s_type . '/database'));
-        $this->service_Template->set('hostText', t('system/admin/settings/host'));
-        $this->service_Template->set('host', $this->getValue('SQL/' . $s_type . '/host'));
-        $this->service_Template->set('portText', t('system/admin/settings/port'));
-        $this->service_Template->set('port', $this->getValue('SQL/' . $s_type . '/port', 3306));
+        $this->template->set('usernameText', t('system/admin/settings/username'));
+        $this->template->set('username', $this->getValue('SQL/' . $s_type . '/username'));
+        $this->template->set('passwordText', t('system/admin/settings/password'));
+        $this->template->set('password', $this->getValue('SQL/' . $s_type . '/password'));
+        $this->template->set('databaseText', t('system/admin/settings/database/database'));
+        $this->template->set('database', $this->getValue('SQL/' . $s_type . '/database'));
+        $this->template->set('hostText', t('system/admin/settings/host'));
+        $this->template->set('host', $this->getValue('SQL/' . $s_type . '/host'));
+        $this->template->set('portText', t('system/admin/settings/port'));
+        $this->template->set('port', $this->getValue('SQL/' . $s_type . '/port', 3306));
         
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -120,27 +137,14 @@ class Database extends \admin\Settings
      */
     private function databaseCheck()
     {
-        if (! $this->service_Validation->validate(array(
-            'type' => array(
-                'required' => 1
-            ),
-            'username' => array(
-                'required' => 1
-            ),
-            'password' => array(
-                'required' => 1
-            ),
-            'database' => array(
-                'required' => 1
-            ),
-            'host' => array(
-                'required' => 1
-            ),
-            'port' => array(
-                'required' => 1,
-                'type' => 'int'
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'type' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'database' => 'required',
+            'host' => 'required',
+            'port' => 'required|type:port'
+        ))) {
             echo ('0');
             die();
         }
@@ -170,27 +174,14 @@ class Database extends \admin\Settings
      */
     private function databaseSave()
     {
-        if (! $this->service_Validation->validate(array(
-            'type' => array(
-                'required' => 1
-            ),
-            'username' => array(
-                'required' => 1
-            ),
-            'password' => array(
-                'required' => 1
-            ),
-            'database' => array(
-                'required' => 1
-            ),
-            'host' => array(
-                'required' => 1
-            ),
-            'port' => array(
-                'required' => 1,
-                'type' => 'int'
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'type' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'database' => 'required',
+            'host' => 'required',
+            'port' => 'required|type:port'
+        ))) {
             return;
         }
         
@@ -206,6 +197,3 @@ class Database extends \admin\Settings
         $this->service_Settings->save();
     }
 }
-
-$obj_Database = new Database();
-unset($obj_Database);

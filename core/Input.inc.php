@@ -40,6 +40,12 @@ class Input implements \ArrayAccess {
     }
     
     public function validate($a_rules){
+        $a_errors = $this->validateErrors($a_rules);
+        
+        return (count($a_errors) == 0 );
+    }
+    
+    public function validateErrors($a_rules){
         if( $this->service_Validation->validate($a_rules, $this->a_container) ){
             return array();
         }

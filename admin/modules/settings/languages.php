@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,22 +23,66 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
-
-include (NIV . 'admin/modules/settings/settings.php');
-
-class Languages extends \admin\Settings
+class Languages extends \admin\modules\settings\Settings
 {
 
     /**
-     * Calls the functions
+     *
+     * @var \core\services\FileHandler
      */
-    protected function menu()
+    private $fileHandler;
+
+    /**
+     *
+     * @var \core\services\Headers
+     */
+    private $headers;
+
+    /**
+     *
+     * @var \core\services\Xml
+     */
+    private $xml;
+
+    /**
+     *
+     * @var \core\helpers\languageTree
+     */
+    private $languageTree;
+
+    /**
+     * Constructor
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\services\Settings $settings            
+     * @param \core\services\FileHandler $fileHandler            
+     * @param \core\services\Headers $headers            
+     * @param \core\services\Xml $xml            
+     * @param \core\helpers\languageTree $languageTree            
+     */
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\services\Settings $settings, \core\services\FileHandler $fileHandler, \core\services\Headers $headers, \core\services\Xml $xml, \core\helpers\languageTree $languageTree)
     {
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        parent::__construct($Input, $config, $language, $template, $logs, $settings);
+        
+        $this->fileHandler = $fileHandler;
+        $this->headers = $headers;
+        $this->xml = $xml;
+        $this->languageTree = $languageTree;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            switch ($s_command) {
                 case 'language':
                     $this->language();
                     break;
@@ -50,19 +94,18 @@ class Languages extends \admin\Settings
                 case 'edit_language':
                     $this->editLanguage();
                     break;
-                    
-                case 'edit_language_form' :
+                
+                case 'edit_language_form':
                     $this->editLanguageForm();
                     break;
             }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'language':
-                        $this->languageSave();
-                        break;
-                }
+        } else {
+            switch ($s_command) {
+                case 'language':
+                    $this->languageSave();
+                    break;
             }
+        }
     }
 
     /**
@@ -90,8 +133,8 @@ class Languages extends \admin\Settings
      */
     private function language()
     {
-        $this->service_Template->set('languageTitle', t('system/admin/settings/languages/title'));
-        $this->service_Template->set('defaultLanguageText', 'Standaard taal');
+        $this->template->set('languageTitle', t('system/admin/settings/languages/title'));
+        $this->template->set('defaultLanguageText', 'Standaard taal');
         
         $s_defaultLanguage = $this->getValue('defaultLanguage', 'nl_NL');
         
@@ -100,18 +143,18 @@ class Languages extends \admin\Settings
             $s_filename = $language->getFilename();
             ($s_filename == $s_defaultLanguage) ? $selected = 'selected="selected"' : $selected = '';
             
-            $this->service_Template->setBlock('defaultLanguage', array(
+            $this->template->setBlock('defaultLanguage', array(
                 'value' => $s_filename,
                 'text' => $s_filename,
                 'selected' => $selected
             ));
             
-            $this->service_Template->setBlock('language', array(
+            $this->template->setBlock('language', array(
                 'text' => $s_filename
             ));
         }
         
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -137,7 +180,7 @@ class Languages extends \admin\Settings
      */
     private function installLanguageList()
     {
-        $this->service_Template->set('languageTitle', t('system/admin/settings/languages/installLanguages'));
+        $this->template->set('languageTitle', t('system/admin/settings/languages/installLanguages'));
         
         $xml_file = @file_get_contents(\core\services\Settings::REMOTE . 'languages.xml');
         if (! $xml_file) {
@@ -145,7 +188,7 @@ class Languages extends \admin\Settings
             return;
         }
         
-        $service_Xml = \Loader::Inject('\core\services\Xml');
+        $service_Xml = $this->xml;
         try {
             $service_Xml->loadXML($xml_file);
             
@@ -154,7 +197,7 @@ class Languages extends \admin\Settings
                 return;
             }
             
-            $this->service_Template->displayPart('file_available');
+            $this->template->displayPart('file_available');
             
             $installedLanguagesRaw = $this->getInstalledLanguages();
             $a_installedLanguages = array();
@@ -177,10 +220,10 @@ class Languages extends \admin\Settings
                 
                 $a_item['name'] = str_replace('-', '_', $a_item['name']);
                 
-                $this->service_Template->setBlock('language', $a_item);
+                $this->template->setBlock('language', $a_item);
             }
             
-            $this->service_Template->set('installButton', 'Installeren');
+            $this->template->set('installButton', 'Installeren');
         } catch (\IOException $e) {}
     }
 
@@ -189,8 +232,8 @@ class Languages extends \admin\Settings
 
     private function getInstalledLanguages()
     {
-        $languages = $this->service_FileHandler->readDirectory(NIV . 'language');
-        $languages = $this->service_FileHandler->directoryFilterName($languages, array(
+        $languages = $this->fileHandler->readDirectory(NIV . 'language');
+        $languages = $this->fileHandler->directoryFilterName($languages, array(
             '*-*|*.lang'
         ));
         
@@ -199,38 +242,41 @@ class Languages extends \admin\Settings
 
     private function editLanguage()
     {
-        $s_currentLanguage = $this->model_Config->getLanguage();        
+        $s_currentLanguage = $this->model_Config->getLanguage();
         $s_currentFile = 'site.lang';
         
         /* Display language files */
-        
-        $languages = $this->service_FileHandler->readDirectory(NIV . 'language'.DIRECTORY_SEPARATOR.$s_currentLanguage.DIRECTORY_SEPARATOR.'LC_MESSAGES');
-        $languages = $this->service_FileHandler->directoryFilterName($languages, array(
+        $languages = $this->fileHandler->readDirectory(NIV . 'language' . DIRECTORY_SEPARATOR . $s_currentLanguage . DIRECTORY_SEPARATOR . 'LC_MESSAGES');
+        $languages = $this->fileHandler->directoryFilterName($languages, array(
             '*.lang'
         ));
         
         foreach ($languages as $language) {
             ($language->getFileName() == $s_currentFile) ? $s_selected = 'selected="selected"' : $s_selected = '';
             
-            $this->service_Template->setBlock('available_languagesfiles', array(
+            $this->template->setBlock('available_languagesfiles', array(
                 'value' => $language->getFilename(),
                 'selected' => $s_selected,
                 'text' => str_replace('.lang', '', $language->getFilename())
             ));
         }
         
-        $helper_languageTree = \Loader::inject('\core\helpers\languageTree');
-        $helper_languageTree->init($s_currentLanguage,$s_currentFile);
-        $helper_languageTree->parse();
-        $s_result = $helper_languageTree->build();        
+        $this->languageTree->init($s_currentLanguage, $s_currentFile);
+        $this->languageTree->parse();
+        $s_result = $this->languageTree->build();
         
-        $this->service_Template->set('tree',$s_result);
+        $this->template->set('tree', $s_result);
     }
-    
-    private function editLanguageForm(){
-        if( empty($this->get['file']) && empty($this->get['path']) ){
-            $this->service_Headers->http400();
-            $this->service_Headers->printHeaders();
+
+    private function editLanguageForm()
+    {
+        if (! $this->get->validate(array(
+            'file' => 'required',
+            'path' => 'required'
+        )
+        )) {
+            $this->headers->http400();
+            $this->headers->printHeaders();
             die();
         }
         
@@ -240,30 +286,30 @@ class Languages extends \admin\Settings
         $a_items = array();
         
         try {
-            foreach( $a_languages AS $language ){
-                $service_Xml = \Loader::Inject('\core\services\Xml');
-                $service_Xml->load(NIV . 'language'.DIRECTORY_SEPARATOR.$language->getFileName().DIRECTORY_SEPARATOR.'LC_MESSAGES'.DIRECTORY_SEPARATOR.$this->get['file']);
+            foreach ($a_languages as $language) {
+                $service_Xml = $this->xml;
+                $service_Xml->load(NIV . 'language' . DIRECTORY_SEPARATOR . $language->getFileName() . DIRECTORY_SEPARATOR . 'LC_MESSAGES' . DIRECTORY_SEPARATOR . $this->get['file']);
                 
-                $a_items[ $language->getFileName() ] = $service_Xml->get($this->get['path']);
+                $a_items[$language->getFileName()] = $service_Xml->get($this->get['path']);
             }
-        }
-        catch(\XMLException $e){
-            $this->service_Headers->http400();
-            $this->service_Headers->printHeaders();
+        } catch (\XMLException $e) {
+            $this->headers->http400();
+            $this->headers->printHeaders();
             die();
         }
         
-        $this->service_Template->set('languageTitle',t('system/admin/settings/languages/editLanguages'));
-        $this->service_Template->set('file',$this->get['file']);
-        $this->service_Template->set('path',$this->get['path']);
-                
-        $i=1;
-        foreach($a_items AS $language => $text ){
-            $this->service_Template->setBlock('languageItem',array('nr'=>$i,'text'=>$text,'languageName'=>$this->service_Language->getLanguageText($language)));
-            $i++;
+        $this->template->set('languageTitle', t('system/admin/settings/languages/editLanguages'));
+        $this->template->set('file', $this->get['file']);
+        $this->template->set('path', $this->get['path']);
+        
+        $i = 1;
+        foreach ($a_items as $language => $text) {
+            $this->template->setBlock('languageItem', array(
+                'nr' => $i,
+                'text' => $text,
+                'languageName' => $this->service_Language->getLanguageText($language)
+            ));
+            $i ++;
         }
     }
 }
-
-$obj_Languages = new Languages();
-unset($obj_Languages);

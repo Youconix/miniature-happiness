@@ -89,7 +89,6 @@ class Template extends Service implements \SplObserver
     {
         $this->service_File = $service_File;
         $this->model_Config = $model_Config;
-        $this->s_templateDir = $model_Config->getTemplateDir();
         $this->service_Headers = $service_Headers;
         $this->service_Cache = $service_Cache;
         
@@ -135,6 +134,8 @@ class Template extends Service implements \SplObserver
             'js' => array()
         );
         
+        $this->s_templateDir = $this->model_Config->getTemplateDir();
+        
         if (defined('PROCES') || \core\Memory::isTesting()) {
             return;
         }
@@ -143,6 +144,7 @@ class Template extends Service implements \SplObserver
         
         /* Load layout */
         if (! $this->model_Config->isAjax()) {
+            
             $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . $this->model_Config->getLayout() . '.tpl';
             
             if (! $this->service_File->exists(NIV . $s_url)) {
@@ -581,6 +583,7 @@ class Template extends Service implements \SplObserver
         }
         
         $this->set('style_dir', $this->model_Config->getStylesDir());
+        $this->set('shared_style_dir',$this->model_Config->getSharedStylesDir());
         $this->set('NIV', $this->model_Config->getBase());
         
         if (! $this->model_Config->isAjax()) {

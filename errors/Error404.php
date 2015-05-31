@@ -26,7 +26,10 @@ if (! defined('NIV')) {
     define('NIV', '../');
     require (NIV . 'includes/BaseLogicClass.php');
 }
-define('TEMPLATE', 'errors/404/index');
+
+$_SERVER['REQUEST_URI'] = 'errors/Error404.php';
+$config = \Loader::inject('\core\models\Config');
+$config->detectTemplateDir();
 
 class Error404 extends \includes\BaseLogicClass
 {

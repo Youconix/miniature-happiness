@@ -1,35 +1,35 @@
 "use strict";
 
 function Statistics(){
-	this.address = '../../admin/modules/statistics/stats.php';
+	this.address = '../../admin/modules/statistics/stats/';
 }
 Statistics.prototype.init = function(){
 	$('head').append('<script src="../../js/youconix/youconix_graph.js"></script>');
 	$('head').append('<script src="../../js/youconix/youconix_graph_diagrams.js"></script>');
 	
 	$('#admin_statistics_hits h2').click(function(){
-		admin.show(statistics.address+'?command=hits',statistics.hits);
+		admin.show(statistics.address+'hits',statistics.hits);
 	});
 	$('#admin_statistics_hits_hours h2').click(function(){
-		admin.show(statistics.address+'?command=hits_hours',statistics.hitsHour);
+		admin.show(statistics.address+'hits_hours',statistics.hitsHour);
 	});
 	$('#admin_statistics_os h2').click(function(){
-		admin.show(statistics.address+'?command=os',statistics.os);
+		admin.show(statistics.address+'os',statistics.os);
 	});
 	$('#admin_statistics_browsers h2').click(function(){
-		admin.show(statistics.address+'?command=browser',statistics.browser);
+		admin.show(statistics.address+'browser',statistics.browser);
 	});
 	$('#admin_statistics_screen_colors h2').click(function(){
-		admin.show(statistics.address+'?command=screencolors',statistics.screenColors);
+		admin.show(statistics.address+'screencolors',statistics.screenColors);
 	});
 	$('#admin_statistics_screen_sizes h2').click(function(){
-		admin.show(statistics.address+'?command=screensizes',statistics.screenSizes);
+		admin.show(statistics.address+'screensizes',statistics.screenSizes);
 	});
 	$('#admin_statistics_references h2').click(function(){
-		admin.show(statistics.address+'?command=references',statistics.references);
+		admin.show(statistics.address+'references',statistics.references);
 	});
 	$('#admin_statistics_pages h2').click(function(){
-		admin.show(statistics.address+'?command=pages',statistics.pages);
+		admin.show(statistics.address+'pages',statistics.pages);
 	});
 }
 Statistics.prototype.hits = function(){	

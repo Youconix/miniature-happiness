@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,32 +23,21 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
-
-include (NIV . 'admin/modules/settings/settings.php');
-
-class Email extends \admin\Settings
+class Email extends \admin\modules\settings\Settings
 {
+
     /**
-     * Calls the functions
+     * Routes the controller
+     *
+     * @see Routable::route()
      */
-    protected function menu(){
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
-                case 'email':
-                    $this->email();
-                    break;
-            }
-        } else
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'email':
-                        $this->emailSave();
-                        break;
-                }
-            }
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->email();
+        } else {
+            $this->emailSave();
+        }
     }
 
     /**
@@ -76,44 +65,44 @@ class Email extends \admin\Settings
      */
     private function email()
     {
-        $this->service_Template->set('emailTitle', t('system/admin/settings/email/title'));
+        $this->template->set('emailTitle', t('system/admin/settings/email/title'));
         
-        $this->service_Template->set('emailGeneralTitle', t('system/admin/settings/email/generalTitle'));
-        $this->service_Template->set('nameText', t('system/admin/settings/email/senderName'));
-        $this->service_Template->set('name', $this->getValue('mail/senderName'));
-        $this->service_Template->set('emailText', t('system/admin/settings/email/senderEmail'));
-        $this->service_Template->set('email', $this->getValue('mail/senderEmail'));
+        $this->template->set('emailGeneralTitle', t('system/admin/settings/email/generalTitle'));
+        $this->template->set('nameText', t('system/admin/settings/email/senderName'));
+        $this->template->set('name', $this->getValue('mail/senderName'));
+        $this->template->set('emailText', t('system/admin/settings/email/senderEmail'));
+        $this->template->set('email', $this->getValue('mail/senderEmail'));
         
-        $this->service_Template->set('SmtpTitle', t('system/admin/settings/email/smtp'));
-        $this->service_Template->set('smtpActiveText', t('system/admin/settings/email/useSmtp'));
+        $this->template->set('SmtpTitle', t('system/admin/settings/email/smtp'));
+        $this->template->set('smtpActiveText', t('system/admin/settings/email/useSmtp'));
         $smtpActive = $this->getValue('mail/SMTP');
         if ($smtpActive == 1) {
-            $this->service_Template->set('smtpActive', 'checked="checked"');
+            $this->template->set('smtpActive', 'checked="checked"');
         } else {
-            $this->service_Template->set('showSMTP', 'style="display:none"');
+            $this->template->set('showSMTP', 'style="display:none"');
         }
-        $this->service_Template->set('smtpHostText', t('system/admin/settings/host'));
-        $this->service_Template->set('smtpHost', $this->getValue('mail/host'));
-        $this->service_Template->set('smtpUsernameText', t('system/admin/settings/username'));
-        $this->service_Template->set('smtpUsername', $this->getValue('mail/username'));
-        $this->service_Template->set('smtpPasswordText', t('system/admin/settings/password'));
-        $this->service_Template->set('smtpPassword', $this->getValue('mail/password'));
-        $this->service_Template->set('smtpPortText', t('system/admin/settings/port'));
-        $this->service_Template->set('smtpPort', $this->getValue('mail/port', 587));
+        $this->template->set('smtpHostText', t('system/admin/settings/host'));
+        $this->template->set('smtpHost', $this->getValue('mail/host'));
+        $this->template->set('smtpUsernameText', t('system/admin/settings/username'));
+        $this->template->set('smtpUsername', $this->getValue('mail/username'));
+        $this->template->set('smtpPasswordText', t('system/admin/settings/password'));
+        $this->template->set('smtpPassword', $this->getValue('mail/password'));
+        $this->template->set('smtpPortText', t('system/admin/settings/port'));
+        $this->template->set('smtpPort', $this->getValue('mail/port', 587));
         
-        $this->service_Template->set('emailAdminTitle', t('system/admin/settings/email/adminSenderTitle'));
-        $this->service_Template->set('nameAdminText', t('system/admin/settings/email/adminSenderName'));
-        $this->service_Template->set('nameAdmin', $this->getValue('main/admin/name'));
-        $this->service_Template->set('emailAdminText', t('system/admin/settings/email/adminSenderEmail'));
-        $this->service_Template->set('emailAdmin', $this->getValue('main/admin/email'));
+        $this->template->set('emailAdminTitle', t('system/admin/settings/email/adminSenderTitle'));
+        $this->template->set('nameAdminText', t('system/admin/settings/email/adminSenderName'));
+        $this->template->set('nameAdmin', $this->getValue('main/admin/name'));
+        $this->template->set('emailAdminText', t('system/admin/settings/email/adminSenderEmail'));
+        $this->template->set('emailAdmin', $this->getValue('main/admin/email'));
         
-        $this->service_Template->set('nameError', t('system/admin/settings/email/senderEmpty'));
-        $this->service_Template->set('emailError', t('system/admin/settings/email/senderEmailEmpty'));
-        $this->service_Template->set('smtpHostError', t('system/admin/settings/email/smtpHostError'));
-        $this->service_Template->set('smtpUsernameError', t('system/admin/settings/email/smtpUsernameError'));
-        $this->service_Template->set('smptPasswordError', t('system/admin/settings/email/smptPasswordError'));
-        $this->service_Template->set('smtpPortError', t('system/admin/settings/email/smtpPortError'));
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('nameError', t('system/admin/settings/email/senderEmpty'));
+        $this->template->set('emailError', t('system/admin/settings/email/senderEmailEmpty'));
+        $this->template->set('smtpHostError', t('system/admin/settings/email/smtpHostError'));
+        $this->template->set('smtpUsernameError', t('system/admin/settings/email/smtpUsernameError'));
+        $this->template->set('smptPasswordError', t('system/admin/settings/email/smptPasswordError'));
+        $this->template->set('smtpPortError', t('system/admin/settings/email/smtpPortError'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -121,42 +110,21 @@ class Email extends \admin\Settings
      */
     private function emailSave()
     {
-        if (! $this->service_Validation->validate(array(
-            'email_name' => array(
-                'required' => 1
-            ),
-            'email_email' => array(
-                'required' => 1,
-                'pattern' => 'email'
-            ),
-            'email_admin_name' => array(
-                'required' => 1
-            ),
-            'email_admin_email' => array(
-                'required' => 1,
-                'pattern' => 'email'
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'email_name' => 'required',
+            'email_email' => 'required|pattern:email',
+            'email_admin_name' => 'required',
+            'email_admin_email' => 'required|pattern:email'
+        ))) {
             return;
         }
         
-        if (isset($this->post['smtp_active']) && ! $this->service_Validation->validate(array(
-            'smtp_host' => array(
-                'required' => 1,
-                'pattern' => 'url'
-            ),
-            'smtp_username' => array(
-                'required' => 1
-            ),
-            'smtp_password' => array(
-                'required' => 1
-            ),
-            'smtp_port' => array(
-                'required' => 1,
-                'type' => 'int',
-                'min-value' => 1
-            )
-        ), $this->post)) {
+        if (isset($this->post['smtp_active']) && ! $this->post->validate(array(
+            'smtp_host' => 'required|pattern:url',
+            'smtp_username' => 'required',
+            'smtp_password' => 'required',
+            'smtp_port' => 'required|type:port'
+        ))) {
             return;
         }
         
@@ -175,6 +143,3 @@ class Email extends \admin\Settings
         $this->service_Settings->save();
     }
 }
-
-$obj_Email = new Email();
-unset($obj_Email);

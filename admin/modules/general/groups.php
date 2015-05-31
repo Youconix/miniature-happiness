@@ -30,27 +30,24 @@ class Groups extends \core\AdminLogicClass
      *
      * @var \core\models\Groups
      */
-    private $model_Groups;
-
-    private $a_systemGroups = array(
-        0,
-        1
-    );
+    private $groups;
 
     /**
      * Groups constructor
      *
-     * @param \core\Input $Input    The input parser  
-     * @param \core\models\Config $model_Config            
-     * @param \core\services\Language $service_Language            
-     * @param \core\services\Template $service_Template            
-     * @param \core\models\Groups $model_Groups            
+     * @param \core\Input $Input
+     *            The input parser
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\models\Groups $groups            
      */
-    public function __construct(\core\Input $Input, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\models\Groups $model_Groups)
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\models\Groups $groups)
     {
-        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
+        parent::__construct($Input, $config, $language, $template, $logs);
         
-        $this->model_Groups = $model_Groups;
+        $this->groups = $groups;
     }
 
     /**
@@ -119,10 +116,10 @@ class Groups extends \core\AdminLogicClass
     private function groupview()
     {
         $this->setHeader();
-        $a_groups = $this->model_Groups->getGroups();
+        $a_groups = $this->groups->getGroups();
         
-        $this->service_Template->set('groupTitle', t('system/admin/groups/groups'));
-        $this->service_Template->set('headerID', t('system/admin/groups/id'));
+        $this->template->set('groupTitle', t('system/admin/groups/groups'));
+        $this->template->set('headerID', t('system/admin/groups/id'));
         
         foreach ($a_groups as $obj_group) {
             $a_data = array(
@@ -131,11 +128,11 @@ class Groups extends \core\AdminLogicClass
                 'description' => $obj_group->getDescription(),
                 'default' => ($obj_group->isDefault() ? 1 : 0)
             );
-            $this->service_Template->setBlock('group', $a_data);
+            $this->template->setBlock('group', $a_data);
         }
         
-        $this->service_Template->set('buttonDelete', t('system/buttons/delete'));
-        $this->service_Template->set('addButton', t('system/buttons/add'));
+        $this->template->set('buttonDelete', t('system/buttons/delete'));
+        $this->template->set('addButton', t('system/buttons/add'));
     }
 
     /**
@@ -144,35 +141,34 @@ class Groups extends \core\AdminLogicClass
     private function view()
     {
         try {
-            $obj_group = $this->model_Groups->getGroup($this->get['id']);
-        } catch (Exception $e) {
-            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->get['id'] . '.');
-            header('location: ' . NIV . 'logout.php');
+            $obj_group = $this->groups->getGroup($this->get['id']);
+        } catch (\Exception $e) {
+            $this->logs->securityLog('Call to unknown group ' . $this->get['id'] . '.');
             exit();
         }
         
         $this->setHeader();
-        $this->service_Template->set('nameDefault', $obj_group->getName());
-        $this->service_Template->set('descriptionDefault', $obj_group->getDescription());
+        $this->template->set('nameDefault', $obj_group->getName());
+        $this->template->set('descriptionDefault', $obj_group->getDescription());
         ($obj_group->isDefault()) ? $s_automatic = t('system/yes') : $s_automatic = t('system/no');
-        $this->service_Template->set('automatic', $s_automatic);
-        $this->service_Template->set('id', $this->get['id']);
+        $this->template->set('automatic', $s_automatic);
+        $this->template->set('id', $this->get['id']);
         
-        $this->service_Template->set('groupTitle', t('system/admin/groups/headerView') . ' ' . $obj_group->getName());
+        $this->template->set('groupTitle', t('system/admin/groups/headerView') . ' ' . $obj_group->getName());
         
-        $this->service_Template->set('buttonBack', t('system/buttons/back'));
-        $this->service_Template->set('buttonDelete', t('system/buttons/delete'));
-        $this->service_Template->set('buttonEdit', t('system/buttons/edit'));
-        $this->service_Template->set('memberlistTitle', t('system/admin/groups/memberlist'));
+        $this->template->set('buttonBack', t('system/buttons/back'));
+        $this->template->set('buttonDelete', t('system/buttons/delete'));
+        $this->template->set('buttonEdit', t('system/buttons/edit'));
+        $this->template->set('memberlistTitle', t('system/admin/groups/memberlist'));
         
         if (in_array($this->get['id'], $this->a_systemGroups)) {
-            $this->service_Template->set('editDisabled', 'style="color:grey; text-decoration: line-through; cursor:auto"');
+            $this->template->set('editDisabled', 'style="color:grey; text-decoration: line-through; cursor:auto"');
         }
         
         /* Display users */
         $a_users = $obj_group->getMembersByGroup();
         foreach ($a_users as $a_user) {
-            $this->service_Template->setBlock('userlist', array(
+            $this->template->setBlock('userlist', array(
                 'userid' => $a_user['id'],
                 'user' => $a_user['username'],
                 'level' => t('system/rights/level_' . $a_user['level'])
@@ -186,26 +182,25 @@ class Groups extends \core\AdminLogicClass
     private function getGroup()
     {
         try {
-            $obj_group = $this->model_Groups->getGroup($this->get['id']);
-        } catch (Exception $e) {
-            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->get['id'] . '.');
-            header('location: ' . NIV . 'logout.php');
+            $obj_group = $this->groups->getGroup($this->get['id']);
+        } catch (\Exception $e) {
+            $this->logs->securityLog('Call to unknown group ' . $this->get['id'] . '.');
             exit();
         }
         
         $this->setHeader();
-        $this->service_Template->set('nameDefault', $obj_group->getName());
-        $this->service_Template->set('descriptionDefault', $obj_group->getDescription());
+        $this->template->set('nameDefault', $obj_group->getName());
+        $this->template->set('descriptionDefault', $obj_group->getDescription());
         if ($obj_group->isDefault())
-            $this->service_Template->set('defaultChecked', 'checked="checked"');
-        $this->service_Template->set('id', $this->get['id']);
+            $this->template->set('defaultChecked', 'checked="checked"');
+        $this->template->set('id', $this->get['id']);
         
-        $this->service_Template->set('editTitle', t('system/admin/groups/headerEdit'));
-        $this->service_Template->set('buttonCancel', t('system/buttons/cancel'));
-        $this->service_Template->set('buttonSubmit', t('system/buttons/edit'));
+        $this->template->set('editTitle', t('system/admin/groups/headerEdit'));
+        $this->template->set('buttonCancel', t('system/buttons/cancel'));
+        $this->template->set('buttonSubmit', t('system/buttons/edit'));
         
-        $this->service_Template->set('buttonBack', t('system/buttons/back'));
-        $this->service_Template->set('delete', t('system/buttons/delete'));
+        $this->template->set('buttonBack', t('system/buttons/back'));
+        $this->template->set('delete', t('system/buttons/delete'));
     }
 
     /**
@@ -214,10 +209,10 @@ class Groups extends \core\AdminLogicClass
     private function addScreen()
     {
         $this->setHeader();
-        $this->service_Template->set('groupTitle', t('system/admin/groups/headerAdd'));
-        $this->service_Template->set('buttonCancel', t('system/buttons/cancel'));
-        $this->service_Template->set('buttonSubmit', t('system/buttons/save'));
-        $this->service_Template->set('buttonBack', t('system/buttons/back'));
+        $this->template->set('groupTitle', t('system/admin/groups/headerAdd'));
+        $this->template->set('buttonCancel', t('system/buttons/cancel'));
+        $this->template->set('buttonSubmit', t('system/buttons/save'));
+        $this->template->set('buttonBack', t('system/buttons/back'));
     }
 
     /**
@@ -225,11 +220,15 @@ class Groups extends \core\AdminLogicClass
      */
     private function add()
     {
-        if (! isset($this->post['name']) || $this->post['name'] == '' || ! isset($this->post['description']) || $this->post['description'] == '' || ! isset($this->post['default']) || ($this->post['default'] != 0 && $this->post['default'] != 1)) {
+        if (! $this->post->validate(array(
+            'name' => 'required',
+            'description' => 'required',
+            'default' => 'required|set:0,1'
+        ))) {
             return;
         }
         
-        $obj_Group = $this->model_Groups->generateGroup();
+        $obj_Group = $this->groups->generateGroup();
         $obj_Group->setName($this->post['name']);
         $obj_Group->setDescription($this->post['description']);
         if ($this->post['default'] == 1) {
@@ -248,16 +247,18 @@ class Groups extends \core\AdminLogicClass
      */
     private function delete()
     {
-        if (! isset($this->post['id']) || $this->post['id'] <= 0 || in_array($this->post['id'], $this->a_systemGroups))
+        if (! $this->post->validate(array(
+            'id' => 'required|min:2'
+        ))) {
             return;
-            
-            /* Get group */
+        }
+        
+        /* Get group */
         try {
-            $obj_Group = $this->model_Groups->getGroup($this->post['id']);
+            $obj_Group = $this->groups->getGroup($this->post['id']);
             $obj_Group->deleteGroup();
-        } catch (Exception $e) {
-            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->post['id'] . '.');
-            header('location: ' . NIV . 'logout.php');
+        } catch (\Exception $e) {
+            $this->logs->securityLog('Call to unknown group ' . $this->post['id'] . '.');
             exit();
         }
     }
@@ -267,13 +268,17 @@ class Groups extends \core\AdminLogicClass
      */
     private function edit()
     {
-        if (! isset($this->post['name']) || $this->post['name'] == '' || ! isset($this->post['description']) || $this->post['description'] == '' || ! isset($this->post['default']) || ($this->post['default'] != 0 && $this->post['default'] != 1) || ! isset($this->post['id']) || $this->post['id'] <= 0 || in_array($this->post['id'], $this->a_systemGroups)) {
+        if (! $this->post->validate(array(
+            'name' => 'required',
+            'description' => 'required',
+            'default' => 'required|set:0,1'
+        ))) {
             return;
         }
         
         /* Get group */
         try {
-            $obj_Group = $this->model_Groups->getGroup($this->post['id']);
+            $obj_Group = $this->groups->getGroup($this->post['id']);
             $obj_Group->setName($this->post['name']);
             $obj_Group->setDescription($this->post['description']);
             if ($this->post['default'] == 1 && ! $obj_Group->isDefault()) {
@@ -286,9 +291,8 @@ class Groups extends \core\AdminLogicClass
                 }
             
             $obj_Group->persist();
-        } catch (Exception $e) {
-            Memory::services('Logs')->securityLog('Call to unknown group ' . $this->post['id'] . '.');
-            header('location: ' . NIV . 'logout.php');
+        } catch (\Exception $e) {
+            $this->logs->securityLog('Call to unknown group ' . $this->post['id'] . '.');
             exit();
         }
     }
@@ -298,8 +302,8 @@ class Groups extends \core\AdminLogicClass
      */
     private function setHeader()
     {
-        $this->service_Template->set('headerName', t('system/admin/groups/name'));
-        $this->service_Template->set('headerDescription', t('system/admin/groups/description'));
-        $this->service_Template->set('headerAutomatic', t('system/admin/groups/standard'));
+        $this->template->set('headerName', t('system/admin/groups/name'));
+        $this->template->set('headerDescription', t('system/admin/groups/description'));
+        $this->template->set('headerAutomatic', t('system/admin/groups/standard'));
     }
 }

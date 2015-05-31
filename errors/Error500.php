@@ -22,40 +22,44 @@ namespace errors;
  * @version 1.0
  * @since 1.0
  */
+$_SERVER['REQUEST_URI'] = 'errors/Error500.php';
+$config = \Loader::inject('\core\models\Config');
+$config->detectTemplateDir();
+
 class Error500 extends \includes\BaseLogicClass
 {
     /**
      * @var \core\services\Headers
      */
-    protected $service_Headers;
+    protected $headers;
     
     /**
      * @var \core\services\Logs
      */
-    protected $service_Logs;
+    protected $logs;
 
     /**
      * Starts the class Error404
      * 
-     * @param \core\services\Security $service_Security
-     * @param \core\models\Config $model_Config
-     * @param \core\services\Language $service_Language
-     * @param \core\services\Template $service_Template
+     * @param \core\Input $input
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
      * @param \core\classes\Header $header
      * @param \core\classes\Menu $menu
-     * @param \core\services\Headers $service_Headers
-     * @param \core\services\Logs $service_Logs
+     * @param \core\services\Headers $headers
+     * @param \core\services\Logs $logs
      */
-    public function __construct(\core\services\Security $service_Security,\core\models\Config $model_Config,
-        \core\services\Language $service_Language,\core\services\Template $service_Template,\core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,
-        \core\services\Headers $service_Headers,\core\services\Logs $service_Logs)
+    public function __construct(\core\Input $input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,\core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,
+        \core\services\Headers $headers,\core\services\Logs $logs)
     {
-        parent::__construct($service_Security,$model_Config,$service_Language,$service_Template,$header,$menu,$footer);
+        parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
         
-        $this->service_Headers = $service_Headers;
-        $this->service_Logs = $service_Logs;
+        $this->headers = $headers;
+        $this->logs = $logs;
         
-        $this->service_Template->setCss('body {
+        $this->template->setCss('body {
           background-color:black;
           color:#23c44d;
           font-family:Lucida Console, monospace;
@@ -70,23 +74,23 @@ class Error500 extends \includes\BaseLogicClass
 
     private function displayError()
     {
-        $this->service_Headers->http500();
-        $this->service_Headers->printHeaders();
+        $this->headers->http500();
+        $this->headers->printHeaders();
         
         
-        $this->service_Template->set('title', t('errors/error500/serverError'));
+        $this->template->set('title', t('errors/error500/serverError'));
         
-        $this->service_Template->set('notice', t('errors/error500/systemError'));
+        $this->template->set('notice', t('errors/error500/systemError'));
         
         if (isset($_SESSION['error'])) {
             if (isset($_SESSION['errorObject'])) {
-                $this->service_Logs->exception($_SESSION['errorObject']);
+                $this->logs->exception($_SESSION['errorObject']);
             } else {
-                $this->service_Logs->errorLog($_SESSION['error']);
+                $this->logs->errorLog($_SESSION['error']);
             }
             
             if (defined('DEBUG')) {
-                $this->service_Template->set('debug_notice', $_SESSION['error']);
+                $this->template->set('debug_notice', $_SESSION['error']);
             }
         }
     }

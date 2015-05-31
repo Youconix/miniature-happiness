@@ -25,21 +25,12 @@ namespace core\classes;
  */
 class HeaderAdmin extends \core\classes\Header
 {
-
-    protected $service_Template;
-
-    protected $service_Language;
-
-    protected $model_User;
-
-    protected $s_template;
-
     /**
      * Starts the class header
      */
-    public function __construct(\core\services\Template $service_Template, \core\services\Language $service_Language, \core\models\User $model_User, \core\models\Config $model_Config)
+    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $model_User, \core\models\Config $model_Config)
     {
-        parent::__construct($service_Template, $service_Language, $model_User, $model_Config);
+        parent::__construct($template, $language, $model_User, $model_Config);
     }
 
     /**
@@ -47,12 +38,12 @@ class HeaderAdmin extends \core\classes\Header
      */
     public function createHeader()
     {
-        $obj_User = $this->model_User->get();
+        $obj_User = $this->user->get();
         
-        $this->service_Template->set('logout', $this->service_Language->get('system/admin/menu/logout'));
-        $this->service_Template->set('close', $this->service_Language->get('system/admin/menu/close'));
-        $this->service_Template->set('adminMenuLink', $this->service_Language->get('system/admin/menu/adminMenuLink'));
-        $this->service_Template->set('loginHeader', $this->service_Language->insertPath('system/admin/menu/loginHeader', 'name', $obj_User->getUsername()));
+        $this->template->set('logout', $this->language->get('system/admin/menu/logout'));
+        $this->template->set('close', $this->language->get('system/admin/menu/close'));
+        $this->template->set('adminMenuLink', $this->language->get('system/admin/menu/adminMenuLink'));
+        $this->template->set('loginHeader', $this->language->insertPath('system/admin/menu/loginHeader', 'name', $obj_User->getUsername()));
         
         $this->displayLanguageFlags();
     }

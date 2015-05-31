@@ -30,21 +30,24 @@ class Cache extends \core\AdminLogicClass
      *
      * @var \core\services\Cache
      */
-    private $service_Cache;
+    private $cache;
 
     /**
      * Starts the class Cache
      *
      * @param \core\Input $Input    The input parser         
-     * @param \core\models\Config $model_Config            
-     * @param \core\services\Language $service_Language            
-     * @param \core\services\Template $service_Template            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template
+     * @param \core\services\Logs $logs     
+     * @param \core\services\Cache $cache
      */
-    public function __construct(\core\Input $Input, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\services\Cache $service_Cache)
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template,
+        \core\services\Logs $logs, \core\services\Cache $cache)
     {
-        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
+        parent::__construct($Input, $config, $language, $template,$logs);
         
-        $this->service_Cache = $service_Cache;
+        $this->cache = $cache;
     }
 
     /**
@@ -57,11 +60,11 @@ class Cache extends \core\AdminLogicClass
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             switch ($s_command) {
                 case 'language':
-                    $this->service_Cache->cleanLanguageCache();
+                    $this->cache->cleanLanguageCache();
                     break;
                 
                 case 'site':
-                    $this->service_Cache->clearSiteCache();
+                    $this->cache->clearSiteCache();
                     break;
             }
         }

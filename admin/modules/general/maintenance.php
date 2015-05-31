@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,60 +23,58 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-define('NIV', '../../../');
-
-include (NIV . 'core/AdminLogicClass.php');
-
 class Maintenance extends \core\AdminLogicClass
 {
 
-    private $service_Maintenance;
+    /**
+     * 
+     * @var \core\services\Maintenance
+     */
+    private $maintenance;
 
     /**
      * Starts the class Groups
+     *
+     * @param \core\Input $Input
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs
+     * @param \core\services\Maintenance    $maintenance            
      */
-    public function __construct()
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, 
+        \core\services\Logs $logs,\core\services\Maintenance $maintenance)
     {
-        $this->init();
+        parent::__construct($Input, $config, $language, $template, $logs);
         
-        if (! $this->model_Config->isAjax()) {
-            exit();
-        }
-        
-        if (isset($this->get['action'])) {
-            switch ($this->get['action']) {
-                default:
-                    $this->view();
-                    break;
-            }
-        } else 
-            if (isset($this->post['action'])) {
-                $this->performAction();
-            } else 
-                if (isset($this->post['command'])) {
-                    switch ($this->post['command']) {
-                        case 'createBackup':
-                            $this->createBackup();
-                            break;
-                    }
-                }
+        $this->maintenance = $maintenance;
     }
 
     /**
-     * Inits the class Groups
+     * Routes the controller
+     *
+     * @see Routable::route()
      */
-    protected function init()
+    public function route($s_command)
     {
-        $this->init_get = array(
-            'action' => 'string'
-        );
-        $this->init_post = array(
-            'action' => 'string'
-        );
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view();
+            return;
+        }
         
-        parent::init();
-        
-        $this->service_Maintenance = \core\Memory::services('Maintenance');
+        switch ($s_command) {
+            case 'css':
+            case 'js':
+            case 'checkDatabase':
+            case 'optimizeDatabase':
+            case 'cleanStats':
+                $this->performAction($s_command);
+                break;
+            
+            case 'createBackup':
+                $this->createBackup();
+                break;
+        }
     }
 
     /**
@@ -84,47 +82,50 @@ class Maintenance extends \core\AdminLogicClass
      */
     private function view()
     {
-        $this->service_Template->set('moduleTitle', t('system/admin/general/maintenance'));
-        $this->service_Template->set('checkDatabase', t('system/admin/maintenance/checkDatabase'));
-        $this->service_Template->set('optimizeDatabase', t('system/admin/maintenance/optimizeDatabase'));
-        $this->service_Template->set('cleanStatsYear', t('system/admin/maintenance/stats'));
-        $this->service_Template->set('backup', t('system/admin/maintenance/createBackup'));
-        $this->service_Template->set('ready', t('system/admin/maintenance/ready'));
+        $this->template->set('moduleTitle', t('system/admin/general/maintenance'));
+        $this->template->set('checkDatabase', t('system/admin/maintenance/checkDatabase'));
+        $this->template->set('optimizeDatabase', t('system/admin/maintenance/optimizeDatabase'));
+        $this->template->set('cleanStatsYear', t('system/admin/maintenance/stats'));
+        $this->template->set('backup', t('system/admin/maintenance/createBackup'));
+        $this->template->set('ready', t('system/admin/maintenance/ready'));
     }
 
     /**
      * Performs the maintenance action
+     *
+     * @param string $s_action
+     *            The action to take
      */
-    private function performAction()
+    private function performAction($s_action)
     {
         $bo_result = false;
         
-        switch ($this->post['action']) {
+        switch ($s_action) {
             case 'css':
-                $bo_result = $this->service_Maintenance->compressCSS();
+                $bo_result = $this->maintenance->compressCSS();
                 break;
             
             case 'js':
-                $bo_result = $this->service_Maintenance->compressJS();
+                $bo_result = $this->maintenance->compressJS();
                 break;
             
             case 'checkDatabase':
-                $bo_result = $this->service_Maintenance->checkDatabase();
+                $bo_result = $this->maintenance->checkDatabase();
                 break;
             
             case 'optimizeDatabase':
-                $bo_result = $this->service_Maintenance->optimizeDatabase();
+                $bo_result = $this->maintenance->optimizeDatabase();
                 break;
             
             case 'cleanStats':
-                $bo_result = $this->service_Maintenance->cleanStatsYear();
+                $bo_result = $this->maintenance->cleanStatsYear();
                 break;
         }
         
         if ($bo_result) {
-            $this->service_Template->set('result', 1);
+            $this->template->set('result', 1);
         } else {
-            $this->service_Template->set('result', 0);
+            $this->template->set('result', 0);
         }
     }
 
@@ -133,12 +134,12 @@ class Maintenance extends \core\AdminLogicClass
      */
     private function createBackup()
     {
-        $s_backup = $this->service_Maintenance->createBackup();
+        $s_backup = $this->maintenance->createBackup();
         
         (is_null($s_backup)) ? $bo_result = 0 : $bo_result = 1;
         
-        $this->service_Template->set('result', $bo_result);
-        $this->service_Template->set('backup', $s_backup);
+        $this->template->set('result', $bo_result);
+        $this->template->set('backup', $s_backup);
     }
 }
 

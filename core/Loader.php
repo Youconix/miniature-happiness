@@ -235,7 +235,7 @@ class Loader
                     preg_match('#extends\\s+(\\\\{1}[\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches2);
                     if (count($a_matches2) > 0) {
                         
-                        if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false) {
+                        if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false || strpos($a_matches2[1], '\admin') !== false ) {
                             $s_filename = NIV . $a_matches2[1] . '.inc.php';
                         } else {
                             $s_filename = NIV . 'lib' . DIRECTORY_SEPARATOR . $a_matches2[1] . '.php';

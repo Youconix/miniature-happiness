@@ -152,14 +152,23 @@ class Logs extends Service implements \Psr\Log\LoggerAwareInterface
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level            
+     * @param string $level            
      * @param string $message            
      * @param array $context            
      * @return null
      */
     public function log($level, $message, array $context = array())
     {
-        $this->obj_logger->log($level, $message, $context);
+	if( !is_null($this->obj_logger) ){
+		$this->obj_logger->log($level, $message, $context);
+	}
+        else {
+		$s_log = $level.' : '.$message.PHP_EOL;
+		if( array_key_exists('exception',$context) ){
+			$s_log .= str_replace('\n',PHP_EOL,$context['exception']->getMessage())."\n".str_replace('\n',PHP_EOL,$context['exception']->getTraceAsString()).PHP_EOL;
+		}
+		error_log($s_log);
+	}
     }
 
     public function exception($exception)

@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,41 +23,55 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 2.0
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
-
 class Modules extends \core\AdminLogicClass
 {
 
-    private $model_controlPanelModules;
+    /**
+     *
+     * @var \core\models\ControlPanelModules
+     */
+    private $controlPanelModules;
 
     /**
      * Starts the class Modules
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\models\ControlPanelModules $controlPanelModules            
      */
-    public function __construct()
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\models\ControlPanelModules $controlPanelModules)
     {
-        $this->init();
+        parent::__construct($Input, $config, $language, $template, $logs);
         
-        if (! $this->model_Config->isAjax()) {
-            exit();
+        $this->controlPanelModules = $controlPanelModules;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->index();
         }
         
-        if (isset($this->get['command'])) {
-            if ($this->get['command'] == 'index') {
-                $this->index();
-            }
-        } else 
-            if (isset($this->post['command'])) {
-                if ($this->post['command'] == 'delete') {
-                    $this->delete();
-                } else 
-                    if ($this->post['command'] == 'upgrade') {
-                        $this->upgrade();
-                    } else 
-                        if ($this->post['command'] == 'install') {
-                            $this->install();
-                        }
-            }
+        switch ($s_command) {
+            case 'delete':
+                $this->delete();
+                break;
+            
+            case 'upgrade':
+                $this->upgrade();
+                break;
+            case 'install':
+                $this->install();
+                break;
+        }
     }
 
     /**
@@ -73,8 +87,6 @@ class Modules extends \core\AdminLogicClass
         );
         
         parent::init();
-        
-        $this->model_controlPanelModules = \Loader::inject('\core\models\ControlPanelModules');
     }
 
     /**
@@ -82,20 +94,20 @@ class Modules extends \core\AdminLogicClass
      */
     private function index()
     {
-        $this->service_Template->set('moduleTitle', t('system/admin/modules/moduleTitle'));
-        $this->service_Template->set('headerName', t('system/admin/modules/headerName'));
-        $this->service_Template->set('headerAuthor', t('system/admin/modules/headerAuthor'));
-        $this->service_Template->set('headerVersion', t('system/admin/modules/headerVersion'));
-        $this->service_Template->set('headerDescription', t('system/admin/modules/headerDescription'));
+        $this->template->set('moduleTitle', t('system/admin/modules/moduleTitle'));
+        $this->template->set('headerName', t('system/admin/modules/headerName'));
+        $this->template->set('headerAuthor', t('system/admin/modules/headerAuthor'));
+        $this->template->set('headerVersion', t('system/admin/modules/headerVersion'));
+        $this->template->set('headerDescription', t('system/admin/modules/headerDescription'));
         
-        $a_installedModules = $this->model_controlPanelModules->getInstalledModules();
+        $a_installedModules = $this->controlPanelModules->getInstalledModules();
         $this->installedModules($a_installedModules['installed']);
         
         if (count($a_installedModules['upgrades']) > 0) {
             $this->upgradableModules($a_installedModules['upgrades']);
         }
         
-        $a_newModules = $this->model_controlPanelModules->getNewModules();
+        $a_newModules = $this->controlPanelModules->getNewModules();
         if (count($a_newModules) > 0) {
             $this->newModules($a_newModules);
         }
@@ -109,10 +121,10 @@ class Modules extends \core\AdminLogicClass
      */
     private function installedModules($a_modules)
     {
-        $this->service_Template->set('installedModulesTitle', t('system/admin/modules/installedModulesTitle'));
+        $this->template->set('installedModulesTitle', t('system/admin/modules/installedModulesTitle'));
         
         foreach ($a_modules as $a_module) {
-            $this->service_Template->setBlock('installedModule', array(
+            $this->template->setBlock('installedModule', array(
                 'id' => $a_module['id'],
                 'name' => $a_module['name'],
                 'author' => $a_module['author'],
@@ -130,12 +142,12 @@ class Modules extends \core\AdminLogicClass
      */
     private function upgradableModules($a_modules)
     {
-        $this->service_Template->displayPart('upgradableModules');
-        $this->service_Template->set('upgradableModulesTitle', t('system/admin/modules/upgradableModulesTitle'));
-        $this->service_Template->set('headerVersionAvaiable', t('system/admin/modules/headerVersionAvaiable'));
+        $this->template->displayPart('upgradableModules');
+        $this->template->set('upgradableModulesTitle', t('system/admin/modules/upgradableModulesTitle'));
+        $this->template->set('headerVersionAvaiable', t('system/admin/modules/headerVersionAvaiable'));
         
         foreach ($a_modules as $a_module) {
-            $this->service_Template->setBlock('upgradeModule', array(
+            $this->template->setBlock('upgradeModule', array(
                 'id' => $a_module['id'],
                 'name' => $a_module['name'],
                 'author' => $a_module['author'],
@@ -154,11 +166,11 @@ class Modules extends \core\AdminLogicClass
      */
     private function newModules($a_modules)
     {
-        $this->service_Template->displayPart('availableModules');
-        $this->service_Template->set('newModulesTitle', t('system/admin/modules/newModulesTitle'));
+        $this->template->displayPart('availableModules');
+        $this->template->set('newModulesTitle', t('system/admin/modules/newModulesTitle'));
         
         foreach ($a_modules as $a_module) {
-            $this->service_Template->setBlock('newModule', array(
+            $this->template->setBlock('newModule', array(
                 'name' => $a_module['name'],
                 'author' => $a_module['author'],
                 'version' => $a_module['version'],
@@ -172,14 +184,16 @@ class Modules extends \core\AdminLogicClass
      */
     private function delete()
     {
-        if (! array_key_exists('id', $this->post) || $this->post['id'] <= 0) {
+        if (! $this->post->validate(array(
+            'id' => 'required|min:1'
+        ))) {
             return;
         }
         
         try {
-            $this->model_controlPanelModules->removeModule($this->post['id']);
+            $this->controlPanelModules->removeModule($this->post['id']);
         } catch (\Exception $e) {
-            $this->service_Logs->exception($e);
+            $this->logs->exception($e);
         }
     }
 
@@ -188,14 +202,16 @@ class Modules extends \core\AdminLogicClass
      */
     private function upgrade()
     {
-        if (! array_key_exists('id', $this->post) || $this->post['id'] <= 0) {
+        if (! $this->post->validate(array(
+            'id' => 'required|min:1'
+        ))) {
             return;
         }
         
         try {
-            $this->model_controlPanelModules->updateModule($this->post['id']);
+            $this->controlPanelModules->updateModule($this->post['id']);
         } catch (\Exception $e) {
-            $this->service_Logs->exception($e);
+            $this->logs->exception($e);
         }
     }
 
@@ -204,15 +220,16 @@ class Modules extends \core\AdminLogicClass
      */
     private function install()
     {
-        if (! empty($this->post['name'])) {
-            try {
-                $this->model_controlPanelModules->installModule($this->post['name']);
-            } catch (\Exception $e) {
-                $this->service_Logs->exception($e);
-            }
+        if (! $this->post->validate(array(
+            'name' => 'required'
+        ))) {
+            return;
+        }
+        
+        try {
+            $this->controlPanelModules->installModule($this->post['name']);
+        } catch (\Exception $e) {
+            $this->logs->exception($e);
         }
     }
 }
-
-$obj_Modules = new Modules();
-unset($obj_Modules);

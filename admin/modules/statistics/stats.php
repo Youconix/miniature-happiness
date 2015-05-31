@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\statistics;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,17 +23,14 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
 
 class Stats extends \core\AdminLogicClass
 {
-
     /**
      *
      * @var \core\models\Stats
      */
-    private $model_Stats;
+    private $stats;
 
     private $i_startDate;
 
@@ -43,13 +40,30 @@ class Stats extends \core\AdminLogicClass
 
     /**
      * Starts the class Stats
+     *
+     * @param \core\Input $Input
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
+     * @param \core\services\Logs $logs
+     * @param \core\models\Stats $stats
      */
-    public function __construct(\core\Input $Input,\core\models\Config $model_Config,
-        \core\services\Language $service_Language,\core\services\Template $service_Template)
-    {
-        parent::__construct($Input, $model_Config, $service_Language, $service_Template);
+    public function __construct(\core\Input $Input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,\core\services\Logs $logs,\core\models\Stats $stats)
+    {       
+        parent::__construct($Input, $config, $language, $template,$logs);
         
-        switch ($this->get['command']) {
+        $this->stats = $stats;
+    }
+    
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        switch ($s_command) {
             case 'hits':
                 $this->hits();
                 break;
@@ -83,8 +97,8 @@ class Stats extends \core\AdminLogicClass
                 break;
         }
         
-        $this->service_Template->set('title_startdate',date('d-m-Y',$this->i_startDate));
-        $this->service_Template->set('title_enddate',date('d-m-Y',$this->i_endDate));
+        $this->template->set('title_startdate',date('d-m-Y',$this->i_startDate));
+        $this->template->set('title_enddate',date('d-m-Y',$this->i_endDate));
     }
 
     /**
@@ -94,14 +108,12 @@ class Stats extends \core\AdminLogicClass
     {
         parent::init();
         
-        $this->service_Template->set('amount', t('system/admin/stats/amount'));
-        $this->service_Template->set('pageTitle', t('system/admin/stats/title'));
+        $this->template->set('amount', t('system/admin/stats/amount'));
+        $this->template->set('pageTitle', t('system/admin/stats/title'));
         
         $i_daysMonth = cal_days_in_month(CAL_GREGORIAN, date('m'), date('Y'));
         $this->i_startDate = mktime(0, 0, 0, date("n"), 1, date("Y") - 1);
         $this->i_endDate = mktime(23, 59, 59, date("n"), $i_daysMonth, date("Y"));
-        
-        $this->model_Stats = \Loader::Inject('\core\models\Stats');
         
         $this->a_colors = array(
             '1252f3', // blue
@@ -153,11 +165,11 @@ class Stats extends \core\AdminLogicClass
             }
         }
         
-        $hits = $this->model_Stats->getHits($this->i_startDate, $this->i_endDate);
+        $hits = $this->stats->getHits($this->i_startDate, $this->i_endDate);
         foreach ($hits as $hit) {
             $a_hits[0][] = $hit->getAmount();
         }
-        $unique = $this->model_Stats->getUnique($this->i_startDate, $this->i_endDate);
+        $unique = $this->stats->getUnique($this->i_startDate, $this->i_endDate);
         foreach ($unique as $hit) {
             $a_hits[1][] = $hit->getAmount();
         }
@@ -165,10 +177,10 @@ class Stats extends \core\AdminLogicClass
             $a_hits[2][$key] = ($a_hits[0][$key] - $value);
         }
         
-        $this->service_Template->set('hitsTitle',t('system/admin/statistics/hits'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('labels',json_encode($a_labels));
-        $this->service_Template->set('hits', json_encode($a_hits));
+        $this->template->set('hitsTitle',t('system/admin/statistics/hits'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('labels',json_encode($a_labels));
+        $this->template->set('hits', json_encode($a_hits));
     }
     
     /**
@@ -186,12 +198,12 @@ class Stats extends \core\AdminLogicClass
             $a_labels[] = $i;
         }
         
-        $a_hits = $this->model_Stats->getHitsHours($this->i_startDate,$this->i_endDate);
+        $a_hits = $this->stats->getHitsHours($this->i_startDate,$this->i_endDate);
         
-        $this->service_Template->set('hitsTitle',t('system/admin/statistics/hits_hours'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('labels',json_encode($a_labels));
-        $this->service_Template->set('hits', json_encode($a_hits));
+        $this->template->set('hitsTitle',t('system/admin/statistics/hits_hours'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('labels',json_encode($a_labels));
+        $this->template->set('hits', json_encode($a_hits));
     }
 
     /**
@@ -199,7 +211,7 @@ class Stats extends \core\AdminLogicClass
      */
     private function OS()
     {
-        $a_ossesRaw = $this->model_Stats->getOS($this->i_startDate,$this->i_endDate);
+        $a_ossesRaw = $this->stats->getOS($this->i_startDate,$this->i_endDate);
         $a_lines = array();
         $a_osses = array();
         
@@ -222,9 +234,9 @@ class Stats extends \core\AdminLogicClass
             );
         }
         
-        $this->service_Template->set('osTitle', $this->service_Language->get('system/admin/stats/OS'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('os',json_encode($a_osses));
+        $this->template->set('osTitle', $this->service_Language->get('system/admin/stats/OS'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('os',json_encode($a_osses));
     }
 
     /**
@@ -232,7 +244,7 @@ class Stats extends \core\AdminLogicClass
      */
     private function browser()
     {
-        $a_browsersRaw = $this->model_Stats->getBrowsers($this->i_startDate,$this->i_endDate);
+        $a_browsersRaw = $this->stats->getBrowsers($this->i_startDate,$this->i_endDate);
         $a_lines = array();
         $a_browsers = array();
         
@@ -255,9 +267,9 @@ class Stats extends \core\AdminLogicClass
             );
         }
         
-        $this->service_Template->set('browserTitle', $this->service_Language->get('system/admin/stats/browsers'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('browsers',json_encode($a_browsers));
+        $this->template->set('browserTitle', $this->service_Language->get('system/admin/stats/browsers'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('browsers',json_encode($a_browsers));
     }
 
     /**
@@ -267,7 +279,7 @@ class Stats extends \core\AdminLogicClass
     {
         $a_lines = array();
         $a_colors = array();
-        $a_data = $this->model_Stats->getScreenColors($this->i_startDate,$this->i_endDate);
+        $a_data = $this->stats->getScreenColors($this->i_startDate,$this->i_endDate);
         krsort($a_data, SORT_STRING);
         
         $i=0;
@@ -281,9 +293,9 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->service_Template->set('screenColorsTitle', $this->service_Language->get('system/admin/stats/screenColors'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('screenColors',json_encode($a_colors));
+        $this->template->set('screenColorsTitle', $this->service_Language->get('system/admin/stats/screenColors'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('screenColors',json_encode($a_colors));
     }
 
     /**
@@ -293,7 +305,7 @@ class Stats extends \core\AdminLogicClass
     {
         $a_lines = array();
         $a_sizes = array();
-        $a_data = $this->model_Stats->getScreenSizes($this->i_startDate,$this->i_endDate);
+        $a_data = $this->stats->getScreenSizes($this->i_startDate,$this->i_endDate);
         krsort($a_data, SORT_STRING);
         
         $i=0;
@@ -307,9 +319,9 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->service_Template->set('screenSizesTitle', $this->service_Language->get('system/admin/stats/screenSizes'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('screenSizes',json_encode($a_sizes));
+        $this->template->set('screenSizesTitle', $this->service_Language->get('system/admin/stats/screenSizes'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('screenSizes',json_encode($a_sizes));
     }
 
     /**
@@ -319,7 +331,7 @@ class Stats extends \core\AdminLogicClass
     {
         $a_lines = array();
         $a_references = array();
-        $a_data = $this->model_Stats->getReferences($this->i_startDate,$this->i_endDate);
+        $a_data = $this->stats->getReferences($this->i_startDate,$this->i_endDate);
         krsort($a_data, SORT_STRING);
         
         $i=0;
@@ -333,9 +345,9 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->service_Template->set('referencesTitle', $this->service_Language->get('system/admin/statistics/references'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('references',json_encode($a_references));
+        $this->template->set('referencesTitle', $this->service_Language->get('system/admin/statistics/references'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('references',json_encode($a_references));
     }
 
     /**
@@ -345,7 +357,7 @@ class Stats extends \core\AdminLogicClass
     {
         $a_lines = array();
         $a_pages = array();
-        $a_data = $this->model_Stats->getPages($this->i_startDate,$this->i_endDate);
+        $a_data = $this->stats->getPages($this->i_startDate,$this->i_endDate);
         krsort($a_data, SORT_STRING);
         
         $i=0;
@@ -359,11 +371,8 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->service_Template->set('pagesTitle', $this->service_Language->get('system/admin/statistics/pages'));
-        $this->service_Template->set('lines',json_encode($a_lines));
-        $this->service_Template->set('pages',json_encode($a_pages));
+        $this->template->set('pagesTitle', $this->service_Language->get('system/admin/statistics/pages'));
+        $this->template->set('lines',json_encode($a_lines));
+        $this->template->set('pages',json_encode($a_pages));
     }
 }
-
-$obj_Stats = new Stats();
-unset($obj_Stats);

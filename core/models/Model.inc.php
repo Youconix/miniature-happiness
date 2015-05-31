@@ -121,65 +121,10 @@ abstract class Model extends \core\Object
                 continue;
             }
             
-            if (array_key_exists('type', $this->a_validation[$s_key])) {
-                $s_type = gettype($this->$s_key);
-                $s_expectedType = $this->a_validation[$s_key]['type'];
-                
-                switch ($s_expectedType) {
-                    case 'int':
-                    case 'array':
-                        if ($s_type != $s_expectedType) {
-                            $a_error[] = 'Invalid type for field ' . $s_field . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
-                            continue;
-                        }
-                        break;
-                    
-                    case 'float':
-                        if ($s_type != 'float' && $s_type != 'double') {
-                            $a_error[] = 'Invalid type for field ' . $s_field . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
-                            continue;
-                        }
-                        break;
-                }
-                
-                if ($s_type == 'int' || $s_type == 'float') {
-                    if (array_key_exists('min-value', $this->a_validation[$s_key]) && ($this->$s_key < $this->a_validation[$s_key]['min-value'])) {
-                        $a_error[] = "Field " . $s_key . " is smaller then minimun value " . $this->a_validation[$s_key]['min-value'] . ".";
-                    }
-                    if (array_key_exists('max-value', $this->a_validation[$s_key]) && ($this->$s_key > $this->a_validation[$s_key]['max-value'])) {
-                        $a_error[] = "Field " . $s_key . " is bigger then maximun value " . $this->a_validation[$s_key]['max-value'] . ".";
-                    }
-                }
-            }
-            
-            if (array_key_exists('required', $this->a_validation[$s_key]) && (is_null($this->$s_key) || trim($this->$s_key) == '')) {
-                $a_error[] = 'Required field ' . $s_key . ' is not filled in.';
-            }
-            
-            if (array_key_exists('pattern', $this->a_validation[$s_key]) && ! is_null($this->$s_key) && trim($this->$s_key) != '') {
-                $bo_pattern = true;
-                if (! in_array($this->a_validation[$s_key]['pattern'], array(
-                    'email',
-                    'url'
-                )) && ! preg_match("/" . $this->a_validation[$s_key]['pattern'] . "/", $this->$s_key)) {
-                    $bo_pattern = false;
-                } else 
-                    if (($this->a_validation[$s_key]['pattern'] == 'email' && ! $this->validation->checkEmail($this->$s_key))) {
-                        $bo_pattern = false;
-                    } else 
-                        if ($this->a_validation[$s_key]['pattern'] == 'url' && ! $this->validation->checkURI($this->$s_key)) {
-                            $bo_pattern = false;
-                        }
-                
-                if (! $bo_pattern) {
-                    $a_error[] = "Field " . $s_key . " does not match pattern " . $this->a_validation[$s_key]['pattern'] . ".";
-                }
-            }
-            
-            if (array_key_exists('set', $this->a_validation[$s_key]) && ! in_array($this->$s_key, $this->a_validation[$s_key]['set'])) {
-                $a_error[] = "Field " . $s_key . " has invalid value " . $this->$s_key . ". Only the values " . implode(', ', $this->a_validation[$s_key]['set']) . ' are allowed.';
-            }
+            $this->validation->validateField($s_key,$this->$s_key, $this->a_validation[$s_key]);
         }
+        
+        $a_error = array_merge($a_error,$this->validation->getErrors());
         
         if (! $this->bo_throwError) {
             return $a_error;

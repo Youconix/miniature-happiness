@@ -1,7 +1,20 @@
 <?php
-namespace admin;
+namespace admin\modules\general;
 
 /**
+ * Miniature-happiness is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Miniature-happiness is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Admin page rights configuration class
  *
  * This file is part of Miniature-happiness
@@ -9,55 +22,71 @@ namespace admin;
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 2.0
- *       
- *        Miniature-happiness is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
- *       
- *        Miniature-happiness is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *        GNU General Public License for more details.
- *       
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
-define('NIV', '../../../');
-include (NIV . 'core/AdminLogicClass.php');
-
 class Pages extends \core\AdminLogicClass
 {
 
-    private $model_PrivilegeController;
+    /**
+     *
+     * @var \core\models\PrivilegeController
+     */
+    private $privilegeController;
+
+    /**
+     *
+     * @var \core\models\Groups
+     */
+    private $groups;
+
+    /**
+     *
+     * @var \core\services\File
+     */
+    private $file;
 
     /**
      * Starts the class Users
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\models\PrivilegeController $privilegeController            
+     * @param \core\models\Groups $groups            
+     * @param \core\services\File $file            
      */
-    public function __construct()
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\models\PrivilegeController $privilegeController, \core\models\Groups $groups, \core\services\File $file)
     {
-        $this->init();
+        parent::__construct($Input, $config, $language, $template, $logs);
         
-        if (! \core\Memory::models('Config')->isAjax()) {
-            exit();
-        }
-        
-        if (isset($this->get['command'])) {
-            if ($this->get['command'] == 'index') {
-                $this->index();
-            }
-            if ($this->get['command'] == 'view') {
-                $this->view();
-            }
-        } else 
-            if (isset($this->post['command'])) {
-                if ($this->post['command'] == 'edit') {
-                    $this->edit();
-                }
-                if ($this->post['command'] == 'delete') {
+        $this->privilegeController = $privilegeController;
+        $this->groups = $groups;
+        $this->file = $file;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($s_command == 'edit') {
+                $this->edit();
+            } else 
+                if ($s_command == 'delete') {
                     $this->delete();
                 }
+        } else {
+            if ($s_command == 'index') {
+                $this->index();
             }
+            if ($s_command == 'view') {
+                $this->view();
+            }
+        }
     }
 
     protected function init()
@@ -72,16 +101,14 @@ class Pages extends \core\AdminLogicClass
         );
         
         parent::init();
-        
-        $this->model_PrivilegeController = \Loader::Inject('\core\models\PrivilegeController');
     }
 
     private function index()
     {
-        $a_files = $this->model_PrivilegeController->getPages();
+        $a_files = $this->privilegeController->getPages();
         
-        $this->service_Template->set('pageTitle', 'Pagina controllers');
-        $this->service_Template->set('pages', $this->indexDir($a_files, ''));
+        $this->template->set('pageTitle', 'Pagina controllers');
+        $this->template->set('pages', $this->indexDir($a_files, ''));
     }
 
     private function indexDir($a_files, $s_parent)
@@ -102,33 +129,33 @@ class Pages extends \core\AdminLogicClass
 
     private function viewEditText()
     {
-        $this->service_Template->set('buttonBack', t('system/buttons/back'));
-        $this->service_Template->set('buttonDelete', t('system/buttons/delete'));
-        $this->service_Template->set('delete', t('system/buttons/delete'));
-        $this->service_Template->set('save', t('system/buttons/save'));
-        $this->service_Template->set('add', t('system/buttons/add'));
+        $this->template->set('buttonBack', t('system/buttons/back'));
+        $this->template->set('buttonDelete', t('system/buttons/delete'));
+        $this->template->set('delete', t('system/buttons/delete'));
+        $this->template->set('save', t('system/buttons/save'));
+        $this->template->set('add', t('system/buttons/add'));
         
-        $this->service_Template->set('groupLabel', 'Groep');
-        $this->service_Template->set('accessLevelLabel', 'Minimaal toegangslevel');
-        $this->service_Template->set('viewRightsTitle', 'View specifieke rechten (optioneel)');
+        $this->template->set('groupLabel', 'Groep');
+        $this->template->set('accessLevelLabel', 'Minimaal toegangslevel');
+        $this->template->set('viewRightsTitle', 'View specifieke rechten (optioneel)');
     }
 
     private function view()
     {
         $this->viewEditText();
         
-        $this->service_Template->set('pageTitle', 'Pagina rechten bewerken');
-        $this->service_Template->set('url', $this->get['url']);
+        $this->template->set('pageTitle', 'Pagina rechten bewerken');
+        $this->template->set('url', $this->get['url']);
         
-        $a_rights = $this->model_PrivilegeController->getRightsForPage($this->get['url']);
+        $a_rights = $this->privilegeController->getRightsForPage($this->get['url']);
         $this->setGroupList('groups', $a_rights['general']['groupID']);
         
-        $this->service_Template->set('name', $a_rights['page']);
+        $this->template->set('name', $a_rights['page']);
         $this->setAccessList('pageRight', $a_rights['general']['minLevel']);
         $this->setAccessList('templateRight', - 1);
         
         foreach ($a_rights['commands'] as $a_right) {
-            $this->service_Template->setBlock('template_rights', array(
+            $this->template->setBlock('template_rights', array(
                 'command' => $a_right['command'],
                 'level' => t('system/rights/level_' . $a_right['minLevel'])
             ));
@@ -137,12 +164,12 @@ class Pages extends \core\AdminLogicClass
 
     private function setGroupList($s_key, $i_default)
     {
-        $a_groups = \Loader::inject('\core\models\Groups')->getGroups();
+        $a_groups = $this->groups->getGroups();
         
         foreach ($a_groups as $model_Group) {
             ($model_Group->getID() == $i_default) ? $s_selected = 'selected="selected"' : $s_selected = '';
             
-            $this->service_Template->setBlock($s_key, array(
+            $this->template->setBlock($s_key, array(
                 'value' => $model_Group->getID(),
                 'selected' => $s_selected,
                 'text' => $model_Group->getName()
@@ -154,7 +181,7 @@ class Pages extends \core\AdminLogicClass
     {
         for ($i = - 1; $i <= 2; $i ++) {
             ($i == $i_default) ? $s_selected = 'selected="selected"' : $s_selected = '';
-            $this->service_Template->setBlock($s_key, array(
+            $this->template->setBlock($s_key, array(
                 'value' => $i,
                 'selected' => $s_selected,
                 'text' => t('system/rights/level_' . $i)
@@ -164,22 +191,21 @@ class Pages extends \core\AdminLogicClass
 
     private function edit()
     {
-        if (empty($this->post['url']) || ! isset($this->post['rights']) || ! in_array($this->post['rights'], array(
-            - 1,
-            0,
-            1,
-            2
-        )) || ! isset($this->post['group']) || $this->post['group'] < 0) {
+        if (! $this->post->validate(array(
+            'url' => 'required',
+            'rights' => 'required|set:-1,0,1,2',
+            'group' => 'required|min:0'
+        ))) {
             return;
         }
         
         /* Check group */
-        $a_groups = \Loader::inject('\core\models\Groups')->getGroups();
+        $a_groups = $this->groups->getGroups();
         if (! array_key_exists($this->post['group'], $a_groups)) {
             return;
         }
         
-        $this->model_PrivilegeController->changePageRights($this->post['url'], $this->post['rights'], $this->post['group']);
+        $this->privilegeController->changePageRights($this->post['url'], $this->post['rights'], $this->post['group']);
     }
 
     /**
@@ -187,18 +213,15 @@ class Pages extends \core\AdminLogicClass
      */
     private function delete()
     {
-        $obj_fileHandler = Memory::Services('File');
-        $obj_configuration = Memory::Models('Config');
-        
         $s_fileURI = NIV . $this->post['url'];
-        $s_templatesURI = $obj_configuration->getStylesDir() . str_replace('.php', '', $this->post['url']);
+        $s_templatesURI = $this->config->getStylesDir() . str_replace('.php', '', $this->post['url']);
         
-        $this->model_PrivilegeController->deletePageRights($this->post['url']);
-        if ($obj_fileHandler->exists($s_fileURI)) {
-            $obj_fileHandler->deleteFile(NIV . $this->post['url']);
+        $this->privilegeController->deletePageRights($this->post['url']);
+        if ($this->file->exists($s_fileURI)) {
+            $this->file->deleteFile(NIV . $this->post['url']);
         }
-        if ($obj_fileHandler->exists($s_templatesURI)) {
-            $obj_fileHandler->deleteDirectory($s_templatesURI);
+        if ($this->file->exists($s_templatesURI)) {
+            $this->file->deleteDirectory($s_templatesURI);
         }
     }
 }

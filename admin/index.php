@@ -56,9 +56,9 @@ class Index extends \core\BaseLogicClass
     {
         $model_Config->setLayout('admin');
         
-        $this->model_Config = $model_Config;
-        $this->service_Language = $service_Language;
-        $this->service_Template = $service_Template;
+        $this->config = $model_Config;
+        $this->language = $service_Language;
+        $this->template = $service_Template;
         
         $this->headerAdmin = $header;
         $this->footer = $footer;
@@ -83,8 +83,8 @@ class Index extends \core\BaseLogicClass
     {        
         parent::init();
         
-        $this->service_Template->setJavascriptLink('<script src="{NIV}js/admin/language.php?lang=' . $this->service_Language->getLanguage() . '"></script>');
-        $this->service_Template->set('noscript', '<noscript>' . $this->service_Language->get('language/noscript') . '</noscript>');
+        $this->template->setJavascriptLink('<script src="{NIV}js/admin/language.php?lang=' . $this->language->getLanguage() . '"></script>');
+        $this->template->set('noscript', '<noscript>' . $this->language->get('language/noscript') . '</noscript>');
     }
 
     /**

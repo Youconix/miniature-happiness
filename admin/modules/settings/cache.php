@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,47 +23,55 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
-
-include (NIV . 'admin/modules/settings/settings.php');
-
-class Cache extends \admin\Settings
+class Cache extends \admin\modules\settings\Settings
 {
 
     /**
      *
      * @var \core\services\Cache
      */
-    private $service_Cache;
+    private $cache;
 
     /**
-     * Calls the functions
+     * Constructor
+     *
+     * @param \core\Input $Input            
+     * @param \core\models\Config $config            
+     * @param \core\services\Language $language            
+     * @param \core\services\Template $template            
+     * @param \core\services\Logs $logs            
+     * @param \core\services\Settings $settings            
+     * @param \core\services\Cache $cache            
      */
-    protected function menu()
+    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\services\Logs $logs, \core\services\Settings $settings, \core\services\Cache $cache)
     {
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        parent::__construct($Input, $config, $language, $template, $logs, $settings);
+        
+        $this->cache = $cache;
+    }
+
+    /**
+     * Routes the controller
+     *
+     * @see Routable::route()
+     */
+    public function route($s_command)
+    {
+        if ($_SERVER["REQUEST_METHOD"] != 'POST') {
+            $this->cache();
+        } else
+            switch ($s_command) {
                 case 'cache':
-                    $this->cache();
+                    $this->cacheSave();
                     break;
-            }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'cache':
-                        $this->cacheSave();
-                        break;
-                    
-                    case 'addNoCache':
-                        $this->addNoCache();
-                        break;
-                        
-                    case 'deleteNoCache' :
-                        $this->deleteNoCache();
-                        break;
-                }
+                
+                case 'addNoCache':
+                    $this->addNoCache();
+                    break;
+                
+                case 'deleteNoCache':
+                    $this->deleteNoCache();
+                    break;
             }
     }
 
@@ -80,8 +88,6 @@ class Cache extends \admin\Settings
         );
         
         parent::init();
-        
-        $this->service_Cache = \Loader::Inject('\core\services\Cache');
     }
 
     /**
@@ -89,29 +95,29 @@ class Cache extends \admin\Settings
      */
     private function cache()
     {
-        $this->service_Template->set('cacheTitle', t('system/admin/settings/cache/title'));
-        $this->service_Template->set('cacheActiveText', 'Caching geactiveerd');
+        $this->template->set('cacheTitle', t('system/admin/settings/cache/title'));
+        $this->template->set('cacheActiveText', 'Caching geactiveerd');
         if ($this->getValue('cache/status') == 1) {
-            $this->service_Template->set('cacheActive', 'checked="checked"');
+            $this->template->set('cacheActive', 'checked="checked"');
         } else {
-            $this->service_Template->set('cacheSettings', 'style="display:none"');
+            $this->template->set('cacheSettings', 'style="display:none"');
         }
         
-        $this->service_Template->set('cacheExpireText', 'Cache verloop tijd in seconden');
-        $this->service_Template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
+        $this->template->set('cacheExpireText', 'Cache verloop tijd in seconden');
+        $this->template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
         
-        $a_pages = $this->service_Cache->getNoCachePages();
+        $a_pages = $this->cache->getNoCachePages();
         foreach ($a_pages as $a_page) {
-            $this->service_Template->setBlock('noCache', array(
+            $this->template->setBlock('noCache', array(
                 'id' => $a_page['id'],
                 'name' => $a_page['page']
             ));
         }
         
-        $this->service_Template->set('delete', t('system/buttons/delete'));
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
-        $this->service_Template->set('page', 'Pagina');
-        $this->service_Template->set('addButton', t('system/buttons/add'));
+        $this->template->set('delete', t('system/buttons/delete'));
+        $this->template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('page', 'Pagina');
+        $this->template->set('addButton', t('system/buttons/add'));
     }
 
     /**
@@ -119,20 +125,12 @@ class Cache extends \admin\Settings
      */
     private function cacheSave()
     {
-        if (! $this->service_Validation->validate(array(
-            'cache' => array(
-                'required' => 1,
-                'set' => array(
-                    0,
-                    1
-                )
-            ),
-            'expire' => array(
-                'required' => 1,
-                'type' => 'int',
-                'min-value' => 60
-            )
-        ), $this->post));
+        if (! $this->post->validate(array(
+            'cache' => 'required|set:0,1',
+            'expire' => 'required|type:int|min:60'
+        ))) {
+            return;
+        }
         
         $this->setValue('cache/status', $this->post['cache']);
         $this->setValue('cache/timeout', $this->post['expire']);
@@ -141,35 +139,26 @@ class Cache extends \admin\Settings
 
     private function addNoCache()
     {
-        if (! $this->service_Validation->validate(array(
-            'page' => array(
-                'type'=> 'string',
-                'required' => 1
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'page' => 'required|type:string'
+        ))) {
             return;
         }
         
-        $i_id = $this->service_Cache->addNoCachePage($this->post['page']);
-        $this->service_Template->set('id',$i_id);
-        $this->service_Template->set('name',$this->post['page']);
-        $this->service_Template->set('delete',t('system/buttons/delete'));
+        $i_id = $this->cache->addNoCachePage($this->post['page']);
+        $this->template->set('id', $i_id);
+        $this->template->set('name', $this->post['page']);
+        $this->template->set('delete', t('system/buttons/delete'));
     }
-    
-    private function deleteNoCache(){
-        if (! $this->service_Validation->validate(array(
-            'id' => array(
-                'type'=> 'int',
-                'required' => 1,
-                'min'=>1
-            )
-        ), $this->post)) {
+
+    private function deleteNoCache()
+    {
+        if (! $this->post->validate(array(
+            'id' => 'required|type:int|min:1'
+        ))) {
             return;
         }
         
-        $this->service_Cache->deleteNoCache($this->post['id']);
+        $this->cache->deleteNoCache($this->post['id']);
     }
 }
-
-$obj_cache = new Cache();
-unset($obj_cache);

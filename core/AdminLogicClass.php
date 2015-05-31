@@ -31,21 +31,27 @@ include_once (NIV . 'core/BaseLogicClass.php');
 abstract class AdminLogicClass extends \core\BaseLogicClass
 {
     /**
+     * 
+     * @var \core\services\Logs
+     */
+    protected $logs;
+    
+    /**
      * Admin class constructor
      *
-     * @param \core\Input $Input    The input parser
-     * @param \core\models\Config $model_Config
-     * @param \core\services\Language $service_Language
-     * @param \core\services\Template $service_Template
+     * @param \core\Input $Input
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
+     * @param \core\services\Logs $logs
      */
-    public function __construct(\core\Input $Input,\core\models\Config $model_Config,
-        \core\services\Language $service_Language,\core\services\Template $service_Template)
-    {
-        $model_Config->setLayout('admin');
-        
-        $this->model_Config = $model_Config;
-        $this->service_Language = $service_Language;
-        $this->service_Template = $service_Template;
+    public function __construct(\core\Input $Input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,\core\services\Logs $logs)
+    {        
+        $this->config = $config;
+        $this->language = $language;
+        $this->template = $template;
+        $this->logs = $logs;
         
         $this->prepareInput($Input);
         
@@ -73,7 +79,7 @@ abstract class AdminLogicClass extends \core\BaseLogicClass
      */
     protected function init()
     {
-        if (! $this->model_Config->isAjax()) {
+        if (! $this->config->isAjax()) {
             exit();
         }
         

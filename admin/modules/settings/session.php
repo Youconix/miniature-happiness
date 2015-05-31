@@ -1,5 +1,5 @@
 <?php
-namespace admin;
+namespace admin\modules\settings;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,22 +23,18 @@ namespace admin;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../../../');
-}
-
-include (NIV . 'admin/modules/settings/settings.php');
-
-class Session extends \admin\Settings
+class Session extends \admin\modules\settings\Settings
 {
 
     /**
-     * Calls the functions
+     * Routes the controller
+     *
+     * @see Routable::route()
      */
-    protected function menu()
+    public function route($s_command)
     {
-        if (isset($this->get['command'])) {
-            switch ($this->get['command']) {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            switch ($s_command) {
                 case 'login':
                     $this->login();
                     break;
@@ -47,18 +43,17 @@ class Session extends \admin\Settings
                     $this->sessions();
                     break;
             }
-        } else 
-            if (isset($this->post['command'])) {
-                switch ($this->post['command']) {
-                    case 'login':
-                        $this->login();
-                        break;
-                    
-                    case 'sessions':
-                        $this->sessionsSave();
-                        break;
-                }
+        } else {
+            switch ($s_command) {
+                case 'login':
+                    $this->login();
+                    break;
+                
+                case 'sessions':
+                    $this->sessionsSave();
+                    break;
             }
+        }
     }
 
     /**
@@ -91,50 +86,50 @@ class Session extends \admin\Settings
      */
     private function login()
     {
-        $this->service_Template->set('generalTitle', t('system/admin/settings/login/title'));
-        $this->service_Template->set('loginRedirectText', t('system/admin/settings/login/loginRedirect'));
-        $this->service_Template->set('loginRedirect', $this->getValue('main/settings/login', 'index/view'));
-        $this->service_Template->set('logoutRedirectText', t('system/admin/settings/login/logoutRedirect'));
-        $this->service_Template->set('logoutRedirect', $this->getValue('main/logout', 'index/view'));
-        $this->service_Template->set('registrationRedirectText', t('system/admin/settings/login/registrationRedirect'));
-        $this->service_Template->set('registrationRedirect', $this->getValue('main/registration', 'index/view'));
+        $this->template->set('generalTitle', t('system/admin/settings/login/title'));
+        $this->template->set('loginRedirectText', t('system/admin/settings/login/loginRedirect'));
+        $this->template->set('loginRedirect', $this->getValue('main/settings/login', 'index/view'));
+        $this->template->set('logoutRedirectText', t('system/admin/settings/login/logoutRedirect'));
+        $this->template->set('logoutRedirect', $this->getValue('main/logout', 'index/view'));
+        $this->template->set('registrationRedirectText', t('system/admin/settings/login/registrationRedirect'));
+        $this->template->set('registrationRedirect', $this->getValue('main/registration', 'index/view'));
         
-        $this->service_Template->set('normalLoginText', t('system/admin/settings/login/normalLogin'));
+        $this->template->set('normalLoginText', t('system/admin/settings/login/normalLogin'));
         if ($this->getValue('login/normalLogin', 1) == 1) {
-            $this->service_Template->set('normalLogin', 'checked="checked"');
+            $this->template->set('normalLogin', 'checked="checked"');
         }
         /* Open ID */
-        $this->service_Template->set('openidLoginText', t('system/admin/settings/login/openidLogin'));
+        $this->template->set('openidLoginText', t('system/admin/settings/login/openidLogin'));
         if ($this->getValue('login/openID', 0) == 1) {
-            $this->service_Template('openidLogin', 'checked="checked"');
+            $this->template('openidLogin', 'checked="checked"');
         }
         /* Facebook */
-        $this->service_Template->set('facebookLoginText', t('system/admin/settings/login/facebookLogin'));
+        $this->template->set('facebookLoginText', t('system/admin/settings/login/facebookLogin'));
         if ($this->getValue('login/facebook') == 1) {
-            $this->service_Template->set('facebookLogin', 'checked="checked"');
+            $this->template->set('facebookLogin', 'checked="checked"');
         } else {
-            $this->service_Template->set('facebook_login_data', 'style="display:none"');
+            $this->template->set('facebook_login_data', 'style="display:none"');
         }
-        $this->service_Template->set('facebookAppIDText', t('system/admin/settings/login/facebookAppID'));
-        $this->service_Template->set('facebookAppID', $this->getValue('login/facebook_app_id'));
+        $this->template->set('facebookAppIDText', t('system/admin/settings/login/facebookAppID'));
+        $this->template->set('facebookAppID', $this->getValue('login/facebook_app_id'));
         /* LDAP */
-        $this->service_Template->set('ldapLoginText', t('system/admin/settings/login/ldapLogin'));
+        $this->template->set('ldapLoginText', t('system/admin/settings/login/ldapLogin'));
         if ($this->getValue('login/LDAP') == 1) {
-            $this->service_Template->set('ldapLogin', 'checked="checked"');
+            $this->template->set('ldapLogin', 'checked="checked"');
         } else {
-            $this->service_Template->set('ldap_login_data', 'style="display:none"');
+            $this->template->set('ldap_login_data', 'style="display:none"');
         }
-        $this->service_Template->set('ldapServerText', t('system/admin/settings/host'));
-        $this->service_Template->set('ldapServer', $this->getValue('login/ldap_server'));
-        $this->service_Template->set('ldapPortText', t('system/admin/settings/port'));
-        $this->service_Template->set('ldapPort', $this->getValue('login/ldap_port', 636));
+        $this->template->set('ldapServerText', t('system/admin/settings/host'));
+        $this->template->set('ldapServer', $this->getValue('login/ldap_server'));
+        $this->template->set('ldapPortText', t('system/admin/settings/port'));
+        $this->template->set('ldapPort', $this->getValue('login/ldap_port', 636));
         
-        $this->service_Template->set('redirectError', t('system/admin/settings/login/redirectError'));
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
-        $this->service_Template->set('loginChoiceText', t('system/admin/settings/login/loginChoice'));
-        $this->service_Template->set('facebookAppError', t('system/admin/settings/login/facebookAppError'));
-        $this->service_Template->set('ldapServerError', t('system/admin/settings/login/ldapServerError'));
-        $this->service_Template->set('ldapPortError', t('system/admin/settings/login/ldapPortError'));
+        $this->template->set('redirectError', t('system/admin/settings/login/redirectError'));
+        $this->template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('loginChoiceText', t('system/admin/settings/login/loginChoice'));
+        $this->template->set('facebookAppError', t('system/admin/settings/login/facebookAppError'));
+        $this->template->set('ldapServerError', t('system/admin/settings/login/ldapServerError'));
+        $this->template->set('ldapPortError', t('system/admin/settings/login/ldapPortError'));
     }
 
     /**
@@ -142,7 +137,11 @@ class Session extends \admin\Settings
      */
     private function loginSave()
     {
-        if (empty($this->post['login_redirect']) || empty($this->post['logout_redirect']) || empty($this->post['registration_redirect'])) {
+        if (! $this->post->validate(array(
+            'login_redirect' => 'required',
+            'logout_redirect' => 'required',
+            'registration_redirect' => 'required'
+        ))) {
             return;
         }
         
@@ -155,7 +154,10 @@ class Session extends \admin\Settings
             return;
         }
         
-        if ($i_ldapLogin == 1 && (empty($this->post['ldap_server']) || ! isset($this->post['ldap_port']) || ! is_numeric($this->post['ldap_port']) || $this->post['ldap_port'] < 1)) {
+        if ($i_ldapLogin == 1 && ! $this->post->validate(array(
+            'ldap_server' => 'required',
+            'ldap_port' => 'required|type:port'
+        ))) {
             return;
         }
         
@@ -182,15 +184,15 @@ class Session extends \admin\Settings
      */
     private function sessions()
     {
-        $this->service_Template->set('generalTitle', t('system/admin/settings/sessions/title'));
-        $this->service_Template->set('sessionNameText', t('system/admin/settings/sessions/name'));
-        $this->service_Template->set('sessionName', $this->getValue('session/sessionName', 'miniature-happiness'));
-        $this->service_Template->set('sessionPathText', t('system/admin/settings/sessions/path'));
-        $this->service_Template->set('sessionPath', $this->getValue('sessions/sessionPath', 'admin/data/sessions'));
-        $this->service_Template->set('sessionExpireText', t('system/admin/settings/sessions/expire'));
-        $this->service_Template->set('sessionExpire', $this->getvalue('session/sessionExpire', 300));
+        $this->template->set('generalTitle', t('system/admin/settings/sessions/title'));
+        $this->template->set('sessionNameText', t('system/admin/settings/sessions/name'));
+        $this->template->set('sessionName', $this->getValue('session/sessionName', 'miniature-happiness'));
+        $this->template->set('sessionPathText', t('system/admin/settings/sessions/path'));
+        $this->template->set('sessionPath', $this->getValue('sessions/sessionPath', 'admin/data/sessions'));
+        $this->template->set('sessionExpireText', t('system/admin/settings/sessions/expire'));
+        $this->template->set('sessionExpire', $this->getvalue('session/sessionExpire', 300));
         
-        $this->service_Template->set('saveButton', t('system/buttons/save'));
+        $this->template->set('saveButton', t('system/buttons/save'));
     }
 
     /**
@@ -198,19 +200,11 @@ class Session extends \admin\Settings
      */
     private function sessionsSave()
     {
-        if (! $this->service_Validation->validate(array(
-            'session_name' => array(
-                'required' => 1
-            ),
-            'session_path' => array(
-                'required' => 1
-            ),
-            'session_expire' => array(
-                'required' => 1,
-                'type' => 'int',
-                'min-value' => 60
-            )
-        ), $this->post)) {
+        if (! $this->post->validate(array(
+            'session_name' => 'required',
+            'session_path' => 'required',
+            'session_expire' => 'required|type:int|min:60'
+        ))) {
             return;
         }
         
@@ -221,6 +215,3 @@ class Session extends \admin\Settings
         $this->service_Settings->save();
     }
 }
-
-$obj_Session = new Session();
-unset($obj_Session);

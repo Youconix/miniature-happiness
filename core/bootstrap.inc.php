@@ -31,7 +31,7 @@ function exception_handler($exception)
         exit();
     }
 
-    include (WEBSITE_ROOT . 'errors/500.php');
+    include (WEBSITE_ROOT . 'errors/Error500.php');
     exit();
 }
 
