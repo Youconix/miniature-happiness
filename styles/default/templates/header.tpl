@@ -4,7 +4,7 @@
 	<section id="headerLanguages">
 	   <ul>
 		<block {headerLanguage}>
-			<li class="language_icon"><a href="javascript:switchLanguage('{code}')"><img src="{NIV}{style_dir}images/flags/{code}.png" alt="{language}" title="{language}" class="icon"></a></li> 
+			<li class="language_icon"><a href="javascript:switchLanguage('{code}')"><img src="{NIV}{shared_style_dir}images/flags/{code}.png" alt="{language}" title="{language}" class="icon"></a></li> 
 		</block>
 		</ul>
 	</section>

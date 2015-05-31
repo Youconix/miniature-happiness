@@ -4,9 +4,8 @@
         <meta http-equiv="content-type" content="application/xhtml+xml; charset={encoding}">
     <title>{mainTitle} {title}</title>
     <link rel="stylesheet" href="{NIV}{style_dir}css/cssPage.css" media="screen">
-    <link rel="stylesheet" href="{NIV}{style_dir}css/admin/cssAdmin.css" media="screen">
-    <link rel="stylesheet" href="{NIV}{style_dir}css/tabs.css" media="screen">
-    <link rel="stylesheet" href="{NIV}{style_dir}css/HTML5_validation.css" media="screen">
+    <link rel="stylesheet" href="{NIV}{shared_style_dir}css/tabs.css" media="screen">
+    <link rel="stylesheet" href="{NIV}{shared_style_dir}css/HTML5_validation.css" media="screen">
     <script src="{NIV}js/jquery-2.0.3.min.js"></script>
     <script src="{NIV}js/admin/admin.js"></script>
     <script src="{NIV}js/general.js"></script>

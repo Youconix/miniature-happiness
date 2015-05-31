@@ -27,25 +27,25 @@ class Config extends Model implements \SplSubject
 {
 
     /**
-     * 
+     *
      * @var \core\services\Settings
      */
     protected $settings;
 
     /**
-     * 
+     *
      * @var \core\services\File
      */
     protected $file;
 
     /**
-     * 
+     *
      * @var \core\services\Cookie
      */
     protected $cookie;
-    
+
     /**
-     * 
+     *
      * @var \core\services\Builder
      */
     protected $builder;
@@ -73,12 +73,11 @@ class Config extends Model implements \SplSubject
     /**
      * PHP 5 constructor
      *
-     * @param core\services\File $file
-     * @param core\services\Settings $settings
-     * @param core\services\Cookie $cookie
+     * @param core\services\File $file            
+     * @param core\services\Settings $settings            
+     * @param core\services\Cookie $cookie            
      */
-    public function __construct(\core\services\File $file, \core\services\Settings $settings, \core\services\Cookie $cookie,
-            \core\services\QueryBuilder $builder)
+    public function __construct(\core\services\File $file, \core\services\Settings $settings, \core\services\Cookie $cookie, \core\services\QueryBuilder $builder)
     {
         $this->file = $file;
         $this->settings = $settings;
@@ -87,11 +86,11 @@ class Config extends Model implements \SplSubject
         
         $this->a_observers = new \SplObjectStorage();
         
-        $this->loadTemplateDir();
-        
         $this->loadLanguage();
         
         $this->setDefaultValues($settings);
+        
+        $this->detectTemplateDir();
     }
 
     /**
@@ -116,26 +115,27 @@ class Config extends Model implements \SplSubject
 
     /**
      * Adds the observer
-     * 
+     *
      * @see SplSubject::attach()
      */
     public function attach(\SplObserver $observer)
     {
         $this->a_observers->attach($observer);
     }
-    
+
     /**
      * Removes the observer
-     * 
+     *
      * @see SplSubject::detach()
      */
-    public function detach(\SplObserver $observer) {
+    public function detach(\SplObserver $observer)
+    {
         $this->_observers->detach($observer);
     }
 
     /**
      * Notifies the observers
-     * 
+     *
      * @see SplSubject::notify()
      */
     public function notify()
@@ -167,7 +167,7 @@ class Config extends Model implements \SplSubject
                     /* Renew cookie */
                     $this->cookie->set('language', $this->s_language, '/');
                 } else {
-                    $this->cookie->delete('language','/');
+                    $this->cookie->delete('language', '/');
                 }
             }
         }
@@ -307,13 +307,41 @@ class Config extends Model implements \SplSubject
             $this->bo_ajax = true;
         }
     }
+    
+    /**
+     * Detects the template directory and layout
+     */
+    public function detectTemplateDir(){
+        if (preg_match('#^/?admin/#', $_SERVER['REQUEST_URI'])) {
+            $this->loadAdminTemplateDir();
+        } else {
+            $this->loadTemplateDir();
+        }
+        
+        $this->notify();
+    }
+
+    /**
+     * Loads the template directory
+     */
+    protected function loadAdminTemplateDir()
+    {
+        $this->s_templateDir = $this->settings->get('settings/templates/admin_dir');
+        $this->s_layout = $this->settings->get('settings/templates/admin_layout');
+    }
 
     /**
      * Loads the template directory
      */
     protected function loadTemplateDir()
     {
-        $s_templateDir = $this->settings->get('settings/templates/dir');
+        if ($this->isMobile()) {
+            $s_templateDir = $this->settings->get('settings/templates/mobile_dir');
+            $this->s_layout = $this->settings->get('settings/templates/mobile_layout');
+        } else {
+            $s_templateDir = $this->settings->get('settings/templates/default_dir');
+            $this->s_layout = $this->settings->get('settings/templates/default_layout');
+        }
         
         if (isset($_GET['protected_style_dir'])) {
             $s_styleDir = $this->clearLocation($_GET['protected_style_dir']);
@@ -380,6 +408,10 @@ class Config extends Model implements \SplSubject
     public function getStylesDir()
     {
         return 'styles/' . $this->s_templateDir . '/';
+    }
+    
+    public function getSharedStylesDir(){
+        return 'styles/shared/';
     }
 
     /**
@@ -449,13 +481,15 @@ class Config extends Model implements \SplSubject
         
         $this->notify();
     }
-    
+
     /**
      * Sets the layout
-     * 
-     * @param string $s_layout  The layout
+     *
+     * @param string $s_layout
+     *            The layout
      */
-    public function setLayout($s_layout){
+    public function setLayout($s_layout)
+    {
         $this->s_layout = $s_layout;
         
         $this->notify();
@@ -512,8 +546,8 @@ class Config extends Model implements \SplSubject
 
     /**
      * Returns the login redirect url
-     * 
-     * @return string   The url
+     *
+     * @return string The url
      */
     public function getLoginRedirect()
     {
@@ -528,8 +562,8 @@ class Config extends Model implements \SplSubject
 
     /**
      * Returns the logout redirect url
-     * 
-     * @return string   The url
+     *
+     * @return string The url
      */
     public function getLogoutRedirect()
     {
@@ -544,8 +578,8 @@ class Config extends Model implements \SplSubject
 
     /**
      * Returns the registration redirect url
-     * 
-     * @return string   The url
+     *
+     * @return string The url
      */
     public function getRegistrationRedirect()
     {
@@ -557,13 +591,14 @@ class Config extends Model implements \SplSubject
         
         return $s_page;
     }
-    
+
     /**
      * Returns the activation redirect url
-     * 
-     * @return string   The url
+     *
+     * @return string The url
      */
-    public function getActivationRedirect(){
+    public function getActivationRedirect()
+    {
         $s_page = $this->getBase() . 'index/view';
         
         if ($this->settings->exists('main/activation')) {
@@ -706,7 +741,7 @@ class Config extends Model implements \SplSubject
      */
     public function getAdminAddress()
     {
-        if (! $this->settings->exists('main/admin/email')) {            
+        if (! $this->settings->exists('main/admin/email')) {
             /* Send to first user */
             $this->builder->select('users', 'nick,email')
                 ->getWhere()
@@ -725,18 +760,24 @@ class Config extends Model implements \SplSubject
             'email' => $this->settings->get('main/admin/email')
         );
     }
-    
+
     /**
      * Returns if SSL is enabled
-     * 
-     * @return int  The SSL code
+     *
+     * @return int The SSL code
      * @see \core\services\Settings
      */
-    public function isSslEnabled(){
-        if( !$this->settings->exists('main/ssl') ){
+    public function isSslEnabled()
+    {
+        if (! $this->settings->exists('main/ssl')) {
             return \core\services\Settings::SSL_DISABLED;
         }
         
         return $this->settings->get('main/ssl');
+    }
+
+    public function isMobile()
+    {
+        return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
     }
 }
