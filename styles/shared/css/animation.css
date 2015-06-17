@@ -86,3 +86,26 @@ div.select {
 select.animation option {
 	background-color: #111;
 }
+
+input[type=button],input[type=submit],input[type=reset],a.button {
+	border-radius:15px;
+	background-color: #8c5489;
+    border: 2px outset #8c5489;
+    padding: 5px 10px;
+    color:#FFF;
+    font-weight:bold;
+    moz-box-shadow: 5px 5px 2px #888888;
+    webkit-box-shadow: 5px 5px 2px #888888;
+    ms-box-shadow: 5px 5px 2px #888888;
+    box-shadow: 5px 5px 2px #888888;
+    margin:0;
+    cursor:pointer;
+}
+input[type=button]:hover,input[type=submit]:hover,input[type=reset]:hover,a.button:hover {
+	border: 1px inset #8c5489;
+    moz-box-shadow: 2px 2px 0px #888888;
+    webkit-box-shadow: 2px 2px 0px #888888;
+    ms-box-shadow: 2px 2px 0px #888888;
+    box-shadow: 2px 2px 0px #888888;
+    margin:1px;
+}

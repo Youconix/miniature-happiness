@@ -197,6 +197,12 @@ class Validation extends \core\services\Service
                     $this->a_errors[] = "Field " . $s_key . " has invalid value " . $field . ". Only the values " . $s_set . ' are allowed.';
                 }
             }
+            if(strpos($s_rule,'minlength:') !== false ){
+                $i_minLength = trim(str_replace('minlength:', '', $s_rule));
+                if (strlen($field) < $i_minLength) {
+                    $this->a_errors[] = "Field " . $s_key . " is shorter then " . $i_minLength . " characters.";
+                }
+            }
         }
     }
 

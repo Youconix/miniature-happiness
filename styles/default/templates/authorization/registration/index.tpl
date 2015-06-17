@@ -24,7 +24,7 @@
 			<table>
 			<tbody>
 			<tr>
-				<td><img src="{NIV}{style_dir}images/captcha.php" alt=""></td>
+				<td><img src="{NIV}{shared_style_dir}images/captcha.php" alt=""></td>
 				<td><input type="text" name="captcha" value="" required></td>
 			</tr> 
 			<tr>
@@ -43,7 +43,7 @@
 			<block {openID}>
 			<tr>
 				<td colspan="2"><a href="{NIV}authorization/registration_{key}.php">
-				<img class="icon" src="{NIV}{style_dir}images/icons/{image}.png" alt="{key}" title="{key}">{text}</a></td>
+				<img class="login_icon" src="{NIV}{shared_style_dir}images/authorization/{image}.png" alt="{key}" title="{key}"></a></td>
 			</tr>
 			</block>
 			</tbody>

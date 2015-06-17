@@ -22,19 +22,14 @@
 		<emailFailed>De activatie email kon niet verzonden worden.</emailFailed>
 		<captcha>Type de onderstaande code over als controle.</captcha>
 		<notices>
-  	        	<notices0>Je hebt geen gebruikersnaam ingevuld.</notices0>
-  	        	<notices1>Je hebt geen E-mail adres ingevuld.</notices1>
+  	        	<notices0>De gebruikersnaam is niet ingevuld of korter dan 3 tekens.</notices0>
+  	        	<notices1>Het email adres is niet ingevuld of ongeldig.</notices1>
 	   	        <notices2>Je hebt geen wachtwoord ingevuld.</notices2>
-   	        	<conditions>Je moet wel met de voorwaarden akkoord gaan.</conditions>
-            		<emailInvalid>Je hebt een ongeldig E-mail adres ingevuld.</emailInvalid>
-     		       	<passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
-    		        <codeInvalid>De code is incorrect.</codeInvalid>
+   	        	<passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
+    		    <codeInvalid>De code is incorrect.</codeInvalid>
    		        <usernameTaken>De gebruikersnaam is al in gebruik.</usernameTaken>
-    		        <usernameTakenOpenID>Er is al een account met deze gebruikersnaam. Heb je niet al een keer geregistreerd?</usernameTakenOpenID>
-    		        <emailTaken>Het E-mail adres is al in gebruik.</emailTaken>
-     		      	<emailTakenOpenID>Er is al een account met dit E-mail adres. Heb je niet al een keer geregistreerd?</emailTakenOpenID>
-       		     	<usernameToShort>De gebruikernaam moet minimaal 3 tekens lang zijn.</usernameToShort>
-    		        <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
+    		    <emailTaken>Het E-mail adres is al in gebruik.</emailTaken>
+     		        <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
    		        <veryStrongPassword>Erg sterk wachtwoord</veryStrongPassword>
      		      	<strongPassword>Sterk wachtwoord</strongPassword>
     		       	<fairPassword>Redelijk wachtwoord</fairPassword>

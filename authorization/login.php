@@ -1,5 +1,5 @@
 <?php
-namespace Authorization;
+namespace authorization;
 
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
@@ -23,12 +23,6 @@ namespace Authorization;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../');
-    include (NIV . 'includes/BaseLogicClass.php');
-}
-define('FORCE_SSL', true);
-
 class Login extends \includes\BaseLogicClass
 {
 
@@ -194,7 +188,7 @@ class Login extends \includes\BaseLogicClass
      * Changes the expired password
      * Regular login only
      */
-    private function update()
+    protected function update()
     {
         if (! $this->session->exists('expired')) {
             $this->headers->redirect('index/view');

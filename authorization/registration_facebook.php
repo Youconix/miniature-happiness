@@ -1,4 +1,6 @@
 <?php
+namespace authorization;
+
 /**
  * Registration page
  *
@@ -21,13 +23,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
  */
-if( !defined('NIV') ){
-    define('NIV', '../');
-}
-define('FORCE_SSL',true);
-include (NIV . 'includes/BaseLogicClass.php');
 
-class Registration extends \core\BaseLogicClass
+class Registration_facebook extends \core\BaseLogicClass
 {
 
     private $service_Authorization;
@@ -37,11 +34,21 @@ class Registration extends \core\BaseLogicClass
     private $s_notice;
 
     /**
-     * PHP 5 constructor
+     * Constructor
+     * 
+     * @param \core\Input $input    The input parser
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
+     * @param \core\classes\Header $header
+     * @param \core\classes\Menu $menu
+     * @param \core\classes\Footer $footer
      */
-    public function __construct()
+    public function __construct(\core\Input $input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,
+        \core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer)
     {
-        $this->init();
+       parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         
         if ($this->model_Config->isAjax()) {
             if ($this->get['command'] == 'checkUsername') {
@@ -354,6 +361,3 @@ class Registration extends \core\BaseLogicClass
         return \core\Memory::models('User')->checkEmail($s_email);
     }
 }
-
-$obj_Registration = new Registration();
-unset($obj_Registration);

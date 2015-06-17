@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+    <passwordForm>
+        <password>Wachtwoord</password>
+        <passwordAgain>Wachtwoord herhalen</passwordAgain>
+        <passwordMissing>Het wachtwoord is niet ingevuld.</passwordMissing>
+        <invalid>De wachtwoorden zijn niet gelijk.</invalid>
+        <toShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</toShort>
+        <veryStrongPassword><![CDATA[ Heel sterk wachtwoord.<br/> Zeer moeilijk te raden.]]></veryStrongPassword>
+        <strongPassword><![CDATA[Sterk wachtwoord.<br/> Moeilijk te raden.]]></strongPassword>
+        <fairPassword><![CDATA[Redelijk wachtwoord.<br/> Te raden.]]></fairPassword>
+        <weakPassword><![CDATA[Zwak wachtwoord.<br/> Makkelijk te raden.]]></weakPassword>
+    </passwordForm>
+</widgets>

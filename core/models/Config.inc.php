@@ -620,44 +620,50 @@ class Config extends Model implements \SplSubject
         }
         return true;
     }
-
-    /**
-     * Returns if the facebook login is activated
-     *
-     * @return boolean True if the facebook login is activated
-     */
-    public function isFacebookLogin()
-    {
-        if (! $this->settings->exists('login/facebook') || $this->settings->get('login/facebook') != 1) {
+    
+    public function isLDAPLogin(){
+        if (! $this->settings->exists('login/LDAP') || $this->settings->get('login/LDAP/status') != 1) {
             return false;
         }
         return true;
     }
-
-    /**
-     * Returns if the openOD login is activated
-     *
-     * @return boolean True if the openID login is activated
-     */
-    public function isOpenIDLogin()
-    {
-        if (! $this->settings->exists('login/openID') || $this->settings->get('login/openID') != 1) {
-            return false;
+    
+    public function getLoginTypes(){
+        $a_login = array();
+        if( $this->isNormalLogin() ){
+            $a_login[] = 'normal';
         }
-        return true;
+        if( $this->isLDAPLogin() ){
+            $a_login[] = 'ldap';
+        }
+        $a_login = array_merge($a_login,$this->getOpenAuth());
+        return $a_login;
     }
-
-    /**
-     * Returns if the LDAP login is activated
-     *
-     * @return boolean True if the LDAP login is activated
-     */
-    public function isLDAPLogin()
-    {
-        if (! $this->settings->exists('login/ldap') || $this->settings->get('login/ldap') != 1) {
+    
+    public function getOpenAuth(){
+        if( !$this->settings->exists('login/openAuth') ){
+            return array();
+        }
+        
+        $a_types = $this->settings->getBlock('login/openAuth/type');
+        $a_openAuth = array();
+        foreach( $a_types AS $type ){
+            if( $type->tagName != 'type' ){ continue; }
+            
+            if( $this->settings->get('login/openAuth/'.$type->nodeValue.'/status') == 1 ){
+                $a_openAuth[] = $type->nodeValue;
+            }
+        }
+        
+        return $a_openAuth;
+    }
+    
+    public function isOpenAuthEnabled($s_name){
+        if( !$this->settings->exists('login/openAuth') || !$this->settings->exists('login/openAuth/'.$s_name)){
             return false;
         }
-        return true;
+        
+        return ($this->settings->exists('login/openAuth/'.$s_name.'/status') == 1 );
     }
 
     /**

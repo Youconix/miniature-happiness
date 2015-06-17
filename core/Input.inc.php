@@ -31,6 +31,14 @@ class Input implements \ArrayAccess {
         return array_key_exists($s_key,$this->a_container);
     }
     
+    public function getDefault($s_key,$s_default = ''){
+        if( !$this->has($s_key) ){
+            return $s_default;
+        }
+        
+        return $this->a_container[$s_key];
+    }
+    
     public function get($s_key){
         if( !$this->has($s_key) ){
             throw new \OutOfBoundsException('Key '.$s_key.' is not present in collection '.$s_type.'.');

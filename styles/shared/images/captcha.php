@@ -1,14 +1,16 @@
 <?php
+namespace styles\shared\images;
+
 define('NIV', '../../../');
-define('PROCESS', '1');
-require (NIV . 'core/BaseClass.php');
+require(NIV.'core/bootstrap.inc.php');
 
 class Captcha extends \core\BaseClass
 {
 
-    public function __construct()
+    protected function init()
     {
-        $this->init();
+        parent::init();
+        
         $this->displayCaptcha();
     }
 
@@ -19,5 +21,5 @@ class Captcha extends \core\BaseClass
     }
 }
 
-$obj_Captcha = new Captcha();
+$obj_Captcha = \Loader::Inject('\styles\shared\images\Captcha');
 unset($obj_Captcha);

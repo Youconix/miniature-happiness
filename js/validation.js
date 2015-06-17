@@ -15,7 +15,7 @@ function Validation(){
 Validation.prototype.init	= function(){
 	/* Check for stylesheet */
 	var styledir = $('body').data('styledir');
-	if( !styledir ){	styledir = '/styles/default/';	}
+	if( !styledir ){	styledir = '/styles/shared/';	}
 	
 	if( !$("link[href='"+styledir+"css/HTML5_validation.css']").length ){
 	    $('<link href="'+styledir+'css/HTML5_validation.css" rel="stylesheet">').appendTo("head");
@@ -59,6 +59,20 @@ Validation.prototype.html5ValidationArray	= function(fields){
 	
 	return oke;
 }
+Validation.prototype.bind	= function(names){
+	var i;
+	for(i in names){
+		var type = $('#'+names[i]).prop('type');
+		
+		if( (!type) || (arraySearch(validation.skip,type) == -1) ){
+			$('#'+names[i]).on("blur",function(){
+				var item = $(this);
+				
+				validation.html5Validate(item);
+			})
+		}
+	}
+}
 Validation.prototype.bindAll	= function(){	
 	$('input, textarea').each(function(){
 		var type = $(this).prop('type');
@@ -92,14 +106,20 @@ Validation.prototype.html5Validation	= function(id){
 	var item = $("#" + id); 
 	return this.html5Validate(item);
 }
-Validation.prototype.errorMessage = function(item){
+Validation.prototype.errorMessage = function(item,type){
+	type = type || 'missing';
+	item.next().remove();
+	
   if( item.hasClass('valid') ){
     item.prop('title','');
     return;
   }
-  
-  if( item.data().hasOwnProperty('error-message') || item.attr('data-error-message') ){
-	item.prop('title',item.data('error-message'));
+  console.log(type);
+  if( item.data().hasOwnProperty('validation-'+type) || item.attr('data-validation-'+type) ){
+	  item.after('<span class="validation-error-message">'+item.data('validation-'+type)+'</span>');
+  }
+  else if( item.data().hasOwnProperty('validation') || item.attr('data-validation') ){
+	  item.after('<span class="validation-error-message">'+item.data('validation')+'</span>');
   }
 }
 Validation.prototype.html5Validate	= function(item){
@@ -117,7 +137,7 @@ Validation.prototype.html5Validate	= function(item){
   	
 	if( isRequired && $.trim(value) == "" ){
 		$(item).addClass("invalid");
-    this.errorMessage(item);
+		this.errorMessage(item);
 		return false;
 	}
 	if( (typeof pattern != "undefined") && pattern != false ){
@@ -131,53 +151,58 @@ Validation.prototype.html5Validate	= function(item){
 		pattern = new RegExp(pattern);
 		if( value != "" && (value.match(pattern) == null)  ){
 			$(item).addClass("invalid");
-      this.errorMessage(item);
+			this.errorMessage(item,'pattern');
 			return false;
 		}
 	}
 		
 	if( (typeof type === "undefined" || type === false) ){
 		$(item).addClass("valid");
-    this.errorMessage(item);
+		this.errorMessage(item);
 		return true;
 	}
 		
 	if( type == "number" || type == "range" ){
 		if( isNaN(value) ){
 			$(item).addClass("invalid");
-      this.errorMessage(item);
+			this.errorMessage(item,'range');
 			return false;
 		}
 		
 		var min = $(item).prop("min");
 		var max = $(item).prop("max");
     
-    value = parseFloat(value);
+		value = parseFloat(value);
 				
-		if( ((typeof min !== "undefined") && min !== false && min !== '' && value < min) || ((typeof max !== "undefined") && max !== '' && max !== false && value > max) ){
-      $(item).addClass("invalid");
-      this.errorMessage(item);
+		if( ((typeof min !== "undefined") && min !== false && min !== '' && value < min) ){
+			$(item).addClass("invalid");
+			this.errorMessage(item,'min');
+			return false;
+		}
+		if( ( (typeof max !== "undefined") && max !== '' && max !== false && value > max) ){
+			$(item).addClass("invalid");
+			this.errorMessage(item,'max');
 			return false;
 		}
 	}
 	if( type == "email" && $.trim(value) != "" && !this.validateEmail(value) ){
 		$(item).addClass("invalid");
-    this.errorMessage(item);
+		this.errorMessage(item,'pattern');
 		return false;
 	}
 	if( type == "url" && $.trim(value) != "" && !this.validateURI(value) ){
-		$(item).addClass("invalid");
+		$(item).addClass("invalid",'pattern');
     this.errorMessage(item);
 		return false;
 	}
-  if( type == 'date' && value == '' ){
-    $(item).addClass("invalid");
-    this.errorMessage(item);
+	if( type == 'date' && value == '' ){
+	    $(item).addClass("invalid");
+	    this.errorMessage(item);
 		return false;
   }
 	
 	$(item).addClass("valid");
-  this.errorMessage(item);
+	this.errorMessage(item);
 	
 	return true;
 }

@@ -112,10 +112,20 @@ nav li {
 	margin-right: 5px;
 	display: block;
 	width: auto;
+	
+	cursor:pointer;
+	moz-box-shadow: 5px 5px 2px #888888;
+    webkit-box-shadow: 5px 5px 2px #888888;
+    ms-box-shadow: 5px 5px 2px #888888;
+    box-shadow: 5px 5px 2px #888888;
 }
 
 nav li:hover {
 	border: 2px inset #8c5489;
+	moz-box-shadow: 2px 2px 0px #888888;
+    webkit-box-shadow: 2px 2px 0px #888888;
+    ms-box-shadow: 2px 2px 0px #888888;
+    box-shadow: 2px 2px 0px #888888;
 }
 
 nav li a, footer a {
@@ -225,4 +235,14 @@ noscript {
 	padding-bottom: 0;
 	margin-top: 0;
 	margin-bottom: 0;
+}
+
+fieldset {
+	border:0;
+}
+label.label {
+	width:150px;
+	display:inline-block;
+	text-align:right;
+	margin-right:10px;
 }

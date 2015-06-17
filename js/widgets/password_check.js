@@ -1,7 +1,10 @@
 function PasswordCheck() {
 	this.password1;
 	this.password2;
-
+	this.language = {};
+}
+PasswordCheck.prototype.setLanguage = function(language){
+	this.language = language;
 }
 PasswordCheck.prototype.init = function() {
 	var self = this;
@@ -15,34 +18,43 @@ PasswordCheck.prototype.init = function() {
 	this.password2.on("blur", function() {
 		self.validate();
 	});
+	
+	var offset = $('#password1').offset();
+	var width = offset.left + parseInt($('#password1').css('width')) + 15;
+	var top = offset.top;
+	var index = parseInt($('#password1').css('z-index')) + 5;
+	
+	$('#passwordStrength').css('left',width);
+	$('#passwordStrength').css('top',top);
+	$('#passwordStrength').css('z-index',index);
 }
 PasswordCheck.prototype.validate = function() {
-	this.password1.removeClass("valid invalid");
-	this.password2.removeClass("valid invalid");
-
-	this.password1.prop("title", "");
-	this.password2.prop("title", "");
-
-	$("#passwordStrength").html("");
-	$("#passwordStrengthText").html("");
-
 	password1 = $.trim(this.password1.val());
 	password2 = $.trim($("#password2").val());
+	
+	$('#passwordStrength').hide();
 
 	if (password1 == "" || password2 == "") {
 		return;
 	}
+	
+	this.password1.removeClass("valid invalid");
+	this.password2.removeClass("valid invalid");
+	
+	this.password1.next().remove();
+	this.password2.next().remove();
+
+	$("#passwordIndicator").html("");
+	$("#passwordStrengthText").html("");
 
 	error = false;
 	if (password1 != password2) {
-		this.password1.prop("title", languageWidgets.passwordform_invalid);
-		this.password2.prop("title", languageWidgets.passwordform_invalid);
-
+		this.password1.after('<span class="validation-error-message">'+this.language.passwordform_invalid+'</span>');
+		
 		error = true;
 	} else if (password1.length < 8) {
-		this.password1.prop("title", languageWidgets.passwordform_toShort);
-		this.password2.prop("title", languageWidgets.passwordform_toShort);
-
+		this.password1.after('<span class="validation-error-message">'+this.language.passwordform_toShort+'</span>');
+		
 		error = true;
 	}
 
@@ -63,21 +75,21 @@ PasswordCheck.prototype.checkComplexity = function(password) {
 
 	if (this.checkLetters(password) && this.checkNumbers(password)
 			&& this.checkSpecial(password)) {
-		text = languageWidgets.passwordform_veryStrongPassword;
+		text = this.language.passwordform_veryStrongPassword;
 		strength = 4;
 	} else if (this.checkLetters(password)
 			&& (this.checkNumbers(password) || this.checkSpecial(password))) {
-		text = languageWidgets.passwordform_strongPassword;
+		text = this.language.passwordform_strongPassword;
 		strength = 3;
 	} else if (password.length > 12) {
-		text = languageWidgets.passwordform_fairPassword;
+		text = this.language.passwordform_fairPassword;
 		strength = 2;
 	} else {
-		text = languageWidgets.passwordform_weakPassword;
+		text = this.language.passwordform_weakPassword;
 		strength = 1;
 	}
 
-	output = "";
+	output = '';
 	if (strength >= 1) {
 		output += '<div class="passwordRed"></div><div class="passwordRed"></div>';
 	}
@@ -91,8 +103,10 @@ PasswordCheck.prototype.checkComplexity = function(password) {
 		output += '<div class="passwordGreen"></div><div class="passwordGreen"></div>';
 	}
 
-	$("#passwordStrength").html(output);
+	$("#passwordIndicator").html(output);
 	$("#passwordStrengthText").html(text);
+	
+	$('#passwordStrength').show();
 }
 PasswordCheck.prototype.checkLetters = function(password) {
 	return password.match("[a-zA-Z]+");

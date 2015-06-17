@@ -1,13 +1,7 @@
- <?php
+<?php
+namespace authorization;
+
 /**
- * Registration page
- *
- * This file is part of Miniature-happiness
- *
- * @copyright Youconix
- * @author    Rachelle Scheijen
- * @since     1.0
- *
  * Miniature-happiness is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -15,30 +9,57 @@
  *
  * Miniature-happiness is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Registration page
+ *
+ * This file is part of Miniature-happiness
+ *
+ * @copyright Youconix
+ * @author Rachelle Scheijen
+ * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../');
-}
-define('FORCE_SSL',true);
-include (NIV . 'includes/BaseLogicClass.php');
-
-class Registration extends \core\BaseLogicClass
+class Registration extends \includes\BaseLogicClass
 {
 
     /**
      *
-     * @var \core\models\Registration
+     * @var \core\models\Login
      */
-    private $model_registration;
+    private $login;
 
     private $a_data;
 
     private $s_notice;
+    
+    
+    
+    /**
+     * Constructor
+     *
+     * @param \core\Input $input    The input parser
+     * @param \core\models\Config $config
+     * @param \core\services\Language $language
+     * @param \core\services\Template $template
+     * @param \core\classes\Header $header
+     * @param \core\classes\Menu $menu
+     * @param \core\classes\Footer $footer
+     * @param \core\models\Login $login
+     * @param \core\services\Headers $headers
+     */
+    public function __construct(\core\Input $input,\core\models\Config $config,
+        \core\services\Language $language,\core\services\Template $template,
+        \core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,\core\models\Login $login,\core\services\Headers $headers)
+    {
+        $this->login = $login;
+        $this->headers = $headers;
+        
+        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
+    }
 
     /**
      * Inits the class Registration
@@ -62,6 +83,8 @@ class Registration extends \core\BaseLogicClass
             'conditions' => 'ignore'
         );
         
+        $this->s_current = 'normal';
+        
         parent::init();
         
         $this->a_data = array(
@@ -74,51 +97,41 @@ class Registration extends \core\BaseLogicClass
         );
         $this->s_notice = '';
         
-        $this->model_registration = \Loader::inject('\core\models\Registration');
+        $this->template->setJavascriptLink('<script src="{NIV}js/registration.js"></script>');
+        $this->template->setCssLink('<link rel="stylesheet" href="{NIV}{shared_style_dir}css/registration.css">');
         
-        $this->service_Template->setJavascriptLink('<script src="{NIV}js/registration.js"></script>');
+        $this->a_types = $this->config->getLoginTypes();
+        
+        if (! in_array('normal',$this->a_types)) {
+            $this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
+        }
     }
 
     /**
      * Displays the registration form
      */
     protected function index()
-    {
-        $a_fields = array(
-            'openID',
-            'facebook'
-        );
-        if (! $this->model_Config->isNormalLogin()) {
-            header('location: ' . NIV);
-            exit();
-        }
+    {   
+        $this->setLoginTypes();
         
-        foreach ($a_fields as $s_login) {
-            $this->service_Template->setBlock('openID', array(
-                'key' => $s_login,
-                'image' => strtolower($s_login),
-                'text' => t('registration/registration_' . $s_login)
-            ));
-        }
-        
-        $this->service_Template->set('registration', t('registration/screenTitle'));
+        $this->template->set('registration', t('registration/screenTitle'));
         
         if (! empty($this->s_notice)) {
-            $this->service_Template->set('errorNotice', $this->s_notice);
+            $this->template->set('errorNotice', $this->s_notice);
         }
         
-        $this->service_Template->set('nickText', t('system/admin/users/username'));
-        $this->service_Template->set('nick', $this->a_data['nick']);
-        $this->service_Template->set('emailText', t('system/admin/users/email'));
-        $this->service_Template->set('email', $this->a_data['email']);
+        $this->template->set('nickText', t('system/admin/users/username'));
+        $this->template->set('nick', $this->a_data['nick']);
+        $this->template->set('emailText', t('system/admin/users/email'));
+        $this->template->set('email', $this->a_data['email']);
         
-        $this->service_Template->set('passwordForm', \Loader::inject('\core\helpers\PasswordForm')->generate());
+        $this->template->set('passwordForm', \Loader::inject('\core\helpers\PasswordForm')->generate());
         
         $s_registration = t('registration/registrationVia');
         
-        $this->service_Template->set('captchaText', t('registration/captcha'));
-        $this->service_Template->set('buttonRegister', t('registration/submitButton'));
-        $this->service_Template->set('conditionsText', t('registration/conditions'));
+        $this->template->set('captchaText', t('registration/captcha'));
+        $this->template->set('buttonRegister', t('registration/submitButton'));
+        $this->template->set('conditionsText', t('registration/conditions'));
     }
 
     /**
@@ -127,7 +140,7 @@ class Registration extends \core\BaseLogicClass
     private function process()
     {
         if (! $this->check()) {
-            $this->service_Template->loadView('index.tpl');
+            $this->template->loadView('index.tpl');
             $this->form();
             return;
         }
@@ -135,9 +148,9 @@ class Registration extends \core\BaseLogicClass
         /* Register user */
         $this->a_data['username'] = $this->a_data['nick'];
         if (! $this->model_registration->register($this->a_data)) {
-            $this->service_Template->set('errorNotice', $this->service_Language->get('language/registration/failed'));
+            $this->template->set('errorNotice', $this->service_Language->get('language/registration/failed'));
         } else {
-            $this->service_Template->set('notice', $this->service_Language->insert($this->service_Language->get('language/registration/emailSend'), 'email', $this->a_data['email']));
+            $this->template->set('notice', $this->service_Language->insert($this->service_Language->get('language/registration/emailSend'), 'email', $this->a_data['email']));
         }
     }
 
@@ -204,29 +217,5 @@ class Registration extends \core\BaseLogicClass
         }
         
         return ! $bo_error;
-    }
-
-    /**
-     * Checks if the username is taken
-     *
-     * @param string $s_username
-     *            The username
-     * @return boolean if the username is free, otherwise false
-     */
-    private function checkUsername($s_username)
-    {
-        return \core\Memory::models('User')->checkUsername($s_username);
-    }
-
-    /**
-     * Checks if the email is taken
-     *
-     * @param string $s_email
-     *            email address
-     * @return boolean if the email is free, otherwise false
-     */
-    private function checkEmail($s_email)
-    {
-        return \core\Memory::models('User')->checkEmail($s_email);
     }
 }

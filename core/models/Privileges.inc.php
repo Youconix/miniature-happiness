@@ -280,7 +280,7 @@ class Privileges
             return;
         }        
         
-        if( ($i_level == \core\services\Session::ANONYMOUS) && ($i_ssl == \core\services\Settings::SSL_LOGIN) ){
+        if( ($i_level == \core\services\Session::ANONYMOUS) && ($i_ssl == \core\services\Settings::SSL_LOGIN) && (stripos($_SERVER['REQUEST_URI'],'authorization')) === false){
             return;
         }
         

@@ -42,7 +42,7 @@ class PasswordForm extends Helper
         $service_Template->setJavascriptLink($s_link);
         $s_link = '<script src="{NIV}js/validation.js"></script>';
         $service_Template->setJavascriptLink($s_link);
-        $s_link = '<link rel="stylesheet" href="{NIV}{style_dir}css/HTML5_validation.css">';
+        $s_link = '<link rel="stylesheet" href="{NIV}{shared_style_dir}css/HTML5_validation.css">';
         $service_Template->setCssLink($s_link);
     }
 
@@ -53,25 +53,52 @@ class PasswordForm extends Helper
      */
     public function generate()
     {
+        $s_passwordError = $this->service_Language->get('widgets/passwordForm/passwordMissing');
+        
+        $a_language = array(
+            'passwordform_invalid' => $this->service_Language->get('widgets/passwordForm/invalid'),
+            'passwordform_toShort' => $this->service_Language->get('widgets/passwordForm/toShort'),
+            'passwordform_veryStrongPassword' =>  $this->service_Language->get('widgets/passwordForm/veryStrongPassword'),
+            'passwordform_strongPassword' => $this->service_Language->get('widgets/passwordForm/strongPassword'),
+            'passwordform_fairPassword' => $this->service_Language->get('widgets/passwordForm/fairPassword'),
+            'passwordform_weakPassword' => $this->service_Language->get('widgets/passwordForm/weakPassword')
+        );
+        
         $s_html = '<section id="passwordForm">
-		<table>
-		<tbody>
-			<tr>
-				<td><label>' . $this->service_Language->get('system/admin/users/password') . '</label></td>
-				<td><input type="password" name="password" id="password1" required></td>
-				<td id="passwordStrength"></td>
-			</tr>
-			<tr>
-				<td><label>' . $this->service_Language->get('system/admin/users/passwordAgain') . '</label></td>
-				<td><input type="password" name="password2" id="password2" required></td>
-				<td id="passwordStrengthText"></td>
-			</tr>
-		</tbody>
-		</table>
+		<fieldset>
+				<label class="label">' . $this->service_Language->get('widgets/passwordForm/password') . '</label>
+				<span><input type="password" name="password" id="password1" data-validation="'.$s_passwordError.'" data-validation-pattern="'.$a_language['passwordform_toShort'].'" pattern=".{8,}" required></span>
+		</fieldset>
+        <fieldset>
+			<label class="label" for="password2">' . $this->service_Language->get('widgets/passwordForm/passwordAgain') . '</label>
+			<span><input type="password" name="password2" id="password2" data-validation="'.$s_passwordError.'" data-validation-pattern="'.$a_language['passwordform_toShort'].'" pattern=".{8,}" required></span>			
+		</fieldset>
 		</section>
+        <article id="passwordStrength">
+		  <section id="passwordIndicator">
+		  </section>
+				        <section id="passwordStrengthText">
+				    
+				        </section>
+				</article>
 		<style>
 		<!--
-		#passwordStrength div {	height:12px; width:12px; float:left; margin-right:2px; }
+		#passwordIndicator div {	height:12px; width:12px; float:left; margin-right:2px; }
+        #passwordStrength { min-width:250px; max-width:300px; width:auto; padding:4px; border:1px solid #ece9e9;
+		   border-left:1px solid #dedbdb; border-top:1px solid #dedbdb;
+	       background-color:#FFF;
+	       color:#111;
+	       ms-border-radius:5px;
+	       webkit-border-radius:5px;
+	       border-radius:5px;
+	       moz-box-shadow: 10px 10px 5px #888888;
+	       webkit-box-shadow: 10px 10px 5px #888888;
+	       ms-box-shadow: 10px 10px 5px #888888;
+	       box-shadow: 10px 10px 5px #888888;
+           display:none;
+		   position:absolute;
+        }
+        #passwordIndicator { width:99.99%; height:15px; }  
 		.passwordRed	{ background-color:red; }	
 		.passwordYellow { background-color:yellow; }
 		.passwordGreen {	background-color:green; }
@@ -79,8 +106,13 @@ class PasswordForm extends Helper
 		</style>
 		<script>
 		<!--
-		passwordCheck = new PasswordCheck();
-		passwordCheck.init();
+        $(document).ready(function(){
+            validation.bind(["password1","password2"]);
+				    
+    		passwordCheck = new PasswordCheck();
+		    passwordCheck.setLanguage('.json_encode($a_language).');
+    		passwordCheck.init();
+    	});
 		//-->
 		</script>';
         

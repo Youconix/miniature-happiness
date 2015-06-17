@@ -258,7 +258,13 @@ table {
 }
 
 fieldset {
-	border: 0;
+    border:0;
+}
+label.label {
+    width:150px;
+    display:inline-block;
+    text-align:right;
+    margin-right:10px;
 }
 
 .item_header {

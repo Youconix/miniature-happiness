@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+    <passwordForm>
+        <password>Password</password>
+        <passwordAgain>Repeat password</passwordAgain>
+        <passwordMissing>The password is not filled in.</passwordMissing>
+        <invalid>The passwords are not equal.</invalid>
+        <toShort>The password must be at least 8 characters long.</toShort>
+        <veryStrongPassword><![CDATA[Very strong password.<br/> Very difficult to guess.]]></veryStrongPassword>
+        <strongPassword><![CDATA[Strong password.<br/> Difficult to guess.]]></strongPassword>
+        <fairPassword><![CDATA[Fair password.<br/> Guessable.]]></fairPassword>
+        <weakPassword><![CDATA[Weak password.<br/> Easy to guess.]]></weakPassword>
+    </passwordForm>
+</widgets>
