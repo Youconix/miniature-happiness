@@ -1,9 +1,9 @@
 <?php
-define('NIV', dirname(__FILE__) . '/../../../');
+if (! defined('NIV')){
+    define('NIV', dirname(__FILE__) . '/../../../');
+}
 
-require (NIV . 'tests/GeneralTest.php');
-
-class testTemplate extends GeneralTest
+class testTemplate extends \tests\GeneralTest
 {
     
     public function __construct()
@@ -26,7 +26,7 @@ class testTemplate extends GeneralTest
         $service_Cookie = new \tests\stubs\services\Cookie($service_Security);
         $service_QueryBuilder = new \tests\stubs\services\QueryBuilder($service_Database);
         
-        $service_Config = new \tests\stubs\services\Config($service_File, $service_Settings, $service_Cookie);
+        $service_Config = new \tests\stubs\models\Config($service_File, $service_Settings, $service_Cookie);
         $service_Headers = new \tests\stubs\services\Headers($service_Config);
         $service_Cache = new \tests\stubs\services\Cache($service_File, $service_Config, $service_Headers, $service_QueryBuilder);
         

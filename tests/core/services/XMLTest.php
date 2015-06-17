@@ -1,5 +1,7 @@
 <?php
-define('NIV', dirname(__FILE__) . '/../../../');
+if( ! defined('NIV') ) {
+    define('NIV', dirname(__FILE__) . '/../../../');
+}
 
 class testXML extends \tests\GeneralTest
 {

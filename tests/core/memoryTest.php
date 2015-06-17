@@ -3,71 +3,14 @@ if (! defined('NIV')) {
     define('NIV', dirname(__FILE__) . '/../../');
 }
 
-if (! class_exists('GeneralTest')) {
-    require (NIV . 'tests/GeneralTest.php');
-}
-
-class testMemory extends GeneralTest
+class testMemory extends \tests\GeneralTest
 {
-
-    /**
-     * Tests the protocol detection
-     *
-     * @test
-     */
-    public function getProtocol()
-    {
-        $this->assertEquals('http://', \core\Memory::getProtocol());
-    }
-
-    /**
-     * Tests the page detection
-     *
-     * @test
-     */
-    public function getPage()
-    {
-        $a_page = explode('/', \core\Memory::getPage());
-        $this->assertEquals('phpunit', end($a_page));
-    }
-
-    /**
-     * Tests the ajax mode
-     *
-     * @test
-     */
-    public function isAjax()
-    {
-        $this->assertFalse(\core\Memory::isAjax());
-    }
-
-    /**
-     * Tests the ajax mode
-     *
-     * @test
-     */
-    public function setAjax()
-    {
-        $this->assertFalse(\core\Memory::isAjax());
-        
-        \core\Memory::setAjax();
-        $this->assertTrue(\core\Memory::isAjax());
-    }
-
-    /**
-     * Tests the base detection
-     *
-     * @test
-     */
-    public function getBase()
-    {
-        $this->assertEquals($this->s_base, \core\Memory::getBase());
-    }
 
     /**
      * Checks if the class gets loaded
      *
      * @test
+     * @expectedDeprecated ensureClass
      */
     public function ensureClass()
     {
@@ -87,12 +30,12 @@ class testMemory extends GeneralTest
      */
     public function ensureInterface()
     {
-        $s_interface = 'Observer';
+        $s_interface = 'Output';
         
         $this->assertFalse(interface_exists($s_interface));
         
         \core\Memory::ensureInterface($s_interface);
-        $this->assertTrue(interface_exists($s_interface));
+        $this->assertTrue(interface_exists('\core\interfaces\\'.$s_interface));
     }
 
     /**
@@ -119,8 +62,8 @@ class testMemory extends GeneralTest
         try {
             \core\Memory::helpers('lalalallaa');
             
-            $this->fail('Calling helper lalalallaa must throw a Memory exception.');
-        } catch (OutOfBoundsException $e) {}
+            $this->fail('Calling helper lalalallaa must throw a RuntimeException.');
+        } catch (\RuntimeException $e) {}
     }
 
     /**
@@ -145,7 +88,7 @@ class testMemory extends GeneralTest
             \core\Memory::services('lalalallaa');
             
             $this->fail('Calling service lalalallaa must throw a Memory exception.');
-        } catch (OutOfBoundsException $e) {}
+        } catch (\RuntimeException $e) {}
         
         $service = \core\Memory::services('Random');
         $this->assertInstanceOf('\core\services\Random', $service);
@@ -165,12 +108,11 @@ class testMemory extends GeneralTest
     /**
      * Tests the service loading
      *
-     * @expectedException OutOfBoundsException
      * @test
      */
     public function models()
     {
-        \core\Memory::models('lalalallaa');
+        \core\Memory::models('User');
     }
 
     /**
@@ -225,7 +167,11 @@ class testMemory extends GeneralTest
     public function generateUrl()
     {
         $s_url = 'lalalal.php';
-        $this->assertEquals($this->s_base . $s_url, \core\Memory::generateUrl('./../../' . $s_url));
+        $this->assertEquals($this->s_base .NIV. $s_url, \core\Memory::generateUrl(NIV. $s_url));
+    }
+    
+    private function createModel(){
+        
     }
 }
 ?>

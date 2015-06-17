@@ -42,7 +42,9 @@ class Stack
      */
     public function __construct($a_content = array())
     {
-        trigger_error("This class has been deprecated in favour of SplStack.",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This class has been deprecated in favour of SplStack.", E_USER_DEPRECATED);
+        }
         $this->clear();
         
         $this->addArray($a_content);

@@ -24,6 +24,7 @@ namespace core\classes;
  * @author Rachelle Scheijen
  * @since 1.0
  * @deprecated
+ *
  * @see http://php.net/manual/en/class.splqueue.php
  */
 class Queue
@@ -43,7 +44,9 @@ class Queue
      */
     public function __construct($a_content = array())
     {
-        trigger_error("This class has been deprecated in favour of SplQueue.",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This class has been deprecated in favour of SplQueue.", E_USER_DEPRECATED);
+        }
         $this->clear();
         
         $this->addArray($a_content);

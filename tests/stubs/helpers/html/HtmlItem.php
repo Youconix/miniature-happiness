@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\helpers\html;
 
-class HtmlItem extends core\helpers\html\HtmlItem
+class HtmlItem extends \core\helpers\html\HtmlItem
 {
 
     public function __construct($s_tag)

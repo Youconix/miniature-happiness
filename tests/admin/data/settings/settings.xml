@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="settings.xsd">
+	<main>
+		<nameSite />
+		<url>http://framework.local</url>
+		<base />
+		<timeZone>Europe/Berlin</timeZone>
+		<salt></salt>
+		<logs>default</logs>
+		<ssl>0</ssl>
+	</main>
+	<login>
+		<normalLogin>1</normalLogin>
+		<openAuth>
+			<type>facebook</type>
+			<type>google</type>
+			<type>twitter</type>
+			<facebook>
+				<status>1</status>
+				<appId></appId>
+				<appSecret></appSecret>
+			</facebook>
+			<google>
+				<status>1</status>
+				<appId></appId>
+				<appSecret></appSecret>
+			</google>
+			<twitter>
+				<status>1</status>
+				<appId></appId>
+				<appSecret></appSecret>
+			</twitter>
+		</openAuth>
+		<LDAP>
+			<status>0</status>
+			<server />
+			<port>636</port>
+		</LDAP>
+	</login>
+	<session>
+		<sessionName />
+		<sessionPath />
+		<sessionExpire>300</sessionExpire>
+	</session>
+	<defaultLanguage>nl-NL</defaultLanguage>
+	<fallbackLanguage>nl-NL</fallbackLanguage>
+	<mail>
+		<senderName />
+		<senderEmail>admin@framework.local</senderEmail>
+		<SMTP>0</SMTP>
+		<host />
+		<username />
+		<password />
+		<port />
+		<ssl>0</ssl>
+	</mail>
+	<templates>
+		<default_dir>default</default_dir>
+		<default_layout>default</default_layout>
+		<mobile_dir>default</mobile_dir>
+		<mobile_layout>default</mobile_layout>
+		<admin_dir>admin</admin_dir>
+		<admin_layout>admin</admin_layout>
+	</templates>
+	<SQL>
+		<prefix>SF_</prefix>
+		<type>Mysqli</type>
+		<Mysqli>
+			<username>sh-framework</username>
+			<password>tXetDSsBbjpsrTEm</password>
+			<database>sh-framework</database>
+			<host>localhost</host>
+			<port />
+		</Mysqli>
+	</SQL>
+	<version>2.0</version>
+</settings>

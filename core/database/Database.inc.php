@@ -54,7 +54,9 @@ class Database
         
         $s_name = '\core\database\Database_' . $this->s_type;
         $obj_DAL = new $s_name($this->service_Settings);
-        $obj_DAL->defaultConnect();
+        if (! \core\Memory::isTesting()) {
+            $obj_DAL->defaultConnect();
+        }
         
         return $obj_DAL;
     }

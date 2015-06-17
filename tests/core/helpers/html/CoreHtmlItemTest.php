@@ -24,7 +24,7 @@ class testCoreHtmlItem extends \tests\GeneralTest
     {
         parent::setUp();
         
-        $this->obj_CoreHtmlItem = new \tests\stubs\services\CoreHtmlItem($this->s_tag);
+        $this->obj_CoreHtmlItem = new \tests\stubs\helpers\html\CoreHtmlItem($this->s_tag);
     }
 
     public function tearDown()

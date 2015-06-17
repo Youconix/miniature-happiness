@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class DummyRandom extends \core\services\Random
+class Random extends \core\services\Random
 {
 
     /**

@@ -9,7 +9,7 @@ class QueryBuilder extends \core\services\QueryBuilder
     public function __construct($service_Database)
     {
         $this->service_Database = $service_Database;
-        $this->obj_builder = new DummyBuilder($this->service_Database);
+        $this->obj_builder = new Builder($this->service_Database);
     }
 
     /**
@@ -23,7 +23,7 @@ class QueryBuilder extends \core\services\QueryBuilder
     }
 }
 
-class DummyBuilder implements \core\services\Builder
+class Builder implements \core\services\Builder
 {
 
     private $service_Database;
@@ -136,7 +136,7 @@ class DummyBuilder implements \core\services\Builder
      */
     public function getCreate($s_table, $bo_dropTable)
     {
-        return new DummyBuilderCreate();
+        return new BuilderCreate();
     }
 
     /**
@@ -206,7 +206,7 @@ class DummyBuilder implements \core\services\Builder
      */
     public function getWhere()
     {
-        return new DummyBuilderWhere();
+        return new BuilderWhere();
     }
 
     /**
@@ -240,7 +240,7 @@ class DummyBuilder implements \core\services\Builder
      */
     public function getHaving()
     {
-        return new DummyBuilderWhere();
+        return new BuilderWhere();
     }
 
     /**
@@ -399,7 +399,7 @@ class DummyBuilder implements \core\services\Builder
     }
 }
 
-class DummyBuilderWhere implements \core\services\Where
+class BuilderWhere implements \core\services\Where
 {
 
     /**
@@ -491,7 +491,7 @@ class DummyBuilderWhere implements \core\services\Where
     }
 }
 
-class DummyBuilderHaving implements \core\services\Having
+class BuilderHaving implements \core\services\Having
 {
 
     /**
@@ -565,7 +565,7 @@ class DummyBuilderHaving implements \core\services\Having
     }
 }
 
-class DummyBuilderCreate implements \core\services\Create
+class BuilderCreate implements \core\services\Create
 {
 
     public function reset()

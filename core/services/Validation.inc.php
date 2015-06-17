@@ -180,13 +180,13 @@ class Validation extends \core\services\Service
             if (strpos($s_rule, 'min:') !== false) {
                 $fl_minValue = trim(str_replace('min:', '', $s_rule));
                 if ($field < $fl_minValue) {
-                    $this->a_errors[] = "Field " . $s_key . " is smaller then minimun value " . $fl_minValue . ".";
+                    $this->a_errors[] = "Field " . $s_key . " is smaller than minimun value " . $fl_minValue . ".";
                 }
             }
             if (strpos($s_rule, 'max:') !== false) {
                 $fl_maxValue = trim(str_replace('max:', '', $s_rule));
                 if ($field > $fl_maxValue) {
-                    $this->a_errors[] = "Field " . $s_key . " is bigger then maximun value " . $fl_maxValue . ".";
+                    $this->a_errors[] = "Field " . $s_key . " is bigger than maximun value " . $fl_maxValue . ".";
                 }
             }
             if (strpos($s_rule, 'set:') !== false) {
@@ -197,10 +197,16 @@ class Validation extends \core\services\Service
                     $this->a_errors[] = "Field " . $s_key . " has invalid value " . $field . ". Only the values " . $s_set . ' are allowed.';
                 }
             }
-            if(strpos($s_rule,'minlength:') !== false ){
+            if (strpos($s_rule, 'minlength:') !== false) {
                 $i_minLength = trim(str_replace('minlength:', '', $s_rule));
                 if (strlen($field) < $i_minLength) {
-                    $this->a_errors[] = "Field " . $s_key . " is shorter then " . $i_minLength . " characters.";
+                    $this->a_errors[] = "Field " . $s_key . " is shorter than " . $i_minLength . " characters.";
+                }
+            }
+            if (strpos($s_rule, 'maxlength:') !== false) {
+                $i_maxLength = trim(str_replace('minlength:', '', $s_rule));
+                if (strlen($field) > $i_maxLength) {
+                    $this->a_errors[] = "Field " . $s_key . "is longer than " . $i_maxLength . " characters.";
                 }
             }
         }
@@ -239,22 +245,22 @@ class Validation extends \core\services\Service
         }
         
         switch ($s_expectedType) {
-            case 'port' :
-                if( $s_type != 'int' && !is_numeric($s_type) ){
+            case 'port':
+                if ($s_type != 'int' && ! is_numeric($s_type)) {
                     $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
                 }
-                if( $s_field < 1 || $s_field > 65535 ){
-                    $this->a_errors = 'Invalid amount for field '.$s_key.'. Ports must be between 1 and 65535.';
+                if ($s_field < 1 || $s_field > 65535) {
+                    $this->a_errors = 'Invalid amount for field ' . $s_key . '. Ports must be between 1 and 65535.';
                 }
                 break;
             
             case 'int':
-                if ( ($s_type != $s_expectedType) && !is_numeric($s_field) ) {
+                if (($s_type != $s_expectedType) && ! is_numeric($s_field)) {
                     $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
                     return false;
                 }
                 break;
-                
+            
             case 'array':
                 if ($s_type != $s_expectedType) {
                     $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
@@ -263,7 +269,7 @@ class Validation extends \core\services\Service
                 break;
             
             case 'float':
-                if ($s_type != 'float' && $s_type != 'double'  && !is_numeric($s_field) ) {
+                if ($s_type != 'float' && $s_type != 'double' && ! is_numeric($s_field)) {
                     $this->a_errors[] = 'Invalid type for field ' . $s_key . '. Found ' . $s_type . ' but expected ' . $s_expectedType . '.';
                     return false;
                 }

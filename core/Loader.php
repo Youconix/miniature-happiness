@@ -49,8 +49,6 @@ class Loader
             return $s_fileName;
         }
         
-        trigger_error('Can not find '.NIV.$s_fileName);
-        
         return null;
     }
 
@@ -75,7 +73,6 @@ class Loader
         $s_fileName = Loader::getFileName($s_className);
         
         if (is_null($s_fileName)) {
-            echo ('can not find file ' . $s_className);
             return null;
         }
         

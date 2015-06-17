@@ -28,25 +28,25 @@ class Template extends Service implements \SplObserver
 {
 
     /**
-     * 
+     *
      * @var \core\services\Headers
      */
     private $service_Headers;
 
     /**
-     * 
+     *
      * @var \core\services\Cache
      */
     private $service_Cache;
 
     /**
-     * 
+     *
      * @var \core\models\Config
      */
     private $model_Config;
 
     /**
-     * 
+     *
      * @var \core\services\File
      */
     private $service_File;
@@ -169,7 +169,9 @@ class Template extends Service implements \SplObserver
      */
     public function getTemplateDir()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config->getTemplateDir().",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This function has been deprecated in favour of core/models/Config->getTemplateDir().", E_USER_DEPRECATED);
+        }
         return $this->model_Config->getTemplateDir();
     }
 
@@ -181,7 +183,9 @@ class Template extends Service implements \SplObserver
      */
     public function getStylesDir()
     {
-        trigger_error("This function has been deprecated in favour of core/models/Config->getStylesDir().",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This function has been deprecated in favour of core/models/Config->getStylesDir().", E_USER_DEPRECATED);
+        }
         return $this->model_Config->getStylesDir();
     }
 
@@ -372,7 +376,9 @@ class Template extends Service implements \SplObserver
      */
     public function headerLink($s_link)
     {
-        trigger_error("This function has been deprecated in favour of dedicated functions within this class.",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This function has been deprecated in favour of dedicated functions within this class.", E_USER_DEPRECATED);
+        }
         if (is_object($s_link) && is_subclass_of($s_link, 'CoreHtmlItem')) {
             $s_link = $s_link->generateItem();
         } else 
@@ -583,7 +589,7 @@ class Template extends Service implements \SplObserver
         }
         
         $this->set('style_dir', $this->model_Config->getStylesDir());
-        $this->set('shared_style_dir',$this->model_Config->getSharedStylesDir());
+        $this->set('shared_style_dir', $this->model_Config->getSharedStylesDir());
         $this->set('NIV', $this->model_Config->getBase());
         
         if (! $this->model_Config->isAjax()) {
@@ -793,8 +799,9 @@ class Template extends Service implements \SplObserver
 
     /**
      * Removes the unused else blocks
-     * 
-     * @param int $i_start  The start position to search on
+     *
+     * @param int $i_start
+     *            The start position to search on
      */
     private function removeElse($i_start)
     {

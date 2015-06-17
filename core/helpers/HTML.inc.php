@@ -175,7 +175,9 @@ class HTML extends Helper
      */
     public function input($s_name, $s_type, $s_value = '')
     {
-        trigger_error("This function has been deprecated in favour of getInputFactory().",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This function has been deprecated in favour of getInputFactory().", E_USER_DEPRECATED);
+        }
         $this->checkClass('Input');
         
         $obj_factory = InputFactory::getInstance();
@@ -197,7 +199,9 @@ class HTML extends Helper
      */
     public function button($s_value, $s_name, $s_type)
     {
-        trigger_error("This function has been deprecated in favour of getInputFactory().",E_USER_DEPRECATED);
+        if (! \core\Memory::isTesting()) {
+            trigger_error("This function has been deprecated in favour of getInputFactory().", E_USER_DEPRECATED);
+        }
         $this->checkClass('Input');
         
         $obj_factory = InputFactory::getInstance();

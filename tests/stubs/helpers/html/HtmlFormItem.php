@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\helpers\html;
 
-class HtmlFormItem extends core\helpers\html\HtmlFormItem
+class HtmlFormItem extends \core\helpers\html\HtmlFormItem
 {
 
     public function __construct($s_tag)

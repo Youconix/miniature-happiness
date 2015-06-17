@@ -45,7 +45,7 @@ class testGroups extends \tests\GeneralTest
         $service_Settings = new \tests\stubs\services\Settings();
         $service_Cookie = new \tests\stubs\services\Cookie($service_Security);
         $model_GroupData = new \tests\stubs\models\data\ModelGroupData();
-        $model_Config = new \tests\stubs\services\Config($service_File, $service_Settings, $service_Cookie);
+        $model_Config = new \tests\stubs\models\Config($service_File, $service_Settings, $service_Cookie);
         
         $this->model_Groups = new \core\models\Groups($service_Builder, $service_Validation, $model_GroupData, $model_Config);
     }

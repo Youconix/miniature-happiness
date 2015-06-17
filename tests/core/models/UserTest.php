@@ -25,7 +25,7 @@ class testUser extends \tests\GeneralTest
     {
         parent::setUp();
         
-        $this->service_Database = new \tests\stubs\database\DummyDAL();
+        $this->service_Database = new \tests\stubs\database\DAL();
         $service_Validation = new \tests\stubs\services\Validation();
         $this->service_Builder = new \tests\stubs\services\QueryBuilder($this->service_Database);
         $service_Random = new \tests\stubs\services\Random();

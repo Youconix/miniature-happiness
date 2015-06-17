@@ -26,7 +26,7 @@ class testLanguage extends \tests\GeneralTest
         $service_Security = new \tests\stubs\services\Security($service_Validation);
         $service_Cookie = new \tests\stubs\services\Cookie($service_Security);
         
-        $service_Config = new \tests\stubs\services\Config($service_File, $service_Settings, $service_Cookie);
+        $service_Config = new \tests\stubs\models\Config($service_File, $service_Settings, $service_Cookie);
         
         $service_Settings->setValue('settings/defaultLanguage', 'en');
         $service_Settings->setValue('language/type', 'xml');
