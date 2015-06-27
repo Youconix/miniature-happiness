@@ -66,29 +66,114 @@ class Normal extends \authorization\Authorization {
             'password2' => 'string-DB',
             'captcha' => 'string',
             'type' => 'string',
-            'conditions' => 'ignore'
+            'conditions' => 'ignore',
+            'autologin' => 'ignore',
+            'username' => 'string-DB'
         );
         
         $this->s_current = 'normal';
         
         parent::init();
         
-        $this->template->setJavascriptLink('<script src="{NIV}js/registration.js"></script>');
+        $this->template->setJavascriptLink('<script src="{NIV}js/authorization/normal.js"></script>');
         $this->template->setCssLink('<link rel="stylesheet" href="{NIV}{shared_style_dir}css/registration.css">');
     }
     
     /**
      * Shows the login screen
      */
-    protected function login_screen(){
+    protected function login_screen($bo_callback = false){
+        if ($bo_callback) {
+            $this->template->loadView('index');
+        } else {
+            $this->login->checkAutologin();
+        }
         
+        $this->template->set('usernameText', t('system/admin/users/username'));
+        $this->template->set('passwordText', t('system/admin/users/password'));
+        $this->template->set('autologin', t('login/autologin'));
+        $this->template->set('loginButton', t('login/button'));
+        $this->template->set('registration', t('login/registration'));
+        
+        $this->template->set('loginTitle','Login');
+        $this->template->set('forgotPassword','Forgot password');
+        
+        if ($bo_callback) {
+            $this->template->set('username', $this->post['username']);
+        }
+        
+        $this->setLoginTypes();
     }
     
     /**
      * Performs the login
      */
     protected function do_login(){
+        if (! $this->post->validate(array(
+            'username' => 'required',
+            'password' => 'required'
+        ))) {
+            $this->login_screen(true);
+            return;
+        }
         
+        (isset($this->post['autologin'])) ? $bo_autologin = true : $bo_autologin = false;
+        $bo_login = $this->login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
+        
+        /* No redirect, so the login was incorrect */
+        $this->login_screen(true);
+    }
+    
+    /**
+     * Displays the password expires screen
+     * Regular login only
+     *
+     * @param string $s_notice
+     *            form notice, optional
+     */
+    protected function expired($s_notice = '')
+    {
+    	$this->template->set('expired_title', t('login/editPassword'));
+    	$this->template->set('password', t('login/currentPassword'));
+    	$this->template->set('newPassword', t('login/newPassword'));
+    	$this->template->set('newPassword2', t('login/newPasswordAgain'));
+    	$this->template->set('loginButton', t('login/editPassword'));
+    
+    	if (! empty($s_notice)) {
+    		$this->template->set('errorNotice', $s_notice);
+    	}
+    }
+    
+    /**
+     * Changes the expired password
+     */
+    protected function update()
+    {
+    	if (! $this->session->exists('expired')) {
+    		$this->headers->redirect('index/view');
+    	}
+    
+    	$a_data = $this->session->get('expired');
+    
+    	if ($this->post['password_old'] == '' || $this->post['password'] == '' || $this->post['password2'] == '') {
+    		$this->expiredScreen(t('registration/addHint/fieldsEmpty'));
+    		return;
+    	}
+    	if ($this->post['password'] != $this->post['password2']) {
+    		$this->expiredScreen(t('registration/passwordIncorrect'));
+    		return;
+    	}
+    
+    	$user = $this->user->createUser();
+    	$user->setData($a_data);
+    
+    	if (! $user->changePassword($this->post['password_old'], $this->post['password'])) {
+    		$this->expiredScreen(t('login/currentPasswordIncorrect'));
+    		return;
+    	}
+    
+    	$this->session->delete('expired');
+    	$this->login->setLogin($user);
     }
     
     /**

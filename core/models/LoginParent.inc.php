@@ -262,7 +262,9 @@ abstract class LoginParent extends Model
         if ( $user->isPasswordExpired() ) {
             /* Password is expired */
             $this->session->set('expired', $a_data);
-            $this->headers->redirect('/authorisation/login/expired');
+            $s_page = str_replace('.php','',$this->config->getPage() );
+            $s_page .= '/expired';
+            $this->headers->redirect('/'.$s_page);
         }
         $this->setLogin($user);
     }

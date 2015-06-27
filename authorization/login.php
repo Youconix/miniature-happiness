@@ -209,7 +209,7 @@ class Login extends \includes\BaseLogicClass
         $user->setData($a_data);
         
         if (! $user->changePassword($this->post['password_old'], $this->post['password'])) {
-            $this->expiredScreen(t('login/currentPasswordIncorrect'));
+            $this->expired(t('login/currentPasswordIncorrect'));
             return;
         }
         

@@ -21,5 +21,5 @@
  * @author    Rachelle Scheijen                                                
  * @since     1.0
  */
-header("Location: /authorization/login/index");
+header("Location: /authorization/normal/login_screen");
 exit();
