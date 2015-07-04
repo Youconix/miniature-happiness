@@ -3,7 +3,7 @@
 class AuthorizationNormal extends \core\services\Service implements \core\interfaces\Authorization
 {
 
-    private $service_QueryBuilder;
+    private $builder;
 
     private $service_Database;
 
@@ -16,8 +16,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The DAL
+     * @param \Builder $builder	The query builder
      * @param \core\services\Logs $service_Logs
      *            The log service
      * @param \core\models\User $model_User
@@ -25,10 +24,10 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
      * @param \core\models\PM $model_PM
      *            The personal message service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
+    public function __construct(\Builder $builder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
     {
-        $this->service_QueryBuilder = $service_QueryBuilder;
-        $this->service_Database = $this->service_QueryBuilder->getDatabase();
+        $this->builder = $builder;
+        $this->service_Database = $this->builder->getDatabase();
         $this->service_Logs = $service_Logs;
         $this->model_User = $model_User;
         $this->model_PM = $model_PM;
@@ -96,10 +95,10 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
      */
     public function activateUser($s_code)
     {
-        $this->service_QueryBuilder->select('users', 'id')
+        $this->builder->select('users', 'id')
             ->getWhere()
             ->addAnd('activation', 's', $s_code);
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() == 0) {
             return false;
         }
@@ -107,11 +106,11 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
         $i_userid = $service_Database->result(0, 'id');
         
         try {
-            $this->service_QueryBuilder->transaction();
+            $this->builder->transaction();
             
-            $this->service_QueryBuilder->insert('profile', 'userid', 'i', $i_userid)->getResult();
+            $this->builder->insert('profile', 'userid', 'i', $i_userid)->getResult();
             
-            $this->service_QueryBuilder->update('users', array(
+            $this->builder->update('users', array(
                 'activation',
                 'active'
             ), array(
@@ -121,16 +120,16 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
                 '',
                 '1'
             ));
-            $this->service_QueryBuilder->getWhere()->addAnd('id', 'i', $i_userid);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getWhere()->addAnd('id', 'i', $i_userid);
+            $this->builder->getResult();
             
             define('USERID', $i_userid);
             
-            $this->service_QueryBuilder->commit();
+            $this->builder->commit();
             
             return true;
         } catch (\Exception $e) {
-            $this->service_QueryBuilder->rollback();
+            $this->builder->rollback();
             \core\Memory::services('ErrorHandler')->error($e);
             
             return false;
@@ -165,8 +164,8 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
             return null;
         }
         
-        $this->service_QueryBuilder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
-        $this->service_QueryBuilder->getWhere()->addAnd(array(
+        $this->builder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
+        $this->builder->getWhere()->addAnd(array(
             'nick',
             'password',
             'active',
@@ -182,7 +181,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
             '1',
             'normal'
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
             $a_data = null;
@@ -200,7 +199,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
                 $this->model_PM->systemMessage('Account block', 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after 3 failed login attempts.\n\n System');
             } else 
                 if ($i_tries == 10) {
-                    $this->service_QueryBuilder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
+                    $this->builder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
                     $this->model_PM->systemMessage('IP block', 'The IP ' . $_SERVER['REMOTE_ADDR'] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after 6 failed login attempts. \n\n System');
                 }
             
@@ -217,12 +216,12 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
         unset($a_data[0]['blocked']);
         
         if ($bo_autologin) {
-            $this->service_QueryBuilder->delete('autologin')
+            $this->builder->delete('autologin')
                 ->getWhere()
                 ->addAnd('userID', 'i', $a_data[0]['id']);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->insert('autologin', array(
+            $this->builder->insert('autologin', array(
                 'userID',
                 'username',
                 'type',
@@ -238,7 +237,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
                 $a_data[0]['userType'],
                 $_SERVER['REMOTE_ADDR']
             ));
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             
             $a_data[0]['autologin'] = $service_Database->getID();
         }
@@ -285,7 +284,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
      */
     public function resendActivationEmail($s_username, $s_email)
     {
-        $this->service_QueryBuilder->select('users', 'nick,email,activation')
+        $this->builder->select('users', 'nick,email,activation')
             ->getWhere()
             ->addAnd(array(
             'nick',
@@ -304,7 +303,7 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
             '=',
             '<>'
         ));
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
             return false;

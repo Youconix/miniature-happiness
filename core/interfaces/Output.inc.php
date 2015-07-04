@@ -1,6 +1,4 @@
 <?php 
-namespace core\interfaces;
-
 interface Output {
     /**
      * (re)loads the parser

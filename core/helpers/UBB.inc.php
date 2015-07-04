@@ -26,19 +26,19 @@ namespace core\helpers;
 class UBB extends Helper
 {
 
-    private $service_QueryBuilder;
+    private $service_Builder;
 
     private $a_smileys;
 
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
+     * @param \Builder $service_Builder
      *            The query builder
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\Builder $service_Builder)
     {
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
+        $this->service_Builder = $service_Builder;
         
         $this->loadSmileys();
     }
@@ -51,8 +51,8 @@ class UBB extends Helper
         $this->a_smileys = array();
         
         try {
-            $this->service_QueryBuilder->select('smileys', 'code,url');
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $this->service_Builder->select('smileys', 'code,url');
+            $service_Database = $this->service_Builder->getResult();
             
             if ($service_Database->num_rows() > 0) {
                 $a_smileys = $service_Database->fetch_assoc();

@@ -10,7 +10,7 @@ class OpenAuthLogin extends Helper
 
     private $service_Template;
 
-    private $service_QueryBuilder;
+    private $service_Builder;
 
     private $a_settings = array();
 
@@ -23,25 +23,25 @@ class OpenAuthLogin extends Helper
      *            The language service
      * @param \core\services\Template $service_Template
      *            The template service
-     * @param \core\services\QueryBuilder $service_QueryBuilder
+     * @param \Builder $service_Builder
      *            The query builder
      */
-    public function __construct(\core\services\Security $service_Security, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\core\services\Security $service_Security, \core\services\Language $service_Language, \core\services\Template $service_Template, \Builder $service_Builder)
     {
         $this->service_Language = $service_Language;
         $this->service_Template = $service_Template;
         $this->service_Security = $service_Security;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
+        $this->service_Builder = $service_Builder();
         
         $this->loadSettings();
     }
 
     private function loadSettings()
     {
-        $this->service_QueryBuilder->select('openID', '*')
+        $this->service_Builder->select('openID', '*')
             ->getWhere()
             ->addAnd('active', 's', '1');
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->service_Builder->getResult();
         if ($service_Database->num_rows() > 0) {
             $this->a_settings = $service_Database->fetch_assoc_key('name');
         }
@@ -104,7 +104,7 @@ class OpenAuthLogin extends Helper
             $s_active = '0';
         }
         
-        $this->service_QueryBuilder->update('openID', array(
+        $this->service_Builder->update('openID', array(
             'active',
             'settings'
         ), array(
@@ -116,7 +116,7 @@ class OpenAuthLogin extends Helper
         ))
             ->getWhere()
             ->addAnd('name', 's', $s_name);
-        $this->service_QueryBuilder->getResult();
+        $this->service_Builder->getResult();
     }
 
     public function formRegistration()

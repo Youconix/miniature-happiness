@@ -32,10 +32,10 @@ class Stats extends Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation)
+    public function __construct(\Builder $builder, \core\services\Validation $validation)
     {
         parent::__construct($builder, $validation);
         

@@ -74,15 +74,15 @@ class Config extends Model implements \SplSubject
      * PHP 5 constructor
      *
      * @param core\services\File $file            
-     * @param core\services\Settings $settings            
+     * @param \Settings $settings            
      * @param core\services\Cookie $cookie            
      */
-    public function __construct(\core\services\File $file, \core\services\Settings $settings, \core\services\Cookie $cookie, \core\services\QueryBuilder $builder)
+    public function __construct(\core\services\File $file, \Settings $settings, \core\services\Cookie $cookie, \Builder $builder)
     {
         $this->file = $file;
         $this->settings = $settings;
         $this->cookie = $cookie;
-        $this->builder = $builder->createBuilder();
+        $this->builder = $builder;
         
         $this->a_observers = new \SplObjectStorage();
         
@@ -664,52 +664,6 @@ class Config extends Model implements \SplSubject
         }
         
         return ($this->settings->exists('login/openAuth/'.$s_name.'/status') == 1 );
-    }
-
-    /**
-     * Returns the logging setting
-     *
-     * default Create log files in the given location (see getLogLocation)
-     * error_log Use the webserver error log
-     * sys_log Use the system log
-     * [else] defined log location in constant LOGGER
-     *
-     * @return object The logger object
-     *        
-     */
-    public function logging()
-    {
-        if (defined('LOGGER')) {
-            $s_type = LOGGER;
-        }
-        
-        if (! $this->settings->exists('main/logs')) {
-            $s_type = 'default';
-        } else {
-            $s_type = $this->settings->get('main/logs');
-        }
-        
-        switch ($s_type) {
-            case 'default':
-                $obj_logger = \Loader::Inject('\core\services\logger\LoggerDefault', array(
-                    $this->getLogLocation(),
-                    $this->getLogfileMaxSize()
-                ));
-                break;
-            
-            case 'error_log':
-                $obj_logger = \Loader::Inject('\core\services\logger\LoggerErrorLog');
-                break;
-            
-            case 'sys_log':
-                $obj_logger = \Loader::Inject('\core\services\logger\LoggerSysLog');
-                break;
-            
-            default:
-                $obj_logger = Loader::Inject($s_type);
-        }
-        
-        return $obj_logger;
     }
 
     /**

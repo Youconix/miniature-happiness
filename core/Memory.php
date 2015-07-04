@@ -162,10 +162,14 @@ class Memory
             require_once (Memory::$a_helper['systemPath'] . 'Helper.inc.php');
             require_once (NIV . 'core' . DIRECTORY_SEPARATOR . 'Loader.php');
             
-            /* Load standard services */
+            /* Load standard services */            
             $caller = Memory::loadInitialClass(Memory::$a_service, 'File');
             $service_File = new $caller();
             Memory::$a_cache[$caller] = $service_File;
+            
+            if( !interface_exists('\Settings') ){
+            	require(NIV.'core/interfaces/Settings.inc.php');
+            }
             
             $caller = Memory::loadInitialClass(Memory::$a_service, 'Settings');
             $service_Settings = new $caller();
@@ -173,6 +177,17 @@ class Memory
             Memory::$a_cache['\core\services\XmlSettings'] = $service_Settings;
             
             date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
+            
+            /*  Load IoC */
+            require_once(NIV.'core/IoC.inc.php');
+            $caller = '\core\IoC';
+            if( file_exists(NIV.'includes/IoC.inc.php') ){
+            	require_once(NIV.'includes/IoC.inc.php');
+            	$caller = '\includes\IoC';
+            }
+            $IoC = new $caller($service_Settings);
+            Memory::$a_cache['IoC'] = $IoC;
+            /* 
             
             $caller = Memory::loadInitialClass(Memory::$a_service, 'Validation');
             $service_Validation = new $caller();
@@ -214,9 +229,9 @@ class Memory
             $caller = Memory::loadInitialClass(Memory::$a_service, 'Logs');
             $service_Logs = new $caller();
             $service_Logs->setLogger($obj_logger);
-            Memory::$a_cache[$caller] = $service_Logs;
+            Memory::$a_cache[$caller] = $service_Logs;  */
             
-            Memory::setDefaultValues($service_Security, $service_Settings);
+            Memory::setDefaultValues($service_Settings);
         } catch (\Exception $e) {
             throw new \CoreException('Starting up framework failed', 0, $e);
         }
@@ -237,12 +252,10 @@ class Memory
     /**
      * Sets the default values
      *
-     * @param \core\services\Security $service_Security
-     *            The security service
      * @param \core\services\Settings $service_Settings
      *            The settings service
      */
-    private static function setDefaultValues($service_Security, $service_Settings)
+    private static function setDefaultValues($service_Settings)
     {
         if (isset($_SERVER['SERVER_ADDR']) && in_array($_SERVER['SERVER_ADDR'], array(
             '127.0.0.1',

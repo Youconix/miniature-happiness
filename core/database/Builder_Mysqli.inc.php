@@ -1,7 +1,7 @@
 <?php
 namespace core\database;
 
-class Builder_mysqli implements \core\services\Builder
+class Builder_Mysqli implements \Builder
 {
 
     private $service_Database;
@@ -37,12 +37,15 @@ class Builder_mysqli implements \core\services\Builder
     /**
      * PHP 5 constructor
      *
-     * @param core\database\DAL $service_Database
+     * @param DAL $service_Database
      *            The DAL
      */
-    public function __construct(\core\database\DAL $service_Database)
+    public function __construct(\DAL $service_Database)
     {
         $this->service_Database = $service_Database;
+        if( !$this->service_Database->isConnected() ){
+        	$this->service_Database->defaultConnect();
+        }
         
         $this->obj_where = new Where_Mysqli();
         $this->obj_create = new Create_Mysqli();
@@ -971,7 +974,7 @@ abstract class QueryConditions_Mysqli
     }
 }
 
-class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Where
+class Where_Mysqli extends QueryConditions_Mysqli implements \Where
 {
 
     protected $a_builder;
@@ -1068,7 +1071,7 @@ class Where_Mysqli extends QueryConditions_Mysqli implements \core\services\Wher
     }
 }
 
-class Having_Mysqli extends QueryConditions_Mysqli implements \core\services\Having
+class Having_Mysqli extends QueryConditions_Mysqli implements \Having
 {
 
     /**
@@ -1109,7 +1112,7 @@ class Having_Mysqli extends QueryConditions_Mysqli implements \core\services\Hav
     }
 }
 
-class Create_Mysqli implements \core\services\Create
+class Create_Mysqli implements \Create
 {
 
     private $s_query;

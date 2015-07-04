@@ -78,16 +78,16 @@ class DataUser extends \core\models\Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $queryBuilder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\services\Hashing $hashing
      * @param \core\models\Groups $groups
      * @param \core\services\Language $language
      */
-    public function __construct(\core\services\QueryBuilder $queryBuilder, \core\services\Validation $validation, 
+    public function __construct(\Builder $builder, \core\services\Validation $validation, 
         \core\services\Hashing $hashing, \core\models\Groups $groups, \core\services\Language $language)
     {
-        parent::__construct($queryBuilder, $validation);
+        parent::__construct($builder, $validation);
         $this->groups = $groups;
         $this->language = $language;
         $this->hashing = $hashing;

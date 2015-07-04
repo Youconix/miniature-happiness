@@ -47,12 +47,12 @@ class Groups extends Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\models\data\DataGroup $group
      * @param \core\models\Config $config
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\data\DataGroup $group, \core\models\Config $config)
+    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\models\data\DataGroup $group, \core\models\Config $config)
     {
         parent::__construct($builder, $validation);
         

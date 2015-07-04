@@ -32,16 +32,16 @@ class PrivilegeController extends \core\models\Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
+     * @param \Builder $builder
      *            The query builder
      * @param \core\services\Validation $service_Validation
      *            The validation service
      * @param \core\services\File $service_File
      *            The file service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Validation $service_Validation, \core\services\File $service_File)
+    public function __construct(\Builder $builder, \core\services\Validation $service_Validation, \core\services\File $service_File)
     {
-        parent::__construct($service_QueryBuilder, $service_Validation);
+        parent::__construct($builder, $service_Validation);
         
         $this->service_File = $service_File;
         
@@ -125,10 +125,10 @@ class PrivilegeController extends \core\models\Model
         );
         
         /* Check general rights */
-        $this->service_QueryBuilder->select('group_pages', '*')
+        $this->builder->select('group_pages', '*')
             ->getWhere()
             ->addAnd('page', 's', $s_page);
-        $database = $this->service_QueryBuilder->getResult();
+        $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_assoc();
@@ -138,10 +138,10 @@ class PrivilegeController extends \core\models\Model
                 'commands' => array()
             );
             
-            $this->service_QueryBuilder->select('group_pages_command', '*')
+            $this->builder->select('group_pages_command', '*')
                 ->getWhere()
                 ->addAnd('page', 's', $s_page);
-            $database = $this->service_QueryBuilder->getResult();
+            $database = $this->builder->getResult();
             
             if ($database->num_rows() > 0) {
                 $a_rights['commands'] = $database->fetch_assoc();
@@ -163,7 +163,7 @@ class PrivilegeController extends \core\models\Model
      */
     public function changePageRights($s_page, $i_rights, $i_group)
     {
-        $this->service_QueryBuilder->update('group_pages', array(
+        $this->builder->update('group_pages', array(
             'groupID',
             'minLevel'
         ), array(
@@ -173,8 +173,8 @@ class PrivilegeController extends \core\models\Model
             $i_group,
             $i_rights
         ));
-        $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getWhere()->addAnd('page', 's', $s_page);
+        $this->builder->getResult();
     }
 
     /**
@@ -189,7 +189,7 @@ class PrivilegeController extends \core\models\Model
      */
     public function addPageRights($s_page, $i_rights, $i_group)
     {
-        $this->service_QueryBuilder->insert('group_pages', array(
+        $this->builder->insert('group_pages', array(
             'groupID',
             'minLevel',
             'page'
@@ -202,7 +202,7 @@ class PrivilegeController extends \core\models\Model
             $i_rights,
             $s_page
         ));
-        $this->service_QueryBuilder->getResult();
+        $this->builder->getResult();
     }
 
     /**
@@ -217,19 +217,19 @@ class PrivilegeController extends \core\models\Model
     public function deletePageRights($s_page)
     {
         try {
-            $this->service_QueryBuilder->transaction();
+            $this->builder->transaction();
             
-            $this->service_QueryBuilder->delete('group_pages');
-            $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->delete('group_pages');
+            $this->builder->getWhere()->addAnd('page', 's', $s_page);
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->delete('group_pages_command');
-            $this->service_QueryBuilder->getWhere()->addAnd('page', 's', $s_page);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->delete('group_pages_command');
+            $this->builder->getWhere()->addAnd('page', 's', $s_page);
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->commit();
+            $this->builder->commit();
         } catch (\DBException $e) {
-            $this->service_QueryBuilder->rollback();
+            $this->builder->rollback();
         }
     }
 

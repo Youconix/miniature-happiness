@@ -60,15 +60,15 @@ class Privileges
      * PHP 5 constructor
      *
      * @param core\services\Headers $headers
-     * @param core\services\QueryBuilder $builder
+     * @param Builder $builder
      * @param core\models\Groups $groups
      * @param core\services\Session $session
      * @param core\models\Config $config
      */
-    public function __construct(\core\services\Headers $headers, \core\services\QueryBuilder $builder, \core\models\Groups $groups, \core\services\Session $session, \core\models\Config $config)
+    public function __construct(\core\services\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \core\models\Config $config)
     {
         $this->headers = $headers;
-        $this->builder = $builder->createBuilder();
+        $this->builder = $builder;
         $this->groups = $groups;
         $this->session = $session;
         $this->config = $config;

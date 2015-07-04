@@ -7,7 +7,7 @@ class AuthorizationFacebook implements \core\interfaces\Authorization
 
     private $service_Session;
 
-    private $service_QueryBuilder;
+    private $builder;
 
     private $service_Logs;
 
@@ -16,18 +16,18 @@ class AuthorizationFacebook implements \core\interfaces\Authorization
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
-     *            The DAL
+     * @param \Builder $builder
+     *            The query builder
      * @param \core\services\Logs $service_Logs
      *            The log service
      *            @oaram \core\services\Session $service_Session The session handler
      * @param \core\models\User $model_User
      *            The user model
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs, \core\services\Session $service_Session, \core\models\User $model_User)
+    public function __construct(\Builder $builder, \core\services\Logs $service_Logs, \core\services\Session $service_Session, \core\models\User $model_User)
     {
-        $this->service_QueryBuilder = $service_QueryBuilder;
-        $this->service_Database = $this->service_QueryBuilder->getDatabase();
+        $this->builder = $builder;
+        $this->service_Database = $this->builder->getDatabase();
         $this->service_Logs = $service_Logs;
         $this->service_Session = $service_Session;
         $this->model_User = $model_User;
@@ -158,8 +158,8 @@ class AuthorizationFacebook implements \core\interfaces\Authorization
         $obj_openID = $this->getOpenID($s_type);
         $s_username = $obj_openID->loginConfirm($s_username);
         
-        $this->service_QueryBuilder->select('users', 'id,nick,lastLogin,userType');
-        $this->service_QueryBuilder->getWhere()->addAnd(array(
+        $this->builder->select('users', 'id,nick,lastLogin,userType');
+        $this->builder->getWhere()->addAnd(array(
             'nick',
             'active',
             'blocked',
@@ -176,7 +176,7 @@ class AuthorizationFacebook implements \core\interfaces\Authorization
             $s_type
         ));
         
-        $service_Database = $this->service_QueryBuilder->getResult();
+        $service_Database = $this->builder->getResult();
         if ($service_Database->num_rows() == 0) {
             $this->service_Logs->loginLog($s_username, 'failed', - 1, $s_type);
             return null;

@@ -23,7 +23,7 @@ namespace core\database;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class Database_Mysqli implements \core\database\DAL
+class Mysqli implements \DAL
 {
 
     private $service_Settings;
@@ -49,10 +49,10 @@ class Database_Mysqli implements \core\database\DAL
     /**
      * Loads the binded parameters class
      *
-     * @param \core\services\Settings $service_Settings
+     * @param \Settings $service_Settings
      *            The settings service
      */
-    public function __construct(\core\services\Settings $service_Settings)
+    public function __construct(\Settings $service_Settings)
     {
         require_once (NIV . 'core/database/mysqli_binded.inc.php');
         $this->obj_binded = new Database_Mysqli_binded($this);

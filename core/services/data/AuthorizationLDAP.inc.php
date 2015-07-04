@@ -8,15 +8,14 @@ class AuthorizationLDAP extends AuthorizationNormal
 
     private $service_Logs;
 
-    private $service_QueryBuilder;
 
     private $model_User;
 
     private $model_PM;
 
-    public function __construct(\core\services\LDAP $service_LDAP, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
+    public function __construct(\core\services\LDAP $service_LDAP, \Builder $builder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
     {
-        parent::__construct($service_QueryBuilder, $service_Logs, $model_User, $model_PM);
+        parent::__construct($builder, $service_Logs, $model_User, $model_PM);
         $this->service_LDAP = $service_LDAP;
     }
 
@@ -37,8 +36,8 @@ class AuthorizationLDAP extends AuthorizationNormal
             $this->service_LDAP->bind($s_username, $s_password);
             $this->service_LDAP->unbind();
             
-            $this->service_QueryBuilder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
-            $this->service_QueryBuilder->getWhere()->addAnd(array(
+            $this->builder->select('users', 'id, nick,bot,active,blocked,password_expired,lastLogin');
+            $this->builder->getWhere()->addAnd(array(
                 'nick',
                 'active',
                 'loginType'
@@ -51,7 +50,7 @@ class AuthorizationLDAP extends AuthorizationNormal
                 '1',
                 'LDAP'
             ));
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             
             if ($service_Database->num_rows() > 0) {
                 $a_data = $service_Database->fetch_assoc();
@@ -74,7 +73,7 @@ class AuthorizationLDAP extends AuthorizationNormal
                 $this->model_PM->systemMessage('Account block', 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after 3 failed login attempts.\n\n System');
             } else 
                 if ($i_tries == 10) {
-                    $this->service_QueryBuilder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
+                    $this->builder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
                     $this->model_PM->systemMessage('IP block', 'The IP ' . $_SERVER['REMOTE_ADDR'] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after 6 failed login attempts. \n\n System');
                 }
             
@@ -91,12 +90,12 @@ class AuthorizationLDAP extends AuthorizationNormal
         unset($a_data[0]['blocked']);
         
         if ($bo_autologin) {
-            $this->service_QueryBuilder->delete('autologin')
+            $this->builder->delete('autologin')
                 ->getWhere()
                 ->addAnd('userID', 'i', $a_data[0]['id']);
-            $this->service_QueryBuilder->getResult();
+            $this->builder->getResult();
             
-            $this->service_QueryBuilder->insert('autologin', array(
+            $this->builder->insert('autologin', array(
                 'userID',
                 'username',
                 'IP'
@@ -109,7 +108,7 @@ class AuthorizationLDAP extends AuthorizationNormal
                 $a_data[0]['nick'],
                 $_SERVER['REMOTE_ADDR']
             ));
-            $service_Database = $this->service_QueryBuilder->getResult();
+            $service_Database = $this->builder->getResult();
             
             $a_data[0]['autologin'] = $service_Database->getID();
         }

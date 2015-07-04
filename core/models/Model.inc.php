@@ -44,20 +44,20 @@ abstract class Model extends \core\Object
     
     /**
      *
-     * @var \core\services\Builder
+     * @var \Builder
      * @deprecated
      */
     protected $service_QueryBuilder;
     
     /**
      *
-     * @var \core\database\DAL
+     * @var \DAL
      */
     protected $database;
     
     /**
      *
-     * @var \core\services\Builder
+     * @var \Builder
      */
     protected $builder;
 
@@ -68,12 +68,12 @@ abstract class Model extends \core\Object
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation)
+    public function __construct(\Builder $builder, \core\services\Validation $validation)
     {
-        $this->builder = $builder->createBuilder();
+        $this->builder = $builder;
         $this->service_QueryBuilder = $this->builder;
         $this->database = $this->builder->getDatabase();
         $this->service_Database = $this->database;

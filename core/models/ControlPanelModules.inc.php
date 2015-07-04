@@ -19,12 +19,12 @@ class ControlPanelModules extends \core\models\Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\services\File $file
      * @param \core\services\XML $xml
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\services\File $file, \core\services\Xml $xml)
+    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\services\File $file, \core\services\Xml $xml)
     {
         parent::__construct($builder, $validation);
         

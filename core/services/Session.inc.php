@@ -29,9 +29,9 @@ class Session extends Service
 
     /**
      * 
-     * @var \core\services\Builder
+     * @var \Builder
      */
-    private $queryBuilder;
+    private $builder;
 
     const FORBIDDEN = - 1; // Stil here for backwards compatibility
 
@@ -58,12 +58,12 @@ class Session extends Service
      *
      * @param core\services\Settings $settings
      *            The settings service
-     * @param core\services\QueryBuilder $queryBuilder
+     * @param Builder $builder
      *            The query builder
      */
-    public function __construct(\core\services\Settings $settings, \core\services\QueryBuilder $queryBuilder)
+    public function __construct(\core\services\Settings $settings, \Builder $builder)
     {
-        $this->queryBuilder = $queryBuilder->createBuilder();
+        $this->builder = $builder;
         $s_sessionSetName = $settings->get('settings/session/sessionName');
         $s_sessionSetPath = $settings->get('settings/session/sessionPath');
         $s_sessionExpire = $settings->get('settings/session/sessionExpire');
@@ -210,10 +210,10 @@ class Session extends Service
     public function setLogin($i_userid, $s_username, $i_lastLogin)
     {
         /* Get data */
-        $this->queryBuilder->update('users', 'lastLogin', 'i', time())
+        $this->builder->update('users', 'lastLogin', 'i', time())
             ->getWhere()
             ->addAnd('id', 'i', $i_userid);
-        $this->queryBuilder->getResult();
+        $this->builder->getResult();
         
         session_regenerate_id(true);
         $_SESSION = array();

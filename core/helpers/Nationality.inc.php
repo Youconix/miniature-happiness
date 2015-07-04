@@ -29,13 +29,13 @@ class Helper_Nationality extends Helper
 
     /**
      * Creates the nationality helper
+     * 
+     * @param \Builder	$builder	The query builder
      */
-    public function __construct()
+    public function __construct(\Builder $builder)
     {
-        $service_QueryBuilder = Memory::services('QueryBuilder')->createBuilder();
-        
-        $service_QueryBuilder->select("nationalities", "*");
-        $service_Database = $service_QueryBuilder->getResult();
+        $builder->select("nationalities", "*");
+        $service_Database = $builder->getResult();
         if ($service_Database->num_rows() > 0) {
             $a_data = $service_Database->fetch_assoc_key('nationality');
             ksort($a_data, SORT_STRING);

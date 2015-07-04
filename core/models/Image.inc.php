@@ -35,11 +35,11 @@ class Image extends Model
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\services\FileData $fileData
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\services\FileData $fileData)
+    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\services\FileData $fileData)
     {
         parent::__construct($builder, $validation);
         

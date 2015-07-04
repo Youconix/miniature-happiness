@@ -19,9 +19,9 @@ abstract class LoginParent extends Model
 
     /**
      *
-     * @var \core\services\Builder
+     * @var \Builder
      */
-    protected $queryBuilder;
+    protected $builder;
 
     /**
      *
@@ -65,18 +65,18 @@ abstract class LoginParent extends Model
      * Inits the Login model
      *
      * @param \core\services\Cookie $cookie
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Logs $logs
      * @param \core\services\Session $session
      * @param \core\services\Headers $headers
      * @param \core\models\Config $config
      * @param \core\models\User $user;            
      */
-    public function __construct(\core\services\Cookie $cookie, \core\services\QueryBuilder $builder, \core\services\Logs $logs, \core\services\Session $session, \core\services\Headers $headers, \core\models\Config $config, \core\models\User $user)
+    public function __construct(\core\services\Cookie $cookie, \Builder $builder, \core\services\Logs $logs, \core\services\Session $session, \core\services\Headers $headers, \core\models\Config $config, \core\models\User $user)
     {
         $this->user = $user;
         $this->cookie = $cookie;
-        $this->builder = $builder->createBuilder();
+        $this->builder = $builder;
         $this->service_Database = $this->builder->getDatabase();
         $this->logs = $logs;
         $this->session = $session;

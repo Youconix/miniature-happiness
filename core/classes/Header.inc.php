@@ -23,7 +23,7 @@ namespace core\classes;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class Header
+class Header implements \Header
 {
 
     /**

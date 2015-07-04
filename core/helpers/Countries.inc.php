@@ -31,19 +31,19 @@ class Countries extends Helper
     /**
      * Creates the country helper
      *
-     * @param \core\services\QueryBuilder $service_QueryBuilder
+     * @param \Builder $service_Builder
      *            The query builder
      * @param \core\services\Ĺanguage $service_Language
      *            The language service
      */
-    public function __construct(\core\services\QueryBuilder $service_QueryBuilder, \core\services\Language $service_Language)
+    public function __construct(\Builder $service_Builder, \core\services\Language $service_Language)
     {
         /*
-         * $service_QueryBuilder = $service_QueryBuilder->createBuilder();
+         * $service_Builder = $service_Builder->createBuilder();
          * $s_language = $service_Language->getLanguage();
          *
-         * $service_QueryBuilder->select("countries", "id," . $s_language . ' AS country');
-         * $service_Database = $service_QueryBuilder->getResult();
+         * $service_Builder->select("countries", "id," . $s_language . ' AS country');
+         * $service_Database = $service_Builder->getResult();
          * if( $service_Database->num_rows() > 0 ){
          * $a_data = $service_Database->fetch_assoc_key('country');
          * ksort($a_data, SORT_STRING);

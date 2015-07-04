@@ -27,7 +27,7 @@ namespace core\services;
  * @see core/services/Xml.inc.php
  * @since 1.0
  */
-class Settings extends \core\services\Xml
+class Settings extends \core\services\Xml implements \Settings
 {
 
     private $s_settingsDir;

@@ -23,7 +23,7 @@ namespace core\classes;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class Menu
+class Menu implements \Menu
 {
 
     /**

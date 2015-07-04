@@ -44,12 +44,12 @@ class PM extends Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\models\data\Data_PM $pm
      * @param \core\services\Mailer $mailer
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\data\Data_PM $pm, \core\services\Mailer $mailer)
+    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\models\data\Data_PM $pm, \core\services\Mailer $mailer)
     {
         parent::__construct(builder, $validation);
         $this->pm = $pm;

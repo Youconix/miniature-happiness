@@ -27,9 +27,9 @@ namespace core\services;
 class Cache extends \core\services\Service
 {
     /**
-     * @var \core\database\Builder_mysqli
+     * @var \Builder
      */
-    protected $service_QueryBuilder;
+    protected $builder;
 
     /**
      * @var \core\services\File
@@ -55,13 +55,13 @@ class Cache extends \core\services\Service
 
     protected $bo_cache;
 
-    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Headers $service_Headers, \core\services\QueryBuilder $service_QueryBuilder)
+    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Headers $service_Headers, \Builder $builder)
     {
         $this->model_Config = $model_Config;
         $this->service_File = $service_File;
         $this->service_Settings = $model_Config->getSettings();
         $this->service_Headers = $service_Headers;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
+        $this->builder = $builder;
         
         $s_directory = $this->getDirectory();
         if (! $this->service_File->exists($s_directory . 'site')) {
@@ -116,7 +116,7 @@ class Cache extends \core\services\Service
             $s_page = $_SERVER['REQUEST_URI'];
             $a_pages = explode('?', $s_page);
             
-            $this->service_QueryBuilder->select('no_cache', 'id')
+            $this->builder->select('no_cache', 'id')
                 ->getWhere()
                 ->addOr(array(
                 'page',
@@ -128,7 +128,7 @@ class Cache extends \core\services\Service
                 $s_page,
                 $a_pages[0]
             ));
-            $service_database = $this->service_QueryBuilder->getResult();
+            $service_database = $this->builder->getResult();
             if ($service_database->num_rows() > 0) {
                 $this->bo_cache = false;
             } else {
@@ -292,8 +292,8 @@ class Cache extends \core\services\Service
     public function getNoCachePages(){
         $a_pages = array();
         
-        $this->service_QueryBuilder->select('no_cache', '*');
-        $service_database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('no_cache', '*');
+        $service_database = $this->builder->getResult();
         if ($service_database->num_rows() > 0) {
             $a_pages = $service_database->fetch_assoc();
         }
@@ -317,16 +317,16 @@ class Cache extends \core\services\Service
             return;
         }
         
-        $this->service_QueryBuilder->select('no_cache', 'id')->getWhere()->addAnd('page', 's', $s_page);
-        $service_database = $this->service_QueryBuilder->getResult();
+        $this->builder->select('no_cache', 'id')->getWhere()->addAnd('page', 's', $s_page);
+        $service_database = $this->builder->getResult();
         if ($service_database->num_rows() != 0) {
             return;
         }
         
         
         
-        $this->service_QueryBuilder->insert('no_cache','page','s',$s_page);
-        $database = $this->service_QueryBuilder->getResult();
+        $this->builder->insert('no_cache','page','s',$s_page);
+        $database = $this->builder->getResult();
         
         return $database->getId();
     }
@@ -339,7 +339,7 @@ class Cache extends \core\services\Service
     public function deleteNoCache($i_id){
         \core\Memory::type('int',$i_id);
         
-        $this->service_QueryBuilder->delete('no_cache')->getWhere()->addAnd('id','i',$i_id);
-        $this->service_QueryBuilder->getResult();
+        $this->builder->delete('no_cache')->getWhere()->addAnd('id','i',$i_id);
+        $this->builder->getResult();
     }
 }

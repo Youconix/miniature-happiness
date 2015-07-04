@@ -54,11 +54,11 @@ class DataPM extends \core\models\Model
     /**
      * PHP5 constructor
      *
-     * @param \core\services\QueryBuilder $builder
+     * @param \Builder $builder
      * @param \core\services\Validation $validation
      * @param \core\models\User $user
      */
-    public function __construct(\core\services\QueryBuilder $builder, \core\services\Validation $validation, \core\models\User $user)
+    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\models\User $user)
     {
         parent::__construct($builder, $validation);
         

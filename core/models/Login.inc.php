@@ -39,7 +39,7 @@ class Login extends LoginParent
      * Inits the autorization model
      *
      * @param \core\services\Cookie $cookie            
-     * @param \core\services\QueryBuilder $builder            
+     * @param \Builder $builder            
      * @param \core\services\Logs $logs            
      * @param \core\services\Hashing $hashing            
      * @param \core\services\Session $session            
@@ -49,7 +49,7 @@ class Login extends LoginParent
      * @param \core\models\Config $config            
      * @param \core\models\User $user;            
      */
-    public function __construct(\core\services\Cookie $cookie, \core\services\QueryBuilder $builder, \core\services\Logs $logs, \core\services\Hashing $hashing, \core\services\Session $session, \core\services\Mailer $mailer, \core\services\Random $random, \core\services\Headers $headers, \core\models\Config $config, \core\models\User $user)
+    public function __construct(\core\services\Cookie $cookie, \Builder $builder, \core\services\Logs $logs, \core\services\Hashing $hashing, \core\services\Session $session, \core\services\Mailer $mailer, \core\services\Random $random, \core\services\Headers $headers, \core\models\Config $config, \core\models\User $user)
     {
         parent::__construct($cookie, $builder, $logs, $session, $headers, $config, $user);
         
@@ -128,7 +128,7 @@ class Login extends LoginParent
             
             /* Update user record */
             $i_id = $service_Database->result(0, 'id');
-            $builder = clone $this->service_QueryBuilder;
+            $builder = clone $this->builder;
             $builder->update('users', 'password', 's', $s_passwordHash)
                 ->getWhere()
                 ->addAnd('id', 'i', $i_id);

@@ -20,6 +20,8 @@ class Loader
             $s_fileName = str_replace('\\', DIRECTORY_SEPARATOR, $s_namespace) . DIRECTORY_SEPARATOR;
         }
         
+        
+        
         /* Check for website files */
         $s_name = strtolower($s_fileName.DIRECTORY_SEPARATOR.$s_className.'.php');
         if (file_exists(NIV . $s_name)) {
@@ -70,7 +72,30 @@ class Loader
 
     public static function Inject($s_className, $a_arguments = array())
     {
-        $s_fileName = Loader::getFileName($s_className);
+    	$s_fileName  = null;
+    	/* Check IoC */
+    	$IoC = \core\Memory::getCache('IoC');
+    	if( !is_null($IoC) ){
+    		echo('checking IoC for '.$s_className.'<br>');
+    		$check = $IoC::check($s_className);
+    		if( !is_null($check) ){
+    			$s_className = $check;
+    			if( (strpos($check,'core\\') !== false) || (strpos($check,'includes\\') !== false) ){
+    				$s_fileName = str_replace('\\',DIRECTORY_SEPARATOR,$check).'.inc.php';
+    			}
+    			else {
+    				$s_fileName = str_replace('\\',DIRECTORY_SEPARATOR,$check).'.php';
+    			}
+    			
+    			while( substr($s_fileName, 0,1) == DIRECTORY_SEPARATOR){
+    				$s_fileName = substr($s_fileName, 1);
+    			}
+    		}
+    	}
+    	
+    	if( is_null($s_fileName)) {
+    		$s_fileName = Loader::getFileName($s_className);
+    	}
         
         if (is_null($s_fileName)) {
             return null;
@@ -78,19 +103,20 @@ class Loader
         
         $s_caller = $s_className;
         
-        if (strpos($s_fileName, 'core' . DIRECTORY_SEPARATOR) !== false) {
-            // Check for override.
-            $s_fileNameChild = str_replace('core' . DIRECTORY_SEPARATOR, 'includes' . DIRECTORY_SEPARATOR, $s_fileName);
-            
-            if (file_exists(NIV . $s_fileNameChild)) {
-                $s_fileName = $s_fileNameChild;
-                
-                $s_caller = str_replace('core\\', 'includes\\', $s_className);
-            }
-        }
-        
         if (substr($s_caller, 0, 1) != '\\') {
             $s_caller = '\\' . $s_caller;
+        }
+        
+		if(!class_exists($s_caller) ){
+        	require(NIV.$s_fileName);
+        }
+        if( (substr($s_fileName, 0,5) == 'core/') && (file_exists(NIV.str_replace('core/','includes/',$s_fileName).'.inc.php')) ){
+        	$s_fileName = str_replace('core\\','includes\\',$s_fileName);
+        	$caller = str_replace('\core','\includes',$caller);
+        	
+        	if(!class_exists($s_caller) ){
+        		require(NIV.$s_fileName);
+        	}
         }
         
         $object = Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
@@ -135,6 +161,7 @@ class Loader
         
         $a_argumentNames = array();
         $a_arguments = array();
+        
         foreach ($a_argumentNamesPre as $s_name) {
             $s_name = trim($s_name);
             if (strpos($s_name, ' ') === false) {
@@ -166,10 +193,11 @@ class Loader
                             $a_arguments[] = \core\Memory::models($s_name);
                         } else {
                             /* Try to load object */
+                        	echo('trying to load '.$s_name.'<br>');
                             $a_arguments[] = Loader::inject($s_name);
                         }
             } else {
-                $a_arguments[] = Loader::inject($s_name);
+            	$a_arguments[] = Loader::inject($s_name);
             }
         }
         
