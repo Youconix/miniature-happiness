@@ -34,7 +34,7 @@ class Menu implements \Menu
 
     /**
      *
-     * @var \core\services\Language
+     * @var \Language
      */
     protected $language;
 
@@ -47,11 +47,11 @@ class Menu implements \Menu
     /**
      * Starts the class menu
      *
-     * @param \core\services\Template $template            
-     * @param \core\services\Language $language            
+     * @param \Output $template            
+     * @param \Language $language            
      * @param \core\models\User $user          
      */
-    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $user)
+    public function __construct(\Output $template, \Language $language, \core\models\User $user)
     {
         $this->template = $template;
         $this->language = $language;

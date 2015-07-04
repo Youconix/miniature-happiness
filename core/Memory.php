@@ -162,24 +162,23 @@ class Memory
             require_once (Memory::$a_helper['systemPath'] . 'Helper.inc.php');
             require_once (NIV . 'core' . DIRECTORY_SEPARATOR . 'Loader.php');
             
+            require_once(NIV.'core/IoC.inc.php');
+            
             /* Load standard services */            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'File');
+            $caller = IoC::$s_ruleFileHandler;
             $service_File = new $caller();
             Memory::$a_cache[$caller] = $service_File;
+            unset($caller);
             
-            if( !interface_exists('\Settings') ){
-            	require(NIV.'core/interfaces/Settings.inc.php');
-            }
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Settings');
-            $service_Settings = new $caller();
+            $caller = IoC::$s_ruleSettings;
+            $service_Settings = \Loader::Inject($caller);
             Memory::$a_cache[$caller] = $service_Settings;
+            Memory::$a_cache['\Settings'] = $service_Settings;
             Memory::$a_cache['\core\services\XmlSettings'] = $service_Settings;
-            
+            unset($caller);
             date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
             
             /*  Load IoC */
-            require_once(NIV.'core/IoC.inc.php');
             $caller = '\core\IoC';
             if( file_exists(NIV.'includes/IoC.inc.php') ){
             	require_once(NIV.'includes/IoC.inc.php');
@@ -187,66 +186,18 @@ class Memory
             }
             $IoC = new $caller($service_Settings);
             Memory::$a_cache['IoC'] = $IoC;
-            /* 
             
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Validation');
-            $service_Validation = new $caller();
-            Memory::$a_cache[$caller] = $service_Validation;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Security');
-            $service_Security = new $caller($service_Validation);
-            Memory::$a_cache[$caller] = $service_Security;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Cookie');
-            $service_Cookie = new $caller($service_Security);
-            Memory::$a_cache[$caller] = $service_Cookie;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_database, 'Database');
-            $service_Database = new $caller($service_Settings);
-            $service_Database = $service_Database->loadDatabase();
-            Memory::$a_cache['\core\database\DAL'] = $service_Database;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'QueryBuilder');
-            $service_QueryBuilder = new $caller($service_Settings, $service_Database);
-            Memory::$a_cache['\core\services\QueryBuilder'] = $service_QueryBuilder;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_model, 'Config');
-            $model_Config = new $caller($service_File, $service_Settings, $service_Cookie, $service_QueryBuilder);
+            $caller = IoC::$s_ruleConfig;
+            $model_Config = \Loader::Inject($caller);
             Memory::$a_cache[$caller] = $model_Config;
+            unset($caller);
             
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Language');
-            $service_Language = new $caller($model_Config, $service_Cookie, $service_File);
-            Memory::$a_cache[$caller] = $service_Language;
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Mailer');
-            $service_Mailer = new $caller($service_Language, $service_File, $model_Config);
-            
-            $obj_logger = $model_Config->logging();
-            if (method_exists($obj_logger, 'setMailer')) {
-                $obj_logger->setMailer($service_Mailer, $model_Config->getAdminAddress(), $model_Config->getHost());
-            }
-            
-            $caller = Memory::loadInitialClass(Memory::$a_service, 'Logs');
-            $service_Logs = new $caller();
-            $service_Logs->setLogger($obj_logger);
-            Memory::$a_cache[$caller] = $service_Logs;  */
+            $IoC->detectAfterStartup($model_Config);
             
             Memory::setDefaultValues($service_Settings);
         } catch (\Exception $e) {
             throw new \CoreException('Starting up framework failed', 0, $e);
         }
-    }
-
-    private static function loadInitialClass($a_path, $s_className)
-    {
-        require_once ($a_path['systemPath'] . $s_className . '.inc.php');
-        if (file_exists($a_path['userPath'] . $s_className . '.inc.php')) {
-            require_once ($a_path['userPath'] . $s_className . '.inc.php');
-            $caller = $a_path['userNamespace'] . $s_className;
-        } else {
-            $caller = $a_path['systemNamespace'] . $s_className;
-        }
-        return $caller;
     }
 
     /**

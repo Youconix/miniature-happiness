@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Template extends Service implements \SplObserver
+class Template extends Service implements \Output,\SplObserver
 {
 
     /**
@@ -41,9 +41,9 @@ class Template extends Service implements \SplObserver
 
     /**
      *
-     * @var \core\models\Config
+     * @var \Config
      */
-    private $model_Config;
+    private $config;
 
     /**
      *
@@ -76,7 +76,7 @@ class Template extends Service implements \SplObserver
      *
      * @param core\services\File $service_File
      *            The File service
-     * @param core\models\Config $model_Config
+     * @param \Config $config
      *            The configuration model
      * @param core\services\Cache $service_Cache
      *            The caching service
@@ -85,14 +85,14 @@ class Template extends Service implements \SplObserver
      * @throws TemplateException if the layout does not exist
      * @throws IOException if the layout is not readable
      */
-    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Cache $service_Cache, \core\services\Headers $service_Headers)
+    public function __construct(\core\services\File $service_File, \Config $config, \core\services\Cache $service_Cache, \core\services\Headers $service_Headers)
     {
         $this->service_File = $service_File;
-        $this->model_Config = $model_Config;
+        $this->config = $config;
         $this->service_Headers = $service_Headers;
         $this->service_Cache = $service_Cache;
         
-        $this->model_Config->attach($this);
+        $this->config->attach($this);
         
         $this->load();
     }
@@ -134,7 +134,7 @@ class Template extends Service implements \SplObserver
             'js' => array()
         );
         
-        $this->s_templateDir = $this->model_Config->getTemplateDir();
+        $this->s_templateDir = $this->config->getTemplateDir();
         
         if (defined('PROCES') || \core\Memory::isTesting()) {
             return;
@@ -143,9 +143,9 @@ class Template extends Service implements \SplObserver
         $this->service_Cache->checkCache(); // Program wil stop if cache is used
         
         /* Load layout */
-        if (! $this->model_Config->isAjax()) {
+        if (! $this->config->isAjax()) {
             
-            $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . $this->model_Config->getLayout() . '.tpl';
+            $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . $this->config->getLayout() . '.tpl';
             
             if (! $this->service_File->exists(NIV . $s_url)) {
                 throw new \TemplateException('Can not load layout ' . $s_url);
@@ -172,7 +172,7 @@ class Template extends Service implements \SplObserver
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated in favour of core/models/Config->getTemplateDir().", E_USER_DEPRECATED);
         }
-        return $this->model_Config->getTemplateDir();
+        return $this->config->getTemplateDir();
     }
 
     /**
@@ -186,7 +186,7 @@ class Template extends Service implements \SplObserver
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated in favour of core/models/Config->getStylesDir().", E_USER_DEPRECATED);
         }
-        return $this->model_Config->getStylesDir();
+        return $this->config->getStylesDir();
     }
 
     /**
@@ -225,9 +225,9 @@ class Template extends Service implements \SplObserver
         /* Check view */
         if (empty($s_view)) {
             if (! defined('TEMPLATE')) {
-                $s_view = $this->model_Config->getCommand();
+                $s_view = $this->config->getCommand();
                 
-                $s_template = str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
+                $s_template = str_replace('.php', '', $this->config->getPage()) . '/' . $s_view;
             } else {
                 $a_template = explode('/', TEMPLATE);
                 $s_view = end($a_template);
@@ -235,7 +235,7 @@ class Template extends Service implements \SplObserver
                 $s_template = TEMPLATE;
             }
         } else {
-            $s_template = str_replace('.php', '', $this->model_Config->getPage()) . '/' . $s_view;
+            $s_template = str_replace('.php', '', $this->config->getPage()) . '/' . $s_view;
         }
         
         if (substr($s_template, - 4) != '.tpl') {
@@ -252,7 +252,7 @@ class Template extends Service implements \SplObserver
         
         $s_view = $this->service_File->readFile(NIV . $s_view);
         
-        if (! $this->model_Config->isAjax()) {
+        if (! $this->config->isAjax()) {
             $this->s_template = str_replace("{body_content}", $s_view, $this->s_layout);
         } else {
             $this->s_template = $s_view;
@@ -588,11 +588,11 @@ class Template extends Service implements \SplObserver
             return;
         }
         
-        $this->set('style_dir', $this->model_Config->getStylesDir());
-        $this->set('shared_style_dir', $this->model_Config->getSharedStylesDir());
-        $this->set('NIV', $this->model_Config->getBase());
+        $this->set('style_dir', $this->config->getStylesDir());
+        $this->set('shared_style_dir', $this->config->getSharedStylesDir());
+        $this->set('NIV', $this->config->getBase());
         
-        if (! $this->model_Config->isAjax()) {
+        if (! $this->config->isAjax()) {
             /* Write header-blok to template */
             $s_headblock = '';
             $a_keys = array_keys($this->a_headerParser);
@@ -622,7 +622,7 @@ class Template extends Service implements \SplObserver
             $this->s_template = str_replace("{" . $s_key . "}", $this->a_parser[$s_key], $this->s_template);
         }
         
-        $s_level = $this->model_Config->getBase();
+        $s_level = $this->config->getBase();
         if (! empty($s_level) && substr($s_level, - 1) != '/') {
             $s_level .= '/';
         }

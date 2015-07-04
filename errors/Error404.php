@@ -28,7 +28,7 @@ if (! defined('NIV')) {
 }
 
 $_SERVER['REQUEST_URI'] = 'errors/Error404.php';
-$config = \Loader::inject('\core\models\Config');
+$config = \Loader::inject('\Config');
 $config->detectTemplateDir();
 
 class Error404 extends \includes\BaseLogicClass
@@ -46,17 +46,18 @@ class Error404 extends \includes\BaseLogicClass
     /**
      * Starts the class Error404
      * 
-     * @param \core\Input $input
-     * @param \core\models\Config $config
-     * @param \core\services\Language $language
-     * @param \core\services\Template $template
-     * @param \core\classes\Header $header
-     * @param \core\classes\Menu $menu
+     * @param \Input $input
+     * @param \Config $config
+     * @param \Language $language
+     * @param \Output $template
+     * @param \Header $header
+     * @param \Menu $menu
+     * @param \Footer $footer
      * @param \core\services\Headers $headers
-     * @param \core\services\Logs $logs
+     * @param \Logger $logs
      */
-    public function __construct(\core\Input $input,\core\models\Config $config,\core\services\Language $language,\core\services\Template $template,
-        \core\classes\Header $header,\core\classes\Menu $menu,\core\classes\Footer $footer,\core\services\Headers $headers,\core\services\Logs $logs)
+    public function __construct(\Input $input,\Config $config,\Language $language,\Output $template,
+        \Header $header, \Menu $menu, \Footer $footer,\core\services\Headers $headers,\Logger $logs)
     {
         parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
         

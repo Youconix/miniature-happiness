@@ -37,14 +37,14 @@ class Cache extends \core\services\Service
     protected $service_File;
 
     /**
-     * @var \core\models\Config
+     * @var \Config
      */
-    protected $model_Config;
+    protected $config;
 
     /**
-     * @var \core\services\Settings
+     * @var \Settings
      */
-    protected $service_Settings;
+    protected $settings;
 
     /**
      * @var \core\services\Headers
@@ -55,11 +55,11 @@ class Cache extends \core\services\Service
 
     protected $bo_cache;
 
-    public function __construct(\core\services\File $service_File, \core\models\Config $model_Config, \core\services\Headers $service_Headers, \Builder $builder)
+    public function __construct(\core\services\File $service_File, \Config $config, \core\services\Headers $service_Headers, \Builder $builder)
     {
-        $this->model_Config = $model_Config;
+        $this->config = $config;
         $this->service_File = $service_File;
-        $this->service_Settings = $model_Config->getSettings();
+        $this->settings = $config->getSettings();
         $this->service_Headers = $service_Headers;
         $this->builder = $builder;
         
@@ -110,7 +110,7 @@ class Cache extends \core\services\Service
             return $this->bo_cache;
         }
         
-        if (! $this->service_Settings->exists('cache/status') || $this->service_Settings->get('cache/status') != 1) {
+        if (! $this->settings->exists('cache/status') || $this->settings->get('cache/status') != 1) {
             $this->bo_cache = false;
         } else {
             $s_page = $_SERVER['REQUEST_URI'];
@@ -150,7 +150,7 @@ class Cache extends \core\services\Service
             return false;
         }
         
-        $s_language = $this->model_Config->getLanguage();
+        $s_language = $this->config->getLanguage();
         $s_directory = $this->getDirectory();
         
         if (! $this->service_File->exists($s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language)) {
@@ -170,7 +170,7 @@ class Cache extends \core\services\Service
         }
         
         $a_file = explode($this->getSeperator(), $this->service_File->readFile($s_target));
-        $i_timeout = $this->service_Settings->get('cache/timeout');
+        $i_timeout = $this->settings->get('cache/timeout');
         
         if ((time() - $a_file[0]) > $i_timeout) {
             $this->service_File->deleteFile($s_target);
@@ -211,7 +211,7 @@ class Cache extends \core\services\Service
         
         $s_output = time() . $this->getSeperator() . $s_headers . $this->getSeperator() . $s_output;
         
-        $s_language = $this->model_Config->getLanguage();
+        $s_language = $this->config->getLanguage();
         $s_target = $this->getCurrentPage();
         $this->service_File->writeFile($s_target, $s_output);
     }
@@ -258,7 +258,7 @@ class Cache extends \core\services\Service
      */
     public function cleanLanguageCache()
     {
-        if ($this->service_Settings->exists('language/type') && $this->service_Settings->get('language/type') == 'mo') {
+        if ($this->settings->exists('language/type') && $this->settings->get('language/type') == 'mo') {
             clearstatcache();
         }
     }

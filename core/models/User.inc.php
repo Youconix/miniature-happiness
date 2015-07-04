@@ -39,10 +39,10 @@ class User extends \core\models\Model
      * PHP5 constructor
      *
      * @param \Builder $builder
-     * @param \core\services\Validation $validation
+     * @param \Validation $validation
      * @param \core\models\data\DataUser $userData
      */
-    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\models\data\DataUser $userData)
+    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\DataUser $userData)
     {
         parent::__construct($builder,$validation);
         

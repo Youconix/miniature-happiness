@@ -24,7 +24,7 @@ namespace core\services\data;
  *        You should have received a copy of the GNU Lesser General Public License
  *        along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
  */
-class LanguageMO extends \core\services\service
+class LanguageMO extends \core\services\Language
 {
 
     /**
@@ -34,8 +34,12 @@ class LanguageMO extends \core\services\service
     private $service_File;
 
     private $s_language = null;
+    
+    private $s_languageFallback = null;
 
-    private $a_documents = array();
+    protected $a_documents = array();
+    
+    private $a_documentsFallback = array();
 
     /**
      * PHP 5 constructor
@@ -43,9 +47,11 @@ class LanguageMO extends \core\services\service
      * @param \core\services\File $service_File
      *            parser
      * @param string $s_language
-     *            code
+     *            language code
+     * @param string $s_languageFallback
+     * 			   fallback  language code 
      */
-    public function __construct(\core\services\File $service_File, $s_language)
+    public function __construct(\core\services\File $service_File, $s_language,$s_languageFallback)
     {
         $this->service_File = $service_File;
         $this->s_language = $s_language;
@@ -53,35 +59,43 @@ class LanguageMO extends \core\services\service
         putenv('LC_ALL=' . $s_language);
         setlocale(LC_ALL, $s_language);
         
-        $this->readLanguages();
+        $this->a_documents = $this->readLanguages($s_language);
+        if( $s_languageFallback && !empty($s_languageFallback) ){
+        	$this->a_documentsFallback = $this->readLanguages($s_languageFallback);
+        }
+        
+        /* Get encoding */
+        $this->s_encoding = $this->get('language/encoding');
     }
 
     /**
      * Loads the language files
+     * 
+     * @param	string	$s_language	The language code
      */
-    private function readLanguages()
+    private function readLanguages($s_language)
     {
-        $a_files = $this->service_File->readDirectory(NIV . 'language/' . $this->s_language . '/LC_MESSAGES');
+    	$a_documents = array();
+        $a_files = $this->service_File->readDirectory(NIV . 'language/' . $s_language . '/LC_MESSAGES');
         foreach ($a_files as $s_file) {
             if ($s_file == '.' || $s_file == '..' || substr($s_file, - 3) != '.mo') {
                 continue;
             }
             
-            $s_name = substr($s_file, 0, - 3);
-            $this->a_documents[] = $s_name;
+            $s_name = $s_language.'-'.substr($s_file, 0, - 3);
+            $a_documents[] = $s_name;
             
             bindtextdomain($s_name, NIV . 'language');
         }
         
-        if (! in_array('system', $this->a_documents)) {
-            throw new \IOException('Missing system language file for language ' . $this->s_language . '.');
+        if (! in_array('system', $a_documents)) {
+            throw new \IOException('Missing system language file for language ' . $s_language . '.');
         }
-        if (! in_array('site', $this->a_documents)) {
-            throw new \IOException('Missing site language file for language ' . $this->s_language . '.');
+        if (! in_array('site', $a_documents)) {
+            throw new \IOException('Missing site language file for language ' . $s_language . '.');
         }
         
-        /* Get encoding */
-        $this->s_encoding = $this->get('language/encoding');
+        return $a_documents;
     }
 
     /**
@@ -95,18 +109,30 @@ class LanguageMO extends \core\services\service
     public function get($s_path)
     {
         $a_path = explode('/', $s_path);
-        if (! array_key_exists($a_path[0], $this->a_documents)) {
+        if (! in_array($this->s_language.'-'.$a_path[0], $this->a_documents)) {
             textdomain('site');
         } else {
-            textdomain($a_path[0]);
+            textdomain($this->s_language.'-'.$a_path[0]);
         }
         $s_path = str_replace('/', '_', $s_path);
         
         $s_text = gettext($s_path);
         
         if ($s_text == $s_path) {
-            /* Part not found */
-            throw new \XMLException("Can not find " . $s_path);
+        	/* Try fallback */
+        	if (! in_array($this->s_languageFallback.'-'.$a_path[0], $this->a_documentsFallback)) {
+        		textdomain('site');
+        	} else {
+        		textdomain($this->s_languageFallback.'-'.$a_path[0]);
+        	}
+        	$s_path = str_replace('/', '_', $s_path);
+        	
+        	$s_text = gettext($s_path);
+        	
+        	if( $s_text == $s_path ){
+	            /* Part not found */
+	            throw new \XMLException("Can not find " . $s_path);
+        	}
         }
         
         return trim($s_text);
@@ -166,18 +192,30 @@ class LanguageMO extends \core\services\service
     public function exists($s_path)
     {
         $a_path = explode('/', $s_path);
-        if (! array_key_exists($a_path[0], $this->a_documents)) {
+        if (! in_array($this->s_language.'-'.$a_path[0], $this->a_documents)) {
             textdomain('site');
         } else {
-            textdomain($a_path[0]);
+            textdomain($this->s_language.'-'.$a_path[0]);
         }
         $s_path = str_replace('/', '_', $s_path);
         
         $s_text = gettext($s_path);
         
         if ($s_text == $s_path) {
-            /* Part not found */
-            return false;
+        	/* Try fallback */
+        	if (! in_array($this->s_languageFallback.'-'.$a_path[0], $this->a_documentsFallback)) {
+        		textdomain('site');
+        	} else {
+        		textdomain($this->s_languageFallback.'-'.$a_path[0]);
+        	}
+        	$s_path = str_replace('/', '_', $s_path);
+        	
+        	$s_text = gettext($s_path);
+        	
+        	if ($s_text == $s_path) {
+	        	/* Part not found */
+            	return false;
+        	}
         }
         
         return true;

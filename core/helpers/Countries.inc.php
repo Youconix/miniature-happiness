@@ -33,10 +33,12 @@ class Countries extends Helper
      *
      * @param \Builder $service_Builder
      *            The query builder
-     * @param \core\services\Ĺanguage $service_Language
+     * @param \Ĺanguage $service_Language
      *            The language service
+     *            
+     * @todo	Reimplement constructor
      */
-    public function __construct(\Builder $service_Builder, \core\services\Language $service_Language)
+    public function __construct(\Builder $service_Builder, \Language $service_Language)
     {
         /*
          * $service_Builder = $service_Builder->createBuilder();

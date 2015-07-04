@@ -2,11 +2,13 @@
 define('PROCESS', 'true');
 define('NIV','../');
 
+require_once (NIV . 'core/bootstrap.inc.php');
+
 Class Combiner {
     /**
-     * @var \core\models\Config
+     * @var \Config
      */
-    protected $model_Config;
+    protected $config;
     /**
      * @var \core\services\Headers
      */
@@ -26,10 +28,7 @@ Class Combiner {
     }
     
     private function init() {
-        require_once (NIV . 'core/Memory.php');
-        \core\Memory::startUp();
-        
-        $this->model_Config = \Loader::Inject('\core\models\Config');
+        $this->config = \Loader::Inject('\Config');
         $this->service_Headers = \Loader::Inject('\core\services\Headers');
         $this->service_File = \Loader::Inject('\core\services\File');
         

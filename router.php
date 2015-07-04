@@ -115,7 +115,7 @@ if (! file_exists($_SERVER['SCRIPT_NAME'])) {
 
 require ($_SERVER['SCRIPT_NAME']);
 if (defined('LAYOUT')) {
-    \Loader::Inject('\core\models\Config')->setLayout(LAYOUT);
+    \Loader::Inject('\Config')->setLayout(LAYOUT);
 }
 
 $s_page = str_replace('.php','',$_SERVER['SCRIPT_NAME']);
@@ -195,7 +195,7 @@ catch(BadMethodCallException $e){
     $_SESSION['error'] = $e->getMessage() . '</p><p>' . nl2br($e->getTraceAsString()) . '</p>';
     $_SESSION['errorObject'] = $e;
     
-    \Loader::Inject('\core\models\Config')->setPage('errors/500', 'index', 'default');
+    \Loader::Inject('\Config')->setPage('errors/500', 'index', 'default');
     
     include (NIV . 'errors/Error500.php');
     exit();

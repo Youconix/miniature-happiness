@@ -11,6 +11,14 @@ class Loader
 
     private static function getFileName($s_className)
     {
+        /* Check for interfaces  */
+        if( file_exists(NIV.'core'.DIRECTORY_SEPARATOR.'interfaces'.DIRECTORY_SEPARATOR.$s_className.'.inc.php') ){
+        	return 'core'.DIRECTORY_SEPARATOR.'interfaces'.DIRECTORY_SEPARATOR.$s_className.'.inc.php';
+        }
+        if( file_exists(NIV.'includes'.DIRECTORY_SEPARATOR.'interfaces'.DIRECTORY_SEPARATOR.$s_className.'.inc.php') ){
+        	return 'includes'.DIRECTORY_SEPARATOR.'interfaces'.DIRECTORY_SEPARATOR.$s_className.'.inc.php';
+        }
+        
         $s_className = ltrim($s_className, '\\');
         $s_fileName = '';
         $s_namespace = '';
@@ -19,8 +27,6 @@ class Loader
             $s_className = substr($s_className, $i_lastNsPos + 1);
             $s_fileName = str_replace('\\', DIRECTORY_SEPARATOR, $s_namespace) . DIRECTORY_SEPARATOR;
         }
-        
-        
         
         /* Check for website files */
         $s_name = strtolower($s_fileName.DIRECTORY_SEPARATOR.$s_className.'.php');
@@ -76,7 +82,6 @@ class Loader
     	/* Check IoC */
     	$IoC = \core\Memory::getCache('IoC');
     	if( !is_null($IoC) ){
-    		echo('checking IoC for '.$s_className.'<br>');
     		$check = $IoC::check($s_className);
     		if( !is_null($check) ){
     			$s_className = $check;
@@ -107,7 +112,7 @@ class Loader
             $s_caller = '\\' . $s_caller;
         }
         
-		if(!class_exists($s_caller) ){
+		if(!class_exists($s_caller) && !interface_exists($s_caller)){
         	require(NIV.$s_fileName);
         }
         if( (substr($s_fileName, 0,5) == 'core/') && (file_exists(NIV.str_replace('core/','includes/',$s_fileName).'.inc.php')) ){
@@ -138,6 +143,11 @@ class Loader
     {
         $ref = new \ReflectionClass($s_caller);
         if (! $ref->isInstantiable()) {
+        	/* Check cache */
+        	if (\core\Memory::IsInCache($s_caller)) {
+        		return \core\Memory::getCache($s_caller);
+        	}
+        	
             throw new \RuntimeException('Can not create a object from class ' . $s_caller . '.');
         }
         
@@ -193,7 +203,6 @@ class Loader
                             $a_arguments[] = \core\Memory::models($s_name);
                         } else {
                             /* Try to load object */
-                        	echo('trying to load '.$s_name.'<br>');
                             $a_arguments[] = Loader::inject($s_name);
                         }
             } else {
@@ -221,7 +230,7 @@ class Loader
      */
     private static function getConstructor($s_filename)
     {
-        $service_File = \core\Memory::getCache('\core\services\File');
+    	$service_File = \core\Memory::getCache(\core\IoC::$s_ruleFileHandler);
         
         if ($service_File->exists($s_filename)) {
             $s_file = $service_File->readFile($s_filename);

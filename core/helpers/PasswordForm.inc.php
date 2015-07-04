@@ -31,10 +31,10 @@ class PasswordForm extends Helper
     /**
      * PHP 5 constructor 
      * 
-     * @param \core\services\Language $service_Language     The language service
-     * @param \core\services\Template $service_Template     The template service
+     * @param \Language $service_Language     The language service
+     * @param \Output $service_Template     The template service
      */
-    public function __construct(\core\services\Language $service_Language, \core\services\Template $service_Template)
+    public function __construct(\Language $service_Language, \Output $service_Template)
     {
         $this->service_Language = $service_Language;
         

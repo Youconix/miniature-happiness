@@ -27,6 +27,10 @@ namespace core\services;
 class Headers extends Service
 {
 
+	/**
+	 * 
+	 * @var \Config
+	 */
     private $config;
 
     private $a_headers = array();
@@ -36,10 +40,10 @@ class Headers extends Service
     /**
      * PHP5 constructor
      *
-     * @param core\models\Config $config
+     * @param \Config $config
      *            The config model
      */
-    public function __construct(\core\models\Config $config)
+    public function __construct(\Config $config)
     {
         $this->config = $config;
         

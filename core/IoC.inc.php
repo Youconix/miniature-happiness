@@ -2,19 +2,36 @@
 namespace  core;
 
 class IoC {
+	/**
+	 * 
+	 * @var \Settings
+	 */
 	private $settings;
+	/**
+	 * 
+	 * @var \Config
+	 */
+	private $config;
+	public static $s_ruleSettings = 'core\services\Settings';
+	public static $s_ruleFileHandler = 'core\services\FileHandler';
+	public static $s_ruleConfig = 'core\models\Config';
 	protected static $a_rules = array();
 	
 	public function __construct(\Settings $settings){
 		$this->settings = $settings;
 		
-		$this->setRules();
-		
 		$this->detectDatabase();
 		$this->detectLogger();
+		$this->detectLanguage();
 		$this->detectDefaults();
 		
-		var_dump(IoC::$a_rules);
+		$this->setRules();
+	}
+	
+	public function detectAfterStartup(\Config $config){
+		$this->config = $config;
+		
+		
 	}
 	
 	protected function setRules(){
@@ -61,20 +78,44 @@ class IoC {
 		}
 	}
 	
+	private function detectLanguage(){		
+		if ($this->settings->exists('language/type') && $this->settings->get('language/type') == 'mo') {
+			IoC::$a_rules['Language'] = 'core\services\data\LanguageMO';
+			/* $obj_parser = \Loader::Inject('\core\services\data\LanguageMO', array(
+					$s_language,$s_languageFallback
+			)); */
+		} else {
+			IoC::$a_rules['Language'] = 'core\services\data\LanguageXML';
+			/*
+			$obj_parser = \Loader::Inject('\core\services\data\LanguageXML', array(
+					$s_language,
+					$s_languageFallback
+			)); */
+		}
+		
+		if (! function_exists('t')) {
+			require (NIV . 'core/services/data/languageShortcut.inc.php');
+		}
+	}
+	
 	private function detectDefaults(){
 		$a_items = array('Header','Footer','Menu');
 		foreach($a_items AS $s_item){
 			if( file_exists(NIV.'includes/'.$s_item.'.inc.php') ){
-				IoC::$a_rules[$s_item] = '\includes\\'.$s_item;
+				IoC::$a_rules[$s_item] = '\includes\classes\\'.$s_item;
 			}
 			else {
-				IoC::$a_rules[$s_item] = '\core\\'.$s_item;
+				IoC::$a_rules[$s_item] = '\core\classes\\'.$s_item;
 			}
 		}
 		
+		IoC::$a_rules['Config'] = IoC::$s_ruleConfig;
+		IoC::$a_rules['FileHandler'] = IoC::$s_ruleFileHandler;
 		IoC::$a_rules['Input'] = '\core\Input';
-		IoC::$a_rules['Output'] = '\core\Output';
-		IoC::$a_rules['Settings'] = '\core\services\Settings';
+		IoC::$a_rules['Output'] = '\core\services\Template';
+		IoC::$a_rules['Security'] = '\core\services\Security';
+		IoC::$a_rules['Settings'] =  IoC::$s_ruleSettings;
+		IoC::$a_rules['Validation'] = '\core\services\Validation';
 	}
 	
 	public static function check($s_name){
@@ -95,7 +136,6 @@ class IoC {
 		}
 		
 		if( array_key_exists($s_name, IoC::$a_rules) ){
-			echo(' found rule : '.IoC::$a_rules[$s_name].'<br>');
 			return IoC::$a_rules[$s_name];
 		}
 		

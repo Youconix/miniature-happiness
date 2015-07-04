@@ -23,19 +23,18 @@ abstract class Authorization extends \includes\BaseLogicClass {
     /**
      * Constructor
      *
-     * @param \core\Input $input    The input parser
-     * @param \core\models\Config $config
-     * @param \core\services\Language $language
-     * @param \core\services\Template $template
-     * @param \core\classes\Header $header
-     * @param \core\classes\Menu $menu
-     * @param \core\classes\Footer $footer
+     * @param \Input $input    The input parser
+     * @param \Config $config
+     * @param \Language $language
+     * @param \Output $template
+     * @param \Header $header
+     * @param \Menu $menu
+     * @param \Footer $footer
      * @param \core\models\User $user
      * @param \core\services\Headers $headers
      */
-    public function __construct(\core\Input $input,\core\models\Config $config,
-        \core\services\Language $language,\core\services\Template $template,\core\classes\Header $header,\core\classes\Menu $menu,
-        \core\classes\Footer $footer,\core\models\User $user,\core\services\Headers $headers)
+    public function __construct(\Input $input,\Config $config,
+        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\core\services\Headers $headers)
     {
         $this->user = $user;
         $this->headers = $headers;
@@ -48,14 +47,15 @@ abstract class Authorization extends \includes\BaseLogicClass {
      */
     protected function init()
     {    
-        parent::init();
+        //parent::init();
         
         $this->s_notice = '';
     
         $this->a_types = $this->config->getLoginTypes();
-    
+    print_r($this->a_types);
+    die();
         if (! in_array($this->s_current,$this->a_types)) {
-            $this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
+            //$this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
         }
     }
     

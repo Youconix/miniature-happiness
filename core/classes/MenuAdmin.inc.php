@@ -23,7 +23,7 @@ namespace core\classes;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class MenuAdmin
+class MenuAdmin implements \Menu
 {
 
     private $service_Language;
@@ -32,17 +32,17 @@ class MenuAdmin
 
     private $service_XML;
 
-    private $service_Template;
+    private $template;
 
     /**
      * Starts the class menuAdmin
      */
-    public function __construct(\core\services\Language $service_Language, \core\services\Xml $service_XML, \core\services\Template $service_Template, \core\models\ControlPanelModules $model_ControlPanelModules)
+    public function __construct(\Language $service_Language, \core\services\Xml $service_XML, \Output $template, \core\models\ControlPanelModules $model_ControlPanelModules)
     {
         $this->service_Language = $service_Language;
         $this->service_XML = $service_XML;
         $this->model_ControlPanelModules = $model_ControlPanelModules;
-        $this->service_Template = $service_Template;
+        $this->template = $template;
     }
     
     public function generateMenu(){
@@ -72,13 +72,13 @@ class MenuAdmin
             $this->setCSS($s_module, $s_css);
             
             ($i == 1) ? $s_class = 'tab_header_active' : $s_class = '';
-            $this->service_Template->setBlock('menu_tab_header', array(
+            $this->template->setBlock('menu_tab_header', array(
                 'class' => $s_class,
                 'id' => $i,
                 'title' => $this->service_Language->get($s_title)
             ));
             
-            $this->service_Template->setBlock('menu_tab_content', array(
+            $this->template->setBlock('menu_tab_content', array(
                 'id' => $i
             ));
             
@@ -104,7 +104,7 @@ class MenuAdmin
                 }
                 $a_data['name'] = $i_blockNr;
                 
-                $this->service_Template->setBlock('tab_' . $i, $a_data);
+                $this->template->setBlock('tab_' . $i, $a_data);
                 
                 $this->setLinks($a_links, $i_blockNr);
                 
@@ -131,7 +131,7 @@ class MenuAdmin
         
         $a_js = explode(',', $s_jsLink);
         foreach ($a_js as $s_jsLink) {
-            $this->service_Template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . trim($s_jsLink) . '"></script>');
+            $this->template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . trim($s_jsLink) . '"></script>');
         }
     }
 
@@ -151,7 +151,7 @@ class MenuAdmin
         
         $a_css = explode(',', $s_css);
         foreach ($a_css as $s_css) {
-            $this->service_Template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
+            $this->template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
         }
     }
 
@@ -171,7 +171,7 @@ class MenuAdmin
             $a_data['link_title'] = $a_data['title'];
             $a_data['link_id'] = $a_data['id'];
             
-            $this->service_Template->setBlock('link_' . $s_module, $a_data);
+            $this->template->setBlock('link_' . $s_module, $a_data);
         }
     }
 }

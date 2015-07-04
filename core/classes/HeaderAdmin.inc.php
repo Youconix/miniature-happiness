@@ -28,7 +28,7 @@ class HeaderAdmin extends \core\classes\Header
     /**
      * Starts the class header
      */
-    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $model_User, \core\models\Config $model_Config)
+    public function __construct(\Output $template, \Language $language, \core\models\User $model_User, \Config $model_Config)
     {
         parent::__construct($template, $language, $model_User, $model_Config);
     }

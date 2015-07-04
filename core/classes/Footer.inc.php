@@ -23,28 +23,28 @@ namespace core\classes;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class Footer
+class Footer implements \Footer
 {
 
     /**
      * 
-     * @var \core\services\Template
+     * @var \Output
      */
     protected $template;
     
     /**
      * 
-     * @var \core\services\Settings
+     * @var \Settings
      */
     protected $settings;
 
     /**
      * Starts the class footer
      * 
-     * @param core\services\Template $template
-     * @param core\services\Settings  $settings
+     * @param \Output $template
+     * @param \Settings  $settings
      */
-    public function __construct(\core\services\Template $template,\core\services\Settings $settings)
+    public function __construct(\Output $template,\Settings $settings)
     {
         $this->template = $template;
         $this->settings = $settings;

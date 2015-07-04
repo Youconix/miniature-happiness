@@ -32,10 +32,10 @@ class Cookie extends Service
     /**
      * PHP5 constructor
      *
-     * @param \core\services\Security $service_Security
+     * @param \Security $service_Security
      *            The security layer
      */
-    public function __construct(\core\services\Security $service_Security)
+    public function __construct(\Security $service_Security)
     {
         $this->service_Security = $service_Security;
     }

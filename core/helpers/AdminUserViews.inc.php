@@ -10,7 +10,7 @@ class AdminUserViews extends \core\helpers\Helper {
     
     protected $s_modus = 'add';
     
-    public function __construct(\core\services\Language $service_Language, \core\services\Template $service_Template,\core\models\Groups $model_Groups)
+    public function __construct(\Language $service_Language, \core\services\Template $service_Template,\core\models\Groups $model_Groups)
     {
         $this->service_Language = $service_Language;
         $this->service_Template = $service_Template;

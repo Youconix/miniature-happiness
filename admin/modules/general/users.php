@@ -59,18 +59,18 @@ class Users extends \core\AdminLogicClass
     /**
      * Starts the class Users
      *
-     * @param \core\Input $input            
-     * @param \core\models\Config $config            
-     * @param \core\services\Language $language            
-     * @param \core\services\Template $template            
+     * @param \Input $input            
+     * @param \Config $config            
+     * @param \Language $language            
+     * @param \Output $template            
      * @param \core\models\Groups $groups            
      * @param \core\models\User $user            
-     * @param \core\services\Logs $logs                 
+     * @param \Logger $logs                 
      * @param \core\models\Login $login            
      * @param \core\services\Mailer $mailer            
      * @param \core\helpers\AdminUserViews $view            
      */
-    public function __construct(\core\Input $input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\models\Groups $groups, \core\models\User $user, \core\services\Logs $logs, \core\models\Login $login, \core\services\Mailer $mailer, \core\helpers\AdminUserViews $view)
+    public function __construct(\Input $input, \Config $config, \Language $language, \Output $template, \core\models\Groups $groups, \core\models\User $user, \Logger $logs, \core\models\Login $login, \core\services\Mailer $mailer, \core\helpers\AdminUserViews $view)
     {
         parent::__construct($input, $config, $language, $template,$logs);
         

@@ -27,10 +27,22 @@ namespace core\services;
  */
 class Maintenance extends Service {
 	private $service_File;
+	/**
+	 * 
+	 * @var \Builder
+	 */
 	private $builder;
-	private $model_Config;
+	/**
+	 * 
+	 * @var \Config
+	 */
+	private $config;
 	private $model_Stats;
-	private $service_Logs;
+	/**
+	 * 
+	 * @var \Logger
+	 */
+	private $logger;
 	private $s_styleDir;
 	private $a_cssAdmin;
 	private $a_jsAdmin;
@@ -45,18 +57,18 @@ class Maintenance extends Service {
 	 *        	query builder
 	 * @param core\models\Stats $model_Stats
 	 *        	The statistics model
-	 * @param core\models\Config $model_Config
+	 * @param \Config $config
 	 *        	The config
-	 * @param core\services\Logs $service_Logs
+	 * @param \Logger $logger
 	 *        	The logger
 	 */
-	public function __construct(\core\services\File $service_File, \Builder $builder, \core\models\Stats $model_Stats, \core\models\Config $model_Config, \core\services\Logs $service_Logs) {
+	public function __construct(\core\services\File $service_File, \Builder $builder, \core\models\Stats $model_Stats, \Config $config, \Logger $logger) {
 		$this->service_File = $service_File;
 		$this->builder = $builder;
 		$this->model_Stats = $model_Stats;
-		$this->s_styleDir = $model_Config->getStylesDir ();
-		$this->model_Config = $model_Config;
-		$this->service_Logs = $service_Logs;
+		$this->s_styleDir = $config->getStylesDir ();
+		$this->config = $config;
+		$this->logger = $logger;
 	}
 	
 	/**
@@ -248,7 +260,7 @@ class Maintenance extends Service {
 			
 			return 1;
 		} catch ( \DBException $e ) {
-			$this->service_Logs->exception ( $e );
+			$this->logger->exception ( $e );
 			
 			return 0;
 		}
@@ -274,7 +286,7 @@ class Maintenance extends Service {
 			
 			return 1;
 		} catch ( \DBException $e ) {
-			$this->service_Logs->exception ( $e );
+			$this->logger->exception ( $e );
 			return 0;
 		}
 	}
@@ -306,7 +318,7 @@ class Maintenance extends Service {
 	}
 	public function createBackupFull() {
 		if (! $this->isZipSupported ()) {
-			$this->service_Logs->errorLog ( 'Can not create backup. Zip support is missing' );
+			$this->logger->errorLog ( 'Can not create backup. Zip support is missing' );
 			return null;
 		}
 		
@@ -315,7 +327,7 @@ class Maintenance extends Service {
 		$obj_zip = new \ZipArchive ();
 		
 		if ($obj_zip->open ( $s_filename . \ZipArchive::CREATE ) !== true) {
-			$this->service_Logs->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
+			$this->logger->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
 			return;
 		}
 		
@@ -353,7 +365,7 @@ class Maintenance extends Service {
 	}
 	public function createBackup() {
 		if (! $this->isZipSupported ()) {
-			$this->service_Logs->errorLog ( 'Can not create backup. Zip support is missing' );
+			$this->logger->errorLog ( 'Can not create backup. Zip support is missing' );
 			return null;
 		}
 		
@@ -362,7 +374,7 @@ class Maintenance extends Service {
 		$obj_zip = new \ZipArchive ();
 		
 		if ($obj_zip->open ( $s_filename . \ZipArchive::CREATE ) !== true) {
-			$this->service_Logs->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
+			$this->logger->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
 			return;
 		}
 		
@@ -405,7 +417,7 @@ class Maintenance extends Service {
 	}
 	public function restoreBackup($s_backup) {
 		if (! $this->isZipSupported ()) {
-			$this->service_Logs->errorLog ( 'Can not restore backup. Zip support is missing' );
+			$this->logger->errorLog ( 'Can not restore backup. Zip support is missing' );
 			return false;
 		}
 	}

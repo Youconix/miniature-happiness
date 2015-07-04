@@ -23,20 +23,17 @@ namespace core\models;
  * @author Rachelle Scheijen
  * @since 2.0
  */
-class Config extends Model implements \SplSubject
+class Config extends Model implements \Config,\SplSubject
 {
+	/**
+	 * @var \core\services\FileHandler
+	 */
 
     /**
      *
      * @var \core\services\Settings
      */
     protected $settings;
-
-    /**
-     *
-     * @var \core\services\File
-     */
-    protected $file;
 
     /**
      *
@@ -72,14 +69,14 @@ class Config extends Model implements \SplSubject
 
     /**
      * PHP 5 constructor
-     *
-     * @param core\services\File $file            
+     *       
+     * @param \core\services\FileHandler $file
      * @param \Settings $settings            
      * @param core\services\Cookie $cookie            
      */
-    public function __construct(\core\services\File $file, \Settings $settings, \core\services\Cookie $cookie, \Builder $builder)
+    public function __construct(\core\services\FileHandler $file,\Settings $settings, \core\services\Cookie $cookie, \Builder $builder)
     {
-        $this->file = $file;
+    	$this->file = $file;
         $this->settings = $settings;
         $this->cookie = $cookie;
         $this->builder = $builder;
@@ -96,7 +93,7 @@ class Config extends Model implements \SplSubject
     /**
      * Returns the settings service
      *
-     * @return \core\services\Settings The service
+     * @return \Settings The service
      */
     public function getSettings()
     {
@@ -181,9 +178,10 @@ class Config extends Model implements \SplSubject
     public function getLanguages()
     {
         $a_languages = array();
-        $a_languageFiles = $this->file->readDirectory(NIV . 'language');
+        $obj_languageFiles = $this->file->readDirectory(NIV . 'language');
         
-        foreach ($a_languageFiles as $s_languageFile) {
+        foreach ($obj_languageFiles as $languageFile) {
+        	$s_languageFile = $languageFile->getFilename();
             if (strpos($s_languageFile, 'language_') !== false) {
                 /* Fallback */
                 return $this->getLanguagesOld();
@@ -587,22 +585,6 @@ class Config extends Model implements \SplSubject
         
         if ($this->settings->exists('main/registration')) {
             $s_page = $this->getBase() . $this->settings->get('main/registration');
-        }
-        
-        return $s_page;
-    }
-
-    /**
-     * Returns the activation redirect url
-     *
-     * @return string The url
-     */
-    public function getActivationRedirect()
-    {
-        $s_page = $this->getBase() . 'index/view';
-        
-        if ($this->settings->exists('main/activation')) {
-            $s_page = $this->getBase() . $this->settings->get('main/activation');
         }
         
         return $s_page;

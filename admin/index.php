@@ -1,6 +1,7 @@
 <?php
 namespace admin;
 
+use core\BaseLogicClass;
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,44 +28,25 @@ include (NIV . 'core/BaseLogicClass.php');
 
 class Index extends \core\BaseLogicClass
 {
-
-    /**
-     *
-     * @var \core\classes\HeaderAdmin
-     */
-    protected $headerAdmin;
-
-    /**
-     *
-     * @var \core\classes\MenuAdmin
-     */
-    protected $menuAdmin;
-
     /**
      * Base graphic class constructor
      *
-     * @param \core\Input $Input    The input parser       
-     * @param \core\models\Config $model_Config            
-     * @param \core\services\Language $service_Language            
-     * @param \core\services\Template $service_Template            
+     * @param \Input $Input    The input parser       
+     * @param \Config $model_Config            
+     * @param \Language $service_Language            
+     * @param \Output $service_Template            
      * @param \core\classes\HeaderAdmin $header            
      * @param \core\classes\MenuAdmin $menu            
-     * @param \core\classes\Footer $footer            
+     * @param \\Footer $footer            
      * @param \core\helpers\ConfirmBox $confirmbox            
      */
-    public function __construct(\core\Input $Input, \core\models\Config $model_Config, \core\services\Language $service_Language, \core\services\Template $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \core\classes\Footer $footer, \core\helpers\ConfirmBox $confirmbox)
+    public function __construct(\Input $Input, \Config $model_Config, \Language $service_Language, \Output $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \Footer $footer, \core\helpers\ConfirmBox $confirmbox)
     {
         $model_Config->setLayout('admin');
         
-        $this->config = $model_Config;
-        $this->language = $service_Language;
-        $this->template = $service_Template;
+        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         
-        $this->headerAdmin = $header;
-        $this->footer = $footer;
-        $this->menuAdmin = $menu;
-        
-        $this->prepareInput($Input);
+       $this->prepareInput($Input);
         
         $this->init();
         
@@ -85,20 +67,5 @@ class Index extends \core\BaseLogicClass
         
         $this->template->setJavascriptLink('<script src="{NIV}js/admin/language.php?lang=' . $this->language->getLanguage() . '"></script>');
         $this->template->set('noscript', '<noscript>' . $this->language->get('language/noscript') . '</noscript>');
-    }
-
-    /**
-     * Shows the header, menu and footer
-     */
-    protected function showLayout()
-    {
-        /* Call header */
-        $this->headerAdmin->createHeader();
-        
-        /* Call Menu */
-        $this->menuAdmin->generateMenu();
-        
-        /* Call footer */
-        $this->footer->createFooter();
     }
 }

@@ -43,25 +43,25 @@ class Forgot_password extends \includes\BaseLogicClass
 
     /**
      *
-     * @var \core\services\Validation
+     * @var \Validation
      */
     protected $validation;
 
     /**
      * Base graphic class constructor
      *
-     * @param \core\Input $input            
-     * @param \core\models\Config $config            
-     * @param \core\services\Language $language            
-     * @param \core\services\Template $template            
-     * @param \core\classes\Header $header            
-     * @param \core\classes\Menu $menu            
-     * @param \core\classes\Footer $footer            
+     * @param \Input $input            
+     * @param \Config $config            
+     * @param \Language $language            
+     * @param \Output $template            
+     * @param \Header $header            
+     * @param \Menu $menu            
+     * @param \Footer $footer            
      * @param \core\models\Login $login            
      * @param \core\services\Headers $headers            
-     * @param \core\services\Validation $validation            
+     * @param \Validation $validation            
      */
-    public function __construct(\core\Input $input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\models\Login $login, \core\services\Headers $headers, \core\services\Validation $validation)
+    public function __construct(\Input $input, \Config $config, \Language $language, \Output $template, \Header $header, \Menu $menu, \Footer $footer, \core\models\Login $login, \core\services\Headers $headers, \Validation $validation)
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         

@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\models;
 
-class Config extends \core\models\Config{
+class Config implements \Config{
 
     /**
      * Loads the language

@@ -38,7 +38,7 @@ class Groups extends Model
     
     /**
      * 
-     * @var \core\models\Config
+     * @var \Config
      */
     protected $config;
 
@@ -48,11 +48,11 @@ class Groups extends Model
      * PHP5 constructor
      *
      * @param \Builder $builder
-     * @param \core\services\Validation $validation
+     * @param \Validation $validation
      * @param \core\models\data\DataGroup $group
-     * @param \core\models\Config $config
+     * @param \Config $config
      */
-    public function __construct(\Builder $builder, \core\services\Validation $validation, \core\models\data\DataGroup $group, \core\models\Config $config)
+    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\DataGroup $group, \Config $config)
     {
         parent::__construct($builder, $validation);
         

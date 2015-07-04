@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 2.0
  */
-class Validation extends \core\services\Service
+class Validation extends \core\services\Service  implements \Validation
 {
 
     protected $a_errors;
@@ -153,6 +153,13 @@ class Validation extends \core\services\Service
         return true;
     }
 
+    /**
+     * Validates the given field
+     *
+     * @param string $s_key		The field name
+     * @param mixed $field		The  field value
+     * @param string $s_rules	The validation rules
+     */
     public function validateField($s_key, $field, $s_rules)
     {
         $a_errors = array();

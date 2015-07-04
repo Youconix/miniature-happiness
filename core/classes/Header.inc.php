@@ -28,37 +28,37 @@ class Header implements \Header
 
     /**
      *
-     * @var \core\services\Template
+     * @var \Output
      */
     protected $template;
 
     /**
      *
-     * @var \core\services\Language
+     * @var \Language
      */
     protected $language;
 
     /**
      *
-     * @var \core\models\U
+     * @var \core\models\User
      */
     protected $user;
 
     /**
      *
-     * @var \core\models\Config
+     * @var \Config
      */
     protected $config;
 
     /**
      * Starts the class header
      * 
-     * @param \core\services\Template $template
-     * @param \core\services\Language $language
+     * @param \Output $template
+     * @param \Language $language
      * @param \core\models\User $user
-     * @param \core\models\Config $config
+     * @param \Config $config
      */
-    public function __construct(\core\services\Template $template, \core\services\Language $language, \core\models\User $user, \core\models\Config $config)
+    public function __construct(\Output $template, \Language $language, \core\models\User $user, \Config $config)
     {
         $this->template = $template;
         $this->language = $language;

@@ -32,18 +32,18 @@ class Index extends \includes\BaseLogicClass
     /**
      * Constructor
      *
-     * @param \core\Input $Input    The input parser       
-     * @param \core\models\Config $config            
-     * @param \core\services\Language $language            
-     * @param \core\services\Template $template            
+     * @param \Input $Input    The input parser       
+     * @param \Config $config            
+     * @param \Language $language            
+     * @param \Output $template            
      * @param \core\classes\Header $header            
      * @param \core\classes\Menu $menu    
      * @param \core\classes\Footer $footer
      * @param \core\helpers\IndexInstall $index        
      */
-    public function __construct(\core\Input $Input, \core\models\Config $config, \core\services\Language $language, \core\services\Template $template, \core\classes\Header $header, \core\classes\Menu $menu, \core\classes\Footer $footer, \core\helpers\IndexInstall $index)
+    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Header $header, \Menu $menu, \Footer $footer, \core\helpers\IndexInstall $index)
     {
-        parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
+    	parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
         
         $this->indexInstall = $index;
     }
@@ -53,6 +53,6 @@ class Index extends \includes\BaseLogicClass
      */
     protected function view()
     {
-        $this->template->set('content', $this->indexInstall->generate());
+    	$this->template->set('content', $this->indexInstall->generate());
     }
 }

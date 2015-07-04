@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class Language extends \core\services\Language
+class Language implements \Language
 {
 
     public function __construct()

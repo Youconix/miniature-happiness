@@ -35,7 +35,7 @@ class DataUser extends \core\models\Model
 
     /**
      * 
-     * @var \core\services\Language
+     * @var \Language
      */
     protected $language;
     
@@ -79,13 +79,13 @@ class DataUser extends \core\models\Model
      * PHP5 constructor
      *
      * @param \Builder $builder
-     * @param \core\services\Validation $validation
+     * @param \Validation $validation
      * @param \core\services\Hashing $hashing
      * @param \core\models\Groups $groups
-     * @param \core\services\Language $language
+     * @param \Language $language
      */
-    public function __construct(\Builder $builder, \core\services\Validation $validation, 
-        \core\services\Hashing $hashing, \core\models\Groups $groups, \core\services\Language $language)
+    public function __construct(\Builder $builder, \Validation $validation, 
+        \core\services\Hashing $hashing, \core\models\Groups $groups, \Language $language)
     {
         parent::__construct($builder, $validation);
         $this->groups = $groups;

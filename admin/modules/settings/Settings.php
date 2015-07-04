@@ -29,22 +29,21 @@ abstract class Settings extends \core\AdminLogicClass
 
     /**
      *
-     * @var \core\services\Settings
+     * @var \Settings
      */
     protected $settings;
 
     /**
      * Constructor
      * 
-     * @param \core\Input $Input
-     * @param \core\models\Config $config
-     * @param \core\services\Language $language
-     * @param \core\services\Template $template
-     * @param \core\services\Logs $logs
-     * @param \core\services\Settings $settings
+     * @param \Input $Input
+     * @param \Config $config
+     * @param \Language $language
+     * @param \Output $template
+     * @param \Logger $logs
+     * @param \Settings $settings
      */
-    public function __construct(\core\Input $Input,\core\models\Config $config,\core\services\Language $language,\core\services\Template 
-        $template,\core\services\Logs $logs,\core\services\Settings $settings){
+    public function __construct(\Input $Input,\Config $config,\Language $language,\Output $template,\Logger $logs,\Settings $settings){
         parent::__construct($Input, $config, $language, $template, $logs);
         
         $this->settings = $settings;

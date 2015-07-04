@@ -8,8 +8,8 @@
 		  <li><a href="{LEVEL}logout/index">{logout}</a></li>
 		</if>
 		<else>
-		  <li><a href="{LEVEL}authorization/login/index">{login}</a></li>
-		  <li><a href="{LEVEL}authorization/registration/index">{registration}</a></li>
+		  <li><a href="{LEVEL}authorization/normal/login_screen">{login}</a></li>
+		  <li><a href="{LEVEL}authorization/normal/registration_screen">{registration}</a></li>
 		</else>
 	</ul>
 	

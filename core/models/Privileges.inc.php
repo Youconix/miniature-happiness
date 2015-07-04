@@ -34,13 +34,13 @@ class Privileges
 
     /**
      * 
-     * @var \core\models\Config
+     * @var \Config
      */
     private $config;
 
     /**
      * 
-     * @var \core\services\Builder
+     * @var \Builder
      */
     private $builder;
 
@@ -63,9 +63,9 @@ class Privileges
      * @param Builder $builder
      * @param core\models\Groups $groups
      * @param core\services\Session $session
-     * @param core\models\Config $config
+     * @param Config $config
      */
-    public function __construct(\core\services\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \core\models\Config $config)
+    public function __construct(\core\services\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \Config $config)
     {
         $this->headers = $headers;
         $this->builder = $builder;
@@ -188,12 +188,12 @@ class Privileges
         }
         
         $this->session->set('page', $s_page);
-        $this->config->setPage('authorization/login', 'index');
+        $this->config->setPage('authorization/normal', 'login_screen');
         $this->headers->http401();
         $this->headers->printHeaders();
         
         $_GET['command'] = 'index';
-        $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
+        $_SERVER['SCRIPT_NAME'] = 'authorization/normal.php';
        
         return false;
     }
@@ -213,8 +213,8 @@ class Privileges
             $this->headers->http401();
             $this->headers->printHeaders();
             
-            $_GET['command'] = 'index';
-            $_SERVER['SCRIPT_NAME'] = 'authorization/login.php';
+            $_GET['command'] = 'login_screen';
+            $_SERVER['SCRIPT_NAME'] = 'authorization/normal.php';
             $this->config->setAjax(false);
             
             return false;

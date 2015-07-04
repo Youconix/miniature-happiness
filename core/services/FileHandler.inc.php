@@ -19,7 +19,36 @@ class FileHandler extends \core\services\Service
         return new \core\classes\DirectoryFilterIteractor($directory,$a_names);
     }
     
-
+    /**
+     * Reads the content from the given file
+     *
+     * @param String $s_file
+     *            name
+     * @param boolean $bo_binary
+     *            true for binary reading, optional
+     * @return String The content from the requested file
+     * @throws IOException when the file does not exists or is not readable
+     */
+    public function readFile($s_file, $bo_binary = false)
+    {
+    	\core\Memory::type('string', $s_file,true);
+    	
+    	if ( !preg_match("#^(http://|ftp://)#si", $s_file) && !$this->exists($s_file)) {
+    		throw new \IOException('File ' . $s_file . ' does not exist!');
+    	}
+    	
+    	$file = new \SplFileObject($s_file);
+    	if( !$file->isReadable() ){
+    		throw new \IOException('Can not read ' . $s_file . '. Check the permissions');
+    	}
+    	
+    	$content = '';
+    	while (!$file->eof()) {
+    		$content .= $file->fgets();
+    	}
+    	
+    	return $content;
+    }
 
     /**
      * Checks if the given file or directory exists
@@ -35,7 +64,7 @@ class FileHandler extends \core\services\Service
         if (file_exists($s_file)) {
             return true;
         }
-    
+        
         return false;
     }
     

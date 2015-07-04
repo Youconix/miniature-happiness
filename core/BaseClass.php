@@ -35,26 +35,26 @@ abstract class BaseClass
     protected $init_request = array();
 
     /**
-     * @var \core\Input
+     * @var \Input
      */
     protected $post;
 
     /**
-     * @var \core\Input
+     * @var \Input
      */
     protected $get;
 
     /**
-     * @var \core\Input
+     * @var \Input
      */
     protected $request;
 
     /**
      * Base class constructor
      *
-     * @param \core\Input $input    The input parser           
+     * @param \Input $input    The input parser           
      */
-    public function __construct(\core\Input $input)
+    public function __construct(\Input $input)
     {
         $this->prepareInput($input);
         

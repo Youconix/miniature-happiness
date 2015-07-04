@@ -5,7 +5,7 @@ class AdminLanguage
 {
 
     /**
-     * @var \core\services\Language
+     * @var \Language
      */
     private $service_Language;
     /**
@@ -19,8 +19,8 @@ class AdminLanguage
         require (NIV . 'core/Memory.php');
         \core\Memory::startUp();
         
-        $this->service_Language = \Loader::inject('\core\services\Language');
-        $this->service_Builder = \Loader::inject('\core\services\QueryBuilder')->createBuilder();
+        $this->service_Language = \Loader::inject('\Language');
+        $this->service_Builder = \Loader::inject('\Builder');
         
         $this->getItems();
         

@@ -24,14 +24,17 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Security extends Service
+class Security extends Service implements \Security
 {
 
-    protected $service_Validation;
+	/**
+	 * @var  \Validation
+	 */
+    protected $validation;
 
-    public function __construct(\core\services\Validation $service_Validation)
+    public function __construct(\Validation $validation)
     {
-        $this->service_Validation = $service_Validation;
+        $this->validation = $validation;
     }
 
     /**
@@ -169,7 +172,7 @@ class Security extends Service
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated. Please use \core\services\Validation->checkEmail() instead.", E_USER_DEPRECATED);
         }
-        return $this->service_Validation->checkEmail($s_email);
+        return $this->validation->checkEmail($s_email);
     }
 
     /**
@@ -186,7 +189,7 @@ class Security extends Service
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated. Please use \core\services\Validation->checkURI() instead.", E_USER_DEPRECATED);
         }
-        return $this->service_Validation->checkURI($s_uri);
+        return $this->validation->checkURI($s_uri);
     }
 
     /**
@@ -203,7 +206,7 @@ class Security extends Service
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated. Please use \core\services\Validation->checkPostalNL() instead.", E_USER_DEPRECATED);
         }
-        return $this->service_Validation->checkPostalNL($s_value);
+        return $this->validation->checkPostalNL($s_value);
     }
 
     /**
@@ -220,7 +223,7 @@ class Security extends Service
         if (! \core\Memory::isTesting()) {
             trigger_error("This function has been deprecated. Please use \core\services\Validation->checkPostalBE() instead.", E_USER_DEPRECATED);
         }
-        return $this->service_Validation->checkPostalBE($i_value);
+        return $this->validation->checkPostalBE($i_value);
     }
 
     /**
