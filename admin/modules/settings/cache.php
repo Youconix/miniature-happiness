@@ -28,7 +28,7 @@ class Cache extends \admin\modules\settings\Settings
 
     /**
      *
-     * @var \core\services\Cache
+     * @var \Cache
      */
     private $cache;
 
@@ -41,9 +41,9 @@ class Cache extends \admin\modules\settings\Settings
      * @param \Output $template            
      * @param \Logger $logs            
      * @param \Settings $settings            
-     * @param \core\services\Cache $cache            
+     * @param \Cache $cache            
      */
-    public function __construct(\core\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \core\services\Cache $cache)
+    public function __construct(\core\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \Cache $cache)
     {
         parent::__construct($Input, $config, $language, $template, $logs, $settings);
         

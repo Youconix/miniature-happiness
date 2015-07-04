@@ -28,7 +28,7 @@ class Cache extends \core\AdminLogicClass
 
     /**
      *
-     * @var \core\services\Cache
+     * @var \Cache
      */
     private $cache;
 
@@ -40,10 +40,10 @@ class Cache extends \core\AdminLogicClass
      * @param \Language $language            
      * @param \Output $template
      * @param \Logger $logs     
-     * @param \core\services\Cache $cache
+     * @param \Cache $cache
      */
     public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template,
-        \Logger $logs, \core\services\Cache $cache)
+        \Logger $logs, \Cache $cache)
     {
         parent::__construct($Input, $config, $language, $template,$logs);
         

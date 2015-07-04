@@ -81,16 +81,8 @@ class IoC {
 	private function detectLanguage(){		
 		if ($this->settings->exists('language/type') && $this->settings->get('language/type') == 'mo') {
 			IoC::$a_rules['Language'] = 'core\services\data\LanguageMO';
-			/* $obj_parser = \Loader::Inject('\core\services\data\LanguageMO', array(
-					$s_language,$s_languageFallback
-			)); */
 		} else {
 			IoC::$a_rules['Language'] = 'core\services\data\LanguageXML';
-			/*
-			$obj_parser = \Loader::Inject('\core\services\data\LanguageXML', array(
-					$s_language,
-					$s_languageFallback
-			)); */
 		}
 		
 		if (! function_exists('t')) {
@@ -109,6 +101,7 @@ class IoC {
 			}
 		}
 		
+		IoC::$a_rules['Cache'] = '\core\services\Cache';
 		IoC::$a_rules['Config'] = IoC::$s_ruleConfig;
 		IoC::$a_rules['Cookie'] = '\core\services\Cookie';
 		IoC::$a_rules['FileHandler'] = IoC::$s_ruleFileHandler;
@@ -116,6 +109,7 @@ class IoC {
 		IoC::$a_rules['Input'] = '\core\Input';
 		IoC::$a_rules['Output'] = '\core\services\Template';
 		IoC::$a_rules['Security'] = '\core\services\Security';
+		IoC::$a_rules['Session'] = '\core\services\Session';
 		IoC::$a_rules['Settings'] =  IoC::$s_ruleSettings;
 		IoC::$a_rules['Validation'] = '\core\services\Validation';
 	}

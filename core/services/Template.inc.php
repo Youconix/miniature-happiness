@@ -35,7 +35,7 @@ class Template extends Service implements \Output,\SplObserver
 
     /**
      *
-     * @var \core\services\Cache
+     * @var \Cache
      */
     private $service_Cache;
 
@@ -78,14 +78,14 @@ class Template extends Service implements \Output,\SplObserver
      *            The File service
      * @param \Config $config
      *            The configuration model
-     * @param \core\services\Cache $service_Cache
+     * @param \Cache $service_Cache
      *            The caching service
      * @param \Headers $service_Headers
      *            The headers service
      * @throws \TemplateException if the layout does not exist
      * @throws \IOException if the layout is not readable
      */
-    public function __construct(\core\services\File $service_File, \Config $config, \core\services\Cache $service_Cache, \Headers $service_Headers)
+    public function __construct(\core\services\File $service_File, \Config $config, \Cache $service_Cache, \Headers $service_Headers)
     {
         $this->service_File = $service_File;
         $this->config = $config;
