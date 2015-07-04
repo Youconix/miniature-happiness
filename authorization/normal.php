@@ -31,13 +31,13 @@ class Normal extends \authorization\Authorization {
      * @param \Menu $menu
      * @param \Footer $footer
      * @param \core\models\User $user
-     * @param \core\services\Headers $headers
+     * @param \Headers $headers
      * @param \core\models\Login $login
      * @param \core\helpers\PasswordForm $form
      * @param \core\helpers\Captcha $captcha
      */
     public function __construct(\Input $input,\Config $config,
-        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\core\services\Headers $headers,\core\models\Login $login,
+        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\Headers $headers,\core\models\Login $login,
         \core\helpers\PasswordForm $form,\core\helpers\Captcha $captcha)
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);

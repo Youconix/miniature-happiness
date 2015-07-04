@@ -28,7 +28,7 @@ class Privileges
 
     /**
      * 
-     * @var \core\services\Headers
+     * @var \Headers
      */
     private $headers;
 
@@ -59,13 +59,13 @@ class Privileges
     /**
      * PHP 5 constructor
      *
-     * @param core\services\Headers $headers
-     * @param Builder $builder
-     * @param core\models\Groups $groups
-     * @param core\services\Session $session
-     * @param Config $config
+     * @param \Headers $headers
+     * @param \Builder $builder
+     * @param \core\models\Groups $groups
+     * @param \core\services\Session $session
+     * @param \Config $config
      */
-    public function __construct(\core\services\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \Config $config)
+    public function __construct(\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \Config $config)
     {
         $this->headers = $headers;
         $this->builder = $builder;

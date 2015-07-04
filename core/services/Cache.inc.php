@@ -47,7 +47,7 @@ class Cache extends \core\services\Service
     protected $settings;
 
     /**
-     * @var \core\services\Headers
+     * @var \Headers
      */
     protected $service_Headers;
 
@@ -55,7 +55,7 @@ class Cache extends \core\services\Service
 
     protected $bo_cache;
 
-    public function __construct(\core\services\File $service_File, \Config $config, \core\services\Headers $service_Headers, \Builder $builder)
+    public function __construct(\core\services\File $service_File, \Config $config, \Headers $service_Headers, \Builder $builder)
     {
         $this->config = $config;
         $this->service_File = $service_File;

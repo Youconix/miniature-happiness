@@ -69,7 +69,7 @@ class SiteLanguage
         }
         $s_text .= '};';
         
-        $service_Headers = \Loader::inject('\core\services\Headers');
+        $service_Headers = \Loader::inject('\Headers');
         
         $service_Headers->setJavascript();
         $service_Headers->cache(- 1);

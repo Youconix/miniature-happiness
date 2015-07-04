@@ -7,7 +7,7 @@ function exception_handler($exception)
     }
 
     if (defined('DEBUG')) {
-        $headers = \Loader::Inject('\core\services\Headers');
+        $headers = \Loader::Inject('\Headers');
         $headers->http500();
         $headers->printHeaders();
         echo ('<!DOCTYPE html>

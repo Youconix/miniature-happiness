@@ -37,7 +37,7 @@ class Forgot_password extends \includes\BaseLogicClass
 
     /**
      *
-     * @var \core\services\Headers
+     * @var \Headers
      */
     protected $headers;
 
@@ -58,10 +58,10 @@ class Forgot_password extends \includes\BaseLogicClass
      * @param \Menu $menu            
      * @param \Footer $footer            
      * @param \core\models\Login $login            
-     * @param \core\services\Headers $headers            
+     * @param \Headers $headers            
      * @param \Validation $validation            
      */
-    public function __construct(\Input $input, \Config $config, \Language $language, \Output $template, \Header $header, \Menu $menu, \Footer $footer, \core\models\Login $login, \core\services\Headers $headers, \Validation $validation)
+    public function __construct(\Input $input, \Config $config, \Language $language, \Output $template, \Header $header, \Menu $menu, \Footer $footer, \core\models\Login $login, \Headers $headers, \Validation $validation)
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         

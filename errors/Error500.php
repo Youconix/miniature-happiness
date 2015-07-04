@@ -29,7 +29,7 @@ $config->detectTemplateDir();
 class Error500 extends \includes\BaseLogicClass
 {
     /**
-     * @var \core\services\Headers
+     * @var \Headers
      */
     protected $headers;
     
@@ -48,12 +48,12 @@ class Error500 extends \includes\BaseLogicClass
      * @param \Header $header
      * @param \Menu $menu
      * @param \Footer $footer
-     * @param \core\services\Headers $headers
+     * @param \Headers $headers
      * @param \Logger $logs
      */
     public function __construct(\Input $input,\Config $config,
         \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,
-        \core\services\Headers $headers,\Logger $logs)
+        \Headers $headers,\Logger $logs)
     {
         parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
         

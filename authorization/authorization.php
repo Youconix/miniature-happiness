@@ -4,7 +4,7 @@ namespace authorization;
 abstract class Authorization extends \includes\BaseLogicClass {
     /**
      *
-     * @var \core\services\Headers
+     * @var \Headers
      */
     protected $headers;
     
@@ -31,10 +31,10 @@ abstract class Authorization extends \includes\BaseLogicClass {
      * @param \Menu $menu
      * @param \Footer $footer
      * @param \core\models\User $user
-     * @param \core\services\Headers $headers
+     * @param \Headers $headers
      */
     public function __construct(\Input $input,\Config $config,
-        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\core\services\Headers $headers)
+        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\Headers $headers)
     {
         $this->user = $user;
         $this->headers = $headers;

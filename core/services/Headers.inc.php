@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 2.0
  */
-class Headers extends Service
+class Headers extends Service implements \Headers
 {
 
 	/**

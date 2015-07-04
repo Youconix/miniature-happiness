@@ -9,9 +9,9 @@ class AdminLanguage
      */
     private $service_Language;
     /**
-     * @var \core\services\Builder
+     * @var \Builder
      */
-    private $service_Builder;
+    private $builder;
     private $a_items = array();
 
     public function __construct()
@@ -20,7 +20,7 @@ class AdminLanguage
         \core\Memory::startUp();
         
         $this->service_Language = \Loader::inject('\Language');
-        $this->service_Builder = \Loader::inject('\Builder');
+        $this->builder = \Loader::inject('\Builder');
         
         $this->getItems();
         
@@ -29,8 +29,8 @@ class AdminLanguage
 
     private function getItems()
     {
-        $this->service_Builder->select('language_admin', 'javascript,language');
-        $database = $this->service_Builder->getResult();
+        $this->builder->select('language_admin', 'javascript,language');
+        $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
             $a_data = $database->fetch_assoc();
@@ -48,7 +48,7 @@ class AdminLanguage
         }
         $s_text .= '};';
         
-        $service_Headers = \Loader::inject('\core\services\Headers');
+        $service_Headers = \Loader::inject('\Headers');
         
         $service_Headers->setJavascript();
         $service_Headers->cache(- 1);

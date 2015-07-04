@@ -25,7 +25,7 @@ class Activate extends \includes\BaseLogicClass
 {
     /**
      * 
-     * @var \core\services\Headers
+     * @var \Headers
      */
     private $headers;
 
@@ -46,10 +46,10 @@ class Activate extends \includes\BaseLogicClass
      * @param \Menu $menu
      * @param \Footer $footer
      * @param \core\models\User $user
-     * @param \core\services\Headers $headers
+     * @param \Headers $headers
      */
     public function __construct(\Input $input,\Config $config,\Language $language,
-        \Output $template,\Header $header,\Menu $menu,\Footer $footer,\core\models\User $user,\core\services\Headers $headers)
+        \Output $template,\Header $header,\Menu $menu,\Footer $footer,\core\models\User $user,\Headers $headers)
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         
@@ -79,7 +79,7 @@ class Activate extends \includes\BaseLogicClass
         }
         
         if ($this->user->activate($this->get['key'])) {
-            $s_redirect = $this->config->getActivationRedirect();
+            $s_redirect = 'authorization/registration2/index';
             
             $this->template->set('content', '<h2 class="notice">' . t('activate/accountActivated') . '</h2>
             <meta http-equiv="refresh" content="1;URL=\''.$s_redirect.'\'" /> ');

@@ -10,7 +10,7 @@ Class Combiner {
      */
     protected $config;
     /**
-     * @var \core\services\Headers
+     * @var \Headers
      */
     protected $service_Headers;
     /**
@@ -29,7 +29,7 @@ Class Combiner {
     
     private function init() {
         $this->config = \Loader::Inject('\Config');
-        $this->service_Headers = \Loader::Inject('\core\services\Headers');
+        $this->service_Headers = \Loader::Inject('\Headers');
         $this->service_File = \Loader::Inject('\core\services\File');
         
         if (! isset($_GET['type']) || ! in_array($_GET['type'], $this->a_types) || ! isset($_GET['files']) ) {

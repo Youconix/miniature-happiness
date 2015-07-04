@@ -34,7 +34,7 @@ class Languages extends \admin\modules\settings\Settings
 
     /**
      *
-     * @var \core\services\Headers
+     * @var \Headers
      */
     private $headers;
 
@@ -60,11 +60,11 @@ class Languages extends \admin\modules\settings\Settings
      * @param \Logger $logs            
      * @param \Settings $settings            
      * @param \core\services\FileHandler $fileHandler            
-     * @param \core\services\Headers $headers            
+     * @param \Headers $headers            
      * @param \core\services\Xml $xml            
      * @param \core\helpers\languageTree $languageTree            
      */
-    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \core\services\FileHandler $fileHandler, \core\services\Headers $headers, \core\services\Xml $xml, \core\helpers\languageTree $languageTree)
+    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \core\services\FileHandler $fileHandler, \Headers $headers, \core\services\Xml $xml, \core\helpers\languageTree $languageTree)
     {
         parent::__construct($Input, $config, $language, $template, $logs, $settings);
         
