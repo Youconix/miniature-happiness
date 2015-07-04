@@ -43,20 +43,20 @@ class Authorization extends Service
     /**
      * Inits the service Autorization
      *
-     * @param \core\services\Cookie $service_Cookie
+     * @param \Cookie $service_Cookie
      *            The cookie handler
-     * @param \core\services\QueryBuilder $service_QueryBuilder
+     * @param \Builder $service_QueryBuilder
      *            The query builder
-     * @param \core\services\Logs $service_Logs
+     * @param \Logger $service_Logs
      *            The log service
      */
-    public function __construct(\core\services\Cookie $service_Cookie, \core\services\QueryBuilder $service_QueryBuilder, \core\services\Logs $service_Logs)
+    public function __construct(\Cookie $service_Cookie, \Builder $service_QueryBuilder, \Logger $service_Logs)
     {
         $this->s_openID_dir = NIV . 'include/openID/';
         require_once ($this->s_openID_dir . 'OpenAuth.inc.php');
         
         $this->service_Cookie = $service_Cookie;
-        $this->service_QueryBuilder = $service_QueryBuilder->createBuilder();
+        $this->service_QueryBuilder = $service_QueryBuilder;
         $this->service_Database = $this->service_QueryBuilder->getDatabase();
         $this->service_Logs = $service_Logs;
         

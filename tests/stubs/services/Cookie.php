@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class Cookie extends \core\services\Cookie
+class Cookie implements \Cookie
 {
 
     private $a_data = array();

@@ -31,13 +31,13 @@ class Config extends Model implements \Config,\SplSubject
 
     /**
      *
-     * @var \core\services\Settings
+     * @var \Settings
      */
     protected $settings;
 
     /**
      *
-     * @var \core\services\Cookie
+     * @var \Cookie
      */
     protected $cookie;
 
@@ -72,9 +72,9 @@ class Config extends Model implements \Config,\SplSubject
      *       
      * @param \core\services\FileHandler $file
      * @param \Settings $settings            
-     * @param core\services\Cookie $cookie            
+     * @param \Cookie $cookie            
      */
-    public function __construct(\core\services\FileHandler $file,\Settings $settings, \core\services\Cookie $cookie, \Builder $builder)
+    public function __construct(\core\services\FileHandler $file,\Settings $settings, \Cookie $cookie, \Builder $builder)
     {
     	$this->file = $file;
         $this->settings = $settings;

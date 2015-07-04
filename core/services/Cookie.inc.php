@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Cookie extends Service
+class Cookie extends \core\services\Service implements \Cookie
 {
 
     private $service_Security;

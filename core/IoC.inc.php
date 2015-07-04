@@ -110,7 +110,9 @@ class IoC {
 		}
 		
 		IoC::$a_rules['Config'] = IoC::$s_ruleConfig;
+		IoC::$a_rules['Cookie'] = '\core\services\Cookie';
 		IoC::$a_rules['FileHandler'] = IoC::$s_ruleFileHandler;
+		IoC::$a_rules['Headers'] = '\core\services\Headers';
 		IoC::$a_rules['Input'] = '\core\Input';
 		IoC::$a_rules['Output'] = '\core\services\Template';
 		IoC::$a_rules['Security'] = '\core\services\Security';
