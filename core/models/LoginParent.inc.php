@@ -49,7 +49,7 @@ abstract class LoginParent extends Model
 
     /**
      *
-     * @var \core\services\Session
+     * @var \Session
      */
     protected $session;
 
@@ -67,12 +67,12 @@ abstract class LoginParent extends Model
      * @param \Cookie $cookie
      * @param \Builder $builder
      * @param \Logger $logs
-     * @param \core\services\Session $session
+     * @param \Session $session
      * @param \Headers $headers
      * @param \Config $config
      * @param \core\models\User $user;            
      */
-    public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \core\services\Session $session, \Headers $headers, \Config $config, \core\models\User $user)
+    public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \Session $session, \Headers $headers, \Config $config, \core\models\User $user)
     {
         $this->user = $user;
         $this->cookie = $cookie;

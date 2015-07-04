@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class Session extends \core\services\Session
+class Session implements \Session
 {
 
     private $a_set = array();

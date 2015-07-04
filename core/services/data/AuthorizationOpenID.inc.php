@@ -11,13 +11,13 @@ class AuthorizationOpenID extends \core\services\Service implements \core\interf
 	 *
 	 * @param \Builder $builder
 	 *        	The query builder
-	 * @param \core\services\Logs $service_Logs
+	 * @param \Logger $service_Logs
 	 *        	The log service
-	 *        	@oaram \core\services\Session $service_Session The session handler
+	 *        	@oaram \Session $service_Session The session handler
 	 * @param \core\models\User $model_User
 	 *        	The user model
 	 */
-	public function __construct(\Builder $builder, \core\services\Logs $service_Logs, \core\services\Session $service_Session, \core\models\User $model_User) {
+	public function __construct(\Builder $builder, \Logger $service_Logs, \Session $service_Session, \core\models\User $model_User) {
 		$this->builder = $builder;
 		$this->service_Database = $this->builder->getDatabase ();
 		$this->service_Logs = $service_Logs;

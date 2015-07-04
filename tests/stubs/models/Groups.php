@@ -21,7 +21,7 @@ class Groups extends \core\models\Groups
     {
         \core\Memory::type('int', $i_userid);
         
-        return \core\services\Session::USER;
+        return \Session::USER;
     }
 
     /**
@@ -38,7 +38,7 @@ class Groups extends \core\models\Groups
         \core\Memory::type('int', $i_groupid);
         \core\Memory::type('int', $i_userid);
         
-        return \core\services\Session::USER;
+        return \Session::USER;
     }
 }
 ?>

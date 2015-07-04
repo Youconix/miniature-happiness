@@ -35,12 +35,12 @@ class Captcha extends Helper
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\Session $service_Session
+     * @param \Session $service_Session
      *            The session service
      * @param \core\services\Random $service_Random
      *            The random service
      */
-    public function __construct(\core\services\Session $service_Session, \core\services\Random $service_Random)
+    public function __construct(\Session $service_Session, \core\services\Random $service_Random)
     {
         $this->service_Session = $service_Session;
         $this->service_Random = $service_Random;

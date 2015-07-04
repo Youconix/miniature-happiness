@@ -58,7 +58,7 @@ class ModelUserData extends \core\models\data\DataUser
      */
     public function getLevel($i_groupid = -1)
     {
-        return \core\services\Session::USER;
+        return \Session::USER;
     }
 
     /**
@@ -84,7 +84,7 @@ class ModelUserData extends \core\models\data\DataUser
     {
         \core\Memory::type('int', $i_groupid);
         
-        return \core\services\Session::USER_COLOR;
+        return \Session::USER_COLOR;
     }
 
     /**

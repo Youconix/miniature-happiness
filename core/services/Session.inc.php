@@ -24,7 +24,7 @@ namespace core\services;
  * @version 1.0
  * @since 1.0
  */
-class Session extends Service
+class Session extends \core\services\Service implements \Session
 {
 
     /**
@@ -32,26 +32,6 @@ class Session extends Service
      * @var \Builder
      */
     private $builder;
-
-    const FORBIDDEN = - 1; // Stil here for backwards compatibility
-
-    const ANONYMOUS = - 1;
-
-    const USER = 0;
-
-    const MODERATOR = 1;
-
-    const ADMIN = 2;
-
-    const FORBIDDEN_COLOR = 'grey'; // Stil here for backwards compatibility
-
-    const ANONYMOUS_COLOR = 'grey';
-
-    const USER_COLOR = 'black';
-
-    const MODERATOR_COLOR = 'green';
-
-    const ADMIN_COLOR = 'red';
 
     /**
      * PHP 5 constructor
@@ -284,4 +264,3 @@ class Session extends Service
         return sha1($_SERVER['HTTP_USER_AGENT'] . '-' . $_SERVER['HTTP_HOST'] . '-' . $_SERVER['SERVER_SIGNATURE'] . '-' . strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']) . '-' . $s_encoding);
     }
 }
-class_alias('\core\services\Session', 'Session');

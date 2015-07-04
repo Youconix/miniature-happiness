@@ -42,9 +42,9 @@ class DataGroup extends \core\models\Model
      * PHP5 constructor
      *
      * @param \Builder $builder
-     * @param \core\services\Validation $validation
+     * @param \Validation $validation
      */
-    public function __construct(\Builder $builder, \core\services\Validation $validation)
+    public function __construct(\Builder $builder, \Validation $validation)
     {
         parent::__construct($builder, $validation);
         
@@ -198,7 +198,7 @@ class DataGroup extends \core\models\Model
         
         if ($service_Database->num_rows() == 0) {
             /* No record found. Access denied */
-            $this->a_users[$i_userid] = \core\services\Session::ANONYMOUS;
+            $this->a_users[$i_userid] = \Session::ANONYMOUS;
         } else {
             $this->a_users[$i_userid] = $service_Database->result(0, 'level');
         }
@@ -260,7 +260,7 @@ class DataGroup extends \core\models\Model
             
             foreach ($a_users as $a_user) {
                 $i_level = 0;
-                if ($a_user['staff'] == \core\services\Session::ADMIN)
+                if ($a_user['staff'] == \Session::ADMIN)
                     $i_level = 2;
                 
                 $this->builder->insert('group_users', array(
@@ -344,7 +344,7 @@ class DataGroup extends \core\models\Model
         if ($i_level < 0 || $i_level > 2)
             $i_level = 0;
         
-        if ($this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS) {
+        if ($this->getLevelByGroupID($i_userid) == \Session::ANONYMOUS) {
             $this->builder->insert("group_users", array(
                 'groupID',
                 'userid',
@@ -388,7 +388,7 @@ class DataGroup extends \core\models\Model
                 ->addAnd('userid', 'i', $i_userid);
             $this->builder->getResult();
         } else 
-            if ($this->getLevelByGroupID($i_userid) == \core\services\Session::ANONYMOUS) {
+            if ($this->getLevelByGroupID($i_userid) == \Session::ANONYMOUS) {
                 $this->builder->insert("group_users", array(
                     'groupID',
                     'userid',
@@ -427,7 +427,7 @@ class DataGroup extends \core\models\Model
         if ($service_Database->num_rows() > 0) {
             $a_currentUsers = $service_Database->fetch_assoc_key('userid');
         }
-        $i_level = \core\services\Session::USER;
+        $i_level = \Session::USER;
         
         foreach ($a_users as $i_user) {
             if (array_key_exists($i_user, $a_currentUsers))
@@ -459,7 +459,7 @@ class DataGroup extends \core\models\Model
     {
         \core\Memory::type('int', $i_userid);
         
-        if ($this->getLevelByGroupID($i_userid) != \core\services\Session::ANONYMOUS) {
+        if ($this->getLevelByGroupID($i_userid) != \Session::ANONYMOUS) {
             $this->builder->delete('group_users')
                 ->getWhere()
                 ->addAnd(array(

@@ -42,14 +42,14 @@ class Login extends LoginParent
      * @param \Builder $builder            
      * @param \Logger $logs            
      * @param \core\services\Hashing $hashing            
-     * @param \core\services\Session $session            
+     * @param \Session $session            
      * @param \core\services\Mailer $mailer            
      * @param \core\services\Random $random            
      * @param \Headers $headers            
      * @param \Config $config            
      * @param \core\models\User $user;            
      */
-    public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \core\services\Hashing $hashing, \core\services\Session $session, \core\services\Mailer $mailer, \core\services\Random $random, \Headers $headers, \Config $config, \core\models\User $user)
+    public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \core\services\Hashing $hashing, \Session $session, \core\services\Mailer $mailer, \core\services\Random $random, \Headers $headers, \Config $config, \core\models\User $user)
     {
         parent::__construct($cookie, $builder, $logs, $session, $headers, $config, $user);
         

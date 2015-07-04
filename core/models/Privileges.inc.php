@@ -46,7 +46,7 @@ class Privileges
 
     /**
      * 
-     * @var \core\services\Session
+     * @var \Session
      */
     private $session;
 
@@ -62,10 +62,10 @@ class Privileges
      * @param \Headers $headers
      * @param \Builder $builder
      * @param \core\models\Groups $groups
-     * @param \core\services\Session $session
+     * @param \Session $session
      * @param \Config $config
      */
-    public function __construct(\Headers $headers, \Builder $builder, \core\models\Groups $groups, \core\services\Session $session, \Config $config)
+    public function __construct(\Headers $headers, \Builder $builder, \core\models\Groups $groups, \Session $session, \Config $config)
     {
         $this->headers = $headers;
         $this->builder = $builder;
@@ -113,7 +113,7 @@ class Privileges
             $service_Database = $this->builder->getResult();
             
             $i_group = 1;
-            $i_level = \core\services\Session::ANONYMOUS;
+            $i_level = \Session::ANONYMOUS;
             
             if ($service_Database->num_rows() > 0) {
                 $i_level = (int) $service_Database->result(0, 'minLevel');
@@ -123,7 +123,7 @@ class Privileges
         
         $this->checkSSL($i_level);
         
-        if ($i_level == \core\services\Session::ANONYMOUS) {
+        if ($i_level == \Session::ANONYMOUS) {
             if (($this->session->exists('login')) && ($this->session->exists('userid'))) {
                 if (! defined('USERID')) {
                     define('USERID', $this->session->get('userid'));
@@ -273,14 +273,14 @@ class Privileges
     private function checkSSL($i_level){
         $i_ssl = $this->config->isSslEnabled();
         if( defined('FORCE_SSL') ){
-            $i_ssl = \core\services\Settings::SSL_ALL;
+            $i_ssl = \Settings::SSL_ALL;
         }
     
-        if( $this->config->isSLL() || ($i_ssl == \core\services\Settings::SSL_DISABLED) ){
+        if( $this->config->isSLL() || ($i_ssl == \Settings::SSL_DISABLED) ){
             return;
         }        
         
-        if( ($i_level == \core\services\Session::ANONYMOUS) && ($i_ssl == \core\services\Settings::SSL_LOGIN) && (stripos($_SERVER['REQUEST_URI'],'authorization')) === false){
+        if( ($i_level == \Session::ANONYMOUS) && ($i_ssl == \Settings::SSL_LOGIN) && (stripos($_SERVER['REQUEST_URI'],'authorization')) === false){
             return;
         }
         

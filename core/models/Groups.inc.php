@@ -129,7 +129,7 @@ class Groups extends Model
             $service_Database = $this->builder->getResult();
             
             if ($service_Database->num_rows() == 0) {
-                return \core\services\Session::ANONYMOUS;
+                return \Session::ANONYMOUS;
             }
             
             $i_groupid = (int) $service_Database->result(0, 'groupID');
@@ -170,7 +170,7 @@ class Groups extends Model
             return $service_Database->result(0, 'level');
         }
         
-        return \core\services\Session::ANONYMOUS;
+        return \Session::ANONYMOUS;
     }
 
     /**

@@ -547,7 +547,7 @@ class DataUser extends \core\models\Model
         foreach ($a_groups as $obj_group) {
             $i_level = $obj_group->getLevelByGroupID($this->i_userid);
             
-            if ($i_level != \core\services\Session::ANONYMOUS) {
+            if ($i_level != \Session::ANONYMOUS) {
                 $a_groupsUser[$obj_group->getID()] = $i_level;
             }
         }
@@ -568,7 +568,7 @@ class DataUser extends \core\models\Model
             return $this->a_levels[$i_groupid];
         }
         if (is_null($this->i_userid)) {
-            return \core\services\Session::ANONYMOUS;
+            return \Session::ANONYMOUS;
         }
         
         $this->a_levels[$i_groupid] = $this->groups->getLevel($this->i_userid, $i_groupid);
@@ -605,17 +605,17 @@ class DataUser extends \core\models\Model
         $i_group = $this->checkGroup($i_groupid);
         
         switch ($this->getLevel($i_group)) {
-            case \core\services\Session::ANONYMOUS:
-                return \core\services\Session::ANONYMOUS_COLOR;
+            case \Session::ANONYMOUS:
+                return \Session::ANONYMOUS_COLOR;
             
-            case \core\services\Session::USER:
-                return \core\services\Session::USER_COLOR;
+            case \Session::USER:
+                return \Session::USER_COLOR;
             
-            case \core\services\Session::MODERATOR:
-                return \core\services\Session::MODERATOR_COLOR;
+            case \Session::MODERATOR:
+                return \Session::MODERATOR_COLOR;
             
-            case \core\services\Session::ADMIN:
-                return \core\services\Session::ADMIN_COLOR;
+            case \Session::ADMIN:
+                return \Session::ADMIN_COLOR;
         }
     }
 
@@ -632,7 +632,7 @@ class DataUser extends \core\models\Model
         
         $i_groupid = $this->checkGroup($i_groupid);
         
-        return ($this->getLevel($i_groupid) >= \core\services\Session::MODERATOR);
+        return ($this->getLevel($i_groupid) >= \Session::MODERATOR);
     }
 
     /**
@@ -648,7 +648,7 @@ class DataUser extends \core\models\Model
         
         $i_groupid = $this->checkGroup($i_groupid);
         
-        return ($this->getLevel($i_groupid) >= \core\services\Session::ADMIN);
+        return ($this->getLevel($i_groupid) >= \Session::ADMIN);
     }
 
     /**
