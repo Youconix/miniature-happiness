@@ -14,12 +14,15 @@ class LoggerDefault extends \core\services\logger\LoggerParent
 
     protected $s_errorLog;
 
-    public function __construct(\core\services\File $service_File, \core\services\FileData $service_FileData, $s_target, $i_maxSize)
+    public function __construct(\core\services\File $service_File, \core\services\FileData $service_FileData, 
+        \core\services\Mailer $mailer,\Config $config,\Psr\Log\LogLevel $loglevel)
     {
+        parent::__construct($mailer, $config, $loglevel);
+        
         $this->service_File = $service_File;
         $this->service_FileData = $service_FileData;
-        $this->s_target = $s_target;
-        $this->i_maxSize = $i_maxSize;
+        $this->s_target = $config->getLogLocation();
+        $this->i_maxSize = $config->getLogfileMaxSize();
         
         $s_errorLogPath = $this->s_target . 'error.log';
         $this->s_errorLog = realpath($s_errorLogPath);
@@ -106,11 +109,12 @@ class LoggerDefault extends \core\services\logger\LoggerParent
         $obj_loglevel = $this->obj_loglevel;
         
         try {
-            if( $s_name == 'error' || in_array($level,array($obj_loglevel::EMERGENCY)) ){
-                $this->service_File->writeLastFile($this->s_errorLog,$message);
-            }
-            else {
-                $this->service_File->writeLastFile($this->s_target.$s_name.'.log', $message);
+            if ($s_name == 'error' || in_array($level, array(
+                $obj_loglevel::EMERGENCY
+            ))) {
+                $this->service_File->writeLastFile($this->s_errorLog, $message);
+            } else {
+                $this->service_File->writeLastFile($this->s_target . $s_name . '.log', $message);
             }
             
             $this->warnAdmin($level, $message);

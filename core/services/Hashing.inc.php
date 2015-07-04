@@ -40,14 +40,14 @@ class Hashing extends Service
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\Logs $logs
+     * @param \Logger $logs
      *            The log service
      * @param \core\services\Settings $settings
      *            The settings service
      * @param \core\services\Random $random
      *            The random generator
      */
-    public function __construct(\core\services\Logs $logs, \core\services\Settings $settings, \core\services\Random $random)
+    public function __construct(\Logger $logs, \Settings $settings, \core\services\Random $random)
     {
         $this->random = $random;
         if (! function_exists('password_hash')) {

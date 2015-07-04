@@ -43,7 +43,7 @@ class Database extends \admin\modules\settings\Settings
      * @param \Settings $settings            
      * @param \core\services\FileHandler $fileHandler            
      */
-    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \core\services\Logs $logs, \Settings $settings, \core\services\FileHandler $fileHandler)
+    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \core\services\FileHandler $fileHandler)
     {
         parent::__construct($Input, $config, $language, $template, $logs, $settings);
         

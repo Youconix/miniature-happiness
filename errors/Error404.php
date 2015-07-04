@@ -39,7 +39,7 @@ class Error404 extends \includes\BaseLogicClass
     protected $headers;
     
     /**
-     * @var \core\services\Logs
+     * @var \Logger
      */
     protected $logs;
 

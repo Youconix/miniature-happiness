@@ -187,13 +187,6 @@ class Memory
             $IoC = new $caller($service_Settings);
             Memory::$a_cache['IoC'] = $IoC;
             
-            $caller = IoC::$s_ruleConfig;
-            $model_Config = \Loader::Inject($caller);
-            Memory::$a_cache[$caller] = $model_Config;
-            unset($caller);
-            
-            $IoC->detectAfterStartup($model_Config);
-            
             Memory::setDefaultValues($service_Settings);
         } catch (\Exception $e) {
             throw new \CoreException('Starting up framework failed', 0, $e);

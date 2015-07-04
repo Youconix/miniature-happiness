@@ -28,12 +28,6 @@ class IoC {
 		$this->setRules();
 	}
 	
-	public function detectAfterStartup(\Config $config){
-		$this->config = $config;
-		
-		
-	}
-	
 	protected function setRules(){
 		
 	}
@@ -118,6 +112,16 @@ class IoC {
 		if( substr($s_name, 0,1) == '\\' ){
 			$s_name = substr($s_name, 1);
 		}
+		
+		if( $s_name == 'Mailer' ){
+			if( defined('DEBUG') || \core\Memory::isTesting() ){
+				return 'core\mailer\PHPMailerDebug';
+			}
+			else  {
+				return 'core\mailer\PHPMailer';
+			}
+		}
+		
 		
 		/* Check for interface */
 		$s_interface = '';

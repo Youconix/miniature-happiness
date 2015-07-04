@@ -13,7 +13,7 @@ class AuthorizationLDAP extends AuthorizationNormal
 
     private $model_PM;
 
-    public function __construct(\core\services\LDAP $service_LDAP, \Builder $builder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
+    public function __construct(\core\services\LDAP $service_LDAP, \Builder $builder, \Logger $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
     {
         parent::__construct($builder, $service_Logs, $model_User, $model_PM);
         $this->service_LDAP = $service_LDAP;

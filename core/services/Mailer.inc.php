@@ -49,10 +49,9 @@ class Mailer extends Service
      * @param \Config $config
      *            The Config model.
      */
-    public function __construct(\Language $service_Language, \core\services\File $service_File, \Config $config)
+    public function __construct(\Language $service_Language, \core\services\File $service_File, \Config $config,\Mailer $mailer)
     {
-        require_once (NIV . 'core/mailer/MailWrapper.inc.php');
-        $this->obj_phpMailer = new \MailWrapper();
+        $this->obj_phpMailer = $mailer;
         
         $this->service_Language = $service_Language;
         $this->s_language = $this->service_Language->getLanguage();
@@ -415,9 +414,6 @@ class Mailer extends Service
      */
     private function sendMail($obj_mailer)
     {
-        if (\core\Memory::isTesting())
-            return true;
-        
         return $obj_mailer->send();
     }
 }

@@ -17,14 +17,14 @@ class AuthorizationNormal extends \core\services\Service implements \core\interf
      * PHP 5 constructor
      *
      * @param \Builder $builder	The query builder
-     * @param \core\services\Logs $service_Logs
+     * @param \Logger $service_Logs
      *            The log service
      * @param \core\models\User $model_User
      *            The user model
      * @param \core\models\PM $model_PM
      *            The personal message service
      */
-    public function __construct(\Builder $builder, \core\services\Logs $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
+    public function __construct(\Builder $builder, \Logger $service_Logs, \core\models\User $model_User, \core\models\PM $model_PM)
     {
         $this->builder = $builder;
         $this->service_Database = $this->builder->getDatabase();

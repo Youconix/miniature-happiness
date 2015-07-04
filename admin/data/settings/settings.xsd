@@ -85,6 +85,8 @@
         <xs:element name="password" type="xs:string"/>
         <xs:element name="port" type="port-number" default="587"/>
         <xs:element name="ssl" type="one-or-zero"/>
+        <xs:element name="hostname" type="xs:string"/>
+        <xs:element name="timeout" type="xs:int" default="10"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

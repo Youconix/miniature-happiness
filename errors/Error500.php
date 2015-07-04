@@ -34,7 +34,7 @@ class Error500 extends \includes\BaseLogicClass
     protected $headers;
     
     /**
-     * @var \core\services\Logs
+     * @var \Logger
      */
     protected $logs;
 

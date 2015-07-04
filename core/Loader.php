@@ -43,8 +43,8 @@ class Loader
         /* Check for libs */
         $s_fileName .= str_replace('_', DIRECTORY_SEPARATOR, $s_className) . '.php';
         
-        if (file_exists(NIV . 'lib' . DIRECTORY_SEPARATOR . $s_fileName)) {
-            return 'lib' . DIRECTORY_SEPARATOR . $s_fileName;
+        if (file_exists(NIV . 'vendor' . DIRECTORY_SEPARATOR . $s_fileName)) {
+            return 'vendor' . DIRECTORY_SEPARATOR . $s_fileName;
         }
         
         if (file_exists(NIV . $s_fileName)) {

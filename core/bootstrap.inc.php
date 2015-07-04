@@ -3,7 +3,7 @@
 function exception_handler($exception)
 {
     if (class_exists('\core\Memory')) {
-        \Loader::Inject('\core\services\Logs')->exception($exception);
+        \Loader::Inject('\Logger')->exception($exception);
     }
 
     if (defined('DEBUG')) {

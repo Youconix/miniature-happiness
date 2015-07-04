@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\services;
 
-class Logs extends \core\services\Logs
+class Logs implements \Logger
 {
 
     public $s_loginLog = '';
