@@ -56,12 +56,49 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="normalLogin" type="one-or-zero" default="1"/>
-        <xs:element name="facebook" type="one-or-zero" default="0"/>
-        <xs:element name="facebook_app_id" type="xs:string"/>
-        <xs:element name="openID" type="one-or-zero" default="0"/>
-        <xs:element name="lDAP" type="one-or-zero" default="0"/>
-        <xs:element name="ldap_server" type="xs:string"/>
-        <xs:element name="ldap_port" type="port-number" default="389"/>
+        <xs:element name="openAuth">
+        	<xs:complexType>
+        		<xs:sequence>
+        			<xs:element name="type" type="non-empty-string" minOccurs="1" maxOccurs="unbounded"/>
+        			<xs:element name="facebook">
+        				<xs:complexType>
+        					<xs:sequence>
+        						<xs:element name="status" type="one-or-zero" default="0"/>
+        						<xs:element name="appId" type="xs:string"></xs:element>
+        						<xs:element name="appSecret" type="xs:string"></xs:element>
+        					</xs:sequence>
+        				</xs:complexType>
+        			</xs:element>
+        			<xs:element name="google">
+        				<xs:complexType>
+        					<xs:sequence>
+        						<xs:element name="status" type="one-or-zero" default="0"/>
+        						<xs:element name="appId" type="xs:string"></xs:element>
+        						<xs:element name="appSecret" type="xs:string"></xs:element>
+        					</xs:sequence>
+        				</xs:complexType>
+        			</xs:element>
+        			<xs:element name="twitter">
+        				<xs:complexType>
+        					<xs:sequence>
+        						<xs:element name="status" type="one-or-zero" default="0"/>
+        						<xs:element name="appId" type="xs:string"></xs:element>
+        						<xs:element name="appSecret" type="xs:string"></xs:element>
+        					</xs:sequence>
+        				</xs:complexType>
+        			</xs:element>
+        		</xs:sequence>
+        	</xs:complexType>
+        </xs:element>
+        <xs:element name="LDAP">
+        	<xs:complexType>
+        		<xs:sequence>
+        			<xs:element name="status" type="one-or-zero" default="0"/>
+        			<xs:element name="server" type="xs:string"></xs:element>
+        			<xs:element name="port" type="port-number" default="636"/>
+        		</xs:sequence>
+        	</xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -93,7 +130,12 @@
   <xs:element name="templates">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="dir" type="non-empty-string"/>
+        <xs:element name="default_dir" type="non-empty-string"/>
+        <xs:element name="default_layout" type="non-empty-string"/>
+        <xs:element name="mobile_dir" type="non-empty-string"/>
+        <xs:element name="mobile_layout" type="non-empty-string"/>
+        <xs:element name="admin_dir" type="non-empty-string"/>
+        <xs:element name="admin_layout" type="non-empty-string"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

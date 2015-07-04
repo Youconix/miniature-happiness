@@ -6,9 +6,6 @@ class Cookie implements \Cookie
 
     private $a_data = array();
 
-    public function __construct()
-    {}
-
     /**
      * Deletes the cookie with the given name and domain
      *

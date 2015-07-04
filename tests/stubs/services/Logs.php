@@ -12,9 +12,6 @@ class Logs implements \Logger
 
     public $s_log = '';
 
-    public function __construct()
-    {}
-
     /**
      * Writes the data to the login log or makes a new one
      *
@@ -50,7 +47,7 @@ class Logs implements \Logger
     {
         $this->s_securityLog .= $s_log;
     }
-
+    
     /**
      * Writes the data to the error log or makes a new one
      *
@@ -62,7 +59,11 @@ class Logs implements \Logger
     {
         $this->s_errorLog .= $this->s_errorLog;
     }
-
+    
+    public function accountBlockLog($s_username, $i_attemps){}
+    
+    public function ipBlockLog($i_attemps){}
+    
     /**
      * Writes the data to the log or makes a new one
      *
@@ -70,122 +71,105 @@ class Logs implements \Logger
      *            The name of the log
      * @param String $s_log
      *            The content of the log
-     * @param String $s_date
-     *            The date the log is made. In format YYYYmm, optional default this month
-     * @throws Exception when the log can not be written
+     * @param array $context
+     *            The context, add an exception under the key 'exception'
      */
-    public function setLog($s_name, $s_log, $s_date = '')
-    {
-        Memory::type('string', $s_name);
-        Memory::type('string', $s_log);
-        
-        $this->s_log .= $s_log;
-    }
+    public function setLog($s_name, $s_log, $context = array());
 
     /**
-     * Reads the given log
+     * Logs with an arbitrary level.
      *
-     * @param String $s_name
-     *            The name of the log
-     * @param String $s_date
-     *            The date the log is made. In format YYYYmm, optional default this month
-     * @return String The content of the log
-     * @throws IOException when the log does not exist or is not readable
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     * @return null
      */
-    public function readLog($s_name, $s_date = '')
-    {
-        Memory::type('string', $s_name);
-        Memory::type('string', $s_date);
-        
-        switch ($s_name) {
-            case 'login':
-                return $this->s_loginLog;
-            
-            case 'error':
-                return $this->s_errorLog;
-            
-            case 'security':
-                return $this->s_securityLog;
-            
-            default:
-                return $this->s_log;
-        }
-    }
-
+    public function log($level, $message, array $context = array()){}
+    
+    public function exception($exception){}
+    
     /**
-     * Deletes the given log
+     * System is unusable.
      *
-     * @param String $s_name
-     *            The name of the log
-     * @param String $s_date
-     *            The date the log is made. In format YYYYmm, optional default this month
-     * @throws IOException when the log does not exist
+     * @param string $message
+     * @param array $context
+     * @return null
      */
-    public function deleteLog($s_name, $s_date = '')
-    {
-        Memory::type('string', $s_name);
-        Memory::type('string', $s_date);
-        
-        switch ($s_name) {
-            case 'login':
-                $this->s_loginLog = '';
-                break;
-            
-            case 'error':
-                $this->s_errorLog = '';
-                break;
-            
-            case 'security':
-                $this->s_securityLog = '';
-                break;
-            
-            default:
-                $this->s_log = '';
-                break;
-        }
-    }
-
+    public function emergency($message, array $context = array()){}
+    
     /**
-     * Downloads the given log through a forced download (download dialog in browser)
+     * Action must be taken immediately.
      *
-     * @param String $s_name
-     *            The name of the log
-     * @param String $s_date
-     *            The date the log is made. In format YYYYmm, optional default this month
-     * @throws IOException when the log does not exist
-     */
-    public function downloadLog($s_name, $s_date = '')
-    {
-        Memory::type('string', $s_name);
-        Memory::type('string', $s_date);
-    }
-
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function alert($message, array $context = array()){}
+    
     /**
-     * Displays the names of the logs (index-page)
+     * Critical conditions.
      *
-     * @return array The logs
-     */
-    public function indexLogs()
-    {
-        return array();
-    }
-
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function critical($message, array $context = array()){}
+    
     /**
-     * Checks or the given log exists
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
      *
-     * @param String $s_name
-     *            The name of the log
-     * @param String $s_date
-     *            The date the log is made. In format YYYYmm, optional default this month
-     * @return boolean True if the log exists, otherwise false
-     */
-    public function checkLog($s_name, $s_date = '')
-    {
-        Memory::type('string', $s_name);
-        Memory::type('string', $s_date);
-        
-        return true;
-    }
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function error($message, array $context = array()){}
+    
+    /**
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function warning($message, array $context = array()){}
+    
+    /**
+     * Normal but significant events.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function notice($message, array $context = array()){}
+    
+    /**
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function info($message, array $context = array()){}
+    
+    /**
+     * Detailed debug information.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+    */
+    public function debug($message, array $context = array()){}
 }
 ?>
 

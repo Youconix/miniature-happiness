@@ -6,12 +6,6 @@ class Session implements \Session
 
     private $a_set = array();
 
-    public function __construct()
-    {}
-
-    public function __destruct()
-    {}
-
     /**
      * Sets the session with the given name and content
      *
@@ -124,17 +118,49 @@ class Session implements \Session
     }
 
     /**
-     * Checks or the user is logged in and haves enough rights.
-     * Define the groep and level to overwrite the default rights for the page
+     * Logs the admin in with the given userid and username
+     * Admin session wil be restored at logout
+     * Destroys the current session array
      *
-     * @param int $i_group
-     *            id, optional
-     * @param int $i_level
-     *            level, optional
+     * @param int $i_userid
+     *            of the user
+     * @param string $s_username
+     *            of the user
+     * @param int $i_lastLogin
+     *            login as a timestamp
      */
-    public function checkLogin($i_group = -1, $i_level = -1)
-    {
-        define('USERID', 9999);
+    public function setLoginTakeover($i_userid, $s_username, $i_lastLogin){}
+    
+    /**
+     * Destroys the users login session
+     */
+    public function destroyLogin(){
+        if ($this->exists('login'))
+            $this->delete('login');
+        if ($this->exists('userid'))
+            $this->delete('userid');
+        if ($this->exists('username'))
+            $this->delete('username');
+        if ($this->exists('fingerprint'))
+            $this->delete('fingerprint');
+        if ($this->exists('lastLogin'))
+            $this->delete('lastLogin');
+        if ($this->exists('type'))
+            $this->delete('type');
+        
+        if ($this->exists('last_login')) {
+            $a_login = $this->get('last_login');
+            $this->setLogin($a_login['userid'], $a_login['username'], $a_login['lastLogin']);
+        }
+    }
+    
+    /**
+     * Returns the visitors browser fingerprint
+     *
+     * @return String fingerprint
+    */
+    public function getFingerprint(){
+        return sha1(time());
     }
 }
 ?>

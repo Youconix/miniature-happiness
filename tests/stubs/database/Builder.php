@@ -1,29 +1,7 @@
 <?php
-namespace tests\stubs\services;
+namespace tests\stubs\database;
 
-class QueryBuilder extends \core\services\QueryBuilder
-{
-
-    private $service_Database;
-
-    public function __construct($service_Database)
-    {
-        $this->service_Database = $service_Database;
-        $this->obj_builder = new Builder($this->service_Database);
-    }
-
-    /**
-     * Creates the builder
-     *
-     * @return Builder The builder
-     */
-    public function createBuilder()
-    {
-        return $this->obj_builder;
-    }
-}
-
-class Builder implements \core\services\Builder
+class Builder implements \Builder
 {
 
     private $service_Database;
@@ -39,10 +17,10 @@ class Builder implements \core\services\Builder
     /**
      * Creates the builder
      *
-     * @param core\database\DAL $service_Database
+     * @param \DAL $service_Database
      *            The DAL
      */
-    public function __construct(\core\database\DAL $service_Database)
+    public function __construct(\DAL $service_Database)
     {
         $this->service_Database = $service_Database;
     }

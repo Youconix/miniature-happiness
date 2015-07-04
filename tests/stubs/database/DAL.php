@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\database;
 
-class DAL implements \core\database\DAL
+class DAL implements \DAL
 {
 
     public $i_numRows = 0;
