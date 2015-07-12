@@ -31,7 +31,7 @@ class Helper_PDF extends Helper
     public function __construct()
     {
         if (! class_exists('DOMPDF')) {
-            require (NIV . 'core/dompdf/dompdf_config.inc.php');
+            require (NIV . 'vendor/dompdf/dompdf/dompdf_config.inc.php');
             require (NIV . 'core/helpers/data/GeneralPDF.inc.php');
         }
     }

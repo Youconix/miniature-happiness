@@ -42,10 +42,15 @@ class Loader
         
         /* Check for libs */
         $s_fileName .= str_replace('_', DIRECTORY_SEPARATOR, $s_className) . '.php';
-        
         if (file_exists(NIV . 'vendor' . DIRECTORY_SEPARATOR . $s_fileName)) {
             return 'vendor' . DIRECTORY_SEPARATOR . $s_fileName;
         }
+	if( file_exists(NIV.'vendor'.DIRECTORY_SEPARATOR.str_replace($s_namespace,strtolower(str_replace('\\',DIRECTORY_SEPARATOR,$s_namespace)),$s_fileName)) ){
+            return 'vendor'.DIRECTORY_SEPARATOR.str_replace($s_namespace,strtolower(str_replace('\\',DIRECTORY_SEPARATOR,$s_namespace)),$s_fileName);
+	}
+	if( file_exists(NIV.'vendor'.DIRECTORY_SEPARATOR.strtolower(str_replace('\\',DIRECTORY_SEPARATOR,$s_namespace)).DIRECTORY_SEPARATOR.$s_fileName) ){
+            return 'vendor'.DIRECTORY_SEPARATOR.strtolower(str_replace('\\',DIRECTORY_SEPARATOR,$s_namespace)).DIRECTORY_SEPARATOR.$s_fileName;
+	}
         
         if (file_exists(NIV . $s_fileName)) {
             return $s_fileName;
@@ -56,7 +61,7 @@ class Loader
         if (file_exists(NIV . $s_fileName)) {
             return $s_fileName;
         }
-        
+ 
         return null;
     }
 
