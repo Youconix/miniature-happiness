@@ -73,7 +73,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
             $s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' with openID ' . $s_openID . '. Status : ' . $s_status . "\n";
         }
     
-        $this->obj_logger->info($s_log, array(
+        $this->info($s_log, array(
             'type' => 'login'
         ));
     }
@@ -89,7 +89,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
     {
         $s_log .= '  IP : ' . $_SERVER['REMOTE_ADDR'] . "\n";
     
-        $this->obj_logger->error($s_log, array(
+        $this->error($s_log, array(
             'type' => 'security'
         ));
     }
@@ -103,7 +103,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
      */
     public function errorLog($s_log)
     {
-        $this->obj_logger->emergency($s_log, array(
+        $this->emergency($s_log, array(
             'type' => 'error'
         ));
     }
@@ -112,7 +112,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
     {
         $s_log = 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts.\n\n System';
     
-        $this->obj_logger->info($s_log, array(
+        $this->info($s_log, array(
             'type' => 'accountBlock'
         ));
     }
@@ -121,7 +121,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
     {
         $s_log = 'The IP ' . $_SERVER['REMOTE_ADDR'] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts. \n\n System';
     
-        $this->obj_logger->info($s_log, array(
+        $this->info($s_log, array(
             'type' => 'accountBlock'
         ));
     }
@@ -147,7 +147,7 @@ abstract class LoggerParent extends \core\services\Service implements \Logger
             unset($context['level']);
         }
     
-        $this->obj_logger->log($level, $message, $context);
+        $this->log($level, $message, $context);
     }
     
     public function exception($exception)

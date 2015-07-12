@@ -15,7 +15,7 @@
 				<input type="checkbox" value="1" name="autologin">
 		</fieldset>
 		<fieldset>
-		        <label class="label"><a href="{NIV}authorization/registration/index">{registration}</a></label>
+		        <label class="label"><a href="{NIV}authorization/normal/registration_screen">{registration}</a></label>
 		        <label class="label"><a href="{NIV}forgot_password/index">{forgotPassword}</a></label>
 				<input type="submit" value="{loginButton}" class="button">
 		</fieldset>

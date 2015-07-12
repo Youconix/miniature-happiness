@@ -47,15 +47,14 @@ abstract class Authorization extends \includes\BaseLogicClass {
      */
     protected function init()
     {    
-        //parent::init();
+        parent::init();
         
         $this->s_notice = '';
     
         $this->a_types = $this->config->getLoginTypes();
-    print_r($this->a_types);
-    die();
+
         if (! in_array($this->s_current,$this->a_types)) {
-            //$this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
+            $this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
         }
     }
     
