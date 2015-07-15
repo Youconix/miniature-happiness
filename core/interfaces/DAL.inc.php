@@ -22,41 +22,7 @@
  * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
- *
- *
  */
-class Database {
-	private $service_Settings;
-	private $s_type;
-
-	/**
-	 * Includes the correct DAL
-	 *
-	 * \core\services\Settings $service_Settings The settings service
-	 */
-	public function __construct(\core\services\Settings $service_Settings) {
-		/* databasetype */
-		$this->s_type = ucfirst ( $service_Settings->get ( 'settings/SQL/type' ) );
-		$this->service_Settings = $service_Settings;
-	}
-
-	/**
-	 * Loads the selected DAL
-	 *
-	 * @return Object The selected DAL-object
-	 */
-	public function loadDatabase() {
-		require_once (NIV . 'core/database/' . $this->s_type . '.inc.php');
-
-		$s_name = '\core\database\Database_' . $this->s_type;
-		$obj_DAL = new $s_name ( $this->service_Settings );
-		if (! \core\Memory::isTesting ()) {
-			$obj_DAL->defaultConnect ();
-		}
-
-		return $obj_DAL;
-	}
-}
 interface DAL {
 
 	/**
@@ -112,13 +78,22 @@ interface DAL {
 	 * @return boolean True if there is a connection with the DB, false if is not
 	*/
 	public function isConnected();
+	
+	/**
+	 * Escapes the given data for save use in queries
+	 *
+	 * @param string $s_data
+	 *            The data that need to be escaped
+	 * @return string The escaped data
+	 */
+	public function escape_string($s_data);
 
 	/**
 	 * Excequetes the given query on the selected database
 	 *
 	 * @para String $s_query The query to excequte
 	 *
-	 * @throws Exception when the query failes
+	 * @throws DBException when the query failes
 	*/
 	public function query($s_query);
 
