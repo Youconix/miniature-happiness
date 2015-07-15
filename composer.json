@@ -1,8 +1,22 @@
 {
+	"name": "youconix/miniature_happiness",
+	"description": "Low level website framework.",
+	"license": "LGPL-3.0+",
 	"require" : {
 		"phpmailer/phpmailer" : "5.2.*",
 		"dompdf/dompdf" : "0.6.*",
 		"facebook/php-sdk-v4": "~5.0",
-		"psr/log" : "1.*"
-	}
+		"psr/log" : "1.*",
+		"guzzlehttp/guzzle": "^6.0"
+	},
+	"authors": [
+        {
+            "name": "R. Lugtigheid",
+            "email": "rlugtigheid@youconix.nl"
+        },
+        {
+            "name": "R. Scheijen",
+            "email": "rscheijen@youconix.nl"
+        }
+    ]
 }
