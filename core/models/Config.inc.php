@@ -28,6 +28,7 @@ class Config extends Model implements \Config,\SplSubject
 	/**
 	 * @var \core\services\FileHandler
 	 */
+	protected $file;
 
     /**
      *
@@ -43,7 +44,7 @@ class Config extends Model implements \Config,\SplSubject
 
     /**
      *
-     * @var \core\services\Builder
+     * @var \Builder
      */
     protected $builder;
 

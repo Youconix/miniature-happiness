@@ -72,6 +72,7 @@ class LanguageMO extends \core\services\Language
      * Loads the language files
      * 
      * @param	string	$s_language	The language code
+     * @return	array	The documents
      */
     private function readLanguages($s_language)
     {

@@ -26,24 +26,24 @@ namespace core\helpers;
 class PasswordForm extends Helper
 {
 
-    private $service_Language;
+    private $language;
 
     /**
      * PHP 5 constructor 
      * 
-     * @param \Language $service_Language     The language service
-     * @param \Output $service_Template     The template service
+     * @param \Language $language     The language service
+     * @param \Output $template     The template service
      */
-    public function __construct(\Language $service_Language, \Output $service_Template)
+    public function __construct(\Language $language, \Output $template)
     {
-        $this->service_Language = $service_Language;
+        $this->language = $language;
         
         $s_link = '<script src="{NIV}js/widgets/password_check.js"></script>';
-        $service_Template->setJavascriptLink($s_link);
+        $template->setJavascriptLink($s_link);
         $s_link = '<script src="{NIV}js/validation.js"></script>';
-        $service_Template->setJavascriptLink($s_link);
+        $template->setJavascriptLink($s_link);
         $s_link = '<link rel="stylesheet" href="{NIV}{shared_style_dir}css/HTML5_validation.css">';
-        $service_Template->setCssLink($s_link);
+        $template->setCssLink($s_link);
     }
 
     /**
@@ -53,24 +53,24 @@ class PasswordForm extends Helper
      */
     public function generate()
     {
-        $s_passwordError = $this->service_Language->get('widgets/passwordForm/passwordMissing');
+        $s_passwordError = $this->language->get('widgets/passwordForm/passwordMissing');
         
         $a_language = array(
-            'passwordform_invalid' => $this->service_Language->get('widgets/passwordForm/invalid'),
-            'passwordform_toShort' => $this->service_Language->get('widgets/passwordForm/toShort'),
-            'passwordform_veryStrongPassword' =>  $this->service_Language->get('widgets/passwordForm/veryStrongPassword'),
-            'passwordform_strongPassword' => $this->service_Language->get('widgets/passwordForm/strongPassword'),
-            'passwordform_fairPassword' => $this->service_Language->get('widgets/passwordForm/fairPassword'),
-            'passwordform_weakPassword' => $this->service_Language->get('widgets/passwordForm/weakPassword')
+            'passwordform_invalid' => $this->language->get('widgets/passwordForm/invalid'),
+            'passwordform_toShort' => $this->language->get('widgets/passwordForm/toShort'),
+            'passwordform_veryStrongPassword' =>  $this->language->get('widgets/passwordForm/veryStrongPassword'),
+            'passwordform_strongPassword' => $this->language->get('widgets/passwordForm/strongPassword'),
+            'passwordform_fairPassword' => $this->language->get('widgets/passwordForm/fairPassword'),
+            'passwordform_weakPassword' => $this->language->get('widgets/passwordForm/weakPassword')
         );
         
         $s_html = '<section id="passwordForm">
 		<fieldset>
-				<label class="label">' . $this->service_Language->get('widgets/passwordForm/password') . '</label>
+				<label class="label">' . $this->language->get('widgets/passwordForm/password') . '</label>
 				<span><input type="password" name="password" id="password1" data-validation="'.$s_passwordError.'" data-validation-pattern="'.$a_language['passwordform_toShort'].'" pattern=".{8,}" required></span>
 		</fieldset>
         <fieldset>
-			<label class="label" for="password2">' . $this->service_Language->get('widgets/passwordForm/passwordAgain') . '</label>
+			<label class="label" for="password2">' . $this->language->get('widgets/passwordForm/passwordAgain') . '</label>
 			<span><input type="password" name="password2" id="password2" data-validation="'.$s_passwordError.'" data-validation-pattern="'.$a_language['passwordform_toShort'].'" pattern=".{8,}" required></span>			
 		</fieldset>
 		</section>

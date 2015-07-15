@@ -176,13 +176,13 @@ class Validation extends \core\services\Service  implements \Validation
             }
             if (strpos($s_rule, 'type:') !== false) {
                 $s_type = trim(str_replace('type:', '', $s_rule));
-                if (! $this->checkType($s_field, $s_type)) {
+                if (! $this->checkType($s_key,$s_field, $s_type)) {
                     return;
                 }
             }
             if (strpos($s_rule, 'pattern:') !== false) {
                 $s_pattern = trim(str_replace('pattern:', '', $s_rule));
-                $this->checkPattern($s_field, $s_pattern);
+                $this->checkPattern($s_key,$s_field, $s_pattern);
             }
             if (strpos($s_rule, 'min:') !== false) {
                 $fl_minValue = trim(str_replace('min:', '', $s_rule));
@@ -221,29 +221,29 @@ class Validation extends \core\services\Service  implements \Validation
 
     protected function checkPattern($s_field, $s_pattern)
     {
-        if (is_null($a_collection[$s_key]) || trim($a_collection[$s_key]) == '') {
+        if (is_null($s_field) || trim($s_field) == '') {
             return;
         }
         $bo_pattern = true;
         if (! in_array($s_pattern, array(
             'email',
             'url'
-        )) && ! preg_match("/" . $s_pattern . "/", $a_collection[$s_key])) {
+        )) && ! preg_match("/" . $s_pattern . "/", $s_field)) {
             $bo_pattern = false;
         } else 
-            if (($s_pattern == 'email' && ! $this->checkEmail($a_collection[$s_key]))) {
+            if (($s_pattern == 'email' && ! $this->checkEmail($s_field))) {
                 $bo_pattern = false;
             } else 
-                if ($s_pattern == 'url' && (! $this->checkURI($a_collection[$s_key]) && $a_collection[$s_key] != 'localhost' && ! $this->validateIP($a_collection[$s_key]))) {
+                if ($s_pattern == 'url' && (! $this->checkURI($s_field) && $s_field != 'localhost' && ! $this->validateIP($s_field))) {
                     $bo_pattern = false;
                 }
         
         if (! $bo_pattern) {
-            $this->a_errors[] = "Field " . $s_key . " does not match pattern " . $a_validation[$s_key]['pattern'] . ".";
+            $this->a_errors[] = "Field " . $s_key . " does not match pattern " . $s_pattern . ".";
         }
     }
 
-    protected function checkType($s_field, $s_expectedType)
+    protected function checkType($s_key,$s_field, $s_expectedType)
     {
         $s_type = gettype($s_field);
         
