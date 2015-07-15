@@ -1,4 +1,25 @@
 <?php
+function reportException(\Exception $exception,$bo_caught = true){
+	$s_error = $exception->getMessage().PHP_EOL;
+	$s_error .= $exception->getTraceAsString();
+
+	try {
+		$logs = \Loader::Inject('\Logger');
+
+		if( $bo_caught ){
+			$logs->critical($s_error);
+		}
+		else {
+			$logs->alert($s_error);
+		}
+	}
+	catch(Exception $e){
+		if( defined('DEBUG') ){
+			echo($s_error);
+		}
+	}
+}
+
 /* Set error catcher */
 function exception_handler($exception)
 {

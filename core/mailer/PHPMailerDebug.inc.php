@@ -41,7 +41,7 @@ class PHPMailerDebug extends \core\services\Service implements \Mailer
         $this->file = $file;
         
         if( !$file->exists(DATA_DIR.'/tmp') ){
-        	mkdir(DATA_DIR.'/tmp',0600);
+        	mkdir(DATA_DIR.'/tmp',0700);
         }
     }
 

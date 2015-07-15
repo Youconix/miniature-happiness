@@ -220,16 +220,12 @@ abstract class LoginParent extends Model
      */
     public function do_login($a_data,$bo_autologin)
     {
-    	echo('creating user');
-    	die();
         $user = $this->user->createUser();
         $user->setData($a_data);
-        echo('checking');
+        
         if ($user->isBot() || ! $user->isEnabled() || $user->isBlocked()) {
-        	echo('account not active');
             return;
         }
-        die();
         $this->clearLoginTries();
         $this->loginLog($user->getUsername(), 'success', $this->i_tries);
         
@@ -464,7 +460,7 @@ abstract class LoginParent extends Model
     		$s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' with openID ' . $s_openID . '. Status : ' . $s_status . "\n";
     	}
     
-    	$this->info($s_log, array(
+    	$this->logs->info($s_log, array(
     			'type' => 'login'
     	));
     }
