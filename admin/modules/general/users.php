@@ -196,7 +196,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->post['userid']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->logs->info('Call to unknown user ' . $this->post['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -213,7 +213,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->post['userid']);
         } catch (Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->logs->info('Call to unknown user ' . $this->post['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -230,7 +230,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->post['userid']);
         } catch (Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->logs->info('Call to unknown user ' . $this->post['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -302,7 +302,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->get['userid']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->get['userid']);
+            $this->logs->info('Call to unknown user ' . $this->get['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -319,7 +319,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->get['userid']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->get['userid']);
+            $this->logs->info('Call to unknown user ' . $this->get['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -344,7 +344,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->post['userid']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->logs->info('Call to unknown user ' . $this->post['userid'],array('type'=>'securityLog'));
             exit();
         }
         
@@ -408,7 +408,7 @@ class Users extends \core\AdminLogicClass
         try {
             $obj_User = $this->user->get($this->post['userid']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown user ' . $this->post['userid']);
+            $this->logs->info('Call to unknown user ' . $this->post['userid'],array('type'=>'securityLog'));
             exit();
         }
         

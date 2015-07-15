@@ -143,7 +143,7 @@ class Groups extends \core\AdminLogicClass
         try {
             $obj_group = $this->groups->getGroup($this->get['id']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown group ' . $this->get['id'] . '.');
+            $this->logs->info('Call to unknown group ' . $this->get['id'] . '.',array('type'=>'securityLog'));
             exit();
         }
         
@@ -184,7 +184,7 @@ class Groups extends \core\AdminLogicClass
         try {
             $obj_group = $this->groups->getGroup($this->get['id']);
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown group ' . $this->get['id'] . '.');
+            $this->logs->info('Call to unknown group ' . $this->get['id'] . '.',array('type'=>'securityLog'));
             exit();
         }
         
@@ -258,7 +258,7 @@ class Groups extends \core\AdminLogicClass
             $obj_Group = $this->groups->getGroup($this->post['id']);
             $obj_Group->deleteGroup();
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown group ' . $this->post['id'] . '.');
+            $this->logs->info('Call to unknown group ' . $this->post['id'] . '.',array('type'=>'securityLog'));
             exit();
         }
     }
@@ -292,7 +292,7 @@ class Groups extends \core\AdminLogicClass
             
             $obj_Group->persist();
         } catch (\Exception $e) {
-            $this->logs->securityLog('Call to unknown group ' . $this->post['id'] . '.');
+            $this->logs->info('Call to unknown group ' . $this->post['id'] . '.',array('type'=>'securityLog'));
             exit();
         }
     }

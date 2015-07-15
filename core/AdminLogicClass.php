@@ -32,7 +32,7 @@ abstract class AdminLogicClass extends \core\BaseLogicClass
 {
     /**
      * 
-     * @var \Logger
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logs;
     

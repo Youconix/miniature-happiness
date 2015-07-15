@@ -25,7 +25,7 @@ abstract class LoginParent extends Model
 
     /**
      *
-     * @var \Logger
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logs;
 
@@ -207,9 +207,9 @@ abstract class LoginParent extends Model
         } else 
             if ($this->i_tries == 10) {
                 $this->builder->insert('ipban', 'ip', 's', $_SERVER['REMOTE_ADDR'])->getResult();
-                $this->logs->ipBlockLog(6);
+                $this->ipBlockLog(6);
             } else {
-                $this->logs->loginLog($s_username, 'failed', $i_tries);
+            	$this->loginLog($s_username, 'failed', $this->i_tries);
             }
         
         return false;
@@ -220,15 +220,18 @@ abstract class LoginParent extends Model
      */
     public function do_login($a_data,$bo_autologin)
     {
+    	echo('creating user');
+    	die();
         $user = $this->user->createUser();
         $user->setData($a_data);
-        
+        echo('checking');
         if ($user->isBot() || ! $user->isEnabled() || $user->isBlocked()) {
+        	echo('account not active');
             return;
         }
-        
+        die();
         $this->clearLoginTries();
-        $this->logs->loginLog($user->getUsername(), 'success', $this->i_tries);
+        $this->loginLog($user->getUsername(), 'success', $this->i_tries);
         
         if ($bo_autologin) {
             /* Set auto login for the next time */
@@ -366,7 +369,7 @@ abstract class LoginParent extends Model
             return null;
         }
     
-        $this->logs->loginLog($user->getUsername(), 'success', 1);
+        $this->loginLog($user->getUsername(), 'success', 1);
     
         return $user;
     }
@@ -403,7 +406,7 @@ abstract class LoginParent extends Model
     {
         $currentUser = $this->user->get();
         if( !$currentUser->isAdmin(GROUP_ADMIN) ){
-            $this->logs->securityLog('User '.$currentUser->username().' tried to take over user session '.$i_userid.'! Access denied!');
+            $this->logs->info('User '.$currentUser->username().' tried to take over user session '.$i_userid.'! Access denied!',array('type'=>'securityLog'));
             throw new \DomainException('Only site admins can do this. Access denied!');
         }
         
@@ -419,6 +422,50 @@ abstract class LoginParent extends Model
         $a_data = $service_Database->fetch_assoc();
     
         $this->session->setLoginTakeover($a_data[0]['id'], $a_data[0]['nick'], $a_data[0]['lastLogin']);
-        $this->logs->setLog('login','Site admin '.$currentUser->getUsername().' has logged in as user '.$a_data[0]['nick'].' on '.date('Y-m-d H:i:s').'.');
+        $this->logs->info('login','Site admin '.$currentUser->getUsername().' has logged in as user '.$a_data[0]['nick'].' on '.date('Y-m-d H:i:s').'.');
+    }
+    
+    protected function accountBlockLog($s_username, $i_attemps)
+    {
+    	$s_log = 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts.\n\n System';
+    
+    	$this->logs->info($s_log, array(
+    			'type' => 'accountBlock'
+    	));
+    }
+    
+    protected function ipBlockLog($i_attemps)
+    {
+    	$s_log = 'The IP ' . $_SERVER['REMOTE_ADDR'] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts. \n\n System';
+    
+    	$this->logs->info($s_log, array(
+    			'type' => 'accountBlock'
+    	));
+    }
+    
+    /**
+     * Writes the data to the login log or makes a new one
+     *
+     * @param String $s_username
+     *            username
+     * @param String $s_status
+     *            status (failed|success)
+     * @param int $i_tries
+     *            of login tries
+     * @param String $s_openID
+     *            default empty
+     * @throws Exception when the log can not be written
+     */
+    protected function loginLog($s_username, $s_status, $i_tries, $s_openID = '')
+    {
+    	if (empty($s_openID)) {
+    		$s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' for ' . $i_tries . ' tries. Status : ' . $s_status . "\n";
+    	} else {
+    		$s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' with openID ' . $s_openID . '. Status : ' . $s_status . "\n";
+    	}
+    
+    	$this->info($s_log, array(
+    			'type' => 'login'
+    	));
     }
 }

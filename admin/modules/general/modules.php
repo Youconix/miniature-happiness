@@ -193,7 +193,7 @@ class Modules extends \core\AdminLogicClass
         try {
             $this->controlPanelModules->removeModule($this->post['id']);
         } catch (\Exception $e) {
-            $this->logs->exception($e);
+            reportException($e);
         }
     }
 
@@ -211,7 +211,7 @@ class Modules extends \core\AdminLogicClass
         try {
             $this->controlPanelModules->updateModule($this->post['id']);
         } catch (\Exception $e) {
-            $this->logs->exception($e);
+            reportException($e);
         }
     }
 
@@ -229,7 +229,7 @@ class Modules extends \core\AdminLogicClass
         try {
             $this->controlPanelModules->installModule($this->post['name']);
         } catch (\Exception $e) {
-            $this->logs->exception($e);
+            reportException($e);
         }
     }
 }

@@ -1034,3 +1034,27 @@ if (! function_exists('class_alias')) {
         eval('class ' . $alias . ' extends ' . $original . ' {}');
     }
 }
+
+function reportException(\Exception $exception,$bo_caught = true){
+	$s_error = $exception->getMessage().PHP_EOL;
+	$a_trace = $exception->getTrace();
+	foreach($a_trace AS $s_trace){
+		$s_error .= $s_trace.PHP_EOL;
+	}
+	
+	try {
+		$logs = \Loader::Inject('\Logger'); 
+	
+		if( $bo_caught ){
+			$logs->critical($s_error);
+		}
+		else {
+			$logs->alert($s_error);
+		}
+	}
+	catch(Exception $e){
+		if( defined('DEBUG') ){
+			echo($s_error);
+		}
+	}
+}

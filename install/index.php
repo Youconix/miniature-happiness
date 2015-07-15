@@ -632,7 +632,7 @@ class Install extends SettingsMain
 			' . $s_error->getTraceAsString();
         }
         
-        $service_Logs->errorLog($s_error);
+        $service_Logs->critical($s_error);
     }
 
     private function createSalt()

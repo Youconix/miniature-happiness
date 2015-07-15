@@ -2,10 +2,6 @@
 /* Set error catcher */
 function exception_handler($exception)
 {
-    if (class_exists('\core\Memory')) {
-        \Loader::Inject('\Logger')->exception($exception);
-    }
-
     if (defined('DEBUG')) {
         $headers = \Loader::Inject('\Headers');
         $headers->http500();

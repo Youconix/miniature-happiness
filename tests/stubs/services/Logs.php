@@ -3,78 +3,7 @@ namespace tests\stubs\services;
 
 class Logs implements \Logger
 {
-
-    public $s_loginLog = '';
-
-    public $s_securityLog = '';
-
-    public $s_errorLog = '';
-
     public $s_log = '';
-
-    /**
-     * Writes the data to the login log or makes a new one
-     *
-     * @param String $s_username
-     *            username
-     * @param String $s_status
-     *            status (failed|success)
-     * @param int $i_tries
-     *            of login tries
-     * @param String $s_openID
-     *            default empty
-     * @throws Exception when the log can not be written
-     */
-    public function loginLog($s_username, $s_status, $i_tries, $s_openID = '')
-    {
-        if (empty($s_openID)) {
-            $s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' for ' . $i_tries . ' tries. Status : ' . $s_status . "\n";
-        } else {
-            $s_log = 'Login to account ' . $s_username . ' from IP : ' . $_SERVER['REMOTE_ADDR'] . ' with openID ' . $s_openID . '. Status : ' . $s_status . "\n";
-        }
-        
-        $this->s_loginLog .= $s_log;
-    }
-
-    /**
-     * Writes the data to the security log or makes a new one
-     *
-     * @param String $s_log
-     *            The content of the entry
-     * @throws Exception when the log can not be written
-     */
-    public function securityLog($s_log)
-    {
-        $this->s_securityLog .= $s_log;
-    }
-    
-    /**
-     * Writes the data to the error log or makes a new one
-     *
-     * @param String $s_log
-     *            The content of the entry
-     * @throws Exception when the log can not be written
-     */
-    public function errorLog($s_log)
-    {
-        $this->s_errorLog .= $this->s_errorLog;
-    }
-    
-    public function accountBlockLog($s_username, $i_attemps){}
-    
-    public function ipBlockLog($i_attemps){}
-    
-    /**
-     * Writes the data to the log or makes a new one
-     *
-     * @param String $s_name
-     *            The name of the log
-     * @param String $s_log
-     *            The content of the log
-     * @param array $context
-     *            The context, add an exception under the key 'exception'
-     */
-    public function setLog($s_name, $s_log, $context = array());
 
     /**
      * Logs with an arbitrary level.

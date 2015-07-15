@@ -85,9 +85,9 @@ class Error500 extends \includes\BaseLogicClass
         
         if (isset($_SESSION['error'])) {
             if (isset($_SESSION['errorObject'])) {
-                $this->logs->exception($_SESSION['errorObject']);
+            	reportException($_SESSION['errorObject'],false);
             } else {
-                $this->logs->errorLog($_SESSION['error']);
+                $this->logs->critical($_SESSION['error']);
             }
             
             if (defined('DEBUG')) {

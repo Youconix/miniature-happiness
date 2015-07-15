@@ -260,7 +260,7 @@ class Maintenance extends Service {
 			
 			return 1;
 		} catch ( \DBException $e ) {
-			$this->logger->exception ( $e );
+			reportException( $e );
 			
 			return 0;
 		}
@@ -286,7 +286,7 @@ class Maintenance extends Service {
 			
 			return 1;
 		} catch ( \DBException $e ) {
-			$this->logger->exception ( $e );
+			reportException( $e );
 			return 0;
 		}
 	}
@@ -318,7 +318,7 @@ class Maintenance extends Service {
 	}
 	public function createBackupFull() {
 		if (! $this->isZipSupported ()) {
-			$this->logger->errorLog ( 'Can not create backup. Zip support is missing' );
+			$this->logger->critical ( 'Can not create backup. Zip support is missing' );
 			return null;
 		}
 		
@@ -327,7 +327,7 @@ class Maintenance extends Service {
 		$obj_zip = new \ZipArchive ();
 		
 		if ($obj_zip->open ( $s_filename . \ZipArchive::CREATE ) !== true) {
-			$this->logger->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
+			$this->logger->critical ( 'Can not create zip archive in directory ' . $s_temp . '.' );
 			return;
 		}
 		
@@ -365,7 +365,7 @@ class Maintenance extends Service {
 	}
 	public function createBackup() {
 		if (! $this->isZipSupported ()) {
-			$this->logger->errorLog ( 'Can not create backup. Zip support is missing' );
+			$this->logger->critical ( 'Can not create backup. Zip support is missing' );
 			return null;
 		}
 		
@@ -374,7 +374,7 @@ class Maintenance extends Service {
 		$obj_zip = new \ZipArchive ();
 		
 		if ($obj_zip->open ( $s_filename . \ZipArchive::CREATE ) !== true) {
-			$this->logger->errorLog ( 'Can not create zip archive in directory ' . $s_temp . '.' );
+			$this->logger->critical ( 'Can not create zip archive in directory ' . $s_temp . '.' );
 			return;
 		}
 		
@@ -417,7 +417,7 @@ class Maintenance extends Service {
 	}
 	public function restoreBackup($s_backup) {
 		if (! $this->isZipSupported ()) {
-			$this->logger->errorLog ( 'Can not restore backup. Zip support is missing' );
+			$this->logger->critical ( 'Can not restore backup. Zip support is missing' );
 			return false;
 		}
 	}

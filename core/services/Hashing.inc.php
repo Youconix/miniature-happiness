@@ -57,14 +57,14 @@ class Hashing extends Service
                  * Security warning
                  */
                 $this->obj_hashing = new HashingFallback();
-                $logs->securityLog('Missing bcrypt and CRYPT_BLOWFISH. Falling back to sha1 hashing. Upgrade your PHP-installation to min. 5.5 at ones!');
+                $logs->warning('Missing bcrypt and CRYPT_BLOWFISH. Falling back to sha1 hashing. Upgrade your PHP-installation to min. 5.5 at ones!');
             } else {
                 /*
                  * Legancy
                  * Security warning
                  */
                 $this->obj_hashing = new HashLegancy();
-                $logs->securityLog('Missing bcrypt. Falling back to crypt() with CRYPT_BLOWFISH hashing. Upgrade your PHP-installation to min. 5.5 as soon as possible!');
+                $logs->warning('Missing bcrypt. Falling back to crypt() with CRYPT_BLOWFISH hashing. Upgrade your PHP-installation to min. 5.5 as soon as possible!');
             }
         } else {
             $this->obj_hashing = new HashNormal();

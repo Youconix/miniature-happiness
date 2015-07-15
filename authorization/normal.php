@@ -116,10 +116,11 @@ class Normal extends \authorization\Authorization {
             $this->login_screen(true);
             return;
         }
-        
+        echo('test1');
         (isset($this->post['autologin'])) ? $bo_autologin = true : $bo_autologin = false;
         $bo_login = $this->login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
-        
+        echo('test2');
+        die();
         /* No redirect, so the login was incorrect */
         $this->login_screen(true);
     }

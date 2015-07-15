@@ -82,7 +82,7 @@ class Error404 extends \includes\BaseLogicClass
         $this->template->set('notice', t('errors/error404/pageMissing'));
         
         if (isset($_SESSION['error'])) {
-            $this->logs->errorLog($_SESSION['error']);
+            $this->logs->critical($_SESSION['error']);
             if (defined('DEBUG')) {
                 
                 $this->template->set('debug_notice', $_SESSION['error']);

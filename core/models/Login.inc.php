@@ -80,7 +80,7 @@ class Login extends LoginParent
         }
         
         $s_passwordHash = $this->hashing->hashUserPassword($s_password, $s_salt);
-        
+
         /* Check the login combination */
         $this->builder->select('users', '*');
         $this->builder->getWhere()->addAnd(array(

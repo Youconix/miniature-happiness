@@ -11,8 +11,7 @@ Registration.prototype.checkUsername = function() {
 	if( username == '' ){ return; }
 	
 	var _this = this;
-	$.post('../registration/checkUsername',{'nick':username},_this.checkUsernameCallback);
-	// => registration.php::checkUsername
+	$.post('../authorization/normal/checkUsername',{'nick':username},_this.checkUsernameCallback);
 }
 
 Registration.prototype.checkUsernameCallback = function(response) {
