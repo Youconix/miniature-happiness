@@ -421,6 +421,12 @@ abstract class LoginParent extends Model
         $this->logs->info('login','Site admin '.$currentUser->getUsername().' has logged in as user '.$a_data[0]['nick'].' on '.date('Y-m-d H:i:s').'.');
     }
     
+    /**
+     * Writes an entry to the account block log
+     * 
+     * @param string $s_username	The username
+     * @param int $i_attemps	Number of login attempts
+     */
     protected function accountBlockLog($s_username, $i_attemps)
     {
     	$s_log = 'The account ' . $s_username . ' is disabled on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts.\n\n System';
@@ -430,6 +436,11 @@ abstract class LoginParent extends Model
     	));
     }
     
+    /**
+     * Writes an entry to the account block log
+     *
+     * @param int $i_attemps	Number of login attempts
+     */
     protected function ipBlockLog($i_attemps)
     {
     	$s_log = 'The IP ' . $_SERVER['REMOTE_ADDR'] . ' is blocked on ' . date('d-m-Y H:i:s') . ' after ' . $i_attemps . ' failed login attempts. \n\n System';

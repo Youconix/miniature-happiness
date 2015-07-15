@@ -19,13 +19,13 @@ class Login extends LoginParent
 
     /**
      *
-     * @var \core\services\Hashing
+     * @var \Hashing
      */
     protected $hashing;
 
     /**
      *
-     * @var \core\services\Mailer
+     * @var \Mailer
      */
     protected $mailer;
 
@@ -117,7 +117,7 @@ class Login extends LoginParent
                 's'
             ), array(
                 $s_username,
-                $s_passwordHash,
+                $s_password,
                 '1',
                 'normal'
             ));
