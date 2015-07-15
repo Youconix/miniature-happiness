@@ -68,7 +68,10 @@ class Normal extends \authorization\Authorization {
             'type' => 'string',
             'conditions' => 'ignore',
             'autologin' => 'ignore',
-            'username' => 'string-DB'
+            'username' => 'string-DB',
+        	'password_old' => 'string-DB',
+        	'password' => 'string-DB',
+        	'password2' => 'string-DB'
         );
         
         $this->s_current = 'normal';
@@ -116,11 +119,10 @@ class Normal extends \authorization\Authorization {
             $this->login_screen(true);
             return;
         }
-        echo('test1');
+        
         (isset($this->post['autologin'])) ? $bo_autologin = true : $bo_autologin = false;
         $bo_login = $this->login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
-        echo('test2');
-        die();
+        
         /* No redirect, so the login was incorrect */
         $this->login_screen(true);
     }
@@ -149,32 +151,25 @@ class Normal extends \authorization\Authorization {
      * Changes the expired password
      */
     protected function update()
-    {
-    	if (! $this->session->exists('expired')) {
-    		$this->headers->redirect('index/view');
-    	}
-    
-    	$a_data = $this->session->get('expired');
-    
-    	if ($this->post['password_old'] == '' || $this->post['password'] == '' || $this->post['password2'] == '') {
-    		$this->expiredScreen(t('registration/addHint/fieldsEmpty'));
+    {    	
+    	if ( !$this->post->validate(array(
+    			'password_old' => 'required',
+    			'password' => 'required',
+    			'password2' => 'required'
+    	)) ){
+    		$this->expired(t('registration/addHint/fieldsEmpty'));
     		return;
     	}
+    	
     	if ($this->post['password'] != $this->post['password2']) {
-    		$this->expiredScreen(t('registration/passwordIncorrect'));
+    		$this->expired(t('registration/passwordIncorrect'));
+    		return;
+    	} 
+    
+    	if (! $this->login->changePassword($this->post['password_old'], $this->post['password'])) {
+    		$this->expired(t('login/currentPasswordIncorrect'));
     		return;
     	}
-    
-    	$user = $this->user->createUser();
-    	$user->setData($a_data);
-    
-    	if (! $user->changePassword($this->post['password_old'], $this->post['password'])) {
-    		$this->expiredScreen(t('login/currentPasswordIncorrect'));
-    		return;
-    	}
-    
-    	$this->session->delete('expired');
-    	$this->login->setLogin($user);
     }
     
     /**

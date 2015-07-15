@@ -387,7 +387,7 @@ class Headers extends Service implements \Headers
      */
     public function skipTemplate()
     {
-        if ($this->isForceDownload() || $this->isRedirect() || (array_key_exists('http', $this->a_headers) && $this->a_headers['http'][1] == '500 Internal Server Error')) {
+        if ($this->isForceDownload() || $this->isRedirect() ) {
             return true;
         }
         

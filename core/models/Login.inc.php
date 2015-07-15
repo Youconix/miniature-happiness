@@ -415,6 +415,26 @@ class Login extends LoginParent
             throw $e;
         }
     }
+    
+    public function changePassword($s_passwordOld,$s_passwordNew){
+    	if (! $this->session->exists('expired')) {
+    		$this->headers->redirect('index/view');
+    	}
+    	
+    	$a_data = $this->session->get('expired');
+    	$user = $this->user->createUser();
+    	$user->setData($a_data);
+    	
+    	if (! $user->changePassword($s_passwordOld,$s_passwordNew) ){
+    		return false;
+    	}
+    	
+    	$this->session->delete('expired');
+    	
+    	$this->setLogin($user);
+    	
+    	return true;
+    }
 
     /**
      * Sends the activation email

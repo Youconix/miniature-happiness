@@ -68,7 +68,7 @@ class Input implements \Input,\ArrayAccess {
      */
     public function get($s_key){
         if( !$this->has($s_key) ){
-            throw new \OutOfBoundsException('Key '.$s_key.' is not present in collection '.$s_type.'.');
+            throw new \OutOfBoundsException('Key '.$s_key.' is not present in collection.');
         }
         
         return $this->a_container[$s_key];

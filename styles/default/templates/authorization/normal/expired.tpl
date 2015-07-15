@@ -1,5 +1,5 @@
 <section class="login">
-	<form action="{NIV}authorization/login/update" method="post">
+	<form action="{NIV}authorization/normal/update" method="post">
 		<h1>{expired_title}</h1>
 		
 		<h2 class="errorNotice">{errorNotice}</h2>

@@ -32,19 +32,19 @@ class Index extends \core\BaseLogicClass
      * Base graphic class constructor
      *
      * @param \Input $Input    The input parser       
-     * @param \Config $model_Config            
-     * @param \Language $service_Language            
-     * @param \Output $service_Template            
+     * @param \Config $config            
+     * @param \Language $language            
+     * @param \Output $template            
      * @param \core\classes\HeaderAdmin $header            
      * @param \core\classes\MenuAdmin $menu            
      * @param \\Footer $footer            
      * @param \core\helpers\ConfirmBox $confirmbox            
      */
-    public function __construct(\Input $Input, \Config $model_Config, \Language $service_Language, \Output $service_Template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \Footer $footer, \core\helpers\ConfirmBox $confirmbox)
+    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \core\classes\HeaderAdmin $header, \core\classes\MenuAdmin $menu, \Footer $footer, \core\helpers\ConfirmBox $confirmbox)
     {
-        $model_Config->setLayout('admin');
+        $config->setLayout('admin');
         
-        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
+        parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
         
        $this->prepareInput($Input);
         

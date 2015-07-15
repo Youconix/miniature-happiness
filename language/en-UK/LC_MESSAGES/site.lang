@@ -96,7 +96,7 @@
         </error404>
         <error500>
             <serverError>Oops, something went wrong.</serverError>
-            <systemError>An error has occured on the server. The server´s administrator has been warned.</systemError>
+            <systemError><![CDATA[An error has occured on the server. The server&#39;s administrator has been warned.]]></systemError>
         </error500>
     </errors>
 </language>
