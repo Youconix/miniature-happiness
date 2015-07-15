@@ -36,7 +36,7 @@ class Cache extends \core\services\Service implements \Cache {
 	 *
 	 * @var \core\services\File
 	 */
-	protected $service_File;
+	protected $file;
 	
 	/**
 	 *
@@ -54,19 +54,19 @@ class Cache extends \core\services\Service implements \Cache {
 	 *
 	 * @var \Headers
 	 */
-	protected $service_Headers;
+	protected $headers;
 	protected $s_language;
 	protected $bo_cache;
-	public function __construct(\core\services\File $service_File, \Config $config, \Headers $service_Headers, \Builder $builder) {
+	public function __construct(\core\services\File $file, \Config $config, \Headers $headers, \Builder $builder) {
 		$this->config = $config;
-		$this->service_File = $service_File;
+		$this->file = $file;
 		$this->settings = $config->getSettings ();
-		$this->service_Headers = $service_Headers;
+		$this->headers = $headers;
 		$this->builder = $builder;
 		
 		$s_directory = $this->getDirectory ();
-		if (! $this->service_File->exists ( $s_directory . 'site' )) {
-			$this->service_File->newDirectory ( $s_directory . 'site' );
+		if (! $this->file->exists ( $s_directory . 'site' )) {
+			$this->file->newDirectory ( $s_directory . 'site' );
 		}
 	}
 	
@@ -147,27 +147,27 @@ class Cache extends \core\services\Service implements \Cache {
 		$s_language = $this->config->getLanguage ();
 		$s_directory = $this->getDirectory ();
 		
-		if (! $this->service_File->exists ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language )) {
-			$this->service_File->newDirectory ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language );
+		if (! $this->file->exists ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language )) {
+			$this->file->newDirectory ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language );
 			return false;
 		}
 		
-		if (! $this->service_File->exists ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language )) {
-			$this->service_File->newDirectory ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language );
+		if (! $this->file->exists ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language )) {
+			$this->file->newDirectory ( $s_directory . 'site' . DIRECTORY_SEPARATOR . $s_language );
 			return false;
 		}
 		
 		$s_target = $this->getCurrentPage ();
 		
-		if (! $this->service_File->exists ( $s_target )) {
+		if (! $this->file->exists ( $s_target )) {
 			return false;
 		}
 		
-		$a_file = explode ( $this->getSeperator (), $this->service_File->readFile ( $s_target ) );
+		$a_file = explode ( $this->getSeperator (), $this->file->readFile ( $s_target ) );
 		$i_timeout = $this->settings->get ( 'cache/timeout' );
 		
 		if ((time () - $a_file [0]) > $i_timeout) {
-			$this->service_File->deleteFile ( $s_target );
+			$this->file->deleteFile ( $s_target );
 			return false;
 		}
 		
@@ -182,8 +182,8 @@ class Cache extends \core\services\Service implements \Cache {
 	 */
 	protected function displayCache($a_file) {
 		$a_headers = unserialize ( $a_file [1] );
-		$this->service_Headers->importHeaders ( $a_headers );
-		$this->service_Headers->printHeaders ();
+		$this->headers->importHeaders ( $a_headers );
+		$this->headers->printHeaders ();
 		echo ($a_file [2]);
 		die ();
 	}
@@ -199,13 +199,13 @@ class Cache extends \core\services\Service implements \Cache {
 			return;
 		}
 		
-		$s_headers = serialize ( $this->service_Headers->getHeaders () );
+		$s_headers = serialize ( $this->headers->getHeaders () );
 		
 		$s_output = time () . $this->getSeperator () . $s_headers . $this->getSeperator () . $s_output;
 		
 		$s_language = $this->config->getLanguage ();
 		$s_target = $this->getCurrentPage ();
-		$this->service_File->writeFile ( $s_target, $s_output );
+		$this->file->writeFile ( $s_target, $s_output );
 	}
 	
 	/**
@@ -237,8 +237,8 @@ class Cache extends \core\services\Service implements \Cache {
 	public function clearPage($s_page) {
 		$s_page = $this->getAddress ( $s_page );
 		
-		if ($this->service_File->exists ( $s_page )) {
-			$this->service_File->deleteFile ( $s_page );
+		if ($this->file->exists ( $s_page )) {
+			$this->file->deleteFile ( $s_page );
 		}
 	}
 	
@@ -257,16 +257,16 @@ class Cache extends \core\services\Service implements \Cache {
 	public function clearSiteCache() {
 		$s_dir = $this->getDirectory () . 'site';
 		
-		$a_files = $this->service_File->readDirectory ( $s_dir );
+		$a_files = $this->file->readDirectory ( $s_dir );
 		foreach ( $a_files as $s_file ) {
 			if ($s_file == '.' || $s_file == '.') {
 				continue;
 			}
 			
 			if (is_dir ( $s_dir . DIRECTORY_SEPARATOR . $s_file )) {
-				$this->service_File->deleteDirectory ( $s_dir . DIRECTORY_SEPARATOR . $s_file );
+				$this->file->deleteDirectory ( $s_dir . DIRECTORY_SEPARATOR . $s_file );
 			} else {
-				$this->service_File->deleteFile ( $s_dir . DIRECTORY_SEPARATOR . $s_file );
+				$this->file->deleteFile ( $s_dir . DIRECTORY_SEPARATOR . $s_file );
 			}
 		}
 	}
@@ -301,7 +301,7 @@ class Cache extends \core\services\Service implements \Cache {
 			$s_page .= '.php';
 		}
 		
-		if (! $this->service_File->exists ( NIV . $s_page )) {
+		if (! $this->file->exists ( NIV . $s_page )) {
 			return;
 		}
 		

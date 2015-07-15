@@ -26,24 +26,24 @@ namespace core\helpers;
 class Captcha extends Helper
 {
 
-    private $service_Session;
+    private $session;
 
-    private $service_Random;
+    private $random;
 
     private $i_length = 8;
 
     /**
      * PHP 5 constructor
      *
-     * @param \Session $service_Session
+     * @param \Session $session
      *            The session service
-     * @param \core\services\Random $service_Random
+     * @param \core\services\Random $random
      *            The random service
      */
-    public function __construct(\Session $service_Session, \core\services\Random $service_Random)
+    public function __construct(\Session $session, \core\services\Random $random)
     {
-        $this->service_Session = $service_Session;
-        $this->service_Random = $service_Random;
+        $this->session = $session;
+        $this->random = $random;
     }
 
     /**
@@ -53,7 +53,7 @@ class Captcha extends Helper
     {
         $s_code = $this->generateCode();
         
-        $this->service_Session->set('capcha', $s_code);
+        $this->session->set('capcha', $s_code);
         /* Image from 150 at 50 px */
         $s_image = imagecreatetruecolor(280, 40);
         
@@ -122,7 +122,7 @@ class Captcha extends Helper
      */
     private function generateCode()
     {
-        $s_code = $this->service_Random->numberLetterCaptcha($this->i_length);
+        $s_code = $this->random->numberLetterCaptcha($this->i_length);
         
         return $s_code;
     }
@@ -138,16 +138,16 @@ class Captcha extends Helper
     {
         $s_code = strtolower($s_code);
         
-        if (! $this->service_Session->exists('capcha')) {
+        if (! $this->session->exists('capcha')) {
             return false;
         }
         
-        if ($this->service_Session->get('capcha') != $s_code) {
-            $this->service_Session->delete('capcha');
+        if ($this->session->get('capcha') != $s_code) {
+            $this->session->delete('capcha');
             return false;
         }
         
-        $this->service_Session->delete('capcha');
+        $this->session->delete('capcha');
         return true;
     }
 }

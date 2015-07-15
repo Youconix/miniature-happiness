@@ -31,13 +31,13 @@ class Template extends Service implements \Output,\SplObserver
      *
      * @var \Headers
      */
-    private $service_Headers;
+    private $headers;
 
     /**
      *
      * @var \Cache
      */
-    private $service_Cache;
+    private $cache;
 
     /**
      *
@@ -49,7 +49,7 @@ class Template extends Service implements \Output,\SplObserver
      *
      * @var \core\services\File
      */
-    private $service_File;
+    private $file;
 
     private $s_layout;
 
@@ -74,23 +74,23 @@ class Template extends Service implements \Output,\SplObserver
     /**
      * PHP 5 constructor
      *
-     * @param \core\services\File $service_File
+     * @param \core\services\FileHandler $file
      *            The File service
      * @param \Config $config
      *            The configuration model
-     * @param \Cache $service_Cache
+     * @param \Cache $cache
      *            The caching service
-     * @param \Headers $service_Headers
+     * @param \Headers $headers
      *            The headers service
      * @throws \TemplateException if the layout does not exist
      * @throws \IOException if the layout is not readable
      */
-    public function __construct(\core\services\File $service_File, \Config $config, \Cache $service_Cache, \Headers $service_Headers)
+    public function __construct(\core\services\FileHandler $file, \Config $config, \Cache $cache, \Headers $headers)
     {
-        $this->service_File = $service_File;
+        $this->file = $file;
         $this->config = $config;
-        $this->service_Headers = $service_Headers;
-        $this->service_Cache = $service_Cache;
+        $this->headers = $headers;
+        $this->cache = $cache;
         
         $this->config->attach($this);
         
@@ -140,18 +140,18 @@ class Template extends Service implements \Output,\SplObserver
             return;
         }
         
-        $this->service_Cache->checkCache(); // Program wil stop if cache is used
+        $this->cache->checkCache(); // Program wil stop if cache is used
         
         /* Load layout */
         if (! $this->config->isAjax()) {
             
             $s_url = 'styles/' . $this->s_templateDir . '/templates/layouts/' . $this->config->getLayout() . '.tpl';
             
-            if (! $this->service_File->exists(NIV . $s_url)) {
+            if (! $this->file->exists(NIV . $s_url)) {
                 throw new \TemplateException('Can not load layout ' . $s_url);
             }
             
-            $this->s_layout = $this->service_File->readFile(NIV . $s_url);
+            $this->s_layout = $this->file->readFile(NIV . $s_url);
         }
         
         $this->loadView();
@@ -245,12 +245,12 @@ class Template extends Service implements \Output,\SplObserver
         $this->s_viewName = preg_replace("#/[a-z0-0_]+\.tpl#si", '', $s_view);
         $s_view = 'styles/' . $this->s_templateDir . '/templates/' . $s_template;
         
-        if (! $this->service_File->exists(NIV . $s_view)) {
+        if (! $this->file->exists(NIV . $s_view)) {
             /* View not found */
             throw new \TemplateException('Can not load view ' . $s_view . '.');
         }
         
-        $s_view = $this->service_File->readFile(NIV . $s_view);
+        $s_view = $this->file->readFile(NIV . $s_view);
         
         if (! $this->config->isAjax()) {
             $this->s_template = str_replace("{body_content}", $s_view, $this->s_layout);
@@ -274,11 +274,11 @@ class Template extends Service implements \Output,\SplObserver
             $s_dir = NIV . 'styles/' . $this->s_templateDir . '/templates/';
             
             foreach ($a_matches[1] as $s_include) {
-                if (! $this->service_File->exists($s_dir . $s_include)) {
+                if (! $this->file->exists($s_dir . $s_include)) {
                     throw new \TemplateException('Can not find included template ' . $s_dir . $s_include . '.');
                 }
                 
-                $s_template = $this->service_File->readFile($s_dir . $s_include);
+                $s_template = $this->file->readFile($s_dir . $s_include);
                 $this->s_template = str_replace('<include src="' . $s_include . '">', $s_template, $this->s_template);
             }
         }
@@ -423,11 +423,11 @@ class Template extends Service implements \Output,\SplObserver
             $s_url .= '.tpl';
         }
         
-        if (! $this->service_File->exists(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_url)) {
+        if (! $this->file->exists(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_url)) {
             throw new \TemplateException('Can not find template ' . $s_url);
         }
         
-        $s_subTemplate = $this->service_File->readFile(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_url);
+        $s_subTemplate = $this->file->readFile(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_url);
         
         $this->s_template = str_replace('{[' . $s_key . ']}', $s_subTemplate, $this->s_template);
     }
@@ -472,11 +472,11 @@ class Template extends Service implements \Output,\SplObserver
             $s_dir = str_replace('.php', '', \core\Memory::getPage());
         }
         
-        if (! $this->service_File->exists(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_dir . '/' . $s_url)) {
+        if (! $this->file->exists(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_dir . '/' . $s_url)) {
             throw new \TemplateException('Can not load template templates/' . $this->s_templateDir . '/' . $s_dir . '/' . $s_url . '.');
         }
         
-        $s_subTemplate = $this->service_File->readFile(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_dir . '/' . $s_url);
+        $s_subTemplate = $this->file->readFile(NIV . 'styles/' . $this->s_templateDir . '/templates/' . $s_dir . '/' . $s_url);
         
         return $s_subTemplate;
     }
@@ -584,7 +584,7 @@ class Template extends Service implements \Output,\SplObserver
      */
     public function printToScreen()
     {
-        if (! $this->bo_loaded || $this->service_Headers->skipTemplate()) {
+        if (! $this->bo_loaded || $this->headers->skipTemplate()) {
             return;
         }
         
@@ -642,7 +642,7 @@ class Template extends Service implements \Output,\SplObserver
         
         echo ($this->s_template);
         
-        $this->service_Cache->writeCache($this->s_template, $this->service_Headers);
+        $this->cache->writeCache($this->s_template, $this->headers);
         
         $this->bo_loaded = false;
     }

@@ -174,15 +174,6 @@ interface DAL {
 	public function fetch_object();
 
 	/**
-	 * Escapes the given data for save use in queries
-	 *
-	 * @param string $s_data
-	 *        	The data that need to be escaped
-	 * @return string The escaped data
-	*/
-	public function escape_string($s_data);
-
-	/**
 	 * Starts a new transaction
 	 *
 	 * @throws DBException a transaction is allready active

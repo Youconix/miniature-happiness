@@ -337,6 +337,8 @@ class DataUser extends \core\models\Model
         if ($service_Database->num_rows() == 0) {
             return false;
         }
+        
+        $i_userid = $service_Database->result(0,'id');
     
         $this->builder->update('users', array(
             'password',
@@ -350,6 +352,7 @@ class DataUser extends \core\models\Model
         ));
         $this->builder->getWhere()->addAnd('id', 'i', $i_userid);
         $this->builder->getResult();
+        
         return true;
     }
     

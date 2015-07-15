@@ -16,13 +16,6 @@ namespace core\models;
  */
 abstract class LoginParent extends Model
 {
-
-    /**
-     *
-     * @var \Builder
-     */
-    protected $builder;
-
     /**
      *
      * @var \Psr\Log\LoggerInterface
@@ -73,7 +66,7 @@ abstract class LoginParent extends Model
      * @param \core\models\User $user;            
      */
     public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \Session $session, \Headers $headers, \Config $config, \core\models\User $user)
-    {
+    {    	
         $this->user = $user;
         $this->cookie = $cookie;
         $this->builder = $builder;

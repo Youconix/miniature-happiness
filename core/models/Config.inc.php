@@ -311,7 +311,11 @@ class Config extends Model implements \Config,\SplSubject
      * Detects the template directory and layout
      */
     public function detectTemplateDir(){
-        if (preg_match('#^/?admin/#', $_SERVER['REQUEST_URI'])) {
+    	$s_uri = $_SERVER['REQUEST_URI'];
+    	while( strpos($s_uri,'//') !== false ){
+    		$s_uri = str_replace('//','/',$s_uri);
+    	}
+        if (preg_match('#^/?admin/#', $s_uri)) {
             $this->loadAdminTemplateDir();
         } else {
             $this->loadTemplateDir();

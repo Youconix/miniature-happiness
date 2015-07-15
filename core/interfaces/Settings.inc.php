@@ -7,13 +7,6 @@ interface  Settings {
 	const MAJOR = 2;
 	
 	/**
-	 * Returns if the object schould be treated as singleton
-	 *
-	 * @return boolean True if the object is a singleton
-	 */
-	public static function isSingleton();
-	
-	/**
 	 * Gives the asked part of the loaded file
 	 *
 	 * @param String $s_path
