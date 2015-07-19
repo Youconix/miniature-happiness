@@ -103,14 +103,16 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
      */
     protected function showLayout()
     {
-        /* Call header */
-        $this->header->createHeader();
-        
-        /* Call Menu */
-        $this->menu->generateMenu();
-        
-        /* Call footer */
-        $this->footer->createFooter();
+    	if( !$this->config->isAjax() ){
+	        /* Call header */
+	        $this->header->createHeader();
+	        
+	        /* Call Menu */
+	        $this->menu->generateMenu();
+	        
+	        /* Call footer */
+	        $this->footer->createFooter();
+    	}
     }
 
     /**

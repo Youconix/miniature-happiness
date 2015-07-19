@@ -26,8 +26,8 @@
 	            	<td>{id}</td>
 	            	<td>{nick}</td>
 	            	<td>{email}</td>
-	            	<td>{registration}</td>
 	            	<td>{logged_in}</td>
+	            	<td>{registration}</td>
 	            </tr>
 	        </block>
 	    <tr>

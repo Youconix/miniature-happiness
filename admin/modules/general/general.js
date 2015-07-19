@@ -577,10 +577,6 @@ Users.prototype.showAddUserScreen = function() {
 }
 Users.prototype.filterUserList = function() {
 	var value = $.trim($('#searchUsername').val());
-	if (value.length < 3) {
-		return;
-	}
-
 	$.get(users.url + 'searchResults?username=' + value, function(
 			response) {
 		users.filterUserListCallback(response);
@@ -588,6 +584,10 @@ Users.prototype.filterUserList = function() {
 }
 Users.prototype.filterUserListCallback = function(results) {
 	results = JSON.parse($.trim(results));
+	
+	$('#usertable tbody tr').each(function(){
+		$(this).off('click');
+	});
 
 	$('#usertable tbody').empty();
 
@@ -601,6 +601,8 @@ Users.prototype.filterUserListCallback = function(results) {
 						+ results[i]['loggedin'] + '</td> ' + '	<td>'
 						+ results[i]['registrated'] + '</td> ' + '	</tr>');
 	}
+	
+	this.setUserListEvents();
 }
 Users.prototype.setUserListEvents = function() {
 	$('#usertable tbody tr').each(
@@ -610,7 +612,7 @@ Users.prototype.setUserListEvents = function() {
 							var id = $(this).data('id');
 
 							admin.show(
-									users.url + 'view?&userid=' + id,
+									users.url + 'view?userid=' + id,
 									users.showUserEvents);
 						});
 			});

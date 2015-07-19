@@ -16,7 +16,7 @@
 		</fieldset>
 		<fieldset>
 			<label for="email" class="label">{emailHeader}</label>
-			<input type="email" id="email" name="email" value="{email}" required>
+			<input type="email" id="email" name="email" value="{email}" data-validation="{emailError}" required>
 		</fieldset>
 		<fieldset>
 			<label for="bot" class="label">{botHeader}</label>
@@ -41,20 +41,22 @@
                 <input type="radio" name="blocked" id="blocked_1" value="1" {blocked1}> <label>{yes}</label>
 		</fieldset>
 		
-		<h2>Wachtwoord veranderen</h2>
-        <h3>Laat leeg om de wachtwoorden hetzelfde te laten</h3>
-        
-        <fieldset>
-            <label for="password1" class="label">Nieuwe wachtwoord</label>
-            <input type="password" name="password1" id="password1" required>
-        </fieldset>
-        <fieldset>
-            <label for="password2" class="label">Wachtwoord herhalen</label>
-            <input type="password" name="password2" id="password2" required>
-        </fieldset>
+		<if {passwords}>
+			<h2>{passwordChangeHeader}</h2>
+	        <h3>{passwordChangeText}</h3>
+	                
+	        <fieldset>
+	            <label for="password1" class="label">{passwordHeader}</label>
+	            <input type="password" name="password1" id="password1" data-validation="{passwordError}">
+	        </fieldset>
+	        <fieldset>
+	            <label for="password2" class="label">Wachtwoord herhalen</label>
+	            <input type="password" name="password2" id="password2" data-validation="{passwordError}">
+	        </fieldset>
+	    </if>
         <fieldset>
             <input type="hidden" id="userid" value="{id}">
-            <input type="submit" value="Aanpassen" id="userUpdateButton">
+            <input type="submit" value="{updateButton}" id="userUpdateButton">
         </fieldset>
         
 		<h2>Groups</h2>

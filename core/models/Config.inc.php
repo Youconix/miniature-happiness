@@ -311,7 +311,7 @@ class Config extends Model implements \Config,\SplSubject
      * Detects the template directory and layout
      */
     public function detectTemplateDir(){
-    	$s_uri = $_SERVER['REQUEST_URI'];
+    	$s_uri = $this->s_page;//$_SERVER['REQUEST_URI'];
     	while( strpos($s_uri,'//') !== false ){
     		$s_uri = str_replace('//','/',$s_uri);
     	}
@@ -482,7 +482,7 @@ class Config extends Model implements \Config,\SplSubject
         $this->s_command = $s_command;
         $this->s_layout = $s_layout;
         
-        $this->notify();
+        $this->detectTemplateDir();
     }
 
     /**

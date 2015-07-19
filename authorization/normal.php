@@ -87,12 +87,13 @@ class Normal extends \authorization\Authorization {
      */
     protected function login_screen($bo_callback = false){
         if ($bo_callback) {
-            $this->template->loadView('index');
+            $this->template->loadView('login_screen');
         } else {
             $this->login->checkAutologin();
         }
         
         $this->template->set('usernameText', t('system/admin/users/username'));
+        $this->template->set('username', $this->post->getDefault('username'));
         $this->template->set('passwordText', t('system/admin/users/password'));
         $this->template->set('autologin', t('login/autologin'));
         $this->template->set('loginButton', t('login/button'));
@@ -100,10 +101,6 @@ class Normal extends \authorization\Authorization {
         
         $this->template->set('loginTitle','Login');
         $this->template->set('forgotPassword','Forgot password');
-        
-        if ($bo_callback) {
-            $this->template->set('username', $this->post['username']);
-        }
         
         $this->setLoginTypes();
     }
@@ -116,7 +113,7 @@ class Normal extends \authorization\Authorization {
             'username' => 'required',
             'password' => 'required'
         ))) {
-            $this->login_screen(true);
+        	$this->login_screen(true);
             return;
         }
         

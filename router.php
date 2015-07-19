@@ -1,9 +1,18 @@
 <?php
 
 function populateGET(){
+	$_SERVER['REQUEST_URI'] = str_replace('?&','?',$_SERVER['REQUEST_URI']);
+	
     if( strpos($_SERVER['REQUEST_URI'],'?') !== false ){
         $a_query = explode('?',$_SERVER['REQUEST_URI']);
-        $a_query = explode('&',$a_query[1]);
+
+        if( strpos($a_query[1],'&') !== false ){
+        	$a_query = explode('&',$a_query[1]);
+        }
+        else {
+        	$a_query = array($a_query[1]);
+        }
+        
         foreach( $a_query AS $part ){
             $part = explode('=',$part);
             $_GET[$part[0]] = $part[1];
