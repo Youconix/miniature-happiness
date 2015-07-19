@@ -66,7 +66,7 @@
               <fieldset>{name} - {level}</fieldset>
           </block>
           <block {userGroup}>
-              <fieldset>{name} - {level} <img src="{NIV}{style_dir}images/icons/delete.png" alt="{delete}" title="{delete}" class="delete" data-id="{userid}" data-group="{id}" data-level="{levelNr}"></fieldset>
+              <fieldset>{name} - {level} <img src="/{shared_style_dir}images/icons/delete.png" alt="{delete}" title="{delete}" class="delete" data-id="{userid}" data-group="{id}" data-level="{levelNr}"></fieldset>
           </block>
         </article>
         

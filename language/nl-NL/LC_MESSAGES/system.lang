@@ -171,6 +171,7 @@
 			<activated>Geactiveerd</activated>
 			<blocked>Geblokkeerd</blocked>
 			<headerPassword>Wachtwoord opnieuw instellen</headerPassword>
+			<passwordChangeText>Laat leeg om de wachtwoorden hetzelfde te laten</passwordChangeText>
 			<profile>Profiel tekst</profile>
 			<password>Wachtwoord</password>
 			<passwordAgain>Wachtwoord herhalen</passwordAgain>

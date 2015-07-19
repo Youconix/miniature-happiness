@@ -23,12 +23,20 @@ class AdminUserViews extends \core\helpers\Helper {
         $this->groups = $groups;
     }
     
+    /**
+     * Sets the modus
+     * 
+     * @param string $s_modus   The modus (add | view | edit)
+     */
     public function setModus($s_modus){
         if( in_array($s_modus,array('add','view','edit')) ){
             $this->s_modus = $s_modus;
         }
     }
     
+    /**
+     * Creates the view
+     */
     public function run()
     {
         $this->template->set('userid', USERID);
@@ -75,12 +83,14 @@ class AdminUserViews extends \core\helpers\Helper {
         $this->setGroupsEdit();
     }
     
+    /**
+     * Shows the user data
+     */
     private function runView(){
         $this->template->set('blockedHeader', $this->language->get('system/admin/users/blocked'));
         $this->template->set('loggedinHeader', $this->language->get('system/admin/users/loggedIn'));
         $this->template->set('registratedHeader', $this->language->get('system/admin/users/registrated'));
         $this->template->set('activeHeader', $this->language->get('system/admin/users/activated'));
-        $this->template->set('headerText', $this->language->get('system/admin/users/headerView'));
         
         $this->template->set('username', $this->a_data['username']);
         $this->template->set('email', $this->a_data['email']);
@@ -95,6 +105,9 @@ class AdminUserViews extends \core\helpers\Helper {
         $this->template->set('loginAss','Inloggen als');
     }
 
+    /**
+     * Checks de delete option
+     */
     private function checkDeleteOption()
     {
         (USERID == $this->a_data['id']) ? $s_deleteRejected = 'style="color:grey; text-decoration: line-through; cursor:auto"' : $s_deleteRejected = '';
@@ -103,6 +116,9 @@ class AdminUserViews extends \core\helpers\Helper {
         $this->template->set('delete', t('system/buttons/delete'));
     }
     
+    /**
+     * Sets the groups names and permissions
+     */
     protected function setGroupsView(){
         $a_groups = $this->obj_User->getGroups();
         
@@ -116,6 +132,9 @@ class AdminUserViews extends \core\helpers\Helper {
         }
     }
 
+    /**
+     * Sets the groups names, permissions in edit modus
+     */
     protected function setGroupsEdit()
     {
         $a_groups = $this->obj_User->getGroups();
@@ -160,6 +179,9 @@ class AdminUserViews extends \core\helpers\Helper {
         }
     }
     
+    /**
+     * Sets the general text
+     */
     private function headersGeneral(){
         $this->template->set('usernameHeader', $this->language->get('system/admin/users/username'));
         $this->template->set('emailHeader', $this->language->get('system/admin/users/email'));
@@ -172,30 +194,42 @@ class AdminUserViews extends \core\helpers\Helper {
         $this->template->set('yes', $this->language->get('system/admin/users/yes'));
     }
     
+    /**
+     * Sets the add view text
+     */
     private function add(){
-    	$this->template->set('usernameError','De gebruikersnaam is niet ingevuld');
+    	$this->template->set('usernameError',$this->language->get('system/admin/users/js/usernameEmpty'));
     	$this->template->set('saveButton',$this->language->get('system/buttons/save'));
     	
-    	$this->template->set('passwordHeader','Wachtwoord');
-    	$this->template->set('passwordRepeatHeader','Wachtwoord herhalen');
-    	$this->template->set('passwordError','Het wachtwoord is niet ingevuld');
-    	$this->template->set('emailError','Het E-mail adres is niet ingevuld of ongeldig');
+    	$this->template->set('passwordHeader',$this->language->get('system/admin/users/password'));
+    	$this->template->set('passwordRepeatHeader',$this->language->get('system/admin/users/passwordAgain'));
+    	$this->template->set('passwordError',$this->language->get('system/admin/users/js/passwordEmpty'));
+    	$this->template->set('emailError',$this->language->get('system/admin/users/js/emailInvalid'));
     }
     
+    /**
+     * Shows the edit view text
+     */
     private function edit(){
     	if( $this->obj_User->getLoginType() == 'normal' ){
     		$this->template->displayPart('passwords');
     	
-    		$this->template->set('passwordChangeHeader','Wachtwoord veranderen');
-    		$this->template->set('passwordChangeText','Laat leeg om de wachtwoorden hetzelfde te laten');
-    		$this->template->set('passwordHeader','Wachtwoord');
-    		$this->template->set('passwordRepeatHeader','Wachtwoord herhalen');
-    		$this->template->set('passwordError','Het wachtwoord is niet ingevuld');
+    		$this->template->set('passwordChangeHeader',$this->language->get('system/admin/users/headerPassword'));
+    		$this->template->set('passwordChangeText',$this->language->get('system/admin/users/passwordChangeText'));
+    		$this->template->set('passwordHeader',$this->language->get('system/admin/users/password'));
+    	    $this->template->set('passwordRepeatHeader',$this->language->get('system/admin/users/passwordAgain'));
+    		$this->template->set('passwordError',$this->language->get('system/admin/users/js/passwordEmpty'));
     	}
-    	$this->template->set('emailError','Het E-mail adres is niet ingevuld of ongeldig');
-    	$this->template->set('updateButton',$this->language->get('system/buttons/update'));
+    	$this->template->set('emailError',$this->language->get('system/admin/users/js/emailInvalid'));
+    	$this->template->set('updateButton',$this->language->get('system/buttons/edit'));
+    	$this->template->set('headerText',$this->language->get('system/admin/users/headerEdit'));
     }
-    
+
+    /**
+     * Sets the user
+     * 
+     * @param \core\models\data\DataUser $obj_User  The  user
+     */
     public function setData($obj_User)
     {
         $this->obj_User = $obj_User;

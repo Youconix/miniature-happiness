@@ -161,6 +161,7 @@
 			<activated>Activated</activated>
 			<blocked>Blocked</blocked>
 			<headerPassword>Reset password</headerPassword>
+			<passwordChangeText>Leave empty to keep the passwords the same</passwordChangeText>
 			<profile>Profile text</profile>
 			<password>Password</password>
 			<passwordAgain>Repeat password</passwordAgain>
