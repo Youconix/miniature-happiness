@@ -31,6 +31,7 @@ class Groups extends \core\AdminLogicClass
      * @var \core\models\Groups
      */
     private $groups;
+    private $a_systemGroups = array(0,1);
 
     /**
      * Groups constructor

@@ -192,7 +192,7 @@ class Privileges
         $this->headers->http401();
         $this->headers->printHeaders();
         
-        $_GET['command'] = 'index';
+        $_GET['command'] = 'login_screen';
         $_SERVER['SCRIPT_NAME'] = 'authorization/normal.php';
        
         return false;

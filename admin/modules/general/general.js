@@ -68,23 +68,23 @@ var cache = new Cache();
 
 /* Groups */
 function Groups() {
-	this.url = '../modules/general/groups.php';
+	this.url = '../modules/general/groups/';
 }
 Groups.prototype.init = function() {
 	$('#groups tbody tr').each(function() {
 		$(this).click(function() {
 			var id = $(this).data('id');
 			if (id != -1) {
-				admin.show(groups.url + '?command=view&id=' + id, groups.view);
+				admin.show(groups.url + 'view?id=' + id, groups.view);
 			}
 		});
 	});
 
 	$('#groupAddButton').click(function() {
-		admin.show(groups.url + '?command=addScreen', groups.addScreen);
+		admin.show(groups.url + 'addScreen', groups.addScreen);
 	})
 	$('#admin_general_groups_add_group').click(function() {
-		admin.show(groups.url + '?command=addScreen', groups.addScreen);
+		admin.show(groups.url + 'addScreen', groups.addScreen);
 	});
 }
 Groups.prototype.view = function() {
@@ -95,7 +95,7 @@ Groups.prototype.view = function() {
 							var id = $(this).data('id');
 
 							admin.show(
-									users.url + '?command=view&userid=' + id,
+									users.url + '/view?userid=' + id,
 									users.showUserEvents);
 						});
 			});
@@ -107,7 +107,7 @@ Groups.prototype.view = function() {
 					return;
 				}
 
-				admin.show(groups.url + '?command=getGroup&id=' + id,
+				admin.show(groups.url + 'getGroup?id=' + id,
 						groups.showGroup);
 			});
 
@@ -140,8 +140,7 @@ Groups.prototype.deleteItem = function() {
 Groups.prototype.deleteConfirm = function() {
 	var id = $('#groups_edit').data('id');
 
-	$.post(groups.url, {
-		'command' : 'delete',
+	$.post(groups.url+'delete', {
 		'id' : id
 	}, function() {
 		general.showGroups();
@@ -168,8 +167,7 @@ Groups.prototype.edit = function() {
 	;
 
 	data['id'] = $('#id').val();
-	data['command'] = 'edit';
-	$.post(groups.url, data, function() {
+	$.post(groups.url+'edit', data, function() {
 		general.showGroups();
 	});
 }
@@ -189,8 +187,7 @@ Groups.prototype.save = function() {
 	}
 	;
 
-	data['command'] = 'save';
-	$.post(groups.url, data, function() {
+	$.post(groups.url+'save', data, function() {
 		general.showGroups();
 	});
 }

@@ -2,10 +2,22 @@
 namespace core\helpers;
 
 class AdminUserViews extends \core\helpers\Helper {
+    /**
+     * 
+     * @var \Language
+     */
     protected $language;
     
+    /**
+     * 
+     * @var \Output
+     */
     protected $template;
     
+    /**
+     * 
+     * @var \core\models\Groups
+     */
     protected $groups;
     
     protected $s_modus = 'add';
