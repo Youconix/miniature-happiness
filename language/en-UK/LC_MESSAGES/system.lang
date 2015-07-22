@@ -79,6 +79,20 @@
        <settings>Settings</settings>
        <statistics>Statistics</statistics>
     </menu>
+    
+    <general>
+		<pages>
+				<pageTitle>Page controllers</pageTitle>
+				<generalRightsHeader>General access rights</generalRightsHeader>
+				<group>Group</group>
+				<groupDefault>Choose a group</groupDefault>
+				<accessLevel>Minimal accesslevel</accessLevel>
+				<viewRights>View specific rights (optional)</viewRights>
+				<viewRightsDefault>Choose a minimal access right</viewRightsDefault>
+				<editPageTitle>Edit page rights</editPageTitle>
+				<view>View</view>
+			</pages>
+	</general>
 	
 	<admin>
 	   <general>

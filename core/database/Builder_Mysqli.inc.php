@@ -865,7 +865,7 @@ abstract class QueryConditions_Mysqli
      *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
      * @throws DBException the key is invalid
      */
-    public function addOr($a_fields, $a_types, $a_values, $a_keys)
+    public function addOr($a_fields, $a_types, $a_values, $a_keys = array())
     {
         if (! is_array($a_fields)) {
             $a_fields = array(

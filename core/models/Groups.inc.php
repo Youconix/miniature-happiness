@@ -93,7 +93,7 @@ class Groups extends Model
      *
      * @param int $i_groupid
      *            The group ID
-     * @return Data_Group The registrated group
+     * @return \core\models\data\DataGroup The registrated group
      * @throws TypeException if $i_groupid is not a int
      * @throws OutOfBoundsException if the group does not exist
      */

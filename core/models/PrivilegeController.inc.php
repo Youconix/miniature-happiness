@@ -25,9 +25,19 @@ namespace core\models;
 class PrivilegeController extends \core\models\Model
 {
 
-    protected $service_File;
+    /**
+     *
+     * @var \core\services\FileHandler
+     */
+    protected $file;
 
-    protected $a_skipDirs;
+    /**
+     *
+     * @var \Config
+     */
+    protected $config;
+
+    protected $a_skipDirs = array();
 
     /**
      * PHP5 constructor
@@ -36,98 +46,96 @@ class PrivilegeController extends \core\models\Model
      *            The query builder
      * @param \core\services\Validation $service_Validation
      *            The validation service
-     * @param \core\services\File $service_File
+     * @param \core\services\FileHandler $file
      *            The file service
      */
-    public function __construct(\Builder $builder, \core\services\Validation $service_Validation, \core\services\File $service_File)
+    public function __construct(\Builder $builder, \core\services\Validation $service_Validation, \core\services\FileHandler $file, \Config $config)
     {
         parent::__construct($builder, $service_Validation);
         
-        $this->service_File = $service_File;
+        $this->file = $file;
+        $this->config = $config;
         
-        $this->a_skipDirs = array(
-            NIV . DIRECTORY_SEPARATOR . 'core',
-            NIV . DIRECTORY_SEPARATOR . 'emailImages',
-            NIV . DIRECTORY_SEPARATOR . 'emails',
-            NIV . DIRECTORY_SEPARATOR . 'errors',
-            NIV . DIRECTORY_SEPARATOR . 'files',
-            NIV . DIRECTORY_SEPARATOR . 'fonts',
-            NIV . DIRECTORY_SEPARATOR . 'includes',
-            NIV . DIRECTORY_SEPARATOR . 'install',
-            NIV . DIRECTORY_SEPARATOR . 'js',
-            NIV . DIRECTORY_SEPARATOR . 'language',
-            NIV . DIRECTORY_SEPARATOR . 'lib',
-            NIV . DIRECTORY_SEPARATOR . 'openID',
-            NIV . DIRECTORY_SEPARATOR . 'stats',
-            NIV . DIRECTORY_SEPARATOR . 'tests',
-            NIV . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'data',
-            NIV . DIRECTORY_SEPARATOR . 'router.php',
-            NIV . DIRECTORY_SEPARATOR . 'routes.php'
+        $s_root = $_SERVER['DOCUMENT_ROOT'] . $config->getBase();
+        
+        $a_skipDirs = array(
+            '.git',
+            'core',
+            'emailImages',
+            'emails',
+            'files',
+            'fonts',
+            'includes',
+            'install',
+            'images',
+            'js',
+            'language',
+            'vendor',
+            'openID',
+            'stats',
+            'tests',
+            'admin' . DIRECTORY_SEPARATOR . 'data',
+            'styles',
+            'router.php',
+            'routes.php'
+        );
+        foreach ($a_skipDirs as $item) {
+            $this->a_skipDirs[] = $s_root . $item;
+        }
+    }
+
+    /**
+     * Returns all the controlers
+     *
+     * @return array The controllers and the site root
+     */
+    public function getPages()
+    {
+        $s_root = $_SERVER['DOCUMENT_ROOT'];
+        $s_base = $this->config->getBase();
+        $s_root .= $s_base;
+        
+        $a_pages = $this->file->readFilteredDirectory($s_root, $this->a_skipDirs, '\.php');
+        
+        return array(
+            $s_root,
+            $a_pages
         );
     }
 
-    public function getPages()
-    {
-        $a_pages = $this->readDir(NIV);
-        
-        return $a_pages;
-    }
-
-    protected function readDir($s_dir)
-    {
-        $a_filesRaw = $this->service_File->readDirectory($s_dir, false, true);
-        $a_files = array();
-        
-        foreach ($a_filesRaw as $s_file) {
-            if (in_array($s_dir . DIRECTORY_SEPARATOR . $s_file, $this->a_skipDirs))
-                continue;
-            
-            if (is_dir($s_dir . DIRECTORY_SEPARATOR . $s_file)) {
-                $a_dir = $this->readDir($s_dir . DIRECTORY_SEPARATOR . $s_file);
-                
-                if (count($a_dir) > 0) {
-                    $a_files[$s_file] = $a_dir;
-                }
-            } else {
-                if (substr($s_file, - 3) != 'php')
-                    continue;
-                
-                $a_files[] = array(
-                    str_replace(array(
-                        '//',
-                        '../',
-                        './',
-                        '..'
-                    ), array(
-                        '',
-                        '',
-                        '',
-                        ''
-                    ), $s_dir . DIRECTORY_SEPARATOR . $s_file),
-                    $s_file
-                );
-            }
-        }
-        
-        return $a_files;
-    }
-
+    /**
+     * Returns the rights for the given page
+     *
+     * @param string $s_page
+     *            The page
+     * @return array The access rights
+     */
     public function getRightsForPage($s_page)
     {
         $a_rights = array(
             'page' => $s_page,
             'general' => array(
                 'id' => - 1,
-                'groupID' => 1,
-                'minLevel' => - 1
+                'groupID' => - 1,
+                'minLevel' => - 2
             ),
             'commands' => array()
         );
         
         /* Check general rights */
         $this->builder->select('group_pages', '*')
+            ->order('groupID')
             ->getWhere()
-            ->addAnd('page', 's', $s_page);
+            ->addOr(array(
+            'page',
+            'page'
+        ), array(
+            's',
+            's'
+        ), array(
+            $s_page,
+            substr($s_page, 1)
+        ));
         $database = $this->builder->getResult();
         
         if ($database->num_rows() > 0) {
@@ -137,15 +145,16 @@ class PrivilegeController extends \core\models\Model
                 'general' => $a_data[0],
                 'commands' => array()
             );
-            
-            $this->builder->select('group_pages_command', '*')
-                ->getWhere()
-                ->addAnd('page', 's', $s_page);
-            $database = $this->builder->getResult();
-            
-            if ($database->num_rows() > 0) {
-                $a_rights['commands'] = $database->fetch_assoc();
-            }
+        }
+        
+        $this->builder->select('group_pages_command', '*')
+            ->order('groupID')
+            ->getWhere()
+            ->addAnd('page', 's', $s_page);
+        $database = $this->builder->getResult();
+        
+        if ($database->num_rows() > 0) {
+            $a_rights['commands'] = $database->fetch_assoc();
         }
         
         return $a_rights;
@@ -173,8 +182,21 @@ class PrivilegeController extends \core\models\Model
             $i_group,
             $i_rights
         ));
-        $this->builder->getWhere()->addAnd('page', 's', $s_page);
-        $this->builder->getResult();
+        $this->builder->getWhere()->addOr(array(
+            'page',
+            'page'
+        ), array(
+            's',
+            's'
+        ), array(
+            $s_page,
+            substr($s_page, 1)
+        ));
+        $database = $this->builder->getResult();
+        
+        if ($database->affected_rows() == 0) {
+            $this->addPageRights($s_page, $i_rights, $i_group);
+        }
     }
 
     /**
@@ -220,11 +242,29 @@ class PrivilegeController extends \core\models\Model
             $this->builder->transaction();
             
             $this->builder->delete('group_pages');
-            $this->builder->getWhere()->addAnd('page', 's', $s_page);
+            $this->builder->getWhere()->addOr(array(
+                'page',
+                'page'
+            ), array(
+                's',
+                's'
+            ), array(
+                $s_page,
+                substr($s_page, 1)
+            ));
             $this->builder->getResult();
             
             $this->builder->delete('group_pages_command');
-            $this->builder->getWhere()->addAnd('page', 's', $s_page);
+            $this->builder->getWhere()->addOr(array(
+                'page',
+                'page'
+            ), array(
+                's',
+                's'
+            ), array(
+                $s_page,
+                substr($s_page, 1)
+            ));
             $this->builder->getResult();
             
             $this->builder->commit();
@@ -233,11 +273,95 @@ class PrivilegeController extends \core\models\Model
         }
     }
 
-    public function addViewRight($s_page, $s_command, $i_rights)
-    {}
-
-    public function deleteViewRight($s_page, $s_command)
+    /**
+     * Adds the view specific rights
+     *
+     * @param string $s_page
+     *            The URL of the particular page
+     * @param int $i_group
+     *            The group ID
+     * @param string $s_command
+     *            The view name
+     * @param int $i_rights
+     *            The minimal access level
+     * @return int The new ID, -1 on an error
+     */
+    public function addViewRight($s_page, $i_group, $s_command, $i_rights)
     {
-        // Remove from DB
+        try {
+            $this->builder->transaction();
+            
+            $this->builder->select('group_pages_command', 'id')
+                ->getWhere()
+                ->addAnd(array(
+                'page',
+                'command',
+                'groupID'
+            ), array(
+                's',
+                's',
+                'i'
+            ), array(
+                $s_page,
+                $s_command,
+                $i_group
+            ));
+            $database = $this->builder->getResult();
+            if ($database->num_rows() > 0) {
+                $i_id = $database->result(0, 'id');
+                $this->builder->update('group_pages_command', 'minLevel', 'i', $i_rights);
+                $this->builder->getWhere()->addAnd(array(
+                    'page',
+                    'command'
+                ), array(
+                    's',
+                    's'
+                ), array(
+                    $s_page,
+                    $s_command
+                ));
+                $this->builder->getResult();
+            } else {
+                $this->builder->insert('group_pages_command', array(
+                    'page',
+                    'command',
+                    'minLevel',
+                    'groupID'
+                ), array(
+                    's',
+                    's',
+                    'i',
+                    'i'
+                ), array(
+                    $s_page,
+                    $s_command,
+                    $i_rights,
+                    $i_group
+                ));
+                $database = $this->builder->getResult();
+                $i_id = $database->getId();
+            }
+            
+            $this->builder->commit();
+            
+            return $i_id;
+        } catch (\DBException $e) {
+            $this->builder->rollback();
+            return - 1;
+        }
+    }
+
+    /**
+     * Deletes the view specific rights
+     *
+     * @param int $i_id
+     *            The rights ID
+     */
+    public function deleteViewRight($i_id)
+    {
+        $this->builder->delete('group_pages_command')
+            ->getWhere()
+            ->addAnd('id', 'i', $i_id);
+        $this->builder->getResult();
     }
 }

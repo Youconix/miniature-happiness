@@ -414,7 +414,8 @@ var modules = new Modules();
 
 /* Page rights */
 function PageRights() {
-	this.address = '../../admin/modules/general/pages.php';
+	this.address = '../../admin/modules/general/pages/';
+	this.viewID = -1;
 }
 PageRights.prototype.init = function() {
 	$('body').click(function() {
@@ -488,7 +489,7 @@ PageRights.prototype.createNewPage = function() {
 PageRights.prototype.visitPage = function() {
 	var page = $('#page_menu').data('url');
 
-	location.href = "../../../" + page;
+	location.href = "/" + page;
 }
 PageRights.prototype.deletePage = function() {
 	var page = $('#page_menu').data('url');
@@ -511,14 +512,13 @@ PageRights.prototype.deletePageConfirm = function() {
 		page = $('#pages').data('url');
 	}
 
-	/*
-	 * $.post(pageRights.address,{'command':'delete','url':page},function(){
-	 * general.showPageRights(); });
-	 */
+	$.post(pageRights.address+"delete",{'url':page},function(){
+		general.showPageRights();
+	});
 }
 PageRights.prototype.loadRights = function(item) {
 	var link = item.data('url');
-	admin.show(pageRights.address + '?command=view&url=' + link,
+	admin.show(pageRights.address + 'view?url=' + link,
 			pageRights.loadRightsCallback);
 }
 PageRights.prototype.loadRightsCallback = function() {
@@ -526,32 +526,130 @@ PageRights.prototype.loadRightsCallback = function() {
 		general.showPageRights();
 	});
 	$('#pages_update').click(function() {
-		general.edit();
+		pageRights.edit();
 	});
-	$('#pages_delete').click(
-			function() {
-				var page = $('#pages').data('url');
+	$('#pages_delete').click(function() {
+		var page = $('#pages').data('url');
 
-				var height = 250;
+		var height = 250;
+		confirmBox.init(height, pageRights.deletePageConfirm);
+		confirmBox.show('Pagina verwijderen', 'Weet je zeker dat je '
+			+ page + ' wilt verwijderen?');
+	});
+	
+	$('#pages_template_add').click(function(){
+		pageRights.editView();
+	});
 
-				confirmBox.init(height, pageRights.deletePageConfirm);
-				confirmBox.show('Pagina verwijderen', 'Weet je zeker dat je '
-						+ page + ' wilt verwijderen?');
-			})
+	$('#pages_reset').click(function(){
+		var url = $('#pages').data('url');
+		
+		$('#pages_group').removeProp('selected').find('option:first').prop('selected','selected');
+		$('#pages_accesslevel').removeProp('selected').find('option:first').prop('selected','selected');
+		$.post(pageRights.address+"reset",{"url":url});
+	});
+	pageRights.viewRights();
 }
 PageRights.prototype.edit = function() {
+	$('#pages_group').removeClass('invalid');
+	$('#pages_accesslevel').removeClass('invalid');
+	
 	var rights = $('#pages_accesslevel').val();
 	var group = $('#pages_group').val();
 	var url = $('#pages').data('url');
+	
+	var errors = false;
+	if( group == '' ){
+		$('#pages_group').addClass('invalid');
+		errors = true;
+	}
+	if( rights == '' ){
+		$('#pages_accesslevel').addClass('invalid');
+		errors = true;
+	}
+	
+	if( errors ){
+		return;
+	}
 
-	$.post(this.address, {
-		'command' : 'edit',
+	$.post(this.address+'edit', {
 		'url' : url,
 		'rights' : rights,
 		'group' : group
 	}, function() {
 		general.showPageRights();
 	});
+}
+PageRights.prototype.editView = function(){
+	var rights = $('#template_level').val();
+	var url = $('#pages').data('url');
+	var view = $('#view_name').val();
+	var group = $('#viewGroups').val();
+	
+	errors = false;
+	var fields = new Array('view_name','template_level','viewGroups');
+	var i;
+	for( i in fields ){
+		$('#'+fields[i]).removeClass('invalid');
+		if( $.trim($('#'+fields[i]).val()) == '' ){
+			$('#'+fields[i]).addClass('invalid');
+			errors = true;
+		}
+	}
+	if( errors ){
+		return;
+	}
+	
+	$('#pages_group').removeProp('selected').find('option:first').prop('selected','selected');
+	$('#pages_accesslevel').removeProp('selected').find('option:first').prop('selected','selected');
+
+	$.post(this.address+'addView', {
+		'url' : url,
+		'rights' : rights,
+		'group' : group,
+		'view' : view
+	}, function(response) {
+		response = JSON.parse(response);
+		if( response['id'] == -1 ){
+			return;
+		}
+		
+		var style_dir = $('#right_list').data('styledir');
+		
+		$('#right_list tbody').append('<tr data-template="'+response['command']+'" data-id="'+response['id']+'" id="view_'+response['id']+'"> '+
+		'	<td style="width:50px"><img src="'+style_dir+'/images/icons/delete.png" alt="'+response['deleteText']+'" title="'+response['deleteText']+'"></td> '+
+		'	<td>'+response['command']+'</td>'+
+		'	<td>'+response['group']+'</td>'+
+		'	<td>'+response['level']+'</td>'+
+	    '    </tr>');
+		
+		pageRights.viewRights();
+	});
+}
+PageRights.prototype.viewRights	= function(){
+	$('#right_list tbody img').each(function(){
+		$(this).off('click');
+	});
+	$('#right_list tbody img').each(function(){
+		$(this).click(function(){
+			var item = $(this);
+			pageRights.deleteView(item);
+		});
+	});
+}
+PageRights.prototype.deleteView = function(item){
+	var id = item.parent().parent().data('id');
+	var template = item.parent().parent().data('template');
+	pageRights.viewID  = id;
+	var height = 250;
+	confirmBox.init(height, pageRights.deleteViewConfirm);
+	confirmBox.show('Pagina verwijderen', 'Weet je zeker dat je '
+		+ template + ' wilt verwijderen?');
+}
+PageRights.prototype.deleteViewConfirm = function(){
+	id = pageRights.viewID;
+	$('#view_'+id).remove();
+	$.post(pageRights.address+'deleteView',{'id':id});
 }
 
 var pageRights = new PageRights();

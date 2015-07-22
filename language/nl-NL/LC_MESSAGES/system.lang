@@ -84,18 +84,32 @@
 	   <statistics>Statistieken</statistics>
 	</menu>
 	
+	<general>
+		<pages>
+				<pageTitle>Pagina controllers</pageTitle>
+				<generalRightsHeader>Algemene toegangsrechten</generalRightsHeader>
+				<group>Groep</group>
+				<groupDefault>Kies een groep</groupDefault>
+				<accessLevel>Minimaal toegangslevel</accessLevel>
+				<viewRights>View specifieke rechten (optioneel)</viewRights>
+				<viewRightsDefault>Kies een minimaal toegangslevel</viewRightsDefault>
+				<editPageTitle>Pagina rechten bewerken</editPageTitle>
+				<view>View</view>
+			</pages>
+	</general>
+	
 	<admin>
-	   <general>
-	       <users>Gebruikers</users>
-	       <groups>Groepen</groups>
-	       <page_rights>Pagina rechten</page_rights>
-	       <logs>Logs</logs>
-	       <updates>Updates</updates>
-	       <backup>Backup</backup>
-	       <maintenance>Onderhoud</maintenance>
-	       <cache>Cache</cache>
-	       <modules>Modules</modules>
-	   </general>
+		<general>
+			<users>Gebruikers</users>
+			<groups>Groepen</groups>
+			<page_rights>Pagina rechten</page_rights>
+			<logs>Logs</logs>
+			<updates>Updates</updates>
+			<backup>Backup</backup>
+			<maintenance>Onderhoud</maintenance>
+			<cache>Cache</cache>
+			<modules>Modules</modules>
+		</general>
 	   <modules>
 	       <moduleTitle>Modules</moduleTitle>
 	       <headerName>Module</headerName>

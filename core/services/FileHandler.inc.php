@@ -12,11 +12,39 @@ class FileHandler extends \core\services\Service
     public function readRecursiveDirectory($s_directory){
         \core\Memory::type('string', $s_directory);
         
-        return new \RecursiveDirectoryIterator($s_directory);
+        $directory = new \RecursiveDirectoryIterator($s_directory,\RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator($directory);
+        return $iterator;
     }
     
     public function directoryFilterName(\DirectoryIterator $directory, $a_names = array()){
         return new \core\classes\DirectoryFilterIteractor($directory,$a_names);
+    }
+    
+    public function recursiveDirectoryFilterName(\RecursiveIteratorIterator $directory, $s_filter){
+        echo($s_filter);
+        return new \RegexIterator($directory, $s_filter,\RegexIterator::MATCH);
+    }
+    
+    public function readFilteredDirectory($s_directory,$a_skipDirs = array(),$s_extension = ''){
+        $a_dirs = array();
+        $directory = $this->readDirectory($s_directory);
+        foreach($directory AS $item){
+            if($item->isDot()) continue;
+            
+            if( in_array($item->getPathname(),$a_skipDirs) )    continue;
+                        
+            if( $item->isDir() ){
+                $a_dirs[$item->getBasename()] = $this->readFilteredDirectory($item->getPathname(),$a_skipDirs,$s_extension);
+                continue;
+            }
+            
+            if( !empty($s_extension) && !preg_match('/'.$s_extension.'$/', $item->getBasename())) continue;
+            
+            $a_dirs[] = clone $item;
+        }
+        
+        return $a_dirs;
     }
     
     /**

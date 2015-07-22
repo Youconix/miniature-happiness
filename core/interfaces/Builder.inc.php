@@ -296,7 +296,7 @@ interface Where
 	 *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
 	 * @throws DBException the key is invalid
 	*/
-	public function addAnd($a_fields, $a_types, $a_values, $a_keys);
+	public function addAnd($a_fields, $a_types, $a_values, $a_keys = array());
 
 	/**
 	 * Adds fields with an or relation
@@ -311,7 +311,7 @@ interface Where
 	 *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
 	 * @throws DBException the key is invalid
 	*/
-	public function addOr($a_fields, $a_types, $a_values, $a_keys);
+	public function addOr($a_fields, $a_types, $a_values, $a_keys = array());
 
 	/**
 	 * Starts a sub where part

@@ -298,3 +298,9 @@ width
 #admin_general_backup h2 {
 	background-position: 0 0px;
 }
+
+#currentViewRights div {
+	width:47%;
+	float:left;
+	margin-right:1.48%;
+}

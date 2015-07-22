@@ -1,0 +1,1 @@
+{"command":"{view}","group":"{group}","id":{id}, "level":"{level}","deleteText":"{deleteText}"}

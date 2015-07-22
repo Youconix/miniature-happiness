@@ -533,7 +533,7 @@ class Mysqli implements \DAL {
 			throw new \DBException ( "Can not start new transaction. Call commit() or rollback() first." );
 		}
 		
-		$this->query ( "START TRANSACTION" );
+		$this->obj_connection->query("START TRANSACTION" );
 		$this->bo_transaction = true;
 	}
 	
@@ -547,7 +547,7 @@ class Mysqli implements \DAL {
 			throw new \DBException ( "Can not commit transaction. Call transaction() first." );
 		}
 		
-		$this->query ( "COMMIT" );
+		$this->obj_connection->query ( "COMMIT" );
 		$this->bo_transaction = false;
 	}
 	
@@ -561,7 +561,7 @@ class Mysqli implements \DAL {
 			throw new \DBException ( "Can not rollback transaction. Call transaction() first." );
 		}
 		
-		$this->query ( "ROLLBACK" );
+		$this->obj_connection->query ( "ROLLBACK" );
 		$this->bo_transaction = false;
 	}
 	
