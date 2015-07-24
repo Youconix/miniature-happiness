@@ -13,7 +13,7 @@ class testData_Group extends \tests\GeneralTest
     {
         parent::__construct();
         
-        require_once (NIV . 'core/models/data/DataGroup.inc.php');
+        require_once (NIV . 'core/models/data/Group.inc.php');
     }
 
     public function setUp()
@@ -29,7 +29,7 @@ class testData_Group extends \tests\GeneralTest
         $this->i_default = 1;
         $this->s_description = 'test group';
         
-        $this->model_Group = new \core\models\data\DataGroup($service_Builder, $service_Validation);
+        $this->model_Group = new \core\models\data\Group($service_Builder, $service_Validation);
     }
 
     public function tearDown()

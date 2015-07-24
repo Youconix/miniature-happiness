@@ -34,8 +34,8 @@ class testSession extends \tests\GeneralTest
     {
         parent::setUp();
         $this->service_Database = new \tests\stubs\database\DAL();
-        $model_DataGroups = new \tests\stubs\models\data\ModelGroupData();
-        $this->model_Groups = new \tests\stubs\models\Groups($model_DataGroups);
+        $model_groups = new \tests\stubs\models\data\ModelGroup();
+        $this->model_Groups = new \tests\stubs\models\Groups($model_groups);
         $service_Database = new \tests\stubs\services\QueryBuilder($this->service_Database);
 
         $this->service_Session = new \core\services\Session($this->service_Settings, $service_Database, $this->model_Groups);

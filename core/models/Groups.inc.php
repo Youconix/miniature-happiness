@@ -32,7 +32,7 @@ class Groups extends Model
 
     /**
      * 
-     * @var \core\models\data\DataGroup
+     * @var \core\models\data\Group
      */
     protected $group;
     
@@ -49,10 +49,10 @@ class Groups extends Model
      *
      * @param \Builder $builder
      * @param \Validation $validation
-     * @param \core\models\data\DataGroup $group
+     * @param \core\models\data\Group $group
      * @param \Config $config
      */
-    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\DataGroup $group, \Config $config)
+    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\Group $group, \Config $config)
     {
         parent::__construct($builder, $validation);
         
@@ -93,7 +93,7 @@ class Groups extends Model
      *
      * @param int $i_groupid
      *            The group ID
-     * @return \core\models\data\DataGroup The registrated group
+     * @return \core\models\data\Group The registrated group
      * @throws TypeException if $i_groupid is not a int
      * @throws OutOfBoundsException if the group does not exist
      */

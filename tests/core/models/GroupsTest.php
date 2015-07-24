@@ -105,7 +105,7 @@ class testGroups extends \tests\GeneralTest
      */
     public function generateGroup()
     {
-        $this->assertInstanceOf('\core\models\data\DataGroup', $this->model_Groups->generateGroup());
+        $this->assertInstanceOf('\core\models\data\Group', $this->model_Groups->generateGroup());
     }
 
     /**

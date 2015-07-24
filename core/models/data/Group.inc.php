@@ -24,7 +24,7 @@ namespace core\models\data;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class DataGroup extends \core\models\Model
+class Group extends \core\models\Model
 {
 
     private $i_id;

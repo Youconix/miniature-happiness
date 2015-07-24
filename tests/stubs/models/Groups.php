@@ -4,9 +4,9 @@ namespace tests\stubs\models;
 class Groups extends \core\models\Groups
 {
 
-    public function __construct(\core\models\data\DataGroup $model_DataGroup)
+    public function __construct(\core\models\data\Group $model_group)
     {
-        $this->model_DataGroup = $model_DataGroup;
+        $this->group = $model_group;
     }
 
     /**
