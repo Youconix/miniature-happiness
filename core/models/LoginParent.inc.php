@@ -210,46 +210,15 @@ abstract class LoginParent extends Model
 
     /**
      * Logs the user in
+     * @param \core\models\data\User $user  The user to log in. 
      */
-    public function do_login($a_data,$bo_autologin)
+    protected function perform_login(\core\models\data\User $user)
     {
-        $user = $this->user->createUser();
-        $user->setData($a_data);
-        
         if ($user->isBot() || ! $user->isEnabled() || $user->isBlocked()) {
             return;
         }
         $this->clearLoginTries();
         $this->loginLog($user->getUsername(), 'success', $this->i_tries);
-        
-        if ($bo_autologin) {
-            /* Set auto login for the next time */
-            $this->builder->delete('autologin')
-                ->getWhere()
-                ->addAnd('userID', 'i', $user->getID());
-            $this->builder->getResult();
-            
-            $this->builder->insert('autologin', array(
-                'userID',
-                'username',
-                'type',
-                'IP'
-            ), array(
-                'i',
-                's',
-                's',
-                's'
-            ), array(
-                $user->getID(),
-                $user->getUsername(),
-                $user->getLoginType(),
-                $_SERVER['REMOTE_ADDR']
-            ));
-            $service_Database = $this->builder->getResult();
-            
-            $s_fingerprint = $this->session->getFingerprint();
-            $this->cookie->set('autologin', $s_fingerprint . ';' . $service_Database->getID(), '/');
-        }
         
         if ( $user->isPasswordExpired() ) {
             /* Password is expired */
@@ -264,9 +233,9 @@ abstract class LoginParent extends Model
     /**
      * Sets the login session and redirects to the given page or the set default
      *
-     * @param \core\models\data\DataUser $user  The user
+     * @param \core\models\data\User $user  The user
      */
-    public function setLogin(\core\models\data\DataUser $user)
+    public function setLogin(\core\models\data\User $user)
     {
         $s_redirection = $this->config->getLoginRedirect();
     
@@ -323,7 +292,7 @@ abstract class LoginParent extends Model
      *
      * @param int $i_id
      *            auto login ID
-     * @return \data\models\data\DataUser if the login is correct, otherwise null
+     * @return \data\models\data\User if the login is correct, otherwise null
      */
     protected function performAutoLogin($i_id)
     {
@@ -467,5 +436,35 @@ abstract class LoginParent extends Model
     	$this->logs->info($s_log, array(
     			'type' => 'login'
     	));
+    }
+    
+    protected function setAutoLogin(\core\models\data\User $user) {
+        
+            /* Set auto login for the next time */
+            $this->builder->delete('autologin')
+            ->getWhere()
+            ->addAnd('userID', 'i', $user->getID());
+            $this->builder->getResult();
+        
+            $this->builder->insert('autologin', array(
+                'userID',
+                'username',
+                'type',
+                'IP'
+            ), array(
+                'i',
+                's',
+                's',
+                's'
+            ), array(
+                $user->getID(),
+                $user->getUsername(),
+                $user->getLoginType(),
+                $_SERVER['REMOTE_ADDR']
+            ));
+            $service_Database = $this->builder->getResult();
+        
+            $s_fingerprint = $this->session->getFingerprint();
+            $this->cookie->set('autologin', $s_fingerprint . ';' . $service_Database->getID(), '/');
     }
 }

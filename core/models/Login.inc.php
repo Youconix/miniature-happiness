@@ -136,8 +136,12 @@ class Login extends LoginParent
         }
         
         $a_data = $service_Database->fetch_assoc();
-        
-        return parent::do_login($a_data[0], $bo_autologin);
+        $user = $this->user->createUser();
+        $user->setData($a_data[0]);
+        if( $bo_autologin ){
+            $this->setAutoLogin($user);
+        }
+        return parent::perform_login($user);
     }
 
     /**
@@ -439,10 +443,10 @@ class Login extends LoginParent
     /**
      * Sends the activation email
      *
-     * @param \core\models\data\DataUser $user            
+     * @param \core\models\data\User $user            
      * @throws \RuntimeException If the sending of the email failes
      */
-    private function sendActivationEmail(\core\models\data\DataUser $user)
+    private function sendActivationEmail(\core\models\data\User $user)
     {
         if (! $this->mailer->registrationMail($user->getUsername(), $user->getEmail(), $user->getActivation())) {
             throw new \RuntimeException("Sending registration mail to '.$user->getEmail().' failed.");

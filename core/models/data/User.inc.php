@@ -388,8 +388,10 @@ class User extends \core\models\Model
     
         if( empty($a_data[0]['salt']) ){
             $s_salt = $this->hashing->createSalt();
-            $this->builder->update('users', 'salt', 's',$a_data[0]['salt'])->getWhere('id','i',$a_data[0]['id']);
+            $this->builder->update('users', 'salt', 's',$s_salt)->getWhere('id','i',$a_data[0]['id']);
             $this->builder->getResult();
+            
+            return $s_salt;
         }
     
         return $a_data[0]['salt'];
