@@ -24,7 +24,7 @@ class AdminUserViews extends \core\helpers\Helper {
     
     /**
      * 
-     * @var \core\models\data\DataUser
+     * @var \core\models\data\User
      */
     protected $obj_User;
     
@@ -240,7 +240,7 @@ class AdminUserViews extends \core\helpers\Helper {
     /**
      * Sets the user
      * 
-     * @param \core\models\data\DataUser $obj_User  The  user
+     * @param \core\models\data\User $obj_User  The  user
      */
     public function setData($obj_User)
     {

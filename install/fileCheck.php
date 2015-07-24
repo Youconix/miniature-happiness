@@ -353,9 +353,9 @@ class FileCheck
         }
         
         $a_files = array(
-            'DataGroup',
+            'Group',
             'DataPM',
-            'DataUser'
+            'User'
         );
         $a_filesUser = array();
         

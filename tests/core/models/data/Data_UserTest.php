@@ -15,7 +15,7 @@ class testDataUser extends \tests\GeneralTest
         parent::__construct();
         
         require_once (NIV . 'core/models/GeneralUser.inc.php');
-        require_once (NIV . 'core/models/data/DataUser.inc.php');
+        require_once (NIV . 'core/models/data/User.inc.php');
     }
 
     public function setUp()
@@ -31,7 +31,7 @@ class testDataUser extends \tests\GeneralTest
         $service_Hashing = new \tests\stubs\services\Hashing();
         
         $this->i_userid = 0;
-        $this->obj_User = new \core\models\data\DataUser($service_Builder, $service_Security, $service_Hashing, $model_Groups, $service_Language);
+        $this->obj_User = new \core\models\data\User($service_Builder, $service_Security, $service_Hashing, $model_Groups, $service_Language);
     }
 
     public function tearDown()

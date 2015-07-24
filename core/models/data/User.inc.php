@@ -24,7 +24,7 @@ namespace core\models\data;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-class DataUser extends \core\models\Model
+class User extends \core\models\Model
 {
 
     /**

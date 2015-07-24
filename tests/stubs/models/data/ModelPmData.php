@@ -29,7 +29,7 @@ class ModelPmData extends \core\models\data\DataPM
     /**
      * Returns the sender
      *
-     * @return DataUser The sender
+     * @return User The sender
      */
     public function getSender()
     {

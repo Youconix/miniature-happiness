@@ -37,7 +37,7 @@ class DataPM extends \core\models\Model
 
     /**
      * 
-     * @var \core\models\data\DataUser
+     * @var \core\models\data\User
      */
     protected $obj_sender;
 
@@ -146,7 +146,7 @@ class DataPM extends \core\models\Model
     /**
      * Returns the sender
      *
-     * @return \core\models\data\DataUser The sender
+     * @return \core\models\data\User The sender
      */
     public function getSender()
     {

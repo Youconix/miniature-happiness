@@ -1,7 +1,7 @@
 <?php
 namespace tests\stubs\models\data;
 
-class ModelUserData extends \core\models\data\DataUser
+class User extends \core\models\data\User
 {
 
     public $i_userid;

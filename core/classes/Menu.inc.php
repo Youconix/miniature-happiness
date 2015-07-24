@@ -40,7 +40,7 @@ class Menu implements \Menu
 
     /**
      *
-     * @var \core\models\data\DataUser
+     * @var \core\models\data\User
      */
     protected $user;
 

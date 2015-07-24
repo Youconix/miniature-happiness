@@ -31,7 +31,7 @@ class User extends \core\models\Model
 
     /**
      * 
-     * @var \core\models\data\DataUser
+     * @var \core\models\data\User
      */
     protected $userData;
 
@@ -40,9 +40,9 @@ class User extends \core\models\Model
      *
      * @param \Builder $builder
      * @param \Validation $validation
-     * @param \core\models\data\DataUser $userData
+     * @param \core\models\data\User $userData
      */
-    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\DataUser $userData)
+    public function __construct(\Builder $builder, \Validation $validation, \core\models\data\User $userData)
     {
         parent::__construct($builder,$validation);
         
@@ -65,7 +65,7 @@ class User extends \core\models\Model
      *
      * @param array $a_userid
      *            Array from user IDs
-     * @return DataUser-array The data objects
+     * @return User array The data objects
      */
     public function getUsersById($a_userid)
     {
@@ -102,7 +102,7 @@ class User extends \core\models\Model
      *
      * @param int $i_userid
      *            The userid, leave empty for logged in user
-     * @return \core\models\data\DataUser The user object of a empty data object if the user is not logged in
+     * @return \core\models\data\User The user object of a empty data object if the user is not logged in
      * @throws DBException If the userid is invalid
      */
     public function get($i_userid = -1)
@@ -247,7 +247,7 @@ class User extends \core\models\Model
     /**
      * Returns the user salt 
      * 
-     * @see \core\models\data\DataUser::getSalt()
+     * @see \core\models\data\User::getSalt()
      * @param string $s_username    The username
      * @param string $s_loginType   The login type
      * @return NULL|string  The salt if the user exists
@@ -306,7 +306,7 @@ class User extends \core\models\Model
     /**
      * Creates a new user object
      *
-     * @return \core\models\data\DataUser The user object
+     * @return \core\models\data\User The user object
      */
     public function createUser()
     {

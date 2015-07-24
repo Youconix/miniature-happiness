@@ -59,14 +59,14 @@ class PM extends Model
     /**
      * Sends a message from system
      *
-     * @param \core\models\data\DataUser $obj_receiver            
+     * @param \core\models\data\User $obj_receiver            
      * @param String $s_title
      *            The title of the message
      * @param String $s_message
      *            The content of the message
      * @return int The new message ID
      */
-    public function sendSystemMessage(\core\models\data\DataUser $obj_receiver, $s_title, $s_message)
+    public function sendSystemMessage(\core\models\data\User $obj_receiver, $s_title, $s_message)
     {
         \core\Memory::type('string', $s_title);
         \core\Memory::type('string', $s_message);
@@ -90,7 +90,7 @@ class PM extends Model
     /**
      * Sends a message
      *
-     * @param \core\models\data\DataUser $obj_receiver            
+     * @param \core\models\data\User $obj_receiver            
      * @param String $s_title
      *            The title of the message
      * @param String $s_message
@@ -99,7 +99,7 @@ class PM extends Model
      *            ID, default current user
      * @return int The new message ID
      */
-    public function sendMessage(\core\models\data\DataUser $obj_receiver, $s_title, $s_message, $i_sender = -1)
+    public function sendMessage(\core\models\data\User $obj_receiver, $s_title, $s_message, $i_sender = -1)
     {
         \core\Memory::type('string', $s_title);
         \core\Memory::type('string', $s_message);

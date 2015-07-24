@@ -56,7 +56,7 @@ class testData_PM extends \tests\GeneralTest
     public function setSender()
     {
         $this->model_PM->setSender($this->i_sender);
-        $this->assertInstanceOf('\core\models\data\DataUser', $this->model_PM->getSender());
+        $this->assertInstanceOf('\core\models\data\User', $this->model_PM->getSender());
         $this->assertEquals($this->i_sender, $this->model_PM->getSender()
             ->getID());
     }

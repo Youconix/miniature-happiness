@@ -270,11 +270,11 @@ class Mailer extends Service
     /**
      * Sends the personal message notification email
      *
-     * @param \core\models\data\DataUser $obj_receiver
+     * @param \core\models\data\User $obj_receiver
      *            The receiver
      * @return Boolean True if the email is send
      */
-    public function PM(\core\models\data\DataUser $obj_receiver)
+    public function PM(\core\models\data\User $obj_receiver)
     {
         $s_email = $obj_receiver->getEmail();
         $s_username = $obj_receiver->getUsername();
