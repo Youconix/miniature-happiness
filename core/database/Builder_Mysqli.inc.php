@@ -694,7 +694,7 @@ class Builder_Mysqli implements \Builder
         $sql = '';
         
         /* Remove constrains */
-        $this->service_Database->query("SELECT table_name,column_name,referenced_table_name,referenced_column_name,contraint_name 
+        $this->service_Database->query("SELECT table_name,column_name,referenced_table_name,referenced_column_name,constraint_name 
             FROM  information_schema.key_column_usage WHERE
             referenced_table_name is not null
             and table_schema = '" . $this->service_Database->getDatabase() . "'");
@@ -703,17 +703,20 @@ class Builder_Mysqli implements \Builder
         if ($this->service_Database->num_rows() > 0) {
             $a_contrains = $this->service_Database->fetch_assoc();
             
-            foreach ($a_contrains as $a_contrain) {
+            foreach ($a_contrains as $a_constrain) {
                 $sql .= 'ALTER TABLE ' . $a_constrain['table_name'] . ' IF EXISTS DROP FOREIGN KEY ' . $a_constrain['constraint_name'] . ';';
             }
             $sql .= "\n-- --------------------------\n";
         }
         
-        $a_tables = $this->showTables();
+        $this->service_Database->query('SHOW TABLES');
+        $a_tables = $this->service_Database->fetch_row();
         foreach ($a_tables as $s_table) {
+        	$s_table = str_replace(DB_PREFIX, '', $s_table);
+        	
             $service_Database = $this->getDatabase();
             
-            $sql .= $this->dumpTable($s_table);
+            $sql .= $this->dumpTable($s_table[0]);
             $sql .= "\n";
             $sql .= "-- ---------------------------\n\n";
         }
@@ -734,15 +737,15 @@ class Builder_Mysqli implements \Builder
     protected function dumpTable($s_table)
     {
         /* Table structure */
-        $s_sql . "--\n" . '-- Table structure for table ' . $s_table . ".\n--\n";
-        $s_structure = $this->service_Database->describe($s_table, false, true);
+        $s_sql = "--\n" . '-- Table structure for table ' . DB_PREFIX.$s_table . ".\n--\n";
+        $s_structure = $this->service_Database->describe(DB_PREFIX.$s_table, false, true);
         
         /* Table content */
         $this->select($s_table, '*');
         $database = $this->getResult();
         
         /* Get colums */
-        $s_sql .= "--\n" . '-- Dumping data for table ' . $s_table . ".\n--\n";
+        $s_sql .= "--\n" . '-- Dumping data for table ' . DB_PREFIX.$s_table . ".\n--\n";
         if ($database->num_rows() == 0) {
             return $s_sql;
         }
@@ -790,7 +793,9 @@ abstract class QueryConditions_Mysqli
         '>' => '>',
         'LIKE' => 'LIKE',
         'IN' => 'IN',
-        'BETWEEN' => 'BETWEEN'
+        'BETWEEN' => 'BETWEEN',
+    	'<=' => '<=',
+    	'>=' => '>='
     );
 
     /**
@@ -813,7 +818,7 @@ abstract class QueryConditions_Mysqli
      * @param array $a_values
      *            also accepts a single value
      * @param array $a_keys
-     *            (=|<>|<|>|LIKE|IN|BETWEEN), also accepts a single value. leave empty for =
+     *            (=|<>|<|>|LIKE|IN|BETWEEN|>=|<=), also accepts a single value. leave empty for =
      * @throws DBException the key is invalid
      */
     public function addAnd($a_fields, $a_types, $a_values, $a_keys = array())
