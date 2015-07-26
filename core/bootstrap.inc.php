@@ -63,7 +63,12 @@ interface Routable
 /**
  * Start framework
  */
-require_once (NIV . 'core/Memory.php');
+if( file_exists(NIV.'files'.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'Memory.php') ){
+	require_once(NIV.'files'.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'Memory.php');	
+}
+else {
+	require_once (NIV . 'core'.DIRECTORY_SEPARATOR.'Memory.php');
+}
 \core\Memory::startUp();
 
 /* Check login */

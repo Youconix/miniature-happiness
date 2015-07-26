@@ -88,13 +88,17 @@ class Memory
         if (! is_null(Memory::$a_cache)) {
             return;
         }
+
+        if( !defined('DS') ){
+        	define('DS',DIRECTORY_SEPARATOR);
+        }
         
         try {
             if (! defined('DATA_DIR')) {
                 if (Memory::$bo_testing) {
-                    define('DATA_DIR', NIV . 'admin/data/tests/');
+                    define('DATA_DIR', NIV . 'admin'.DS.'data'.DS.'tests'.DS);
                 } else {
-                    define('DATA_DIR', NIV . 'admin/data/');
+                    define('DATA_DIR', NIV . 'admin'.DS.'data'.DS);
                 }
             }
             
@@ -102,72 +106,75 @@ class Memory
             Memory::$a_cache = array();
             
             Memory::$a_service = array(
-                'systemPath' => NIV . 'core/services/',
-                'userPath' => NIV . 'includes/services/',
+                'systemPath' => NIV . 'core'.DS.'services'.DS,
+                'userPath' => NIV . 'includes'.DS.'services'.DS,
                 'systemNamespace' => '\core\services\\',
                 'userNamespace' => '\includes\services\\'
             );
             Memory::$a_serviceData = array(
-                'systemPath' => NIV . 'core/services/data/',
-                'userPath' => NIV . 'includes/services/data/',
+                'systemPath' => NIV . 'core'.DS.'services'.DS.'data'.DS,
+                'userPath' => NIV . 'includes'.DS.'services'.DS.'data'.DS,
                 'systemNamespace' => '\core\services\data\\',
                 'userNamespace' => '\includes\services\data\\'
             );
             Memory::$a_model = array(
-                'systemPath' => NIV . 'core/models/',
-                'userPath' => NIV . 'includes/models/',
+                'systemPath' => NIV . 'core'.DS.'models'.DS,
+                'userPath' => NIV . 'includes'.DS.'models'.DS,
                 'systemNamespace' => '\core\models\\',
                 'userNamespace' => '\includes\models\\'
             );
             Memory::$a_modelData = array(
-                'systemPath' => NIV . 'core/models/data/',
-                'userPath' => NIV . 'includes/models/data/',
+                'systemPath' => NIV . 'core'.DS.'models'.DS.'data'.DS,
+                'userPath' => NIV . 'includes'.DS.'models'.DS.'data'.DS,
                 'systemNamespace' => '\core\models\data\\',
                 'userNamespace' => '\includes\models\data\\'
             );
             Memory::$a_helper = array(
-                'systemPath' => NIV . 'core/helpers/',
-                'userPath' => NIV . 'includes/helpers/',
+                'systemPath' => NIV . 'core'.DS.'helpers'.DS,
+                'userPath' => NIV . 'includes'.DS.'helpers'.DS,
                 'systemNamespace' => '\core\helpers\\',
                 'userNamespace' => '\includes\helpers\\'
             );
             Memory::$a_helperData = array(
-                'systemPath' => NIV . 'core/helpers/data/',
-                'userPath' => NIV . 'includes/helpers/data/',
+                'systemPath' => NIV . 'core'.DS.'helpers'.DS.'data'.DS,
+                'userPath' => NIV . 'includes'.DS.'helpers'.DS.'data'.DS,
                 'systemNamespace' => '\core\helpers\data\\',
                 'userNamespace' => '\includes\helpers\data\\'
             );
             Memory::$a_class = array(
-                'systemPath' => NIV . 'core/classes/',
-                'userPath' => NIV . 'includes/classes/',
+                'systemPath' => NIV . 'core'.DS.'classes'.DS,
+                'userPath' => NIV . 'includes'.DS.'classes'.DS,
                 'systemNamespace' => '\core\classes\\',
                 'userNamespace' => '\includes\classes\\'
             );
             Memory::$a_interface = array(
-                'systemPath' => NIV . 'core/interfaces/',
-                'userPath' => NIV . 'includes/interfaces/',
+                'systemPath' => NIV . 'core'.DS.'interfaces'.DS,
+                'userPath' => NIV . 'includes'.DS.'interfaces'.DS,
                 'systemNamespace' => '\core\interfaces\\',
                 'userNamespace' => '\includes\interfaces\\'
             );
             Memory::$a_database = array(
-                'systemPath' => NIV . 'core/database/',
-                'userPath' => NIV . 'includes/database/',
+                'systemPath' => NIV . 'core'.DS.'database'.DS,
+                'userPath' => NIV . 'includes'.DS.'database'.DS,
                 'systemNamespace' => '\core\database\\',
                 'userNamespace' => '\includes\database\\'
             );
             
-            require_once (NIV . 'core/Object.inc.php');
-            require_once (Memory::$a_service['systemPath'] . 'Service.inc.php');
-            require_once (Memory::$a_model['systemPath'] . 'Model.inc.php');
-            require_once (Memory::$a_helper['systemPath'] . 'Helper.inc.php');
-            require_once (NIV . 'core' . DIRECTORY_SEPARATOR . 'Loader.php');
-            
-            require_once(NIV.'core/IoC.inc.php');
+            Memory::loadCoreClass(NIV . 'core'.DS.'Object.inc.php');
+            Memory::loadCoreClass(Memory::$a_service['systemPath'] . 'Service.inc.php');
+            Memory::loadCoreClass(Memory::$a_model['systemPath'] . 'Model.inc.php');
+            Memory::loadCoreClass(Memory::$a_helper['systemPath'] . 'Helper.inc.php');
+            Memory::loadCoreClass(NIV . 'core' . DS . 'Loader.php');
+            Memory::loadCoreClass(NIV.'core/IoC.inc.php');
             
             /* Load standard services */            
             $caller = IoC::$s_ruleFileHandler;
             $service_File = new $caller();
             Memory::$a_cache[$caller] = $service_File;
+            if( !$service_File->exists(NIV.'files'.DS.'updates') ){
+            	$service_File->newDirectory(NIV.'files'.DS.'updates',0700);
+            }
+            
             unset($caller);
             
             $caller = IoC::$s_ruleSettings;
@@ -191,6 +198,15 @@ class Memory
         } catch (\Exception $e) {
             throw new \CoreException('Starting up framework failed', 0, $e);
         }
+    }
+    
+    private static function loadCoreClass($s_filename){
+    	if( file_exists(str_replace('core','files'.DS.'updates'.DS.'core',$s_filename)) ){
+    		require_once(file_exists(str_replace('core','files'.DS.'updates'.DS.'core',$s_filename)) );
+    	}
+    	else {
+    		require_once ($s_filename);
+    	}
     }
 
     /**
