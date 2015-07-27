@@ -49,6 +49,17 @@ class Maintenance extends \core\AdminLogicClass
         
         $this->maintenance = $maintenance;
     }
+    
+    /**
+     * Inits the class Maintenance
+     */
+    protected function init(){
+    	$this->init_post = array(
+    		'action' => 'string'
+    	);
+    	
+    	parent::init();
+    }
 
     /**
      * Routes the controller
@@ -56,24 +67,17 @@ class Maintenance extends \core\AdminLogicClass
      * @see Routable::route()
      */
     public function route($s_command)
-    {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $this->view();
-            return;
-        }
-        
-        switch ($s_command) {
-            case 'css':
-            case 'js':
+    {        
+    	switch ($this->post->getDefault('action')) {
             case 'checkDatabase':
             case 'optimizeDatabase':
             case 'cleanStats':
-                $this->performAction($s_command);
+                $this->performAction($this->post->get('action'));
                 break;
-            
-            case 'createBackup':
-                $this->createBackup();
-                break;
+            	
+            default :
+            	$this->view();
+            	break;
         }
     }
 
@@ -101,14 +105,6 @@ class Maintenance extends \core\AdminLogicClass
         $bo_result = false;
         
         switch ($s_action) {
-            case 'css':
-                $bo_result = $this->maintenance->compressCSS();
-                break;
-            
-            case 'js':
-                $bo_result = $this->maintenance->compressJS();
-                break;
-            
             case 'checkDatabase':
                 $bo_result = $this->maintenance->checkDatabase();
                 break;
@@ -128,20 +124,4 @@ class Maintenance extends \core\AdminLogicClass
             $this->template->set('result', 0);
         }
     }
-
-    /**
-     * Creates the backup
-     */
-    private function createBackup()
-    {
-        $s_backup = $this->maintenance->createBackup();
-        
-        (is_null($s_backup)) ? $bo_result = 0 : $bo_result = 1;
-        
-        $this->template->set('result', $bo_result);
-        $this->template->set('backup', $s_backup);
-    }
 }
-
-$obj_Maintenance = new Maintenance();
-unset($obj_Maintenance);

@@ -24,6 +24,8 @@ General.prototype.init = function() {
 	
 	cache.init();
 	maintenance.init();
+	updater.init();
+	backup.init();
 }
 General.prototype.showUsers = function() {
 	admin.show(this.address + 'users/index', users.init);
@@ -161,10 +163,8 @@ Groups.prototype.showGroup = function() {
 Groups.prototype.edit = function() {
 	var data = groups.check();
 	if (data == null) {
-		return
-
+		return;
 	}
-	;
 
 	data['id'] = $('#id').val();
 	$.post(groups.url+'edit', data, function() {
@@ -182,10 +182,8 @@ Groups.prototype.addScreen = function() {
 Groups.prototype.save = function() {
 	var data = groups.check();
 	if (data == null) {
-		return
-
+		return;
 	}
-	;
 
 	$.post(groups.url+'save', data, function() {
 		general.showGroups();
@@ -210,62 +208,75 @@ Groups.prototype.check = function() {
 }
 var groups = new Groups();
 
-/* Maintenance */
-function Maintenance(){
-	this.address = "../modules/general/maintenance.php";
-	this.action = '';
+/* Updater */
+function Updater(){
+	this.address = "../modules/general/updater/";
 }
-Maintenance.prototype.init = function(){
+Updater.prototype.init = function(){
 	$('#admin_updates_checkupdate').click(function(){
-		admin.show(maintenance.address + '?command=checkupdates', maintenance.checkupdates);
+		admin.show(updater.address + 'checkupdates', updater.checkupdates);
 	});
+}
+Updater.prototype.checkupdates = function(){
+	
+}
+Updater.prototype.performUpdate = function(){
+	
+}
+Updater.prototype.performUpdateCallback = function(){
+
+}
+var updater = new Updater();
+
+function Backup(){
+	this.address = "../modules/general/backup/";
+}
+Backup.prototype.init = function(){
 	$('#admin_backup_createbackup').click(function(){
-		admin.show(maintenance.address + '?action=view', maintenance.backup);
+		admin.show(backup.address + 'createBackupscreen', backup.backup);
 	});
 	$('#admin_backup_restorebackup').click(function(){
-		admin.show(maintenance.address + '?command=restoreBackupScreen', maintenance.restoreBackup);
-	});
-	$('#admin_general_optimize_database').click(function(){
-		maintenance.action = 'optimize_database';
-		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
-	});
-	$('#admin_general_checkDatabase').click(function(){
-		maintenance.action = 'check_database';
-		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
-	});
-	$('#admin_general_stats').click(function(){
-		maintenance.action = 'stats';
-		admin.show(maintenance.address + '?action=view', maintenance.mainScreen);
+		admin.show(backup.address + 'restoreBackupScreen', backup.restoreBackup);
 	});
 }
-Maintenance.prototype.checkupdates = function(){
-	
-}
-Maintenance.prototype.backup = function(){
-	maintenance.showPending('maintenance_backup');
-	
+Backup.prototype.backup = function(){	
 	setTimeout(function(){
-		$.post(maintenance.address,{'command':'createBackup'}, function(response){
-			response = JSON.parse(response);
-			if( reponse.status != 1 ){
-				maintenance.showError('maintenance_backup');
-			}
-			else {
-				maintenance.showReady('maintenance_backup');
-				location.href = response['file']; // download backup
-			}
+		$.post(backup.address+'createBackup',{}, function(response){
+			
 		});
 	},750);
 }
-Maintenance.prototype.restoreBackup = function(){
+Backup.prototype.restoreBackup = function(){
 	
+}
+
+var backup = new Backup();
+
+/* Maintenance */
+function Maintenance(){
+	this.address = "../modules/general/maintenance/";
+	this.action = '';
+}
+Maintenance.prototype.init = function(){
+	$('#admin_general_optimize_database').click(function(){
+		maintenance.action = 'optimize_database';
+		admin.show(maintenance.address + 'index', maintenance.mainScreen);
+	});
+	$('#admin_general_checkDatabase').click(function(){
+		maintenance.action = 'check_database';
+		admin.show(maintenance.address + 'index', maintenance.mainScreen);
+	});
+	$('#admin_general_stats').click(function(){
+		maintenance.action = 'stats';
+		admin.show(maintenance.address + 'index', maintenance.mainScreen);
+	});
 }
 Maintenance.prototype.mainScreen = function(){
 	$('#maintenance_check_database_label').click(function(){
 		maintenance.showPending('maintenance_check_database');
 		
 		setTimeout(function(){
-			$.post(maintenance.address,{'action':'checkDatabase','command':'result'},function(response){
+			$.post(maintenance.address+'result',{'action':'checkDatabase'},function(response){
 				maintenance.checkResponse(response,'maintenance_check_database');
 			});
 		},750);
@@ -275,7 +286,7 @@ Maintenance.prototype.mainScreen = function(){
 		maintenance.showPending('maintenance_optimize_database');
 		
 		setTimeout(function(){
-			$.post(maintenance.address,{'action':'optimizeDatabase','command':'result'},function(response){
+			$.post(maintenance.address+'result',{'action':'optimizeDatabase'},function(response){
 				maintenance.checkResponse(response,'maintenance_optimize_database');
 			});
 		},750);
@@ -285,7 +296,7 @@ Maintenance.prototype.mainScreen = function(){
 		maintenance.showPending('maintenance_clean_stats');
 		
 		setTimeout(function(){
-			$.post(maintenance.address,{'action':'cleanStats','command':'result'},function(response){
+			$.post(maintenance.address+'result',{'action':'cleanStats'},function(response){
 				maintenance.checkResponse(response,'maintenance_clean_stats');
 			});
 		},750);

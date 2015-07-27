@@ -535,6 +535,12 @@ class Stats extends Model
         return $a_pages;
     }
     
+    /**
+     * Sorts the dates
+     * 
+     * @param array $a_data	The dates
+     * @return array
+     */
     private function sortDate($a_data){
         $a_items = array();
         $a_data2 = array();

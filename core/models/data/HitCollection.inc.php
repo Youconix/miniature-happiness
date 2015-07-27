@@ -7,6 +7,12 @@ class HitCollection implements \Iterator {
     private $i_pos = 0;
     private $i_length = 0;
 
+    /**
+     * Creates a new HitCollection
+     * 
+     * @param int $i_startDate		The start date as timestamp
+     * @param int $i_endDate		The end date as timestamp
+     */
     public function __construct($i_startDate,$i_endDate){
         while($i_startDate < $i_endDate){
             $item = new HitItem(0, $i_startDate);
@@ -20,6 +26,11 @@ class HitCollection implements \Iterator {
         }
     }
 
+    /**
+     * Adds a HitItem
+     * 
+     * @param HitItem $item	The item
+     */
     public function add(HitItem $item){
         $s_key = $item->getKey();
 
@@ -45,13 +56,25 @@ class HitCollection implements \Iterator {
         return $this->a_keys[$this->i_pos];
     }
 
+    /**
+     * Switches to the next item
+     */
     public function next(){
         $this->i_pos++;
     }
+    
+    /**
+     * Switches back to the first item
+     */
     public function rewind ( ){
         $this->i_pos = 0;
     }
 
+    /**
+     * Returns if there are more items
+     * 
+     * @return bool
+     */
     public function valid (){
         return ($this->i_pos < $this->i_length);
     }
@@ -63,6 +86,12 @@ class HitItem{
     private $i_month;
     private $i_year;
 
+    /**
+     * Creates a new HitItem
+     * 
+     * @param int $i_amount		The start amount
+     * @param int $i_datetime	The date as timestamp
+     */
     public function __construct($i_amount,$i_datetime){
         $this->i_amount = $i_amount;
         $this->i_month = date('n',$i_datetime);
@@ -70,14 +99,29 @@ class HitItem{
         $this->s_key = $this->i_month.'-'.$this->i_year;
     }
 
+    /**
+     * Returns the key
+     * 
+     * @return string
+     */
     public function getKey(){
         return $this->s_key;
     }
 
+    /**
+     * Increases the stored amount with the given amount
+     * 
+     * @param int $i_amount
+     */
     public function increaseAmount($i_amount){
         $this->i_amount += $i_amount;
     }
 
+    /**
+     * Returns the stored amount
+     * 
+     * @return int
+     */
     public function getAmount(){
         return $this->i_amount;
     }

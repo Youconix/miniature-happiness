@@ -16,10 +16,6 @@
             <fieldset>
                 <label class="label" id="maintenance_clean_stats_label">{cleanStatsYear}</label>
                 <div id="maintenance_clean_stats" class="maintenanceReady">{ready}</div>
-            </fieldset>            
-            <fieldset>
-                <label class="label" id="maintenance_backup_label">{backup}</label>
-                <div id="maintenance_backup" class="maintenanceReady">{ready}</div>
             </fieldset>
         </article>
 	</section>
