@@ -11,12 +11,12 @@ class Loader
 
     private static function getFileName($s_className)
     {
-        /* Check for interfaces  */
-        if( file_exists(NIV.'core'.DS.'interfaces'.DS.$s_className.'.inc.php') ){
-        	return 'core'.DS.'interfaces'.DS.$s_className.'.inc.php';
+        /* Check for interfaces */
+        if (file_exists(NIV . 'core' . DS . 'interfaces' . DS . $s_className . '.inc.php')) {
+            return 'core' . DS . 'interfaces' . DS . $s_className . '.inc.php';
         }
-        if( file_exists(NIV.'includes'.DS.'interfaces'.DS.$s_className.'.inc.php') ){
-        	return 'includes'.DS.'interfaces'.DS.$s_className.'.inc.php';
+        if (file_exists(NIV . 'includes' . DS . 'interfaces' . DS . $s_className . '.inc.php')) {
+            return 'includes' . DS . 'interfaces' . DS . $s_className . '.inc.php';
         }
         
         $s_className = ltrim($s_className, '\\');
@@ -29,7 +29,7 @@ class Loader
         }
         
         /* Check for website files */
-        $s_name = strtolower($s_fileName.DS.$s_className.'.php');
+        $s_name = strtolower($s_fileName . DS . $s_className . '.php');
         if (file_exists(NIV . $s_name)) {
             return $s_name;
         }
@@ -45,12 +45,12 @@ class Loader
         if (file_exists(NIV . 'vendor' . DS . $s_fileName)) {
             return 'vendor' . DS . $s_fileName;
         }
-	if( file_exists(NIV.'vendor'.DS.str_replace($s_namespace,strtolower(str_replace('\\',DS,$s_namespace)),$s_fileName)) ){
-            return 'vendor'.DS.str_replace($s_namespace,strtolower(str_replace('\\',DS,$s_namespace)),$s_fileName);
-	}
-	if( file_exists(NIV.'vendor'.DS.strtolower(str_replace('\\',DS,$s_namespace)).DS.$s_fileName) ){
-            return 'vendor'.DS.strtolower(str_replace('\\',DS,$s_namespace)).DS.$s_fileName;
-	}
+        if (file_exists(NIV . 'vendor' . DS . str_replace($s_namespace, strtolower(str_replace('\\', DS, $s_namespace)), $s_fileName))) {
+            return 'vendor' . DS . str_replace($s_namespace, strtolower(str_replace('\\', DS, $s_namespace)), $s_fileName);
+        }
+        if (file_exists(NIV . 'vendor' . DS . strtolower(str_replace('\\', DS, $s_namespace)) . DS . $s_fileName)) {
+            return 'vendor' . DS . strtolower(str_replace('\\', DS, $s_namespace)) . DS . $s_fileName;
+        }
         
         if (file_exists(NIV . $s_fileName)) {
             return $s_fileName;
@@ -61,7 +61,7 @@ class Loader
         if (file_exists(NIV . $s_fileName)) {
             return $s_fileName;
         }
- 
+        
         return null;
     }
 
@@ -77,41 +77,38 @@ class Loader
         }
         
         if (! is_null($s_fileName)) {
-        	if( (substr($s_fileName, 0,5) == 'core/') &&
-        			file_exists(NIV.'files'.DS.'updates'.DS.$s_fileName) ){
-        		require(NIV.'files'.DS.'updates'.DS.$s_fileName);
-        	}
-        	else {
-            	require NIV . $s_fileName;
-        	}
+            if ((substr($s_fileName, 0, 5) == 'core/') && file_exists(NIV . 'files' . DS . 'updates' . DS . $s_fileName)) {
+                require (NIV . 'files' . DS . 'updates' . DS . $s_fileName);
+            } else {
+                require NIV . $s_fileName;
+            }
         }
     }
 
     public static function Inject($s_className, $a_arguments = array())
     {
-    	$s_fileName  = null;
-    	/* Check IoC */
-    	$IoC = \core\Memory::getCache('IoC');
-    	if( !is_null($IoC) ){
-    		$check = $IoC::check($s_className);
-    		if( !is_null($check) ){
-    			$s_className = $check;
-    			if( (strpos($check,'core\\') !== false) || (strpos($check,'includes\\') !== false) ){
-    				$s_fileName = str_replace('\\',DS,$check).'.inc.php';
-    			}
-    			else {
-    				$s_fileName = str_replace('\\',DS,$check).'.php';
-    			}
-    			
-    			while( substr($s_fileName, 0,1) == DS){
-    				$s_fileName = substr($s_fileName, 1);
-    			}
-    		}
-    	}
-    	
-    	if( is_null($s_fileName)) {
-    		$s_fileName = Loader::getFileName($s_className);
-    	}
+        $s_fileName = null;
+        /* Check IoC */
+        $IoC = \core\Memory::getCache('IoC');
+        if (! is_null($IoC)) {
+            $check = $IoC::check($s_className);
+            if (! is_null($check)) {
+                $s_className = $check;
+                if ((strpos($check, 'core\\') !== false) || (strpos($check, 'includes\\') !== false)) {
+                    $s_fileName = str_replace('\\', DS, $check) . '.inc.php';
+                } else {
+                    $s_fileName = str_replace('\\', DS, $check) . '.php';
+                }
+                
+                while (substr($s_fileName, 0, 1) == DS) {
+                    $s_fileName = substr($s_fileName, 1);
+                }
+            }
+        }
+        
+        if (is_null($s_fileName)) {
+            $s_fileName = Loader::getFileName($s_className);
+        }
         
         if (is_null($s_fileName)) {
             return null;
@@ -122,17 +119,17 @@ class Loader
         if (substr($s_caller, 0, 1) != '\\') {
             $s_caller = '\\' . $s_caller;
         }
-        	
-		if(!class_exists($s_caller) && !interface_exists($s_caller)){
-			require(NIV.$s_fileName);
+        
+        if (! class_exists($s_caller) && ! interface_exists($s_caller)) {
+            require (NIV . $s_fileName);
         }
-        if( (substr($s_fileName, 0,5) == 'core/') && (file_exists(NIV.str_replace('core/','includes/',$s_fileName).'.inc.php')) ){
-	        $s_fileName = str_replace('core\\','includes\\',$s_fileName);
-	        $caller = str_replace('\core','\includes',$caller);
-	        	
-	        if(!class_exists($s_caller) ){
-	        	require(NIV.$s_fileName);
-	        }
+        if ((substr($s_fileName, 0, 5) == 'core/') && (file_exists(NIV . str_replace('core/', 'includes/', $s_fileName) . '.inc.php'))) {
+            $s_fileName = str_replace('core\\', 'includes\\', $s_fileName);
+            $caller = str_replace('\core', '\includes', $caller);
+            
+            if (! class_exists($s_caller)) {
+                require (NIV . $s_fileName);
+            }
         }
         
         $object = Loader::injection($s_caller, NIV . $s_fileName, $a_arguments);
@@ -154,11 +151,11 @@ class Loader
     {
         $ref = new \ReflectionClass($s_caller);
         if (! $ref->isInstantiable()) {
-        	/* Check cache */
-        	if (\core\Memory::IsInCache($s_caller)) {
-        		return \core\Memory::getCache($s_caller);
-        	}
-        	
+            /* Check cache */
+            if (\core\Memory::IsInCache($s_caller)) {
+                return \core\Memory::getCache($s_caller);
+            }
+            
             throw new \RuntimeException('Can not create a object from class ' . $s_caller . '.');
         }
         
@@ -217,7 +214,7 @@ class Loader
                             $a_arguments[] = Loader::inject($s_name);
                         }
             } else {
-            	$a_arguments[] = Loader::inject($s_name);
+                $a_arguments[] = Loader::inject($s_name);
             }
         }
         
@@ -241,7 +238,7 @@ class Loader
      */
     private static function getConstructor($s_filename)
     {
-    	$service_File = \core\Memory::getCache(\core\IoC::$s_ruleFileHandler);
+        $service_File = \core\Memory::getCache(\core\IoC::$s_ruleFileHandler);
         
         if ($service_File->exists($s_filename)) {
             $s_file = $service_File->readFile($s_filename);
@@ -280,11 +277,19 @@ class Loader
                     preg_match('#extends\\s+(\\\\{1}[\\\a-zA-Z0-9_\-]+)#si', $s_file, $a_matches2);
                     if (count($a_matches2) > 0) {
                         
-                        if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false || strpos($a_matches2[1], '\admin') !== false ) {
+                        if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false || strpos($a_matches2[1], '\admin') !== false) {
                             $s_filename = NIV . $a_matches2[1] . '.inc.php';
-                        } else {
-                            $s_filename = NIV . 'lib' . DS . $a_matches2[1] . '.php';
-                        }
+                        }else 
+                            if (file_exists(NIV . str_replace('\\', DS, $a_matches2[1]) . '.php')) {
+                                $s_filename = NIV . $a_matches2[1] . '.php';
+                            } 
+                        
+                        else 
+                            if (file_exists(NIV . str_replace('\\', DS, strtolower($a_matches2[1])) . '.php')) {
+                                $s_filename = NIV . strtolower($a_matches2[1]) . '.php';
+                            } else {
+                                $s_filename = NIV . 'vendor' . DS . $a_matches2[1] . '.php';
+                            }
                         $s_filename = str_replace(array(
                             '\\',
                             DS . DS
