@@ -54,7 +54,7 @@ abstract class Authorization extends \includes\BaseLogicClass {
         $this->a_types = $this->config->getLoginTypes();
 
         if (! in_array($this->s_current,$this->a_types)) {
-            $this->headers->redirect('/authorization/registration_'.$this->a_types[0].'/index');
+            $this->headers->redirect('/authorization/'.$this->a_types[0].'/registration_screen');
         }
     }
     

@@ -338,8 +338,12 @@ class Headers extends Service implements \Headers
                 if (substr($s_host, - 1) != '/') {
                     $s_host .= '/';
                 }
-                
+                                
                 $s_location = $s_host . $s_location;
+                while( strpos($s_location,'//') !== false ){
+                    $s_location = str_replace('//', '/',$s_location);
+                }
+                $s_location = str_replace('http:/','http://', $s_location);
             }
         }
         
