@@ -1,1 +1,0 @@
-<h2>{noMessages}</h2>

@@ -86,50 +86,50 @@ class Session extends \admin\modules\settings\Settings
      */
     private function login()
     {
-        $this->template->set('generalTitle', t('system/admin/settings/login/title'));
-        $this->template->set('loginRedirectText', t('system/admin/settings/login/loginRedirect'));
+        $this->template->set('generalTitle', t('system/settings/login/title'));
+        $this->template->set('loginRedirectText', t('system/settings/login/loginRedirect'));
         $this->template->set('loginRedirect', $this->getValue('main/settings/login', 'index/view'));
-        $this->template->set('logoutRedirectText', t('system/admin/settings/login/logoutRedirect'));
+        $this->template->set('logoutRedirectText', t('system/settings/login/logoutRedirect'));
         $this->template->set('logoutRedirect', $this->getValue('main/logout', 'index/view'));
-        $this->template->set('registrationRedirectText', t('system/admin/settings/login/registrationRedirect'));
+        $this->template->set('registrationRedirectText', t('system/settings/login/registrationRedirect'));
         $this->template->set('registrationRedirect', $this->getValue('main/registration', 'index/view'));
         
-        $this->template->set('normalLoginText', t('system/admin/settings/login/normalLogin'));
+        $this->template->set('normalLoginText', t('system/settings/login/normalLogin'));
         if ($this->getValue('login/normalLogin', 1) == 1) {
             $this->template->set('normalLogin', 'checked="checked"');
         }
         /* Open ID */
-        $this->template->set('openidLoginText', t('system/admin/settings/login/openidLogin'));
+        $this->template->set('openidLoginText', t('system/settings/login/openidLogin'));
         if ($this->getValue('login/openID', 0) == 1) {
             $this->template('openidLogin', 'checked="checked"');
         }
         /* Facebook */
-        $this->template->set('facebookLoginText', t('system/admin/settings/login/facebookLogin'));
+        $this->template->set('facebookLoginText', t('system/settings/login/facebookLogin'));
         if ($this->getValue('login/facebook') == 1) {
             $this->template->set('facebookLogin', 'checked="checked"');
         } else {
             $this->template->set('facebook_login_data', 'style="display:none"');
         }
-        $this->template->set('facebookAppIDText', t('system/admin/settings/login/facebookAppID'));
+        $this->template->set('facebookAppIDText', t('system/settings/login/facebookAppID'));
         $this->template->set('facebookAppID', $this->getValue('login/facebook_app_id'));
         /* LDAP */
-        $this->template->set('ldapLoginText', t('system/admin/settings/login/ldapLogin'));
+        $this->template->set('ldapLoginText', t('system/settings/login/ldapLogin'));
         if ($this->getValue('login/LDAP') == 1) {
             $this->template->set('ldapLogin', 'checked="checked"');
         } else {
             $this->template->set('ldap_login_data', 'style="display:none"');
         }
-        $this->template->set('ldapServerText', t('system/admin/settings/host'));
+        $this->template->set('ldapServerText', t('system/settings/host'));
         $this->template->set('ldapServer', $this->getValue('login/ldap_server'));
-        $this->template->set('ldapPortText', t('system/admin/settings/port'));
+        $this->template->set('ldapPortText', t('system/settings/port'));
         $this->template->set('ldapPort', $this->getValue('login/ldap_port', 636));
         
-        $this->template->set('redirectError', t('system/admin/settings/login/redirectError'));
+        $this->template->set('redirectError', t('system/settings/login/redirectError'));
         $this->template->set('saveButton', t('system/buttons/save'));
-        $this->template->set('loginChoiceText', t('system/admin/settings/login/loginChoice'));
-        $this->template->set('facebookAppError', t('system/admin/settings/login/facebookAppError'));
-        $this->template->set('ldapServerError', t('system/admin/settings/login/ldapServerError'));
-        $this->template->set('ldapPortError', t('system/admin/settings/login/ldapPortError'));
+        $this->template->set('loginChoiceText', t('system/settings/login/loginChoice'));
+        $this->template->set('facebookAppError', t('system/settings/login/facebookAppError'));
+        $this->template->set('ldapServerError', t('system/settings/login/ldapServerError'));
+        $this->template->set('ldapPortError', t('system/settings/login/ldapPortError'));
     }
 
     /**
@@ -176,7 +176,7 @@ class Session extends \admin\modules\settings\Settings
         $this->setValue('login/ldap_server', $this->post['ldap_server']);
         $this->setValue('login/ldap_port', $this->post['ldap_port']);
         
-        $this->service_Settings->save();
+        $this->settings->save();
     }
 
     /**
@@ -184,13 +184,17 @@ class Session extends \admin\modules\settings\Settings
      */
     private function sessions()
     {
-        $this->template->set('generalTitle', t('system/admin/settings/sessions/title'));
-        $this->template->set('sessionNameText', t('system/admin/settings/sessions/name'));
+        $this->template->set('generalTitle', t('system/settings/sessions/title'));
+        $this->template->set('sessionNameText', t('system/settings/sessions/name'));
         $this->template->set('sessionName', $this->getValue('session/sessionName', 'miniature-happiness'));
-        $this->template->set('sessionPathText', t('system/admin/settings/sessions/path'));
-        $this->template->set('sessionPath', $this->getValue('sessions/sessionPath', 'admin/data/sessions'));
-        $this->template->set('sessionExpireText', t('system/admin/settings/sessions/expire'));
+        $this->template->set('sessionPathText', t('system/settings/sessions/path'));
+        $this->template->set('sessionPath', $this->getValue('sessions/sessionPath', 'data/sessions'));
+        $this->template->set('sessionExpireText', t('system/settings/sessions/expire'));
         $this->template->set('sessionExpire', $this->getvalue('session/sessionExpire', 300));
+        
+        $this->template->set('sessionNameError',t('system/settings/sessions/nameError'));
+        $this->template->set('sessionPathError',t('system/settings/sessions/pathError'));
+        $this->template->set('sessionExpireError',t('system/settings/sessions/expireError'));
         
         $this->template->set('saveButton', t('system/buttons/save'));
     }
@@ -212,6 +216,6 @@ class Session extends \admin\modules\settings\Settings
         $this->getValue('sessions/sessionPath', $this->post['session_path']);
         $this->setvalue('session/sessionExpire', $this->post['session_expire']);
         
-        $this->service_Settings->save();
+        $this->settings->save();
     }
 }

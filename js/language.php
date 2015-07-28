@@ -60,12 +60,12 @@ class SiteLanguage
     {
         $s_text = "var languageSite = { \n";
         foreach ($this->a_items as $s_name => $s_key) {
-            $s_text .= '"' . $s_name . '" : "' . t($s_key) . '"' . ",\n";
+            $s_text .= '"' . $s_name . '" : "' . $this->getText($s_key) . '"' . ",\n";
         }
         $s_text .= "};\n";
         $s_text .= "var languageWidgets = { \n";
         foreach ($this->a_widgetItems as $s_name => $s_key) {
-            $s_text .= '"' . $s_name . '" : "' . t($s_key) . '"' . ",\n";
+            $s_text .= '"' . $s_name . '" : "' . $this->getText($s_key) . '"' . ",\n";
         }
         $s_text .= '};';
         
@@ -75,6 +75,16 @@ class SiteLanguage
         $service_Headers->cache(- 1);
         $service_Headers->printHeaders();
         echo ($s_text);
+    }
+    
+    protected function getText($s_key){
+    	$s_item = t($s_key);
+    	$s_item = str_replace(array("\n","\t"),array('',' '),$s_item);
+    	while( strpos($s_item,'  ') !== false ){
+    		$s_item = str_replace('  ',' ',$s_item);
+    	}
+    	
+    	return $s_item;
     }
 }
 

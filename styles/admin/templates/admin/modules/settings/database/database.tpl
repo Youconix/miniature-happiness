@@ -8,7 +8,7 @@
         
         <fieldset>
             <label class="label" for="prefix">{prefixText}</label>
-            <input type="text" id="prefix" name="prefix" value="{prefix}">
+            <input type="text" id="prefix" name="prefix" value="{prefix}" data-validation="{prefixError}">
         </fieldset>
         <fieldset>
             <label class="label" for="type">{typeText} *</label>
@@ -20,19 +20,19 @@
         </fieldset>
         <fieldset>
             <label class="label" for="username">{usernameText} *</label>
-            <input type="text" id="username" name="username" value="{username}" required>
+            <input type="text" id="username" name="username" value="{username}" data-validation="{usernameError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="password">{passwordText} *</label>
-            <input type="password" id="password" name="password" value="{password}" required>
+            <input type="password" id="password" name="password" value="{password}" data-validation="{passwordError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="database">{databaseText} *</label>
-            <input type="text" id="database" name="database" value="{database}" required>
+            <input type="text" id="database" name="database" value="{database}" data-validation="{databaseError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="host">{hostText} *</label>
-            <input type="text" id="host" name="host" value="{host}" required>
+            <input type="text" id="host" name="host" value="{host}" data-validation="{hostError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="port">{portText} *</label>

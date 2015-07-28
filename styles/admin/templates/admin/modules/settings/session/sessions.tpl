@@ -8,15 +8,15 @@
         
         <fieldset>
             <label class="label" for="session_name">{sessionNameText} *</label>
-            <input type="text" id="session_name" name="session_name" value="{sessionName}" required>
+            <input type="text" id="session_name" name="session_name" value="{sessionName}" data-validation="{sessionNameError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="session_path">{sessionPathText} *</label>
-            <input type="text" id="session_path" name="session_path" value="{sessionPath}" required>
+            <input type="text" id="session_path" name="session_path" value="{sessionPath}" data-validation="{sessionPathError}" required>
         </fieldset>
         <fieldset>
             <label class="label" for="session_expire">{sessionExpireText} *</label>
-            <input type="number" id="session_expire" name="session_expire" min="60" step="1" value="{sessionExpire}" required>
+            <input type="number" id="session_expire" name="session_expire" min="60" step="1" data-validation-min="{sessionExpireError}" value="{sessionExpire}" required>
         </fieldset>
         
         <p><input type="button" id="settings_sessions_save" value="{saveButton}"></p>

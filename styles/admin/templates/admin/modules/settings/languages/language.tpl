@@ -23,8 +23,6 @@
 	            <li>{text}</li>
 	        </block>
 	        </ul>
-	        
-	        <p id="install_new_languages">Meer talen installeren</p>
         </div>
         
         <p><input type="button" id="settings_database_save" value="{saveButton}"></p>

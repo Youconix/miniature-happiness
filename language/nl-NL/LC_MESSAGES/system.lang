@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <system>
-    <yes>Ja</yes>
-    <no>Nee</no>
-    	
+	<yes>Ja</yes>
+	<no>Nee</no>
+
 	<days>
 		<day0>Zondag</day0>
 		<day1>Maandag</day1>
@@ -12,7 +12,7 @@
 		<day5>Vrijdag</day5>
 		<day6>Zaterdag</day6>
 	</days>
-	
+
 	<weekdaysShort>
 		<day0>Zo</day0>
 		<day1>Ma</day1>
@@ -37,21 +37,21 @@
 		<month11>November</month11>
 		<month12>December</month12>
 	</months>
-	
+
 	<monthsShort>
-        <month1>Jan</month1>
-        <month2>Feb</month2>
-        <month3>Ma</month3>
-        <month4>Apr</month4>
-        <month5>Mei</month5>
-        <month6>Jun</month6>
-        <month7>Jul</month7>
-        <month8>Aug</month8>
-        <month9>Sep</month9>
-        <month10>Okt</month10>
-        <month11>Nov</month11>
-        <month12>Dec</month12>
-    </monthsShort>
+		<month1>Jan</month1>
+		<month2>Feb</month2>
+		<month3>Ma</month3>
+		<month4>Apr</month4>
+		<month5>Mei</month5>
+		<month6>Jun</month6>
+		<month7>Jul</month7>
+		<month8>Aug</month8>
+		<month9>Sep</month9>
+		<month10>Okt</month10>
+		<month11>Nov</month11>
+		<month12>Dec</month12>
+	</monthsShort>
 
 	<gender>
 		<male>Man</male>
@@ -65,39 +65,177 @@
 		<level_1>Moderator</level_1>
 		<level_2>Beheerder</level_2>
 	</rights>
-	
+
 	<marital>
 		<married>Getrouwd</married>
 		<registeredPartner>registeerd partnerschap</registeredPartner>
 		<divorced>Gescheiden</divorced>
 		<unknown>Anders</unknown>
 		<single>Alleenstaand</single>
-		<livingTogetherContract>Samenlevend met contract</livingTogetherContract>
+		<livingTogetherContract>Samenlevend met contract
+		</livingTogetherContract>
 		<livingTogether>Samenlevend</livingTogether>
 		<widow>Weduwe</widow>
 	</marital>
-	
+
 	<menu>
-	   <adminPanel>Beheer paneel</adminPanel>
-	   <general>Algemeen</general>
-	   <settings>Instellingen</settings>
-	   <statistics>Statistieken</statistics>
+		<adminPanel>Beheer paneel</adminPanel>
+		<general>Algemeen</general>
+		<settings>Instellingen</settings>
+		<statistics>Statistieken</statistics>
 	</menu>
-	
+
 	<general>
 		<pages>
-				<pageTitle>Pagina controllers</pageTitle>
-				<generalRightsHeader>Algemene toegangsrechten</generalRightsHeader>
-				<group>Groep</group>
-				<groupDefault>Kies een groep</groupDefault>
-				<accessLevel>Minimaal toegangslevel</accessLevel>
-				<viewRights>View specifieke rechten (optioneel)</viewRights>
-				<viewRightsDefault>Kies een minimaal toegangslevel</viewRightsDefault>
-				<editPageTitle>Pagina rechten bewerken</editPageTitle>
-				<view>View</view>
-			</pages>
+			<pageTitle>Pagina controllers</pageTitle>
+			<generalRightsHeader>Algemene toegangsrechten</generalRightsHeader>
+			<group>Groep</group>
+			<groupDefault>Kies een groep</groupDefault>
+			<accessLevel>Minimaal toegangslevel</accessLevel>
+			<viewRights>View specifieke rechten (optioneel)</viewRights>
+			<viewRightsDefault>Kies een minimaal toegangslevel
+			</viewRightsDefault>
+			<editPageTitle>Pagina rechten bewerken</editPageTitle>
+			<view>View</view>
+		</pages>
 	</general>
-	
+
+	<settings>
+		<login>
+			<title>Inloggen</title>
+			<loginRedirect>Verwijzing na inloggen</loginRedirect>
+			<logoutRedirect>Verwijzing na uitloggen</logoutRedirect>
+			<registrationRedirect>Verwijzing na registratie
+			</registrationRedirect>
+			<normalLogin>Standaard login</normalLogin>
+			<openidLogin>OpenID login</openidLogin>
+			<facebookLogin>Facebook login</facebookLogin>
+			<facebookAppID>App ID</facebookAppID>
+			<ldapLogin>LDAP login</ldapLogin>
+			<loginChoice>Minimaal 1 moet er gekozen worden.</loginChoice>
+			<redirectError>De verwijziging kan niet leeg zijn.</redirectError>
+			<facebookAppError>De Facebook app ID is niet ingevuld.
+			</facebookAppError>
+			<ldapServerError>De LDAP server kan niet leeg zijn.</ldapServerError>
+			<ldapPortError>De LDAP poort kan niet leeg zijn.</ldapPortError>
+		</login>
+		<sessions>
+			<title>Sessies</title>
+			<name>Sessie naam</name>
+			<path>Sessie object locatie</path>
+			<expire>Verlooptijd in seconden</expire>
+			<nameError>De sessie naam mag niet leeg zijn.</nameError>
+			<pathError>De sessie locatie mag niet leeg zijn.</pathError>
+			<expireError>De sessie tijd moet minimaal 60 seconden zijn.
+			</expireError>
+		</sessions>
+		<smtp>SMTP</smtp>
+		<languages>
+			<title>Talen</title>
+			<installLanguages>Talen installeren</installLanguages>
+			<editLanguages>Taalbestanden bewerken</editLanguages>
+			<file>Bestand</file>
+		</languages>
+		<cache>
+			<title>Cache instellingen</title>
+			<cacheActive>Caching geactiveerd</cacheActive>
+			<cacheExpire>Cache verloop tijd in seconden.</cacheExpire>
+			<expireError>De verlooptijd moet minimaal 60 seconden zijn.</expireError>
+			<excludedCaching>Pagina's uitgesloten van caching</excludedCaching>
+			<page>Pagina</page>			
+			<languageCache>Taal bestanden cache verwijderen</languageCache>
+            <siteCache>Site cache verwijderen</siteCache>
+            <title>Cache verwijderen</title>
+            <language>Weet u zeker dat u de taal cache wilt verwijderen?
+            </language>
+            <site>Weet u zeker dat u de site cache wilt verwijderen?</site>
+		</cache>
+		<email>
+			<title>E-mail</title>
+			<generalTitle>Algemene email instellingen</generalTitle>
+			<senderName>Naam afzender</senderName>
+			<senderEmail>Email afzender</senderEmail>
+			<smtp>SMTP</smtp>
+			<useSmtp>Gebruik SMTP</useSmtp>
+			<adminSenderTitle>E-mail admin</adminSenderTitle>
+			<adminSenderName>Naam administrator</adminSenderName>
+			<adminSenderEmail>Email administrator</adminSenderEmail>
+			<senderEmpty>De naam van de afzender kan niet leeg zijn.
+			</senderEmpty>
+			<senderEmailEmpty>De email van de afzender kan niet leeg zijn.
+			</senderEmailEmpty>
+			<smtpHostError>De host kan niet leeg zijn.</smtpHostError>
+			<smtpUsernameError>De gebruikersnaam kan niet leeg zijn.
+			</smtpUsernameError>
+			<smptPasswordError>Het wachtwoord kan niet leeg zijn.
+			</smptPasswordError>
+			<smtpPortError>Het poortnummer kan niet leeg zijn.</smtpPortError>
+		</email>
+		<title>Instellingen</title>
+		<general>
+			<title2>Algemeen</title2>
+			<title>Algemene instellingen</title>
+			<nameSite>Site naam</nameSite>
+			<basedir>Submap</basedir>
+			<siteUrl>Site url</siteUrl>
+			<timezone>Tijd zone</timezone>
+			<logger>Logger</logger>
+			<logLocation>Log locatie</logLocation>
+			<logSize>Maximale log grootte (Bytes)</logSize>
+			<templates>Templates</templates>
+			<siteNameEmpty>De site naam kan niet leeg zijn.</siteNameEmpty>
+			<urlEmpty>De site url kan niet leeg zijn.</urlEmpty>
+			<timezoneInvalid>De tijdzone is niet geldig.</timezoneInvalid>
+			<loggerInvalid>De logger is niet geldig.</loggerInvalid>
+			<logLocationInvalid>De log locatie kan niet leeg zijn.
+			</logLocationInvalid>
+			<logSizeInvalid>De maximale log grootte moet een heel positief getal
+				zijn.
+			</logSizeInvalid>
+		</general>
+		<database>
+			<title>Database</title>
+			<database>Database</database>
+			<prefix>Tabel voorvoegsel</prefix>
+			<type>Database type</type>
+			<databaseEmpty>Niet alle database gegevens zijn ingevuld.
+			</databaseEmpty>
+			<databasePortInvalid>De database poort is ongeldig.
+			</databasePortInvalid>
+			<databaseInvalid>De database gegevens zijn incorrect.
+			</databaseInvalid>
+			<prefixError>De prefix mag niet leeg zijn.</prefixError>
+			<usernameError>De gebruikersnaam mag niet leeg zijn.</usernameError>
+			<passwordError>Het wachtwoord mag niet leeg zijn.</passwordError>
+			<databaseError>De database mag niet leeg zijn.</databaseError>
+			<hostError>De server mag niet leeg zijn.</hostError>
+		</database>
+		<ssl>
+			<title>SSL versleuteling</title>
+			<no_ssl>Geen versleuteling</no_ssl>
+			<login_ssl>Vanaf login/registratie</login_ssl>
+			<always_ssl>Altijd versleutelen</always_ssl>
+		</ssl>
+
+		<defaultLanguage>Standaard taal</defaultLanguage>
+		<fallbackLanguage>Backup taal</fallbackLanguage>
+
+		<username>Gebruikersnaam</username>
+		<password>Wachtwoord</password>
+
+		<host>Server (host)</host>
+		<port>Poort</port>
+		<type>Type</type>
+		<ftpSettings>FTP instellingen</ftpSettings>
+		<disable>Uitschakelen</disable>
+
+		<ftpEmpty>Niet alle FTP gegevens zijn ingevuld.</ftpEmpty>
+		<ftpPortInvalid>De FTP poort is ongeldig.</ftpPortInvalid>
+		<ftpInvalid>De FTP gegevens zijn incorrect.</ftpInvalid>
+		<saved>De instellingen zijn opgeslagen.</saved>
+		<savedLanguage>De wijzigingen zijn opgeslagen.</savedLanguage>
+	</settings>
+
 	<admin>
 		<general>
 			<users>Gebruikers</users>
@@ -110,44 +248,49 @@
 			<cache>Cache</cache>
 			<modules>Modules</modules>
 		</general>
-	   <modules>
-	       <moduleTitle>Modules</moduleTitle>
-	       <headerName>Module</headerName>
-	       <headerAuthor>Auteur</headerAuthor>
-	       <headerVersion>Versie</headerVersion>
-	       <headerDescription>Beschrijving</headerDescription>
-	       <installedModulesTitle><![CDATA[ Ge&iuml;nstalleerde modules ]]></installedModulesTitle>
-	       <upgradableModulesTitle>Upgrades</upgradableModulesTitle>
-	       <headerVersionAvaiable>Nieuwe versie</headerVersionAvaiable>
-	       <newModulesTitle>Beschikbare modules</newModulesTitle>
-	       <deleteConfirmTitle>Module verwijderen</deleteConfirmTitle>	 
-	       <deleteConfirm>Weet u zeker dat u module [name] wilt verwijderen?</deleteConfirm>
-	       <upgradeConfirmTitle>Module bijwerken</upgradeConfirmTitle>
-	       <upgradeConfirm>Weet u zeker dat u module [name] wilt bijwerken?</upgradeConfirm>
-	       <installConfirmTitle>Module installeren</installConfirmTitle>
-	       <installConfirm>Weet u zeker dat u module [name] wilt installeren?</installConfirm>
-	   </modules>
-	   <statistics>
-	       <hits>Bezoekers</hits>
-	       <visitors>Unieke bezoekers</visitors>
-	       <hits_hours>Bezoekers per uur</hits_hours>
-	       <os>Besturingssystemen</os>
-	       <browsers>Browsers</browsers>
-	       <screen_colors>Scherm kleuren</screen_colors>
-	       <screen_sizes>Scherm afmetingen</screen_sizes>
-	       <references>Afkomstig van</references>
-	       <pages>Pagina's</pages>
-	   </statistics>	   
+		<modules>
+			<moduleTitle>Modules</moduleTitle>
+			<headerName>Module</headerName>
+			<headerAuthor>Auteur</headerAuthor>
+			<headerVersion>Versie</headerVersion>
+			<headerDescription>Beschrijving</headerDescription>
+			<installedModulesTitle><![CDATA[ Ge&iuml;nstalleerde modules ]]></installedModulesTitle>
+			<upgradableModulesTitle>Upgrades</upgradableModulesTitle>
+			<headerVersionAvaiable>Nieuwe versie</headerVersionAvaiable>
+			<newModulesTitle>Beschikbare modules</newModulesTitle>
+			<deleteConfirmTitle>Module verwijderen</deleteConfirmTitle>
+			<deleteConfirm>Weet u zeker dat u module [name] wilt verwijderen?
+			</deleteConfirm>
+			<upgradeConfirmTitle>Module bijwerken</upgradeConfirmTitle>
+			<upgradeConfirm>Weet u zeker dat u module [name] wilt bijwerken?
+			</upgradeConfirm>
+			<installConfirmTitle>Module installeren</installConfirmTitle>
+			<installConfirm>Weet u zeker dat u module [name] wilt installeren?
+			</installConfirm>
+		</modules>
+		<statistics>
+			<hits>Bezoekers</hits>
+			<visitors>Unieke bezoekers</visitors>
+			<hits_hours>Bezoekers per uur</hits_hours>
+			<os>Besturingssystemen</os>
+			<browsers>Browsers</browsers>
+			<screen_colors>Scherm kleuren</screen_colors>
+			<screen_sizes>Scherm afmetingen</screen_sizes>
+			<references>Afkomstig van</references>
+			<pages>Pagina's</pages>
+		</statistics>
 		<software>
-			<noContact>Er kan geen contact gemaakt worden met de update server.</noContact>
+			<noContact>Er kan geen contact gemaakt worden met de update server.
+			</noContact>
 			<upToDate>Systeem is up to date.</upToDate>
 			<updateAvailable>Er zijn updates beschikbaar.</updateAvailable>
-			<updateFailure>Er is een fout opgetreden tijdens het updaten.</updateFailure>
+			<updateFailure>Er is een fout opgetreden tijdens het updaten.
+			</updateFailure>
 			<updateSucceed>Het systeem is bijgewerkt.</updateSucceed>
 		</software>
 		<groups>
-		    <memberlist>Ledenlijst</memberlist>
-		    <headerView>Groep</headerView>
+			<memberlist>Ledenlijst</memberlist>
+			<headerView>Groep</headerView>
 			<title>Groepen beheer</title>
 			<id>ID</id>
 			<name>Naam</name>
@@ -164,13 +307,14 @@
 			<deleteGroup>Groep verwijderen</deleteGroup>
 			<js>
 				<nameEmpty>De naam is niet ingevuld.</nameEmpty>
-				<descriptionEmpty>De beschrijving is niet ingevuld.</descriptionEmpty>
+				<descriptionEmpty>De beschrijving is niet ingevuld.
+				</descriptionEmpty>
 				<delete>Weet u zeker dat u [name] wilt verwijderen?</delete>
 			</js>
 		</groups>
 		<users>
-		    <searchText>Zoek op gebruikersnaam of email</searchText>
-		    <id>ID</id>
+			<searchText>Zoek op gebruikersnaam of email</searchText>
+			<id>ID</id>
 			<title>Gebruiker beheer</title>
 			<users>Gebruikers</users>
 			<user>Gebruiker</user>
@@ -185,7 +329,8 @@
 			<activated>Geactiveerd</activated>
 			<blocked>Geblokkeerd</blocked>
 			<headerPassword>Wachtwoord opnieuw instellen</headerPassword>
-			<passwordChangeText>Laat leeg om de wachtwoorden hetzelfde te laten</passwordChangeText>
+			<passwordChangeText>Laat leeg om de wachtwoorden hetzelfde te laten
+			</passwordChangeText>
 			<profile>Profiel tekst</profile>
 			<password>Wachtwoord</password>
 			<passwordAgain>Wachtwoord herhalen</passwordAgain>
@@ -196,7 +341,8 @@
 			<headerView>Gebruiker bekijken</headerView>
 			<headerEdit>Gebruiker bewerken</headerEdit>
 			<headerSearch>Gebruiker zoeken</headerSearch>
-			<registratedTrough>Deze gebruiker is geregistreerd via</registratedTrough>
+			<registratedTrough>Deze gebruiker is geregistreerd via
+			</registratedTrough>
 			<nationality>Nationaliteit</nationality>
 			<telephone>Telefoon</telephone>
 			<yes>Ja</yes>
@@ -210,16 +356,30 @@
 				<passwordChanged>Het wachtwoord is veranderd.</passwordChanged>
 				<firstNameEmpty>De voornaam is niet ingevuld.</firstNameEmpty>
 				<surnameEmpty>De achternaam is niet ingevuld.</surnameEmpty>
-				<nationalityEmpty>Je hebt geen nationaliteit ingevuld.</nationalityEmpty>
-            			<telephoneEmpty>Je hebt geen telefoonnummer ingevuld.</telephoneEmpty>
+				<nationalityEmpty>Je hebt geen nationaliteit ingevuld.
+				</nationalityEmpty>
+				<telephoneEmpty>Je hebt geen telefoonnummer ingevuld.
+				</telephoneEmpty>
 				<emailInvalid>Het emailadres is ongeldig.</emailInvalid>
-				<blockRejected>Euhm probeer je nu jezelf te blokkeren?</blockRejected>
-				<blockConfirm>Weet je zeker dat je deze gebruiker wilt blokkeren? \nHij/zij kan dan niet meer inloggen.</blockConfirm>
-				<deleteRejected>Euhm probeer je nu jezelf te verwijderen?</deleteRejected>
-				<deleteConfirm>Weet u zeker dat u deze gebruiker permanent wilt verwijderen?</deleteConfirm>
-				<groupAdminRejected>Je kan jezelf niet uit de Admin groep gooien. Deze heb je nodig voor het beheerpaneel.</groupAdminRejected>
-				<groupAdminConfirm>Weet je zeker dat je deze gebruiker toegang wilt geven tot het beheerpaneel?</groupAdminConfirm>
-				<loginAs>Weet u zeker dat u wilt inloggen als [username]?\nDit beeindigd uw admin sessie.</loginAs>
+				<blockRejected>Euhm probeer je nu jezelf te blokkeren?
+				</blockRejected>
+				<blockConfirm>Weet je zeker dat je deze gebruiker wilt blokkeren?
+					\nHij/zij kan dan niet meer inloggen.
+				</blockConfirm>
+				<deleteRejected>Euhm probeer je nu jezelf te verwijderen?
+				</deleteRejected>
+				<deleteConfirm>Weet u zeker dat u deze gebruiker permanent wilt
+					verwijderen?
+				</deleteConfirm>
+				<groupAdminRejected>Je kan jezelf niet uit de Admin groep gooien.
+					Deze heb je nodig voor het beheerpaneel.
+				</groupAdminRejected>
+				<groupAdminConfirm>Weet je zeker dat je deze gebruiker toegang wilt
+					geven tot het beheerpaneel?
+				</groupAdminConfirm>
+				<loginAs>Weet u zeker dat u wilt inloggen als [username]?\nDit
+					beeindigd uw admin sessie.
+				</loginAs>
 			</js>
 		</users>
 		<stats>
@@ -249,15 +409,16 @@
 			<date>Datum</date>
 		</messages>
 		<updates>
-		    <checkUpdate>Controleren voor updates</checkUpdate>
+			<checkUpdate>Controleren voor updates</checkUpdate>
 			<title>Updates</title>
 		</updates>
 		<logs>
-			<title>Logboeken</title>				
+			<title>Logboeken</title>
 			<name>Naam</name>
 			<date>Datum</date>
 			<download>Downloaden</download>
-			<jsDelete>Weet je zeker dat je de log "+name+" wilt verwijderen?</jsDelete>
+			<jsDelete>Weet je zeker dat je de log "+name+" wilt verwijderen?
+			</jsDelete>
 		</logs>
 		<maintenance>
 			<compressCSS>CSS bestanden samenvoegen</compressCSS>
@@ -266,8 +427,10 @@
 			<optimizeDatabase>Database optimaliseren</optimizeDatabase>
 			<cleanLogs>Oude logs opruimen</cleanLogs>
 			<systemUpdate>Systeem updaten</systemUpdate>
-			<cleanStatsYear>Statistieken ouder dan een jaar verwijderen</cleanStatsYear>
-			<cleanStatsMonth>Statistieken ouder dan een maand verwijderen</cleanStatsMonth>
+			<cleanStatsYear>Statistieken ouder dan een jaar verwijderen
+			</cleanStatsYear>
+			<cleanStatsMonth>Statistieken ouder dan een maand verwijderen
+			</cleanStatsMonth>
 			<ready>Gereed</ready>
 			<pending>Bezig...</pending>
 			<error>Er is een fout opgetreden, zie de log</error>
@@ -279,127 +442,18 @@
 			<screenTitle>Beheer paneel : bekijk systeem meldingen</screenTitle>
 			<notices>Systeem meldingen</notices>
 		</notices>
-		<settings>
-		   <smtp>SMTP</smtp>
-           <login>
-                <title>Inloggen</title>
-                <loginRedirect>Verwijzing na inloggen</loginRedirect>
-                <logoutRedirect>Verwijzing na uitloggen</logoutRedirect>
-                <registrationRedirect>Verwijzing na registratie</registrationRedirect>
-                <normalLogin>Standaard login</normalLogin>
-                <openidLogin>OpenID login</openidLogin>
-                <facebookLogin>Facebook login</facebookLogin>
-                <facebookAppID>App ID</facebookAppID>
-                <ldapLogin>LDAP login</ldapLogin>
-                <loginChoice>Minimaal 1 moet er gekozen worden.</loginChoice>
-                <redirectError>De verwijziging kan niet leeg zijn.</redirectError>
-                <facebookAppError>De Facebook app ID is niet ingevuld.</facebookAppError>
-                <ldapServerError>De LDAP server kan niet leeg zijn.</ldapServerError>
-                <ldapPortError>De LDAP poort kan niet leeg zijn.</ldapPortError>
-           </login>
-           <sessions>
-                <title>Sessies</title>
-                <name>Sessie naam</name>
-                <path>Sessie object locatie</path>
-                <expire>Verlooptijd in seconden</expire>
-                <sessionInvalid>De sessie verloop tijd is ongeldig.</sessionInvalid>
-           </sessions>
-           <languages>
-                <title>Talen</title>
-                <installLanguages>Talen installeren</installLanguages>
-                <editLanguages>Taalbestanden bewerken</editLanguages>
-           </languages>  
-           <cache>
-                <title>Cache instellingen</title>
-           </cache>
-		   <email>
-		      <title>E-mail</title>
-		      <generalTitle>Algemene email instellingen</generalTitle>
-		      <senderName>Naam afzender</senderName>
-              <senderEmail>Email afzender</senderEmail>
-              <smtp>SMTP</smtp>
-              <useSmtp>Gebruik SMTP</useSmtp>
-              <adminSenderTitle>E-mail admin</adminSenderTitle>
-              <adminSenderName>Naam administrator</adminSenderName>
-              <adminSenderEmail>Email administrator</adminSenderEmail>
-              <senderEmpty>De naam van de afzender kan niet leeg zijn.</senderEmpty>
-              <senderEmailEmpty>De email van de afzender kan niet leeg zijn.</senderEmailEmpty>
-              <smtpHostError>De host kan niet leeg zijn.</smtpHostError>
-              <smtpUsernameError>De gebruikersnaam kan niet leeg zijn.</smtpUsernameError>
-              <smptPasswordError>Het wachtwoord kan niet leeg zijn.</smptPasswordError>
-              <smtpPortError>Het poortnummer kan niet leeg zijn.</smtpPortError>
-		    </email>
-		    <title>Instellingen</title>
-		    <general>
-		        <title2>Algemeen</title2>
-		        <title>Algemene instellingen</title>
-		        <nameSite>Site naam</nameSite>
-    			<basedir>Submap</basedir>
-    			<siteUrl>Site url</siteUrl>
-    			<timezone>Tijd zone</timezone>
-    			<logger>Logger</logger>
-    			<logLocation>Log locatie</logLocation>
-    			<logSize>Maximale log grootte (Bytes)</logSize>
-    			<templates>Templates</templates>
-    			<siteNameEmpty>De site naam kan niet leeg zijn.</siteNameEmpty>
-    			<urlEmpty>De site url kan niet leeg zijn.</urlEmpty>
-                <timezoneInvalid>De tijdzone is niet geldig.</timezoneInvalid>
-                <loggerInvalid>De logger is niet geldig.</loggerInvalid>
-                <logLocationInvalid>De log locatie kan niet leeg zijn.</logLocationInvalid>
-                <logSizeInvalid>De maximale log grootte moet een heel positief getal zijn.</logSizeInvalid>
-			</general>
-			<database>
-			     <title>Database</title>
-			     <database>Database</database>
-			     <prefix>Tabel voorvoegsel</prefix>
-			     <type>Database type</type> 
-			     <databaseEmpty>Niet alle database gegevens zijn ingevuld.</databaseEmpty>
-                <databasePortInvalid>De database poort is ongeldig.</databasePortInvalid>
-                <databaseInvalid>De database gegevens zijn incorrect.</databaseInvalid>
-			 </database>
-			 <ssl>
-			     <title>SSL versleuteling</title>
-			     <no_ssl>Geen versleuteling</no_ssl>
-			     <login_ssl>Vanaf login/registratie</login_ssl>
-			     <always_ssl>Altijd versleutelen</always_ssl>
-			 </ssl>
-			
-			<defaultLanguage>Standaard taal</defaultLanguage>
-			<fallbackLanguage>Backup taal</fallbackLanguage>
-			
-			<username>Gebruikersnaam</username>
-			<password>Wachtwoord</password>
-			
-			<host>Server (host)</host>
-			<port>Poort</port>
-			<type>Type</type>
-			<ftpSettings>FTP instellingen</ftpSettings>
-			<disable>Uitschakelen</disable>
-
-			<ftpEmpty>Niet alle FTP gegevens zijn ingevuld.</ftpEmpty>
-			<ftpPortInvalid>De FTP poort is ongeldig.</ftpPortInvalid>
-			<ftpInvalid>De FTP gegevens zijn incorrect.</ftpInvalid>
-		    <saved>De instellingen zijn opgeslagen.</saved>
-		</settings>
 		<menu>
 			<groups>Groepen</groups>
-    		<users>Gebruikers</users>
-    		<logs>Logs</logs>
-    		<settings>Instellingen</settings>
-    		<stats>Statistieken</stats>
-    		<maintenance>Onderhoud</maintenance>
-    		<close>Sluiten</close>
-    		<logout>Uitloggen</logout>
-    		<adminMenuLink>Menu</adminMenuLink>
-    		<loginHeader>Ingelogd als [name]</loginHeader>
+			<users>Gebruikers</users>
+			<logs>Logs</logs>
+			<settings>Instellingen</settings>
+			<stats>Statistieken</stats>
+			<maintenance>Onderhoud</maintenance>
+			<close>Sluiten</close>
+			<logout>Uitloggen</logout>
+			<adminMenuLink>Menu</adminMenuLink>
+			<loginHeader>Ingelogd als [name]</loginHeader>
 		</menu>
-		<cache>
-		  <languageCache>Taal bestanden cache verwijderen</languageCache>
-		  <siteCache>Site cache verwijderen</siteCache>
-		  <title>Cache verwijderen</title>
-		  <language>Weet u zeker dat u de taal cache wilt verwijderen?</language>
-		  <site>Weet u zeker dat u de site cache wilt verwijderen?</site>
-		</cache>
 	</admin>
 
 	<bann>
@@ -408,28 +462,28 @@
 		<bann3>1 Maand</bann3>
 		<bann4>Permanent</bann4>
 	</bann>
-	
+
 	<buttons>
-	   <add>Toevoegen</add>
-	   <reset>Resetten</reset>
-	   <cancel>Annuleren</cancel>
-	   <edit>Aanpassen</edit>
-	   <save>Opslaan</save>
-	   <delete>Verwijderen</delete>
-	   <back>Terug</back>
-	   <view>Bekijken</view>
-	   <search>Zoeken</search>
-	   <send>Verzenden</send>
-	   <upload>Uploaden</upload>
-	   <download>Downloaden</download>
-	   <close>Sluiten</close>
+		<add>Toevoegen</add>
+		<reset>Resetten</reset>
+		<cancel>Annuleren</cancel>
+		<edit>Aanpassen</edit>
+		<save>Opslaan</save>
+		<delete>Verwijderen</delete>
+		<back>Terug</back>
+		<view>Bekijken</view>
+		<search>Zoeken</search>
+		<send>Verzenden</send>
+		<upload>Uploaden</upload>
+		<download>Downloaden</download>
+		<close>Sluiten</close>
 	</buttons>
 
 	<header>
 		<userWelcome>Welkom </userWelcome>
 		<adminWelcome>Welkom admin </adminWelcome>
 	</header>
-	
+
 	<logout>
 		<title></title>
 		<logoutSucceed>U Bent uitgelogd.</logoutSucceed>
@@ -438,7 +492,7 @@
 	<index>
 		<title>Standaard index pagina</title>
 	</index>
-	
+
 	<title>Miniature-happiness</title>
 	<slogan>Standaard slogan</slogan>
 </system>

@@ -55,7 +55,7 @@ SettingsEmail.prototype.init = function(){
 			$('#smtp_settings').hide();
 		}
 	});
-	$('#settings_email_save').click(function(){ settings.emailSave(); });
+	$('#settings_email_save').click(function(){ settingsEmail.emailSave(); });
 }
 SettingsEmail.prototype.emailSave = function(){
 	var data = {
@@ -97,7 +97,7 @@ function SettingsGeneral(){
 	this.SSL_ALL = 2;
 }
 SettingsGeneral.prototype.init = function(){
-	$('#settings_general_save').click(function(){ settings.generalSave(); });
+	$('#settings_general_save').click(function(){ settingsGeneral.generalSave(); });
 }
 SettingsGeneral.prototype.generalSave = function(){
 	var data = {
@@ -138,6 +138,7 @@ SettingsGeneral.prototype.sslSave= function(){
 	
 	if( currentSSL != ssl ){
 		$.post(settingsGeneral.address+'ssl',{'ssl':ssl});
+		$('#current_ssl').val(ssl);
 	}
 	
 	$('#notice').addClass('notice').html(languageAdmin.admin_settings_saved);
@@ -285,6 +286,9 @@ Settings.prototype.cacheInit = function(){
 	});
 }
 Settings.prototype.cacheSave	= function(){
+	if( !validation.html5Validation('expire') ){
+		return;
+	}
 	var data = {
 		 'cache' : 0, 'expire' : $('#expire').val()
 	};
@@ -297,6 +301,9 @@ Settings.prototype.cacheSave	= function(){
 }
 Settings.prototype.addNoCache	= function(){
 	var cacheItem = $.trim($('#noCachePage').val());
+	if( cacheItem == '' ){
+		return;
+	}
 	
 	$('#noCachePage').val('');
 	$.post(settings.address_cache+'addNoCache',{'page':cacheItem},function(response){
@@ -344,6 +351,11 @@ Settings.prototype.editLanguages = function(){
 			return false;
 		});
 	});
+	
+	$('#current_languagefile').on('change',function(){
+		var file = $(this).val();
+		admin.show(settings.address_language+'edit_language?file='+file,settings.editLanguages);
+	});
 }
 Settings.prototype.treeClick = function(item){
 	if( item.data('type') == 'tree' ){
@@ -370,8 +382,35 @@ Settings.prototype.openLeaf = function(item){
 Settings.prototype.openLeafInit = function(){
 	var i=1;
 	while( $('#editor'+i).length > 0 ){
-		console.log('starting editor '+i);
-		CKEDITOR.replace( 'editor'+i );
+		CKEDITOR.replace( 'editor'+i,{'width':'99%','enterMode' : CKEDITOR.ENTER_BR} );
 		i++;
 	}
+	
+	$('#languageEditor_back').click(function(){
+		var file = $('#file').val();
+		admin.show(settings.address_language+'edit_language?file='+file,settings.editLanguages);
+	});
+	$('#languageEditorSave').click(function(){
+		settings.languageEditorSave();
+	});
+}
+Settings.prototype.languageEditorSave	= function(){
+	var languages = {};
+	var i = 1;
+	var language;
+	var content;
+	while( $('#editor'+i).length != 0 ){
+		language = $('#editor'+i).data('id');
+		content = CKEDITOR.instances['editor'+i].getData();		
+		languages[language] = content;
+		
+		i++;
+	}
+	
+	$.post(settings.address_language+'edit_language_save',{
+		'data' :languages,
+		'path' : $('#path').val(),
+		'file' : $('#file').val()
+	});
+	$('#notice').html(languageAdmin.languageEditorSaved);
 }

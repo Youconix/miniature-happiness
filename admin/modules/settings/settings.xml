@@ -11,44 +11,40 @@
 	<js>settings.js</js>
 	<css>settings.css</css>
 	<block>
-		<title>system/admin/settings/email/title</title>
+		<title>system/settings/email/title</title>
 		<id>admin_settings_email</id>
 	</block>
 	<block>
-		<title>system/admin/settings/general/title2</title>
+		<title>system/settings/general/title2</title>
 		<id>admin_settings_general</id>
 	</block>
 	<block>
-		<title>system/admin/settings/login/title</title>
+		<title>system/settings/login/title</title>
 		<id>admin_settings_login</id>
 	</block>
 	<block>
-		<title>system/admin/settings/sessions/title</title>
+		<title>system/settings/sessions/title</title>
 		<id>admin_settings_sessions</id>
 	</block>
 	<block>
-		<title>system/admin/settings/database/title</title>
+		<title>system/settings/database/title</title>
 		<id>admin_settings_database</id>
 	</block>
 
 	<block>
-		<title>system/admin/settings/cache/title</title>
+		<title>system/settings/cache/title</title>
 		<id>admin_settings_cache</id>
 	</block>
 	<block>
-		<title>system/admin/settings/languages/title</title>
+		<title>system/settings/languages/title</title>
 		<id>admin_settings_languages</id>
         <link>
-            <title>system/admin/settings/languages/installLanguages</title>
-            <id>admin_settings_newlanguages</id>
-        </link>
-        <link>
-            <title>system/admin/settings/languages/editLanguages</title>
+            <title>system/settings/languages/editLanguages</title>
             <id>admin_settings_editLanguages</id>
         </link>
 	</block>	
     <block>
-        <title>system/admin/settings/ssl/title</title>
+        <title>system/settings/ssl/title</title>
         <id>admin_settings_ssl</id>
     </block>
 </module>
