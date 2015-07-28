@@ -77,6 +77,39 @@ class FileHandler extends \core\services\Service
     	
     	return $content;
     }
+    
+    /**
+     * Generates a new directory with the given name and rights
+     *
+     * @param String $s_name
+     *            The name
+     * @param int $i_rights
+     *            The rights, defaul 0755 (write/write/excequte for owner, rest read + excequte)
+     * @throws IOException when the target directory is not writable
+     */
+    public function newDirectory($s_name, $i_rights = 0755)
+    {
+    	\core\Memory::type('string', $s_name);
+    	\core\Memory::type('int', $i_rights);
+    
+    	$s_dir = $s_name;
+    	if (substr($s_dir, - 1) == '/')
+    		$s_dir = substr($s_dir, 0, - 1);
+    	$i_pos = strrpos($s_dir, '/');
+    	if ($i_pos === false) {
+    		throw new \IOException("Invalid directory " . $s_name . ".");
+    	}
+    
+    	$s_dir = substr($s_dir, 0, $i_pos);
+    
+    	if (! is_writable($s_dir)) {
+    		throw new \IOException('Directory ' . $s_name . ' is not writable.');
+    	}
+    
+    	mkdir($s_name, $i_rights);
+    
+    	$this->rights($s_name, $i_rights);
+    }
 
     /**
      * Checks if the given file or directory exists
