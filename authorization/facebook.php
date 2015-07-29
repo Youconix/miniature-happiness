@@ -1,5 +1,8 @@
 <?php
 namespace authorization;
+use Facebook\Facebook;
+define('NIV', '../../');
+require 'vendor/autoload.php';
 
 class Facebook extends  \authorization\Authorization  {
     /**
@@ -8,6 +11,18 @@ class Facebook extends  \authorization\Authorization  {
      */
     
     private $login;
+    
+    /**
+     * The Facebook API
+     * @var \Facebook\Facebook
+     */
+    private $fb;
+    
+    /**
+     * 
+     * @var \Settings
+     */
+    private $settings;
     
     /**
      * Constructor
@@ -33,46 +48,93 @@ class Facebook extends  \authorization\Authorization  {
         \Footer $footer,
         \core\models\User $user,
         \Headers $headers,
-        \core\models\LoginFacebook $login
+        \core\models\LoginFacebook $login,
+        \Settings $settings
         )
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);
         
         $this->login = $login;
+        $this->settings = $settings;
     }
     
     protected function init(){
         $this->s_current = "facebook";
+        $this->fb = new Facebook([
+            'app_id' => $this->settings->get('login/facebook/appId'),
+            'app_secret' => $this->settings->get('login/facebook/appSecret')
+            ]);
         
         parent::init();
+        start_session();
     }
     
     /**
      * Shows the login screen
      */
     protected function login_screen() {
-        //Starting login process begins here
+        $helper = $fb->getRedirectLoginHelper();
+        $permissions = ['email'];
+        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/.../facebook/do_login', $permissions); // TODO Arrange proper testing URL.
+        header('Location: '.$login_url);
+        exit();
     }
     
     /**
      * Performs the login
     */
     protected function do_login() {
-        // Callback goes here
-    }
-    
-    /**
-     * Shows the registation screen
-    */
-    protected function registration_screen() {
-        // if do_login() does not know user, go here.
+        $helper = $fb->getRedirectLoginHelper();
+        try {
+            $accessToken = $helper->getAccessToken();
+        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+            // When Graph returns an error
+            echo 'Graph returned an error: ' . $e->getMessage();
+            session_destroy();
+            die;
+        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+            // When validation fails or other local issues
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            session_destroy();
+            die;
+        }
+        
+        if (isset($accessToken)) {
+            // Logged in!
+            // 'User Node' is Facebook nomenclature.
+            $_SESSION['facebook_access_token'] = (string) $accessToken;
+            /*$fb->setDefaultAccessToken($_SESSION['facebook_access_token']); <-- This is handy if you want to do multiple requests.*/
+            $user_node = $fb -> get('/me?fields=id,name,email,verified', $_SESSION['facebook_access_token']) -> getGraphUser();
+        
+            print_r("<p>
+            ID: " . $user_node -> getId() . "<br>
+            Name: " . $user_node -> getName() . "<br>
+            Email: " . $user_node -> getField('email') . "<br>
+            Verified: " . $user_node -> getField('verified') . "</p>");
+        }
+        
+        session_destroy();
+        exit();
+        
+        /*
+         * In  this order:
+         * If user not verified, throw polite error and destroy session.
+         * If user not known, do do_registration(), while maintaining session. (Not redirect header, function call.)
+         * If user known, log in and destroy session upon success.
+         */
     }
     
     /**
      * Performs the registration
     */
     protected function do_registration() {
-        
+        // Upon failure, always destroy session and return FALSE.
+        // Upon completion, return TRUE and continue do_login() from where it left off. <-- Is this possible? <-- YES
     }
+    
+    /**
+     * This function is mandated by the Interface, but is not necessary in this context.
+    */
+    protected function registration_screen() {}
     
 }
