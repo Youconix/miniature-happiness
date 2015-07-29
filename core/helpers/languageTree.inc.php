@@ -1,7 +1,7 @@
 <?php
 namespace core\helpers;
 
-class languageTree extends Helper {
+class LanguageTree extends Helper {
     /**
      * @var \DOMDocument
      */
@@ -12,9 +12,16 @@ class languageTree extends Helper {
      */
     private $obj_root;
     
+    /**
+     * Inits the class LanguageTree
+     * 
+     * @param unknown $s_language
+     * @param unknown $s_file
+     * @throws \IOException
+     */
     public function init($s_language,$s_file){
         $this->s_language = $s_language;
-        $s_file = NIV.'language'.DIRECTORY_SEPARATOR.$s_language.DIRECTORY_SEPARATOR.'LC_MESSAGES'.DIRECTORY_SEPARATOR.$s_file;
+        $s_file = NIV.'language'.DS.$s_language.DS.'LC_MESSAGES'.DS.$s_file;
         
         $this->dom_document = new \DOMDocument('1.0', true);
         
@@ -30,11 +37,19 @@ class languageTree extends Helper {
         }
     }
     
+    /**
+     * Parses the document
+     */
     public function parse(){
         $this->obj_root = new TreeRoot($this->dom_document);
         $this->obj_root->parse();
     }
     
+    /**
+     * Builds the tree
+     * 
+     * @return string	The tree
+     */
     public function build(){
         return $this->obj_root->build();
     }
@@ -58,6 +73,9 @@ class TreeRoot {
         $this->s_path = $this->obj_root->nodeName;
     }
     
+    /**
+     * Parses the tree
+     */
     public function parse(){
         $children = $this->obj_root->childNodes;
         
@@ -73,6 +91,11 @@ class TreeRoot {
         }
     }
     
+    /**
+     * Builds the tree
+     *
+     * @return string	The tree
+     */
     public function build(){
         $s_tree = '<ul id="language_tree" class="closed">'."\n
         <li data-path=\"".$this->obj_root->tagName."\" data-type=\"tree\" class=\"closed\" style=\"display:inline-block\"><span class=\"tree\">+</span>".$this->obj_root->tagName."<ul class=\"closed\">\n";
@@ -90,11 +113,22 @@ class TreeRoot {
 }
 
 class TreeBranch extends TreeRoot {
+	/**
+	 * Constructor
+	 * 
+	 * @param \DOMElement $obj_root	The parent
+	 * @param string $s_path	The parent path
+	 */
     public function __construct($obj_root,$s_path){        
         $this->obj_root = $obj_root;
         $this->s_path = $s_path.'/'.$obj_root->tagName;
     }
     
+    /**
+     * Builds the branch
+     *
+     * @return string	The branch
+     */
     public function build(){
         if( count($this->a_children) > 0 ){
             $s_type = 'tree';

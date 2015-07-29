@@ -70,11 +70,11 @@
 		<title>system/admin/general/cache</title>
 		<id>admin_general_cache</id>
 		<link>
-			<title>system/admin/cache/languageCache</title>
+			<title>system/settings/cache/languageCache</title>
 			<id>admin_general_cache_language</id>
 		</link>
 		<link>
-			<title>system/admin/cache/siteCache</title>
+			<title>system/settings/cache/siteCache</title>
 			<id>admin_general_cache_site</id>
 		</link>
 	</block>

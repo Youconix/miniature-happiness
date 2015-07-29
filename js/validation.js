@@ -114,7 +114,7 @@ Validation.prototype.errorMessage = function(item,type){
     item.prop('title','');
     return;
   }
-  console.log(type);
+  
   if( item.data().hasOwnProperty('validation-'+type) || item.attr('data-validation-'+type) ){
 	  item.after('<span class="validation-error-message">'+item.data('validation-'+type)+'</span>');
   }

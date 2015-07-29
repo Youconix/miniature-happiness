@@ -86,7 +86,7 @@ class Xml extends Service
         $this->obj_document = new \DOMXPath($this->dom_document);
     }
     
-    public function loadXML($s_content){
+    public function loadXML($s_content,$s_encoding = 'UTF-8'){
         $this->createDocument($s_encoding, true);
         
         if (! $this->dom_document->loadXML($s_content)) {
@@ -96,7 +96,7 @@ class Xml extends Service
         $this->obj_document = new \DOMXPath($this->dom_document);
     }
     
-    public function loadHTML($s_content){
+    public function loadHTML($s_content,$s_encoding = 'UTF-8'){
         $this->createDocument($s_encoding, true);
         
         if (! $this->dom_document->loadHTML($s_content)) {
@@ -266,8 +266,8 @@ class Xml extends Service
         
         $s_dir = dirname($s_file);
         
-        if (! is_writable($s_dir)) {
-            throw new \Exception("Can not write directory " . $s_dir . '.');
+        if (! is_writable($s_dir) && (!file_exists($s_dir) || !is_writable($s_file))) {
+            throw new \Exception("Can not write to " . $s_file . '. Check the permissions.');
         }
         
         $this->dom_document->save($s_file);

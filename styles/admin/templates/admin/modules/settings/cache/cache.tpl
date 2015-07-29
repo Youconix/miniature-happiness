@@ -13,19 +13,19 @@
         <div id="cacheSettings" {cacheSettings}>
             <fieldset>
                 <label class="label" for="expire">{cacheExpireText} *</label>
-                <input type="number" id="expire" name="expire" min="60" step="1" value="{cacheExpire}" required>
+                <input type="number" id="expire" name="expire" min="60" step="1" value="{cacheExpire}" data-validation="{expireError}" required>
             </fieldset>
         </div>
         
         <p><input type="button" id="settings_cache_save" value="{saveButton}"></p>
         
-        <h4>Pagina's uitgesloten van caching</h4>
+        <h4>{excludedCachingTitle}</h4>
         
-        <table id="nonCacheList" data-styledir="{NIV}{style_dir}">
+        <table id="nonCacheList" data-styledir="{NIV}{shared_style_dir}">
         <tbody>
         <block {noCache}>
 			<tr data-id="{id}">
-			 <td><img src="{NIV}{style_dir}images/icons/delete.png" alt="{delete}" title="{delete}"></td>
+			 <td><img src="{NIV}{shared_style_dir}images/icons/delete.png" alt="{delete}" title="{delete}"></td>
 			 <td>{name}</td>
 			</tr>
         </block>

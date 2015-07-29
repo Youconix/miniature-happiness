@@ -6,7 +6,7 @@
     <section class="item_body">
         <h2 id="notice" class="notice"></h2>
         
-        <fieldset><label>Bestand</label>
+        <fieldset><label>{fileText}</label>
             <select id="current_languagefile">
             <block {available_languagesfiles}>
             <option value="{value}" {selected}>{text}</option>

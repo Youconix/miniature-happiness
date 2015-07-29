@@ -95,15 +95,16 @@ class Cache extends \admin\modules\settings\Settings
      */
     private function cache()
     {
-        $this->template->set('cacheTitle', t('system/admin/settings/cache/title'));
-        $this->template->set('cacheActiveText', 'Caching geactiveerd');
+        $this->template->set('cacheTitle', t('system/settings/cache/title'));
+        $this->template->set('cacheActiveText', t('system/settings/cache/cacheActive'));
         if ($this->getValue('cache/status') == 1) {
             $this->template->set('cacheActive', 'checked="checked"');
         } else {
             $this->template->set('cacheSettings', 'style="display:none"');
         }
         
-        $this->template->set('cacheExpireText', 'Cache verloop tijd in seconden');
+        $this->template->set('cacheExpireText', t('system/settings/cache/cacheExpire'));
+        $this->template->set('expireError',t('system/settings/cache/expireError'));
         $this->template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
         
         $a_pages = $this->cache->getNoCachePages();
@@ -114,9 +115,10 @@ class Cache extends \admin\modules\settings\Settings
             ));
         }
         
+        $this->template->set('excludedCachingTitle',t('system/settings/cache/excludedCaching'));
         $this->template->set('delete', t('system/buttons/delete'));
         $this->template->set('saveButton', t('system/buttons/save'));
-        $this->template->set('page', 'Pagina');
+        $this->template->set('page', t('system/settings/cache/page'));
         $this->template->set('addButton', t('system/buttons/add'));
     }
 
@@ -134,9 +136,12 @@ class Cache extends \admin\modules\settings\Settings
         
         $this->setValue('cache/status', $this->post['cache']);
         $this->setValue('cache/timeout', $this->post['expire']);
-        $this->service_Settings->save();
+        $this->settings->save();
     }
 
+    /**
+     * Adds a no cache item
+     */
     private function addNoCache()
     {
         if (! $this->post->validate(array(
@@ -151,6 +156,9 @@ class Cache extends \admin\modules\settings\Settings
         $this->template->set('delete', t('system/buttons/delete'));
     }
 
+    /**
+     * Deletes the no cache item
+     */
     private function deleteNoCache()
     {
         if (! $this->post->validate(array(

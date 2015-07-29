@@ -95,10 +95,10 @@ class Database extends \admin\modules\settings\Settings
      */
     private function database()
     {
-        $this->template->set('databaseTitle', t('system/admin/settings/database/title'));
-        $this->template->set('prefixText', t('system/admin/settings/database/prefix'));
+        $this->template->set('databaseTitle', t('system/settings/database/title'));
+        $this->template->set('prefixText', t('system/settings/database/prefix'));
         $this->template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
-        $this->template->set('typeText', t('system/admin/settings/database/type'));
+        $this->template->set('typeText', t('system/settings/database/type'));
         $s_type = $this->getValue('SQL/type');
         
         $directory = $this->fileHandler->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
@@ -118,18 +118,24 @@ class Database extends \admin\modules\settings\Settings
             ));
         }
         
-        $this->template->set('usernameText', t('system/admin/settings/username'));
+        $this->template->set('usernameText', t('system/settings/username'));
         $this->template->set('username', $this->getValue('SQL/' . $s_type . '/username'));
-        $this->template->set('passwordText', t('system/admin/settings/password'));
+        $this->template->set('passwordText', t('system/settings/password'));
         $this->template->set('password', $this->getValue('SQL/' . $s_type . '/password'));
-        $this->template->set('databaseText', t('system/admin/settings/database/database'));
+        $this->template->set('databaseText', t('system/settings/database/database'));
         $this->template->set('database', $this->getValue('SQL/' . $s_type . '/database'));
-        $this->template->set('hostText', t('system/admin/settings/host'));
+        $this->template->set('hostText', t('system/settings/host'));
         $this->template->set('host', $this->getValue('SQL/' . $s_type . '/host'));
-        $this->template->set('portText', t('system/admin/settings/port'));
+        $this->template->set('portText', t('system/settings/port'));
         $this->template->set('port', $this->getValue('SQL/' . $s_type . '/port', 3306));
         
         $this->template->set('saveButton', t('system/buttons/save'));
+        
+        $this->template->set('prefixError',t('system/settings/database/prefixError'));
+        $this->template->set('usernameError',t('system/settings/database/usernameError'));
+        $this->template->set('passwordError',t('system/settings/database/passwordError'));
+        $this->template->set('databaseError',t('system/settings/database/databaseError'));
+        $this->template->set('hostError',t('system/settings/database/hostError'));
     }
 
     /**
@@ -194,6 +200,6 @@ class Database extends \admin\modules\settings\Settings
         $this->setValue('SQL/' . $s_type . '/host', $this->post['host']);
         $this->setValue('SQL/' . $s_type . '/port', $this->post['port']);
         
-        $this->service_Settings->save();
+        $this->settings->save();
     }
 }

@@ -44,7 +44,13 @@ class AdminLanguage
     {
         $s_text = "var languageAdmin = { \n";
         foreach ($this->a_items as $s_name => $s_key) {
-            $s_text .= '"' . $s_name . '" : "' . t($s_key) . '"' . ",\n";
+        	$s_item = t($s_key);
+        	$s_item = str_replace(array("\n","\t"),array('',' '),$s_item);
+        	while( strpos($s_item,'  ') !== false ){
+        		$s_item = str_replace('  ',' ',$s_item);
+        	}
+        	        	
+            $s_text .= '"' . $s_name . '" : "' . $s_item . '"' . ",\n";
         }
         $s_text .= '};';
         
