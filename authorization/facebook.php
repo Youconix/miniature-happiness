@@ -70,18 +70,18 @@ class Facebook extends  \authorization\Authorization  {
     }
     
     /**
-     * Shows the login screen
+     * Initiates the connection with facebook, requesting a URL for a login window on their side and then redirects the client there.
      */
     protected function login_screen() {
         $helper = $fb->getRedirectLoginHelper();
         $permissions = ['email'];
-        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/.../facebook/do_login', $permissions); // TODO Arrange proper testing URL.
+        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/login/facebook/do_login', $permissions); // TODO Arrange proper testing URL.
         header('Location: '.$login_url);
         exit();
     }
     
     /**
-     * Performs the login
+     * Succesful login from Facebook sends the client here.
     */
     protected function do_login() {
         $helper = $fb->getRedirectLoginHelper();
@@ -101,10 +101,10 @@ class Facebook extends  \authorization\Authorization  {
         
         if (isset($accessToken)) {
             // Logged in!
-            // 'User Node' is Facebook nomenclature.
-            $_SESSION['facebook_access_token'] = (string) $accessToken;
+            $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
             /*$fb->setDefaultAccessToken($_SESSION['facebook_access_token']); <-- This is handy if you want to do multiple requests.*/
             $user_node = $fb -> get('/me?fields=id,name,email,verified', $_SESSION['facebook_access_token']) -> getGraphUser();
+            // 'User Node' is Facebook nomenclature.
         
             print_r("<p>
             ID: " . $user_node -> getId() . "<br>
@@ -133,7 +133,7 @@ class Facebook extends  \authorization\Authorization  {
     }
     
     /**
-     * This function is mandated by the Interface, but is not necessary in this context.
+     * This function is mandated by the parent class, but is not necessary in this context.
     */
     protected function registration_screen() {}
     
