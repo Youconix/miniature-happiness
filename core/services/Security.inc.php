@@ -263,82 +263,94 @@ class Security extends Service implements \Security
         
         foreach ($a_keys as $s_key) {
             if (! in_array($s_key, $a_init)) {
+                unset($a_source[$s_key]);
                 continue;
             }
             
             switch ($a_declared[$s_key]) {
                 case 'boolean':
                     $a_result[$s_key] = $this->secureBoolean($a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'int':
                     $a_result[$s_key] = $this->secureInt($a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'float':
                     $a_result[$s_key] = $this->secureFloat($a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'ignore':
+                    $a_result[$s_key] = $a_source[$s_key];
+                    unset($a_source[$s_key]);
+                    break;
+                    
+                case 'ignore-keep' :
                     $a_result[$s_key] = $a_source[$s_key];
                     break;
                 
                 case 'string':
                     $a_result[$s_key] = $this->secureString($a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-JS':
                     $a_source[$s_key] = $this->prepareJsDecoding($a_source[$s_key]);
                     $a_result[$s_key] = $this->secureString($a_source[$s_key]);
                     $a_result[$s_key] = $this->fixDecodeBug($a_result[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-DB':
                     $a_result[$s_key] = $this->secureStringDB($a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-DB-JS':
                     $a_source[$s_key] = $this->prepareJsDecoding($a_source[$s_key]);
                     $a_result[$s_key] = $this->secureStringDB($a_source[$s_key]);
                     $a_result[$s_key] = $this->fixDecodeBug($a_result[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-DB-array':
                     $a_result[$s_key] = $this->parseArray('string-DB-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-DB-JS-array':
                     $a_result[$s_key] = $this->parseArray('string-DB-JS-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-array':
                     $a_result[$s_key] = $this->parseArray('string-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'string-JS-array':
                     $a_result[$s_key] = $this->parseArray('string-JS-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'int-array':
                     $a_result[$s_key] = $this->parseArray('int-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
                     break;
                 
                 case 'float-array':
                     $a_result[$s_key] = $this->parseArray('float-array', $a_source[$s_key]);
+                    unset($a_source[$s_key]);
+                    break;
+                    
+                default :
+                    unset($a_source[$s_key]);
                     break;
             }
         }
-        
-        if ($s_type == 'GET') {
-            $_GET = array();
-        } else 
-            if ($s_type == 'POST') {
-                $_POST = array();
-            } else 
-                if ($s_type == 'REQUEST') {
-                    $_REQUEST = array();
-                }
-        
         return $a_result;
     }
 
