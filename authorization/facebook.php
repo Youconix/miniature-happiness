@@ -79,7 +79,7 @@ class Facebook extends  \authorization\Authorization  {
                 break;
             case 2 :
                 // Email not verified
-                $this->notVerified();
+                $this->not_verified();
                 break;
             case 3 :
                 // Unknown, new user
@@ -114,8 +114,11 @@ class Facebook extends  \authorization\Authorization  {
     /**
      * Display notice that the Facebook user has not yet verified his/her email address with Facebook.
      */
-    protected function notVerified() {
+    protected function not_verified() {
         $this->template->loadView('not_verified');
-        // TODO
+        
+        $this->template->set('not_verified_header', t('facebook/not_verified_header'));
+        $this->template->set('not_verified_line_1', t('facebook/not_verified_line_1'));
+        $this->template->set('not_verified_line_2', t('facebook/not_verified_line_2'));
     }
 }

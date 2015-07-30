@@ -104,6 +104,9 @@
     	<blacklisted_header>Blacklisted</blacklisted_header>
     	<blacklisted_line_1>Your Facebook account has been blacklisted on this website.</blacklisted_line_1>
     	<blacklisted_line_2>If you believe this in error, please contact the administrator through the contact page.</blacklisted_line_2>
+		<not_verified_header>Unverified</not_verified_header>
+    	<not_verified_line_1>Your email address at Facebook has not yet been verified.</not_verified_line_1>
+    	<not_verified_line_2>Please do so, and then return here.</not_verified_line_2>
     </facebook>
     
 </language>

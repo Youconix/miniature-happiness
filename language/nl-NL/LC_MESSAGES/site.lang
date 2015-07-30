@@ -120,5 +120,8 @@
     	<blacklisted_header>Verbannen</blacklisted_header>
     	<blacklisted_line_1>Uw Facebook-account is verbannen van deze website.</blacklisted_line_1>
     	<blacklisted_line_2>Als u denkt dat dit fout is, neem dan contact op met de beheerder via het contactformulier.</blacklisted_line_2>
+		<not_verified_header>Niet bevestigd</not_verified_header>
+    	<not_verified_line_1>Uw emailadres bij Facebook is niet bevestigd.</not_verified_line_1>
+    	<not_verified_line_2>Doe dat alstublieft eerst, en kom dan hier terug.</not_verified_line_2>
     </facebook>
 </language>
