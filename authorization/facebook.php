@@ -75,7 +75,9 @@ class Facebook extends  \authorization\Authorization  {
     protected function login_screen() {
         $helper = $fb->getRedirectLoginHelper();
         $permissions = ['email'];
-        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/login/facebook/do_login', $permissions); // TODO Arrange proper testing URL.
+        
+        // TODO Use known hostname instead of fixed address, here.
+        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/login/facebook/do_login', $permissions);
         header('Location: '.$login_url);
         exit();
     }
