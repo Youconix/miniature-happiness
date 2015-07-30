@@ -1,7 +1,5 @@
 <?php
 namespace authorization;
-use Facebook\Facebook;
-define('NIV', '../../');
 require 'vendor/autoload.php';
 
 class Facebook extends  \authorization\Authorization  {
@@ -17,12 +15,6 @@ class Facebook extends  \authorization\Authorization  {
      * @var \Facebook\Facebook
      */
     private $fb;
-    
-    /**
-     * 
-     * @var \Settings
-     */
-    private $settings;
     
     /**
      * Constructor
@@ -48,36 +40,50 @@ class Facebook extends  \authorization\Authorization  {
         \Footer $footer,
         \core\models\User $user,
         \Headers $headers,
-        \core\models\LoginFacebook $login,
-        \Settings $settings
+        \core\models\LoginFacebook $login
         )
     {
-        parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);
-        
         $this->login = $login;
-        $this->settings = $settings;
+        
+        parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);
     }
     
     protected function init(){
+        $this->init_get = array(
+            'code'  => 'ignore-keep',
+            'state' => 'ignore-keep'
+        );
         $this->s_current = "facebook";
-        $this->fb = new Facebook([
-            'app_id' => $this->settings->get('login/facebook/appId'),
-            'app_secret' => $this->settings->get('login/facebook/appSecret')
+        
+        try{
+        $fb_app_id = $this->config->getSettings()->get('login/openAuth/facebook/appId');
+        $fb_app_secret = $this->config->getSettings()->get('login/openAuth/facebook/appSecret');
+        $this->fb = new \Facebook\Facebook([
+            'app_id' => $fb_app_id,
+            'app_secret' => $fb_app_secret
             ]);
+        } catch (\Exception $e) {
+            print_r($e);
+        }
         
         parent::init();
-        start_session();
     }
     
     /**
      * Initiates the connection with facebook, requesting a URL for a login window on their side and then redirects the client there.
      */
     protected function login_screen() {
-        $helper = $fb->getRedirectLoginHelper();
+        $helper = $this->fb->getRedirectLoginHelper();
         $permissions = ['email'];
         
+        $s_url = $this->config->getHost().
+            $this->config->getBase().
+            '/authorization/facebook/do_login';
+        $s_url = str_replace('//','/',$s_url);
         // TODO Use known hostname instead of fixed address, here.
-        $login_url = $helper -> getLoginUrl('http://84.27.181.42:8080/login/facebook/do_login', $permissions);
+        $login_url = $helper -> getLoginUrl(
+            $this->config->getProtocol().
+            $s_url, $permissions);
         header('Location: '.$login_url);
         exit();
     }
@@ -86,26 +92,28 @@ class Facebook extends  \authorization\Authorization  {
      * Succesful login from Facebook sends the client here.
     */
     protected function do_login() {
-        $helper = $fb->getRedirectLoginHelper();
+        $helper = $this->fb->getRedirectLoginHelper();
         try {
             $accessToken = $helper->getAccessToken();
-        } catch(Facebook\Exceptions\FacebookResponseException $e) {
+        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
             // When Graph returns an error
             echo 'Graph returned an error: ' . $e->getMessage();
             session_destroy();
             die;
-        } catch(Facebook\Exceptions\FacebookSDKException $e) {
+        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
             // When validation fails or other local issues
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             session_destroy();
             die;
+        } catch(\Exception $e) {
+            echo($e->getMessage());
         }
         
         if (isset($accessToken)) {
             // Logged in!
             $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
             /*$fb->setDefaultAccessToken($_SESSION['facebook_access_token']); <-- This is handy if you want to do multiple requests.*/
-            $user_node = $fb -> get('/me?fields=id,name,email,verified', $_SESSION['facebook_access_token']) -> getGraphUser();
+            $user_node = $this->fb -> get('/me?fields=id,name,email,verified', $_SESSION['facebook_access_token']) -> getGraphUser();
             // 'User Node' is Facebook nomenclature.
         
             print_r("<p>
@@ -113,6 +121,9 @@ class Facebook extends  \authorization\Authorization  {
             Name: " . $user_node -> getName() . "<br>
             Email: " . $user_node -> getField('email') . "<br>
             Verified: " . $user_node -> getField('verified') . "</p>");
+        } else {
+            echo("No token!");
+            die;
         }
         
         session_destroy();
