@@ -75,9 +75,11 @@ class Facebook extends  \authorization\Authorization  {
         switch($i_status) {
             case 1 :
                 // Blacklisted
+                $this->blacklisted();
                 break;
             case 2 :
                 // Email not verified
+                $this->notVerified();
                 break;
             case 3 :
                 // Unknown, new user
@@ -90,8 +92,7 @@ class Facebook extends  \authorization\Authorization  {
      * Performs the registration
     */
     protected function do_registration() {
-        // Upon failure, always destroy session and return FALSE.
-        // Upon completion, return TRUE and continue do_login() from where it left off. <-- Is this possible? <-- YES
+        $this->login->do_registration();
     }
     
     /**
@@ -99,4 +100,22 @@ class Facebook extends  \authorization\Authorization  {
     */
     protected function registration_screen() {}
     
+    /**
+     * Display notice that the Facebook user trying to log in is blacklisted.
+     */
+    protected function blacklisted() {
+        $this->template->loadView('blacklisted');
+        
+        $this->template->set('blacklisted_header', t('facebook/blacklisted_header'));
+        $this->template->set('blacklisted_line_1', t('facebook/blacklisted_line_1'));
+        $this->template->set('blacklisted_line_2', t('facebook/blacklisted_line_2'));
+    }
+    
+    /**
+     * Display notice that the Facebook user has not yet verified his/her email address with Facebook.
+     */
+    protected function notVerified() {
+        $this->template->loadView('not_verified');
+        // TODO
+    }
 }

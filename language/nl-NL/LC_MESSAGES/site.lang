@@ -114,5 +114,11 @@
       <noMessage>Er is geen bericht ingevuld.</noMessage>
       <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
     </notices>
-  </messages>
+  </messages> 
+    
+    <facebook>
+    	<blacklisted_header>Verbannen</blacklisted_header>
+    	<blacklisted_line_1>Uw Facebook-account is verbannen van deze website.</blacklisted_line_1>
+    	<blacklisted_line_2>Als u denkt dat dit fout is, neem dan contact op met de beheerder via het contactformulier.</blacklisted_line_2>
+    </facebook>
 </language>

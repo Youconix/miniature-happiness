@@ -99,4 +99,11 @@
             <systemError><![CDATA[An error has occured on the server. The server&#39;s administrator has been warned.]]></systemError>
         </error500>
     </errors>
+    
+    <facebook>
+    	<blacklisted_header>Blacklisted</blacklisted_header>
+    	<blacklisted_line_1>Your Facebook account has been blacklisted on this website.</blacklisted_line_1>
+    	<blacklisted_line_2>If you believe this in error, please contact the administrator through the contact page.</blacklisted_line_2>
+    </facebook>
+    
 </language>

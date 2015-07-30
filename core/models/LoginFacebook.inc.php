@@ -81,13 +81,20 @@ class LoginFacebook extends \core\models\LoginParent
             'app_secret' => $fb_app_secret
         ]);
     }
-
+    
+    /**
+     * 
+     */
+    public function do_registration() {
+                
+    }
+    
     /**
      *
      * @param \core\models\data\User $user
      *            The data of the User in question
      */
-    public function register(\core\models\data\User $user)
+    protected function register(\core\models\data\User $user)
     {}
     
     public function startLogin() {
