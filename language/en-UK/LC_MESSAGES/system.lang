@@ -103,16 +103,19 @@
 			<registrationRedirect>Redirect after registration
 			</registrationRedirect>
 			<normalLogin>Standard login</normalLogin>
-			<openidLogin>OpenID login</openidLogin>
+			<googleLogin>Google+ login</googleLogin>
 			<facebookLogin>Facebook login</facebookLogin>
-			<facebookAppID>App ID</facebookAppID>
+			<appID>App ID</appID>
+			<appSecret>App secret</appSecret>
 			<ldapLogin>LDAP login</ldapLogin>
 			<loginChoice>You must choose at least 1.</loginChoice>
 			<redirectError>The redirect can not be empty.</redirectError>
-			<facebookAppError>The Facebook app ID is not filled in.
+			<facebookAppError>The app ID is not filled in.
 			</facebookAppError>
+			<facebookAppSecretError>The app secret is not filled in.</facebookAppSecretError>
 			<ldapServerError>The LDAP server can not be empty.</ldapServerError>
 			<ldapPortError>The LDAP poort can not be empty.</ldapPortError>
+			<twitterLogin>Twitter login</twitterLogin>
 		</login>
 		<sessions>
 			<title>Sessions</title>

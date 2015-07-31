@@ -124,8 +124,8 @@ class Session extends \admin\modules\settings\Settings
     	$this->template->set($s_name.'AppID',$this->getValue('login/openAuth/'.$s_name.'/appId'));
     	$this->template->set($s_name.'AppSecret',$this->getValue('login/openAuth/'.$s_name.'/appSecret'));
     	
-    	$this->template->set('appIDText', t('system/settings/login/facebookAppID'));
-    	$this->template->set('appSecretText','App secret');
+    	$this->template->set('appIDText', t('system/settings/login/appID'));
+    	$this->template->set('appSecretText',t('system/settings/login/appSecret'));
     	$this->template->set('appError', t('system/settings/login/facebookAppError'));
     	$this->template->set('appSecretError', t('system/settings/login/facebookAppSecretError'));
     }

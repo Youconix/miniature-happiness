@@ -108,16 +108,19 @@
 			<registrationRedirect>Verwijzing na registratie
 			</registrationRedirect>
 			<normalLogin>Standaard login</normalLogin>
-			<openidLogin>OpenID login</openidLogin>
+			<googleLogin>Google+ login</googleLogin>
 			<facebookLogin>Facebook login</facebookLogin>
-			<facebookAppID>App ID</facebookAppID>
+			<appID>App ID</appID>
+			<appSecret>App secret</appSecret>
 			<ldapLogin>LDAP login</ldapLogin>
 			<loginChoice>Minimaal 1 moet er gekozen worden.</loginChoice>
 			<redirectError>De verwijziging kan niet leeg zijn.</redirectError>
-			<facebookAppError>De Facebook app ID is niet ingevuld.
+			<facebookAppError>De app ID is niet ingevuld.
 			</facebookAppError>
+			<facebookAppSecretError>De app secret is niet ingevuld.</facebookAppSecretError>
 			<ldapServerError>De LDAP server kan niet leeg zijn.</ldapServerError>
 			<ldapPortError>De LDAP poort kan niet leeg zijn.</ldapPortError>
+			<twitterLogin>Twitter login</twitterLogin>
 		</login>
 		<sessions>
 			<title>Sessies</title>
