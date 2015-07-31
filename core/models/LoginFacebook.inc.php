@@ -16,7 +16,37 @@ class LoginFacebook extends \core\models\LoginParent
     protected $fb;
     
     /**
-     * (non-PHPdoc)
+     * Sets up necessary services through the autoloader.
+     *
+     * @param \Cookie $cookie
+     * @param \Builder $builder
+     * @param \Logger $logs
+     * @param \Session $session
+     * @param \Headers $headers
+     * @param \Config $config
+     * @param \core\models\User $user;
+     */
+    public function __construct(
+        \Cookie $cookie,
+        \Builder $builder,
+        \Logger $logs,
+        \Session $session,
+        \Headers $headers,
+        \Config $config,
+        \core\models\User $user
+        )
+    {
+        parent::__construct(
+            $cookie,
+            $builder,
+            $logs,
+            $session,
+            $headers,
+            $config,
+            $user
+            );
+    }
+    
      *
      * @see \core\models\LoginParent::do_login()
      */
