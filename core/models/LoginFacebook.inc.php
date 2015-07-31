@@ -47,8 +47,14 @@ class LoginFacebook extends \core\models\LoginParent
             );
     }
     
+    /**
+     * This function attempts login locally, after returning from Facebook's domain.
      *
      * @see \core\models\LoginParent::do_login()
+     * @return integer (
+     *      1: Facebook id blacklisted,
+     *      2: Facebook id is not verified,
+     *      3: Facebook id is unknown (ie. new user). )
      */
     public function do_login()
     {
@@ -93,13 +99,7 @@ class LoginFacebook extends \core\models\LoginParent
         }
         session_destroy();
         exit();
-        
-        /*
-         * In  this order:
-         * If user not verified, throw polite error and destroy session.
-         * If user not known, do do_registration(), while maintaining session. (Not redirect header, function call.)
-         * If user known, log in and destroy session upon success.
-         */
+
     }
 
     public function init()
@@ -127,6 +127,9 @@ class LoginFacebook extends \core\models\LoginParent
     protected function register(\core\models\data\User $user)
     {}
     
+    /**
+     * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page on the Facebook domain.
+     */
     public function startLogin() {
         $helper = $this->fb->getRedirectLoginHelper();
         $permissions = ['email'];
