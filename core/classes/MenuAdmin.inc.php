@@ -26,22 +26,41 @@ namespace core\classes;
 class MenuAdmin implements \Menu
 {
 
-    private $service_Language;
+	/**
+	 * 
+	 * @var \Language
+	 */
+    private $language;
 
-    private $model_ControlPanelModules;
+    /**
+     * 
+     * @var \core\models\ControlPanelModules
+     */
+    private $controlPanelModules;
 
-    private $service_XML;
+    /**
+     * 
+     * @var \core\services\Xml
+     */
+    private $xml;
 
+    /**
+     * 
+     * @var \Output
+     */
     private $template;
+    
+    private $a_jsItems = array();
+    private $a_cssItems = array();
 
     /**
      * Starts the class menuAdmin
      */
-    public function __construct(\Language $service_Language, \core\services\Xml $service_XML, \Output $template, \core\models\ControlPanelModules $model_ControlPanelModules)
+    public function __construct(\Language $language, \core\services\Xml $xml, \Output $template, \core\models\ControlPanelModules $controlPanelModules)
     {
-        $this->service_Language = $service_Language;
-        $this->service_XML = $service_XML;
-        $this->model_ControlPanelModules = $model_ControlPanelModules;
+        $this->language = $language;
+        $this->xml = $xml;
+        $this->controlPanelModules = $controlPanelModules;
         $this->template = $template;
     }
     
@@ -54,14 +73,14 @@ class MenuAdmin implements \Menu
      */
     private function modules()
     {
-        $s_dir = NIV . $this->model_ControlPanelModules->getDirectory();
-        $a_modules = $this->model_ControlPanelModules->getInstalledModulesList();
+        $s_dir = NIV . $this->controlPanelModules->getDirectory();
+        $a_modules = $this->controlPanelModules->getInstalledModulesList();
         
         $i = 1;
         $i_blockNr = 1;
         $a_js = array();
         foreach ($a_modules as $s_module) {
-            $obj_settings = $this->service_XML->cloneService();
+            $obj_settings = $this->xml->cloneService();
             $obj_settings->load($s_dir . '/' . $s_module . '/settings.xml');
             
             $s_title = $obj_settings->get('module/title');
@@ -75,7 +94,7 @@ class MenuAdmin implements \Menu
             $this->template->setBlock('menu_tab_header', array(
                 'class' => $s_class,
                 'id' => $i,
-                'title' => $this->service_Language->get($s_title)
+                'title' => $this->language->get($s_title)
             ));
             
             $this->template->setBlock('menu_tab_content', array(
@@ -94,7 +113,7 @@ class MenuAdmin implements \Menu
                         $a_links[] = $item;
                     } else 
                         if ($item->tagName == 'title') {
-                            ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
+                            ($this->language->exists($item->nodeValue)) ? $a_data['title'] = $this->language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
                         } else {
                             $a_data[$item->tagName] = $item->nodeValue;
                         }
@@ -113,6 +132,10 @@ class MenuAdmin implements \Menu
             
             $i ++;
         }
+        
+        $s_link = '{NIV}combiner/javascript/';
+        $this->template->setJavascriptLink('<script src="'.$s_link.implode(',',$this->a_jsItems).'"></script>');
+        $this->template->setCssLink('<link rel="stylesheet" href="{NIV}combiner/css/'.implode(',',$this->a_cssItems).'">');
     }
 
     /**
@@ -130,9 +153,12 @@ class MenuAdmin implements \Menu
         }
         
         $a_js = explode(',', $s_jsLink);
+        $a_items = array('{NIV}admin/modules/'.$s_module);
         foreach ($a_js as $s_jsLink) {
-            $this->template->setJavascriptLink('<script src="{NIV}admin/modules/' . $s_module . '/' . trim($s_jsLink) . '"></script>');
-        }
+        	$a_items[] = trim($s_jsLink);
+        }        
+        $this->a_jsItems[] = implode(';',$a_items);
+        
     }
 
     /**
@@ -150,9 +176,11 @@ class MenuAdmin implements \Menu
         }
         
         $a_css = explode(',', $s_css);
+        $a_items = array('{NIV}admin/modules/'.$s_module);
         foreach ($a_css as $s_css) {
-            $this->template->setCssLink('<link rel="stylesheet" href="{NIV}admin/modules/' . $s_module . '/' . $s_css . '">');
+        	$a_items[] = trim($s_css);            
         }
+        $this->a_cssItems[] = implode(';',$a_items);
     }
 
     private function setLinks($a_links, $s_module)
@@ -162,7 +190,7 @@ class MenuAdmin implements \Menu
             
             foreach ($obj_link->childNodes as $item) {
                 if ($item->tagName == 'title') {
-                    ($this->service_Language->exists($item->nodeValue)) ? $a_data['title'] = $this->service_Language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
+                    ($this->language->exists($item->nodeValue)) ? $a_data['title'] = $this->language->get($item->nodeValue) : $a_data['title'] = $item->nodeValue;
                 } else {
                     $a_data[$item->tagName] = $item->nodeValue;
                 }

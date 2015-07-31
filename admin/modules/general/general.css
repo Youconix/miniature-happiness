@@ -11,118 +11,10 @@
 	text-align: right
 }
 
-#users
-
- 
-
-input
-
-
-[
-type
-=
-text
-]
-,
-#users
-
- 
-
-input
-
-
-[
-type
-=
-email
-]
-,
-#users
-
- 
-
-input
-
-
-[
-type
-=
-password
-]
-,
-#users
-
- 
-
-textarea
-,
-#groups
-
- 
-
-input
-
-
-[
-type
-=
-text
-]
-,
-#groups
-
- 
-
-input
-
-
-[
-type
-=
-email
-]
-,
-#groups
-
- 
-
-input
-
-
-[
-type
-=
-password
-]
-,
-#groups
-
- 
-
-textarea
-,
-#pages
-
- 
-
-input
-
-
-[
-type
-=
-text
-]
-,
-{
-width
-
-
-:
-
- 
-
-40%;
+#users input[type=text], #users input[type=email], #users input[type=password], #users textarea, 
+#groups input[type=text], #groups input[type=email], #groups input[type=password], #groups textarea,
+#pages input[type=text] {
+    width:40%;
 }
 #users textarea, #groups textarea {
 	height: 4em;
@@ -261,7 +153,7 @@ width
 	#admin_general_modules h2, #admin_general_page_rights h2,
 	#admin_general_updates h2, #users_main_title, #groups_main_title,
 	#pages_main_title, #modules_main_title, #maintenance_main_title {
-	background-image: url('icons/youconix.png');
+	background-image: url('/admin/modules/general/icons/youconix.png');
 	background-size: 25px;
 	background-repeat: no-repeat;
 	padding-left: 30px;

@@ -8,8 +8,8 @@
 	<upgrade></upgrade>
 	<deinstall></deinstall>
 	<title>system/menu/general</title>
-	<js>general.js</js>
-	<css>general.css</css>
+	<js>js/cache.min.js,js/groups.min.js,js/updater.js,js/backup.js,js/modules.min.js,js/pagerights.min.js,js/users.min.js,js/maintenance.min.js,js/general.min.js</js>
+	<css>general.min.css</css>
 	<block>
 		<title>system/admin/general/users</title>
 		<id>admin_general_users</id>

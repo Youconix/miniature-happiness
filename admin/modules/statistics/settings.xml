@@ -8,8 +8,8 @@
 	<upgrade></upgrade>
 	<deinstall>deinstall.php</deinstall>
 	<title>system/menu/statistics</title>
-	<js>statistics.js</js>
-	<css>statistics.css</css>
+	<js>statistics.min.js</js>
+	<css>statistics.min.css</css>
 	<block>
 		<title>system/admin/statistics/hits</title>
 		<id>admin_statistics_hits</id>

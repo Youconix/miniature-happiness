@@ -1,4 +1,5 @@
 <?php
+namespace core;
 define('PROCESS', 'true');
 define('NIV','../');
 
@@ -12,29 +13,29 @@ Class Combiner {
     /**
      * @var \Headers
      */
-    protected $service_Headers;
+    protected $headers;
     /**
-     * @var \core\services\File
+     * @var \core\services\FileHandler
      */
-    protected $service_File;
+    protected $file;
     
     private $a_types = array('javascript','css');
     private $s_file = "";
     
-    public function __construct() {
+    public function __construct(\Config $config, \core\services\FileHandler $file,\core\services\Headers $headers) {
+    	$this->config = $config;
+    	$this->file = $file;
+    	$this->headers = $headers;
+    	
         $this->init();
         
         $this->parse();
     }
     
-    private function init() {
-        $this->config = \Loader::Inject('\Config');
-        $this->service_Headers = \Loader::Inject('\Headers');
-        $this->service_File = \Loader::Inject('\core\services\File');
-        
+    private function init() {        
         if (! isset($_GET['type']) || ! in_array($_GET['type'], $this->a_types) || ! isset($_GET['files']) ) {
-            $this->service_Headers->http400();
-            $this->service_Headers->printHeaders();
+            $this->headers->http400();
+            $this->headers->printHeaders();
             exit();
         }
     }
@@ -42,72 +43,57 @@ Class Combiner {
     private function parse() {
         switch($_GET['type']) {
             case 'javascript':
-                $this->parseJavascript();
-                $this->service_Headers->setJavascript();
+            	$this->s_file = '"use strict";'."\n";
+            	$this->parseFiles('js');
+                $this->headers->setJavascript();
                 break;
             case 'css':
-                $this->parseCSS();
-                $this->service_Headers->setCSS();
+                $this->parseFiles('css');
+                $this->headers->setCSS();
                 break;
         }
         
-        $this->service_Headers->printHeaders();
+        $this->headers->printHeaders();
         echo $this->s_file;
         exit();
     }
     
-    private function parseJavascript() {
-        $s_hash = sha1($_GET['files']);
-        $this->hasCache($s_hash.".js");
-        
-        $a_files = explode(",", $_GET['files']);
-        foreach( $a_files AS $s_file ){
-            if( substr($s_file,-3) != '.js' ){
-                continue;
-            }
-            $s_file = $this->cleanFilename($s_file);
-        
-            if (! $this->service_File->exists(NIV.$s_file)) {
-                continue;
-            }
-        
-            $s_content = $this->service_File->readFile(NIV.$s_file);
-        
-            if(!defined('DEBUG') ){
-                $s_content = $this->compressJS($s_content);
-            }
-        
-            $this->s_file .= $s_content."\n";
-        }
-        
-        $this->writeCache($s_hash.".js");
+    private function parseFiles($s_extension){
+    	$s_hash = sha1($_GET['files']);
+    	
+    	if( $this->hasCache($s_hash.'.'.$s_extension) ){
+    		return;
+    	}
+    	
+    	$a_files = explode(",", $_GET['files']);
+    	$this->combineFiles($a_files);
+    	
+    	$this->writeCache($s_hash.'.'.$s_extension);
     }
     
-    private function parseCSS() {
-        $s_hash = sha1($_GET['files']);
-        $this->hasCache($s_hash.".css");        
-        
-        $a_files = explode(",", $_GET['files']);
-        foreach( $a_files AS $s_file ){
-            if( substr($s_file,-4) != '.css' && substr($s_file, -5) != '.less' ){
-                continue;
-            }
-            $s_file = $this->cleanFilename($s_file);
-            
-            if (! $this->service_File->exists(NIV.$s_file)) {
-                continue;
-            }
-            
-            $s_content = $this->service_File->readFile(NIV.$s_file);
-            
-            if( substr($s_file,-3) == 'css' && !defined('DEBUG') ){
-                $s_content = $this->compressCSS($s_content);
-            }
-            
-            $this->s_file .= $s_content."\n";
-        }
-        
-        $this->writeCache($s_hash.".css");
+    private function combineFiles($a_files){
+    	foreach( $a_files AS $s_file ){
+    		if( strpos($s_file,';') !== false ){
+    			$a_parts = explode(';',$s_file);
+    			$a_subfiles = array();
+    			$s_dir = $a_parts[0];
+    			for( $i=1; $i<count($a_parts); $i++){
+    				$a_subfiles[] = $s_dir.DS.$a_parts[$i];
+    			}
+    			$this->combineFiles($a_subfiles);
+    			
+    			continue;
+    		}
+    		$s_file = $this->cleanFilename($s_file);
+    		 
+    		if (! $this->file->exists(NIV.$s_file)) {
+    			continue;
+    		}
+    		 
+    		$s_content = trim($this->file->readFile(NIV.$s_file));
+    		 
+    		$this->s_file .= $s_content."\n";
+    	}
     }
     
     private function cleanFilename($s_filename){
@@ -118,25 +104,19 @@ Class Combiner {
         return $s_filename;
     }
     
-    private function compressCSS($s_content){
-        include(NIV.'/lib/cssmin-v3.0.1.php');
-        
-        return CssMin::minify( file_get_contents($s_content) );
-    }
-    
-    private function compressJS($s_content){
-        include(NIV.'/lib/tedious/src/JShrink/Minifier.php');
-        
-        return \JShrink\Minifier::minify($s_content, array('flaggedComments' => false) );
-    }
-    
     private function hasCache($s_filename){
-        // TODO
+        if( ($this->config->getSettings()->get('cache/status') == 1) && ($this->file->exists(NIV.'files/cache/'.$s_filename)) ){
+        	$this->s_file = $this->file->readFile(NIV.'files/cache/'.$s_filename);
+        	return true;
+        }
+        return false;
     }
     
     private function writeCache($s_filename) {
-       // TODO
+    	if($this->config->getSettings()->get('cache/status') == 1){
+    		$this->file->writeFile(NIV.'files/cache/'.$s_filename, $this->s_file);
+    	}
     }
 }
 
-$combiner = new Combiner();
+$combiner = \loader::Inject('\core\Combiner');

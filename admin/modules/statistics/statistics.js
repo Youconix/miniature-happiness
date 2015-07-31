@@ -1,11 +1,9 @@
-"use strict";
-
 function Statistics(){
 	this.address = '../../admin/modules/statistics/stats/';
 }
 Statistics.prototype.init = function(){
-	$('head').append('<script src="../../js/youconix/youconix_graph.js"></script>');
-	$('head').append('<script src="../../js/youconix/youconix_graph_diagrams.js"></script>');
+	$('head').append('<script src="/js/youconix/youconix_graph.js"></script>');
+	$('head').append('<script src="/js/youconix/youconix_graph_diagrams.js"></script>');
 	
 	$('#admin_statistics_hits h2').click(function(){
 		admin.show(statistics.address+'hits',statistics.hits);

@@ -79,6 +79,56 @@ class FileHandler extends \core\services\Service
     }
     
     /**
+     * Overwrites the given file or generates it if does not exists
+     *
+     * @param String $s_file
+     *            The url
+     * @param String $s_content
+     *            The content
+     * @param int $i_rights
+     *            The permissions of the file, default 0644 (read/write for owner, read for rest)
+     * @param boolean $bo_binary
+     *            true for binary writing, optional
+     * @throws IOException When the file is not readable or writable
+     */
+    public function writeFile($s_file, $s_content, $i_rights = 0644, $bo_binary = false)
+    {
+    	\core\Memory::type('string', $s_file);
+    	\core\Memory::type('string', $s_content);
+    	\core\Memory::type('int', $i_rights);
+    	
+    	$this->writeToFile($s_file, $s_content, 'w',$i_rights);    	
+    }
+    
+    protected function writeToFile($s_file,$s_content,$s_mode,$i_rights){    	
+    	$file = new \SplFileObject($s_file,$s_mode);
+    	
+    	/* Check permissions */
+    	if( !$this->exists($s_file) ){
+    		$s_dir = dirname($s_file);
+    		if (! is_writable($s_dir)) {
+    			throw new \IOException('Can not make file ' . $s_file . ' in directory ' . $s_dir . '. Check the permissions');
+    		}
+    	}
+    	else {
+    		if (! $file->isReadable() ) {
+    			throw new \IOException('Can not open file ' . $s_file . '. Check the permissions');
+    		}
+    		 
+    		if ( ! $file->isWritable() ) {
+    			throw new \IOException('Can not write file ' . $s_file . '. Check the permissions');
+    		}	
+    	}
+    	
+    	$i_bytes = $file->fwrite($s_content);
+    	if( is_null($i_bytes) ){
+    		throw new \IOException('Writing to file '.$s_file.' failed.');
+    	}
+    	unset($file);
+    	$this->rights($s_file, $i_rights);
+    }
+    
+    /**
      * Generates a new directory with the given name and rights
      *
      * @param String $s_name

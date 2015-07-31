@@ -8,8 +8,8 @@
 	<upgrade></upgrade>
 	<deinstall>deinstall.php</deinstall>
 	<title>system/menu/settings</title>
-	<js>settings.js</js>
-	<css>settings.css</css>
+	<js>js/email.min.js,js/general.min.js,js/session.min.js,js/database.min.js,js/cache.min.js,js/language.min.js,js/settings.min.js</js>
+	<css>settings.min.css</css>
 	<block>
 		<title>system/settings/email/title</title>
 		<id>admin_settings_email</id>

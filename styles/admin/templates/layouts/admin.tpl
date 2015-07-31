@@ -3,14 +3,8 @@
 <head>
         <meta http-equiv="content-type" content="application/xhtml+xml; charset={encoding}">
     <title>{mainTitle} {title}</title>
-    <link rel="stylesheet" href="{NIV}{style_dir}css/cssPage.css" media="screen">
-    <link rel="stylesheet" href="{NIV}{shared_style_dir}css/tabs.css" media="screen">
-    <link rel="stylesheet" href="{NIV}{shared_style_dir}css/HTML5_validation.css" media="screen">
-    <script src="{NIV}js/jquery-2.0.3.min.js"></script>
-    <script src="{NIV}js/admin/admin.js"></script>
-    <script src="{NIV}js/general.js"></script>
-    <script src="{NIV}js/tabs.js"></script>
-    <script src="{NIV}js/validation.js"></script>
+    <link rel="stylesheet" href="/combiner/css/{shared_style_dir}css;tabs.css;HTML5_validation.css;css/animation.css,{style_dir}css/cssPage.css" media="screen">
+    <script src="/combiner/javascript//js;jquery-2.0.3.min.js;admin/admin.js;general.js;tabs.js;validation.js;site.js"></script>
     {headblock}
 </head>
 <body {autostart}>

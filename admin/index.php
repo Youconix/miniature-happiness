@@ -24,8 +24,6 @@ use core\BaseLogicClass;
  * @author Rachelle Scheijen
  * @since 1.0
  */
-include (NIV . 'core/BaseLogicClass.php');
-
 class Index extends \core\BaseLogicClass
 {
     /**
@@ -47,8 +45,6 @@ class Index extends \core\BaseLogicClass
         parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
         
        $this->prepareInput($Input);
-        
-        $this->init();
         
         $confirmbox->create();
     }

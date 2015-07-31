@@ -234,7 +234,7 @@ class Stats extends \core\AdminLogicClass
             );
         }
         
-        $this->template->set('osTitle', $this->service_Language->get('system/admin/stats/OS'));
+        $this->template->set('osTitle', $this->language->get('system/admin/stats/OS'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('os',json_encode($a_osses));
     }
@@ -267,7 +267,7 @@ class Stats extends \core\AdminLogicClass
             );
         }
         
-        $this->template->set('browserTitle', $this->service_Language->get('system/admin/stats/browsers'));
+        $this->template->set('browserTitle', $this->language->get('system/admin/stats/browsers'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('browsers',json_encode($a_browsers));
     }
@@ -293,7 +293,7 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->template->set('screenColorsTitle', $this->service_Language->get('system/admin/stats/screenColors'));
+        $this->template->set('screenColorsTitle', $this->language->get('system/admin/stats/screenColors'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('screenColors',json_encode($a_colors));
     }
@@ -319,7 +319,7 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->template->set('screenSizesTitle', $this->service_Language->get('system/admin/stats/screenSizes'));
+        $this->template->set('screenSizesTitle', $this->language->get('system/admin/stats/screenSizes'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('screenSizes',json_encode($a_sizes));
     }
@@ -345,7 +345,7 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->template->set('referencesTitle', $this->service_Language->get('system/admin/statistics/references'));
+        $this->template->set('referencesTitle', $this->language->get('system/admin/statistics/references'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('references',json_encode($a_references));
     }
@@ -371,7 +371,7 @@ class Stats extends \core\AdminLogicClass
             $i++;
         }
         
-        $this->template->set('pagesTitle', $this->service_Language->get('system/admin/statistics/pages'));
+        $this->template->set('pagesTitle', $this->language->get('system/admin/statistics/pages'));
         $this->template->set('lines',json_encode($a_lines));
         $this->template->set('pages',json_encode($a_pages));
     }

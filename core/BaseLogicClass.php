@@ -126,7 +126,6 @@ abstract class BaseLogicClass extends \core\BaseClass implements \Routable
         
         $s_language = $this->language->getLanguage();
         $this->template->setJavascriptLink('<script src="{NIV}js/language.php?lang='.$s_language.'" type="text/javascript"></script>');
-        $this->template->setJavascriptLink('<script src="{NIV}js/site.js" type="text/javascript"></script>');
         
         if (! $this->config->isAjax()) {
             $this->loadView();

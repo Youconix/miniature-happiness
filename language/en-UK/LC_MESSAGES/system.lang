@@ -92,6 +92,9 @@
 			<viewRightsDefault>Choose a minimal access right</viewRightsDefault>
 			<editPageTitle>Edit page rights</editPageTitle>
 			<view>View</view>
+			<deleteConfirmTitle>Delete page</deleteConfirmTitle>
+			<deleteConfirm>Are you sure you want to delete [page]?</deleteConfirm>
+			<deleteViewTitle>Delete view</deleteViewTitle>
 		</pages>
 	</general>
 	<settings>
@@ -146,6 +149,7 @@
             <language>Are you sure you want to delete the language cache?
             </language>
             <site>Are you sure you want to delete the site cache?</site>
+            <cacheAgain>Are you sure you want to cache this page again?</cacheAgain>
 		</cache>
 		<email>
 			<title>E-mail</title>
@@ -196,6 +200,7 @@
 			</databasePortInvalid>
 			<databaseInvalid>The database credentials are invalid.
 			</databaseInvalid>
+			<checkCredentials>Checking database credentials.</checkCredentials>
 			<prefixError>The prefix can not be empty.</prefixError>
 			<usernameError>The username can not be empty.</usernameError>
 			<passwordError>The password can not be empty.</passwordError>

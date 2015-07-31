@@ -178,10 +178,8 @@ class Session extends \admin\modules\settings\Settings
     	foreach($this->a_openAuth AS $s_name ){
     		$a_rules[$s_name.'_login'] = 'required|set:0,1';
     	}
-    	print_r($a_rules);
     	
         if (! $this->post->validate($a_rules)) {
-        	echo('validation errors');
             return;
         }
         
@@ -199,7 +197,6 @@ class Session extends \admin\modules\settings\Settings
         }
         
         if ( !$bo_found ) {
-        	echo('no active login found');
         	return;
         }
         
@@ -220,7 +217,6 @@ class Session extends \admin\modules\settings\Settings
             'ldap_server' => 'required',
             'ldap_port' => 'required|type:port'
         ))) {
-        	echo('LDAP error');
             return;
         }
         

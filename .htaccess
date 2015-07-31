@@ -17,6 +17,8 @@ RewriteRule ^admin/?$ /router.php?router=admin/index/view [L]
 RewriteRule ^admin/index.php$ /router.php?router=admin/index/view [L]
 RewriteRule ^admin/modules/([a-zA-Z\-_/]+)/([0-9]+)$ /router.php?router=admin/modules/$1&userid=$2 [L]
 
+RewriteRule ^combiner/([a-zA-Z]+)/([a-zA-Z0-9_,\-\.\:\;\/\\]+)$ /core/Combiner.php?type=$1&files=$2 [L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([a-zA-Z0-9\-_/]+)/details/(.*?)$ /router.php?router=$1&query=$2 [L]
 RewriteRule ^([a-zA-Z0-9\-_/]+)$ /router.php?router=$1& [L]
