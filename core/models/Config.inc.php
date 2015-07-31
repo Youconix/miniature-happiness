@@ -556,8 +556,8 @@ class Config extends Model implements \Config,\SplSubject
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->settings->exists('main/login')) {
-            $s_page = $this->getBase() . $this->settings->get('main/login');
+        if ($this->settings->exists('login/login')) {
+            $s_page = $this->getBase() . $this->settings->get('login/login');
         }
         
         return $s_page;
@@ -572,8 +572,8 @@ class Config extends Model implements \Config,\SplSubject
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->settings->exists('main/logout')) {
-            $s_page = $this->getBase() . $this->settings->get('main/logout');
+        if ($this->settings->exists('login/logout')) {
+            $s_page = $this->getBase() . $this->settings->get('login/logout');
         }
         
         return $s_page;
@@ -588,8 +588,8 @@ class Config extends Model implements \Config,\SplSubject
     {
         $s_page = $this->getBase() . 'index/view';
         
-        if ($this->settings->exists('main/registration')) {
-            $s_page = $this->getBase() . $this->settings->get('main/registration');
+        if ($this->settings->exists('login/registration')) {
+            $s_page = $this->getBase() . $this->settings->get('login/registration');
         }
         
         return $s_page;

@@ -26,6 +26,8 @@ namespace admin\modules\settings;
 class Session extends \admin\modules\settings\Settings
 {
 
+	private $a_openAuth = array('google','facebook','twitter');
+	
     /**
      * Routes the controller
      *
@@ -46,7 +48,7 @@ class Session extends \admin\modules\settings\Settings
         } else {
             switch ($s_command) {
                 case 'login':
-                    $this->login();
+                    $this->loginSave();
                     break;
                 
                 case 'sessions':
@@ -66,9 +68,6 @@ class Session extends \admin\modules\settings\Settings
             'logout_redirect' => 'string',
             'registration_redirect' => 'string',
             'normal_login' => 'ignore',
-            'openid_login' => 'ignore',
-            'facebook_login' => 'ignore',
-            'facebook_app_id' => 'string',
             'ldap_login' => 'ignore',
             'ldap_server' => 'string',
             'ldap_port' => 'int',
@@ -77,6 +76,12 @@ class Session extends \admin\modules\settings\Settings
             'session_path' => 'string',
             'session_expire' => 'int'
         );
+        
+        foreach($this->a_openAuth AS $s_name ){
+        	$this->init_post[$s_name.'_login'] = 'ignore';
+        	$this->init_post[$s_name.'_app_id'] = 'ignore';
+        	$this->init_post[$s_name.'_app_secret'] = 'ignore';
+        }
         
         parent::init();
     }
@@ -88,48 +93,74 @@ class Session extends \admin\modules\settings\Settings
     {
         $this->template->set('generalTitle', t('system/settings/login/title'));
         $this->template->set('loginRedirectText', t('system/settings/login/loginRedirect'));
-        $this->template->set('loginRedirect', $this->getValue('main/settings/login', 'index/view'));
+        $this->template->set('loginRedirect', $this->getValue('login/login', 'index/view'));
         $this->template->set('logoutRedirectText', t('system/settings/login/logoutRedirect'));
-        $this->template->set('logoutRedirect', $this->getValue('main/logout', 'index/view'));
+        $this->template->set('logoutRedirect', $this->getValue('login/logout', 'index/view'));
         $this->template->set('registrationRedirectText', t('system/settings/login/registrationRedirect'));
-        $this->template->set('registrationRedirect', $this->getValue('main/registration', 'index/view'));
+        $this->template->set('registrationRedirect', $this->getValue('login/registration', 'index/view'));
         
-        $this->template->set('normalLoginText', t('system/settings/login/normalLogin'));
-        if ($this->getValue('login/normalLogin', 1) == 1) {
-            $this->template->set('normalLogin', 'checked="checked"');
+        $a_types = $this->config->getLoginTypes();
+        
+        $this->setType('normal', $a_types);
+        foreach($this->a_openAuth AS $s_name){
+        	$this->setOpenAuth($s_name,$a_types);
         }
-        /* Open ID */
-        $this->template->set('openidLoginText', t('system/settings/login/openidLogin'));
-        if ($this->getValue('login/openID', 0) == 1) {
-            $this->template('openidLogin', 'checked="checked"');
-        }
-        /* Facebook */
-        $this->template->set('facebookLoginText', t('system/settings/login/facebookLogin'));
-        if ($this->getValue('login/facebook') == 1) {
-            $this->template->set('facebookLogin', 'checked="checked"');
-        } else {
-            $this->template->set('facebook_login_data', 'style="display:none"');
-        }
-        $this->template->set('facebookAppIDText', t('system/settings/login/facebookAppID'));
-        $this->template->set('facebookAppID', $this->getValue('login/facebook_app_id'));
-        /* LDAP */
-        $this->template->set('ldapLoginText', t('system/settings/login/ldapLogin'));
-        if ($this->getValue('login/LDAP') == 1) {
-            $this->template->set('ldapLogin', 'checked="checked"');
-        } else {
-            $this->template->set('ldap_login_data', 'style="display:none"');
-        }
-        $this->template->set('ldapServerText', t('system/settings/host'));
-        $this->template->set('ldapServer', $this->getValue('login/ldap_server'));
-        $this->template->set('ldapPortText', t('system/settings/port'));
-        $this->template->set('ldapPort', $this->getValue('login/ldap_port', 636));
+        $this->setLDAP($a_types);
         
         $this->template->set('redirectError', t('system/settings/login/redirectError'));
         $this->template->set('saveButton', t('system/buttons/save'));
         $this->template->set('loginChoiceText', t('system/settings/login/loginChoice'));
-        $this->template->set('facebookAppError', t('system/settings/login/facebookAppError'));
-        $this->template->set('ldapServerError', t('system/settings/login/ldapServerError'));
-        $this->template->set('ldapPortError', t('system/settings/login/ldapPortError'));
+    }
+    
+    /**
+     * Sets the openAuth setting and text
+     * 
+     * @param string $s_name	The name
+     * @param array $a_types	The active logins
+     */
+    private function setOpenAuth($s_name,$a_types){
+    	$this->setType($s_name, $a_types,true);
+    	
+    	$this->template->set($s_name.'AppID',$this->getValue('login/openAuth/'.$s_name.'/appId'));
+    	$this->template->set($s_name.'AppSecret',$this->getValue('login/openAuth/'.$s_name.'/appSecret'));
+    	
+    	$this->template->set('appIDText', t('system/settings/login/facebookAppID'));
+    	$this->template->set('appSecretText','App secret');
+    	$this->template->set('appError', t('system/settings/login/facebookAppError'));
+    	$this->template->set('appSecretError', t('system/settings/login/facebookAppSecretError'));
+    }
+    
+    /**
+     * Sets the LDAP setting and text
+     * 
+     * @param array $a_types	The active logins
+     */    
+	private function setLDAP($a_types){
+    	$this->setType('ldap', $a_types,true);
+    	
+    	$this->template->set('ldapServerText', t('system/settings/host'));
+    	$this->template->set('ldapServer', $this->getValue('login/LDAP/server'));
+    	$this->template->set('ldapPortText', t('system/settings/port'));
+    	$this->template->set('ldapPort', $this->getValue('login/LDAP/port', 636));
+    	$this->template->set('ldapServerError', t('system/settings/login/ldapServerError'));
+    	$this->template->set('ldapPortError', t('system/settings/login/ldapPortError'));
+    }
+    
+    /**
+     * Sets the type
+     * 
+     * @param string $s_name	The name
+     * @param array $a_types	The active logins
+     * @param bool $bo_hide		Set to true to hide the block if inactive
+     */
+    private function setType($s_name,$a_types,$bo_hide = false){
+    	$this->template->set($s_name.'LoginText', t('system/settings/login/'.$s_name.'Login'));
+    	if ( in_array($s_name,$a_types)) {
+    		$this->template->set($s_name.'Login', 'checked="checked"');
+    	}
+    	else if( $bo_hide ){
+    		$this->template->set($s_name.'_login_data', 'style="display:none"');
+    	}
     }
 
     /**
@@ -137,44 +168,76 @@ class Session extends \admin\modules\settings\Settings
      */
     private function loginSave()
     {
-        if (! $this->post->validate(array(
+    	$a_rules = array(
             'login_redirect' => 'required',
             'logout_redirect' => 'required',
-            'registration_redirect' => 'required'
-        ))) {
+            'registration_redirect' => 'required',
+        	'normal_login' => 'required|set:0,1',
+        	'ldap_login' => 'required|set:0,1'        	
+        );
+    	foreach($this->a_openAuth AS $s_name ){
+    		$a_rules[$s_name.'_login'] = 'required|set:0,1';
+    	}
+    	print_r($a_rules);
+    	
+        if (! $this->post->validate($a_rules)) {
+        	echo('validation errors');
             return;
         }
         
-        (isset($this->post['normal_login'])) ? $i_normalLogin = 1 : $i_normalLogin = 0;
-        (isset($this->post['openid_login'])) ? $i_openidLogin = 1 : $i_openidLogin = 0;
-        (isset($this->post['facebook_login'])) ? $i_facebookLogin = 1 : $i_facebookLogin = 0;
-        (isset($this->post['ldap_login'])) ? $i_ldapLogin = 1 : $i_ldapLogin = 0;
-        
-        if ($i_facebookLogin == 1 && empty($this->post['facebook_app_id'])) {
-            return;
+        $bo_found = false;
+        if( $this->post->get('normal_login') == 1 || $this->post->get('ldap_login') == 1 ){
+        	$bo_found = true;
+        }
+        else {
+        	foreach($this->a_openAuth AS $s_name){
+        		if( $this->post->get($s_name.'_login') == 1 ){
+        			$bo_found = true;
+        			break;
+        		}
+        	}
         }
         
-        if ($i_ldapLogin == 1 && ! $this->post->validate(array(
+        if ( !$bo_found ) {
+        	echo('no active login found');
+        	return;
+        }
+        
+        foreach( $this->a_openAuth AS $s_name ){
+        	if( $this->post->get($s_name.'_login') == 0 ){
+        		continue;
+        	}
+        	
+        	if( !$this->post->validate(array(
+        		$s_name.'_app_id' => 'required',
+        		$s_name.'_app_secret' => 'required'
+        	))) {
+        		return;
+        	}
+        }
+        
+        if ( $this->post->get('ldap_login') == 1 && ! $this->post->validate(array(
             'ldap_server' => 'required',
             'ldap_port' => 'required|type:port'
         ))) {
+        	echo('LDAP error');
             return;
         }
         
-        if ($i_normalLogin == 0 && $i_openidLogin == 0 && $i_facebookLogin == 0 && $i_ldapLogin == 0) {
-            return;
+        $this->setValue('login/login', $this->post->get('login_redirect'));
+        $this->setValue('login/logout', $this->post->get('logout_redirect'));
+        $this->setValue('login/registration', $this->post->get('registration_redirect'));
+        $this->setValue('login/normalLogin', $this->post->get('normal_login'));
+        
+        foreach( $this->a_openAuth AS $s_name ){
+        	$this->setValue('login/openAuth/'.$s_name.'/status', $this->post->get($s_name.'_login'));
+        	$this->setValue('login/openAuth/'.$s_name.'/appId', $this->post->get($s_name.'_app_id'));
+        	$this->setValue('login/openAuth/'.$s_name.'/appSecret', $this->post->get($s_name.'_app_secret'));
         }
         
-        $this->setValue('main/login', $this->post['login_redirect']);
-        $this->setValue('main/logout', $this->post['logout_redirect']);
-        $this->setValue('main/logout', $this->post['registration_redirect']);
-        $this->setValue('login/normalLogin', $i_normalLogin);
-        $this->setValue('login/openID', $i_openidLogin);
-        $this->setvalue('login/facebook', $i_facebookLogin);
-        $this->setValue('login/facebook_app_id', $this->post['facebook_app_id']);
-        $this->setValue('login/LDAP', $i_ldapLogin);
-        $this->setValue('login/ldap_server', $this->post['ldap_server']);
-        $this->setValue('login/ldap_port', $this->post['ldap_port']);
+        $this->setValue('login/LDAP/status', $this->post->get('ldap_login'));
+        $this->setValue('login/LDAP/server', $this->post->get('ldap_server'));
+        $this->setValue('login/LDAP/port', $this->post->get('ldap_port'));
         
         $this->settings->save();
     }

@@ -36,6 +36,14 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
+        <xs:element name="cache">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="status" type="one-or-zero"/>
+                    <xs:element name="timeout" type="xs:positiveInteger"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -49,12 +57,17 @@
         <xs:element name="salt" type="non-empty-string"/>
         <xs:element name="logs" type="non-empty-string" default="default"/>
         <xs:element name="ssl" type="one-or-zero" default="0"/>
+        <xs:element name="log_location" type="non-empty-string"/>
+        <xs:element name="log_max_size" type="xs:positiveInteger"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="login">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="login" type="non-empty-string"/>
+        <xs:element name="logout" type="non-empty-string"/>
+        <xs:element name="registration" type="non-empty-string"/>
         <xs:element name="normalLogin" type="one-or-zero" default="1"/>
         <xs:element name="openAuth">
         	<xs:complexType>
