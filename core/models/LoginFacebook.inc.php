@@ -46,6 +46,34 @@ class LoginFacebook extends \core\models\LoginParent
             $user
             );
     }
+
+    public function init()
+    {
+        $fb_app_id = $this->config->getSettings()->get('login/openAuth/facebook/appId');
+        $fb_app_secret = $this->config->getSettings()->get('login/openAuth/facebook/appSecret');
+        $this->fb = new \Facebook\Facebook([
+            'app_id' => $fb_app_id,
+            'app_secret' => $fb_app_secret
+        ]);
+    }
+    
+    /**
+     * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page on the Facebook domain.
+     */
+    public function startLogin() {
+        $helper = $this->fb->getRedirectLoginHelper();
+        $permissions = ['email'];
+        
+        $s_url = $this->config->getHost().
+            $this->config->getBase().
+            '/authorization/facebook/do_login';
+        $s_url = str_replace('//','/',$s_url);
+        $login_url = $helper -> getLoginUrl(
+            $this->config->getProtocol().
+            $s_url, $permissions);
+        header('Location: '.$login_url);
+        exit();;
+    }
     
     /**
      * This function attempts login locally, after returning from Facebook's domain.
@@ -101,16 +129,6 @@ class LoginFacebook extends \core\models\LoginParent
         exit();
 
     }
-
-    public function init()
-    {
-        $fb_app_id = $this->config->getSettings()->get('login/openAuth/facebook/appId');
-        $fb_app_secret = $this->config->getSettings()->get('login/openAuth/facebook/appSecret');
-        $this->fb = new \Facebook\Facebook([
-            'app_id' => $fb_app_id,
-            'app_secret' => $fb_app_secret
-        ]);
-    }
     
     /**
      * 
@@ -126,22 +144,4 @@ class LoginFacebook extends \core\models\LoginParent
      */
     protected function register(\core\models\data\User $user)
     {}
-    
-    /**
-     * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page on the Facebook domain.
-     */
-    public function startLogin() {
-        $helper = $this->fb->getRedirectLoginHelper();
-        $permissions = ['email'];
-        
-        $s_url = $this->config->getHost().
-            $this->config->getBase().
-            '/authorization/facebook/do_login';
-        $s_url = str_replace('//','/',$s_url);
-        $login_url = $helper -> getLoginUrl(
-            $this->config->getProtocol().
-            $s_url, $permissions);
-        header('Location: '.$login_url);
-        exit();;
-    }
 }
