@@ -62,12 +62,16 @@ class LoginFacebook extends \core\models\LoginParent
      */
     public function startLogin() {
         $helper = $this->fb->getRedirectLoginHelper();
-        $permissions = ['email'];
+        $permissions = [
+            'email'
+        ];
         
-        $s_url = $this->config->getHost().
+        $s_url =
+            $this->config->getHost().
             $this->config->getBase().
             '/authorization/facebook/do_login';
         $s_url = str_replace('//','/',$s_url);
+        
         $login_url = $helper -> getLoginUrl(
             $this->config->getProtocol().
             $s_url, $permissions);
