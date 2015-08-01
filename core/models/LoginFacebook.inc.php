@@ -133,7 +133,7 @@ class LoginFacebook extends \core\models\LoginParent
         $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
-            /* Check old way */
+            /* Check old way */ // <-- Old way being for standard logins, not OpenAuth...
             $s_password = $this->hashPassword($s_password, $s_username);
             $this->builder->select('users', '*');
             $this->builder->getWhere()->addAnd(array(
