@@ -103,15 +103,6 @@ class LoginFacebook extends \core\models\LoginParent
         $user_node_name = $user_node->getName();
         $user_node_email = $user_node->getField('email');
         $user_node_is_verified = boolval($user_node->getField('verified'));
-        
-        /*
-        print_r("<p>
-            ID: " . $user_node->getId() . "<br>
-            Name: " . $user_node->getName() . "<br>
-            Email: " . $user_node->getField('email') . "<br>
-            Verified: " . $user_node->getField('verified') . "</p>");
-        */
-        
         foreach ($permissions_node->getIterator() as $permission) {
             if ($permission->getField('permission') == 'email') {
                 print_r($permission->getField('permission') . ' ' . $permission->getField('status'));
@@ -119,6 +110,14 @@ class LoginFacebook extends \core\models\LoginParent
             }
         }
         $permission_node->getIterator()->rewind();
+            
+            /*
+         * print_r("<p>
+         * ID: " . $user_node->getId() . "<br>
+         * Name: " . $user_node->getName() . "<br>
+         * Email: " . $user_node->getField('email') . "<br>
+         * Verified: " . $user_node->getField('verified') . "</p>");
+         */
             
             /* Check the login combination */
         $this->builder->select('users', '*');
