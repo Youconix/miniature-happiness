@@ -72,7 +72,7 @@ class LoginFacebook extends \core\models\LoginParent
             $this->config->getProtocol().
             $s_url, $permissions);
         header('Location: '.$login_url);
-        exit();;
+        exit();
     }
     
     /**
