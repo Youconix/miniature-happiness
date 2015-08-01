@@ -103,13 +103,6 @@ class LoginFacebook extends \core\models\LoginParent
         $user_node_name = $user_node->getName();
         $user_node_email = $user_node->getField('email');
         $user_node_is_verified = boolval($user_node->getField('verified'));
-        foreach ($permissions_node->getIterator() as $permission) {
-            if ($permission->getField('permission') == 'email') {
-                print_r($permission->getField('permission') . ' ' . $permission->getField('status'));
-                break;
-            }
-        }
-        $permission_node->getIterator()->rewind();
             
             /*
          * print_r("<p>
@@ -186,6 +179,27 @@ class LoginFacebook extends \core\models\LoginParent
      */
     public function do_registration()
     {}
+
+    /**
+     * Peruses the given Permissions Node for the status of the given permission.
+     * 
+     * Returns null if said permission is not found.
+     * @param string $permisson
+     * @param \Facebook\GraphNodes\GraphEdge $permissions_node
+     * @return string || null
+     */
+    private function permissionFor(string $permission, \Facebook\GraphNodes\GraphEdge $permissions_node)
+    {
+        $s_return = null;
+        foreach ($permissions_node->getIterator() as $p) {
+            if ($p->getField('permission') == $permission ) {
+                $s_return = $p->getField('status');
+                break;
+            }
+        }
+        $permission_node->getIterator()->rewind();
+        return $s_return;
+    }
 
     /**
      *
