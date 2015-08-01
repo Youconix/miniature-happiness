@@ -107,7 +107,10 @@ class LoginFacebook extends \core\models\LoginParent
             echo($e->getMessage());
         }
         
-        if (isset($accessToken)) {
+        if (! isset($accessToken)) {
+        session_destroy();
+        die();
+        }
             // Logged in!
             $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
             $this->fb->setDefaultAccessToken($_SESSION['facebook_access_token']);//  <-- This is handy if you want to do multiple requests.
@@ -128,9 +131,6 @@ class LoginFacebook extends \core\models\LoginParent
             } $permission_node->getIterator()->rewind();
         
         
-        }
-        session_destroy();
-        exit();
 
     }
     
