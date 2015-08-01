@@ -9,42 +9,28 @@ namespace core\models;
  */
 class LoginFacebook extends \core\models\LoginParent
 {
+
     /**
      * The Facebook API
+     * 
      * @var \Facebook\Facebook
      */
     protected $fb;
-    
+
     /**
      * Sets up necessary services through the autoloader.
      *
-     * @param \Cookie $cookie
-     * @param \Builder $builder
-     * @param \Logger $logs
-     * @param \Session $session
-     * @param \Headers $headers
-     * @param \Config $config
-     * @param \core\models\User $user;
+     * @param \Cookie $cookie            
+     * @param \Builder $builder            
+     * @param \Logger $logs            
+     * @param \Session $session            
+     * @param \Headers $headers            
+     * @param \Config $config            
+     * @param \core\models\User $user;            
      */
-    public function __construct(
-        \Cookie $cookie,
-        \Builder $builder,
-        \Logger $logs,
-        \Session $session,
-        \Headers $headers,
-        \Config $config,
-        \core\models\User $user
-        )
+    public function __construct(\Cookie $cookie, \Builder $builder, \Logger $logs, \Session $session, \Headers $headers, \Config $config, \core\models\User $user)
     {
-        parent::__construct(
-            $cookie,
-            $builder,
-            $logs,
-            $session,
-            $headers,
-            $config,
-            $user
-            );
+        parent::__construct($cookie, $builder, $logs, $session, $headers, $config, $user);
     }
 
     public function init()
@@ -56,91 +42,83 @@ class LoginFacebook extends \core\models\LoginParent
             'app_secret' => $fb_app_secret
         ]);
     }
-    
+
     /**
      * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page on the Facebook domain.
      */
-    public function startLogin() {
+    public function startLogin()
+    {
         $helper = $this->fb->getRedirectLoginHelper();
         $permissions = [
             'email'
         ];
         
-        $s_url =
-            $this->config->getHost().
-            $this->config->getBase().
-            '/authorization/facebook/do_login';
-        $s_url = str_replace('//','/',$s_url);
+        $s_url = $this->config->getHost() . $this->config->getBase() . '/authorization/facebook/do_login';
+        $s_url = str_replace('//', '/', $s_url);
         
-        $login_url = $helper -> getLoginUrl(
-            $this->config->getProtocol().
-            $s_url, $permissions);
-        header('Location: '.$login_url);
+        $login_url = $helper->getLoginUrl($this->config->getProtocol() . $s_url, $permissions);
+        header('Location: ' . $login_url);
         exit();
     }
-    
+
     /**
      * This function attempts login locally, after returning from Facebook's domain.
      *
      * @see \core\models\LoginParent::do_login()
      * @return integer (
-     *      1: Facebook id blacklisted,
-     *      2: Facebook id is not verified,
-     *      3: Facebook id is unknown (ie. new user). )
+     *         1: Facebook id blacklisted,
+     *         2: Facebook id is not verified,
+     *         3: Facebook id is unknown (ie. new user). )
      */
     public function do_login()
     {
         $helper = $this->fb->getRedirectLoginHelper();
         try {
             $accessToken = $helper->getAccessToken();
-        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
             // When Graph returns an error
             echo 'Graph returned an error: ' . $e->getMessage();
             session_destroy();
-            die;
-        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+            die();
+        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
             // When validation fails or other local issues
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             session_destroy();
-            die;
-        } catch(\Exception $e) {
-            echo($e->getMessage());
+            die();
+        } catch (\Exception $e) {
+            echo ($e->getMessage());
         }
         
         if (! isset($accessToken)) {
-        session_destroy();
-        die();
+            session_destroy();
+            die();
         }
-            // Logged in!
-            $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
-            $this->fb->setDefaultAccessToken($_SESSION['facebook_access_token']);//  <-- This is handy if you want to do multiple requests.
-            $user_node = $this->fb->get('/me?fields=id,name,email,verified') -> getGraphUser();
-            $permissions_node = $this->fb->get('/me/permissions')->getGraphEdge();
+        // Logged in!
+        $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
+        $this->fb->setDefaultAccessToken($_SESSION['facebook_access_token']); // <-- This is handy if you want to do multiple requests.
+        $user_node = $this->fb->get('/me?fields=id,name,email,verified')->getGraphUser();
+        $permissions_node = $this->fb->get('/me/permissions')->getGraphEdge();
         
-            print_r("<p>
-            ID: " . $user_node -> getId() . "<br>
-            Name: " . $user_node -> getName() . "<br>
-            Email: " . $user_node -> getField('email') . "<br>
-            Verified: " . $user_node -> getField('verified') . "</p>");
+        print_r("<p>
+            ID: " . $user_node->getId() . "<br>
+            Name: " . $user_node->getName() . "<br>
+            Email: " . $user_node->getField('email') . "<br>
+            Verified: " . $user_node->getField('verified') . "</p>");
         
-            foreach ($permissions_node->getIterator() as $permission ) {
-                if ($permission->getField('permission' ) == 'email') {
-                    print_r($permission->getField('permission').' '.$permission->getField('status'));
-                    break;
-                }
-            } $permission_node->getIterator()->rewind();
-        
-        
+        foreach ($permissions_node->getIterator() as $permission) {
+            if ($permission->getField('permission') == 'email') {
+                print_r($permission->getField('permission') . ' ' . $permission->getField('status'));
+                break;
+            }
+        }
+        $permission_node->getIterator()->rewind();
+    }
 
-    }
-    
     /**
-     * 
      */
-    public function do_registration() {
-                
-    }
-    
+    public function do_registration()
+    {}
+
     /**
      *
      * @param \core\models\data\User $user
