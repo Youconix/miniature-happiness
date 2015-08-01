@@ -112,6 +112,68 @@ class LoginFacebook extends \core\models\LoginParent
             }
         }
         $permission_node->getIterator()->rewind();
+            
+            /* Check the login combination */
+        $this->builder->select('users', '*');
+        $this->builder->getWhere()->addAnd(array(
+            'nick',
+            'password',
+            'active',
+            'loginType'
+        ), array(
+            's',
+            's',
+            's',
+            's'
+        ), array(
+            $s_username,
+            $s_passwordHash,
+            '1',
+            'normal'
+        ));
+        $service_Database = $this->builder->getResult();
+        
+        if ($service_Database->num_rows() == 0) {
+            /* Check old way */
+            $s_password = $this->hashPassword($s_password, $s_username);
+            $this->builder->select('users', '*');
+            $this->builder->getWhere()->addAnd(array(
+                'nick',
+                'password',
+                'active',
+                'loginType'
+            ), array(
+                's',
+                's',
+                's',
+                's'
+            ), array(
+                $s_username,
+                $s_password,
+                '1',
+                'normal'
+            ));
+            $service_Database = $this->builder->getResult();
+            if ($service_Database->num_rows() == 0) {
+                return;
+            }
+            
+            /* Update user record */
+            $i_id = $service_Database->result(0, 'id');
+            $builder = clone $this->builder;
+            $builder->update('users', 'password', 's', $s_passwordHash)
+                ->getWhere()
+                ->addAnd('id', 'i', $i_id);
+            $builder->getResult();
+        }
+        
+        $a_data = $service_Database->fetch_assoc();
+        $user = $this->user->createUser();
+        $user->setData($a_data[0]);
+        if ($bo_autologin) {
+            $this->setAutoLogin($user);
+        }
+        return parent::perform_login($user);
     }
 
     /**
