@@ -63,7 +63,7 @@ class User extends \core\models\Model
     
     protected $i_passwordExpired = 0;
 
-    protected $s_password;
+    protected $s_password = '';
 
     protected $s_profile = '';
 
@@ -74,6 +74,8 @@ class User extends \core\models\Model
     protected $s_loginType;
 
     protected $s_language = '';
+    
+    protected $s_externalId = '';
 
     /**
      * PHP5 constructor
@@ -197,6 +199,7 @@ class User extends \core\models\Model
         $this->s_loginType = $a_data['loginType'];
         $this->s_language = $a_data['language'];
         $this->i_passwordExpired = $a_data['password_expired'];
+        $this->s_externalId = $a_data['external_id'];
         
         $s_systemLanguage = $this->language->getLanguage();
         if (defined('USERID') && USERID == $this->i_userid && $this->s_language != $s_systemLanguage) {
@@ -715,6 +718,28 @@ class User extends \core\models\Model
     }
 
     /**
+     * Returns the External user ID
+     * 
+     * (OpenAuth only.)
+     */
+    public function getExternalID()
+    {
+        return $this->s_externalId;
+    }
+
+    /**
+     * Sets a new External user ID
+     * 
+     * (OpenAuth only.)
+     * 
+     * @param string $s_externalID
+     */
+    public function setExternalID($s_externalID)
+    {
+        $this->s_externalId = $s_externalID;
+    }
+
+    /**
      * Saves the new user in the database
      */
     public function save()
@@ -738,7 +763,8 @@ class User extends \core\models\Model
             'active',
             'activation',
             'profile',
-            'loginType'
+            'loginType',
+            'external_id'
         ), array(
             's',
             's',
@@ -746,6 +772,7 @@ class User extends \core\models\Model
             's',
             'i',
             'i',
+            's',
             's',
             's',
             's',
@@ -760,7 +787,8 @@ class User extends \core\models\Model
             $this->i_active,
             $this->s_activation,
             $this->s_profile,
-            $this->s_loginType
+            $this->s_loginType,
+            $this->s_externalId
         ));
         
         $this->i_userid = (int) $this->builder->getResult()->getId();
