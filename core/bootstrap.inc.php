@@ -23,6 +23,8 @@ function reportException(\Exception $exception,$bo_caught = true){
 /* Set error catcher */
 function exception_handler($exception)
 {
+    @ob_clean();
+    
     if (defined('DEBUG')) {
         $headers = \Loader::Inject('\Headers');
         $headers->http500();

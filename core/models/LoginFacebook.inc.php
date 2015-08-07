@@ -82,6 +82,7 @@ class LoginFacebook extends \core\models\LoginParent
      */
     public function do_login()
     {
+        ob_start();
         $helper = $this->fb->getRedirectLoginHelper();
         try {
             $accessToken = $helper->getAccessToken();
@@ -98,6 +99,9 @@ class LoginFacebook extends \core\models\LoginParent
         } catch (\Exception $e) {
             echo ($e->getMessage());
         }
+        
+        $s_content = ob_get_contents();
+        ob_clean();
         
         if (! isset($accessToken)) {
             session_destroy();
