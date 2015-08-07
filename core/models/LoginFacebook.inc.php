@@ -178,7 +178,24 @@ class LoginFacebook extends \core\models\LoginParent
     /**
      */
     public function do_registration()
-    {}
+    {
+        $s_email = $this->user_node->getField('email');
+        if( is_null($s_email) ){
+            $s_email = '';
+        }
+        $i_external_id = $this->user_node->getId();
+        $s_username = $this->user_node->getName();
+        
+        $user = $this->user->createUser();
+        $user->setExternalID($i_external_id);
+        $user->setUsername($s_username);
+        $user->setEmail($s_email);
+        $user->setLoginType('facebook');
+        $user->setActivation('');
+        $user->enableAccount();
+        $user->setBot(false);
+        $this->register($user);
+    }
 
     /**
      * Peruses the given Permissions Node for the status of the given permission.
