@@ -1,8 +1,6 @@
 <?php
 namespace authorization;
 
-use core\BaseLogicClass;
-
 class Registration2 extends \includes\BaseLogicClass
 {
 
