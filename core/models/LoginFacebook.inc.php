@@ -171,10 +171,11 @@ class LoginFacebook extends \core\models\LoginParent
         $a_data = $service_Database->fetch_assoc();
         $user = $this->user->createUser();
         $user->setData($a_data[0]);
-        if ($bo_autologin) {
-            $this->setAutoLogin($user);
-        }
-        return parent::perform_login($user);
+
+        parent::perform_login($user);
+        
+        //if it gets here, user is blocked.
+        return 1;
     }
 
     /**
