@@ -210,9 +210,9 @@ class LoginFacebook extends \core\models\LoginParent
     private function permissionFor(string $permission)
     {
         $s_return = null;
-        foreach ($this->permissions_node->getIterator() as $p) {
-            if ($p->getField('permission') == $permission ) {
-                $s_return = $p->getField('status');
+        foreach ($this->permissions_node->getIterator() as $i) {
+            if ($i->getField('permission') == $permission ) {
+                $s_return = $i->getField('status');
                 break;
             }
         }
