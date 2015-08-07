@@ -230,5 +230,10 @@ class LoginFacebook extends \core\models\LoginParent
      *            The data of the User in question
      */
     protected function register(\core\models\data\User $user)
-    {}
+    {
+        $user->save();
+       
+        $this->session->set('userid',$user->getID());
+        $this->headers->redirect('/authorisation/registration2/index');
+    }
 }
