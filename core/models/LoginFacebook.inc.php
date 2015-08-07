@@ -118,56 +118,51 @@ class LoginFacebook extends \core\models\LoginParent
         $user_node_email = $this->user_node->getField('email');
         $user_node_is_verified = boolval($this->user_node->getField('verified'));
         
+        
+        if ( ! $user_node_is_verified ) {
+            return 2;
+            // And die.
+        }
             
             /* Check the login combination */
         $this->builder->select('users', '*');
         $this->builder->getWhere()->addAnd(array(
-            'nick',
-            'password',
-            'active',
+            'external_id',
             'loginType'
         ), array(
             's',
-            's',
-            's',
             's'
         ), array(
-            $s_username,
-            $s_passwordHash,
-            '1',
-            'normal'
+            $user_node_id,
+            'facebook'
         ));
         $service_Database = $this->builder->getResult();
         
         if ($service_Database->num_rows() == 0) {
-            /* Check old way */ // <-- Old way being for standard logins, not OpenAuth...
-            $s_password = $this->hashPassword($s_password, $s_username);
+            // Check for preexisting (v1) facebook-type logins
             $this->builder->select('users', '*');
             $this->builder->getWhere()->addAnd(array(
-                'nick',
-                'password',
+                'email',
                 'active',
                 'loginType'
             ), array(
                 's',
                 's',
-                's',
                 's'
             ), array(
-                $s_username,
-                $s_password,
+                $user_node_email,
                 '1',
                 'normal'
             ));
             $service_Database = $this->builder->getResult();
             if ($service_Database->num_rows() == 0) {
-                return;
+                return 3;
             }
             
-            /* Update user record */
+            // Update user record
             $i_id = $service_Database->result(0, 'id');
             $builder = clone $this->builder;
-            $builder->update('users', 'password', 's', $s_passwordHash)
+            $builder->update('users', 'external_id', 's', $user_node_id)
                 ->getWhere()
                 ->addAnd('id', 'i', $i_id);
             $builder->getResult();
