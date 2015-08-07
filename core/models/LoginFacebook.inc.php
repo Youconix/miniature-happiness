@@ -16,6 +16,16 @@ class LoginFacebook extends \core\models\LoginParent
      * @var \Facebook\Facebook
      */
     protected $fb;
+   
+    /**
+     * @var \Facebook\GraphNodes\GraphUser
+     */
+    protected $user_node;
+    
+    /**
+     * @var \Facebook\GraphNodes\GraphEdge
+     */
+    protected $permissions_node;
 
     /**
      * Sets up necessary services through the autoloader.
@@ -96,21 +106,14 @@ class LoginFacebook extends \core\models\LoginParent
         // Logged in!
         $_SESSION['facebook_access_token'] = (string) $accessToken; // Storing the token for later use.
         $this->fb->setDefaultAccessToken($_SESSION['facebook_access_token']); // <-- This is handy if you want to do multiple requests.
-        $user_node = $this->fb->get('/me?fields=id,name,email,verified')->getGraphUser();
-        $permissions_node = $this->fb->get('/me/permissions')->getGraphEdge();
+        $this->user_node = $this->fb->get('/me?fields=id,name,email,verified')->getGraphUser();
+        $this->permissions_node = $this->fb->get('/me/permissions')->getGraphEdge();
         
-        $user_node_id = $user_node->getId();
-        $user_node_name = $user_node->getName();
-        $user_node_email = $user_node->getField('email');
-        $user_node_is_verified = boolval($user_node->getField('verified'));
-            
-            /*
-         * print_r("<p>
-         * ID: " . $user_node->getId() . "<br>
-         * Name: " . $user_node->getName() . "<br>
-         * Email: " . $user_node->getField('email') . "<br>
-         * Verified: " . $user_node->getField('verified') . "</p>");
-         */
+        $user_node_id = $this->user_node->getId();
+        $user_node_name = $this->user_node->getName();
+        $user_node_email = $this->user_node->getField('email');
+        $user_node_is_verified = boolval($this->user_node->getField('verified'));
+        
             
             /* Check the login combination */
         $this->builder->select('users', '*');
@@ -202,13 +205,12 @@ class LoginFacebook extends \core\models\LoginParent
      * 
      * Returns null if said permission is not found.
      * @param string $permisson
-     * @param \Facebook\GraphNodes\GraphEdge $permissions_node
      * @return string || null
      */
-    private function permissionFor(string $permission, \Facebook\GraphNodes\GraphEdge $permissions_node)
+    private function permissionFor(string $permission)
     {
         $s_return = null;
-        foreach ($permissions_node->getIterator() as $p) {
+        foreach ($this->permissions_node->getIterator() as $p) {
             if ($p->getField('permission') == $permission ) {
                 $s_return = $p->getField('status');
                 break;
