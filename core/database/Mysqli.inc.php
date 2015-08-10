@@ -272,7 +272,8 @@ class Mysqli implements \DAL {
 			throw new \DBException ( "Query failed : " . $this->obj_connection->error . '.\n' . $s_query );
 		}
 		
-		$s_command = strtoupper ( trim ( substr ( $s_query, 0, strpos ( $s_query, ' ' ) ) ) );
+		preg_match('/^([a-zA-Z]+)\s/',$s_query,$a_matches);
+		$s_command = strtoupper($a_matches[1]);
 		if ($s_command == 'SELECT' || $s_command == 'SHOW' || $s_command == 'ANALYZE' || $s_command == 'OPTIMIZE' || $s_command == 'REPAIR') {
 			$this->a_result = null; // force cleaning
 			
