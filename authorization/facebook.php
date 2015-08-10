@@ -3,9 +3,23 @@ namespace authorization;
 use Facebook\GraphNodes\GraphNode;
 require 'vendor/autoload.php';
 
+/**
+ * Controller class for the Facebook-type login mechanism.
+ * 
+ * This controller is the starting point for the entire process,
+ * registring a new user if need be, and logging the user in.
+ * 
+ * If certain criteria are not met, it will abort. At this time,
+ * this only includes a user being already known, and blocked
+ * (ie. 'blacklisted'), or the user isn't verified with Facebook.
+ * These situations result in errors being displayed.
+ * 
+ * @author Roxanna Lugtigheid <rlugtigheid@youconix.nl>
+ * @copyright Youconix
+ */
 class Facebook extends  \authorization\Authorization  {
     /**
-     * 
+     * Instance of the Facebook login model
      * @var \core\models\LoginFacebook
      */
     

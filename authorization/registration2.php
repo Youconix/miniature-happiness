@@ -1,17 +1,23 @@
 <?php
 namespace authorization;
 
+/**
+ * Controller for the 2nd stage of the login process.
+ * 
+ * At this time, it is only used to forward the user to actual login.
+ * It can however be used to request additional information.
+ * 
+ * @author Roxanna Lugtigheid <rlugtigheid@youconix.nl>
+ * @copyright Youconix
+ */
 class Registration2 extends \includes\BaseLogicClass
 {
-
     /**
-     *
      * @var \core\models\Login
      */
     private $login;
 
     /**
-     *
      * @var \core\models\User
      */
     private $user;

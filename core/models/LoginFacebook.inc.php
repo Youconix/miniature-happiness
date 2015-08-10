@@ -2,10 +2,13 @@
 namespace core\models;
 
 /**
+ * Facebook logins model
+ * 
+ * Interfaces with the Facebook Public API to provide an authentication login flow.
+ * Also interfaces with local databases for verification and login.
  *
- * @author Roxanna Lugtigheid
- * @copyright Youconix
- *           
+ * @author Roxanna Lugtigheid <rlugtigheid@youconix.nl>
+ * @copyright Youconix 
  */
 class LoginFacebook extends \core\models\LoginParent
 {
@@ -18,11 +21,15 @@ class LoginFacebook extends \core\models\LoginParent
     protected $fb;
    
     /**
+     * The API-generated object containing user information received.
+     * 
      * @var \Facebook\GraphNodes\GraphUser
      */
     protected $user_node;
     
     /**
+     * The API-generated object containing permissions from the user received.
+     * 
      * @var \Facebook\GraphNodes\GraphEdge
      */
     protected $permissions_node;
@@ -54,7 +61,8 @@ class LoginFacebook extends \core\models\LoginParent
     }
 
     /**
-     * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page on the Facebook domain.
+     * Initiate Facebook login process, ending in sending the client a URL Redirect to a login page
+     * on the Facebook domain.
      */
     public function startLogin()
     {
@@ -179,6 +187,7 @@ class LoginFacebook extends \core\models\LoginParent
     }
 
     /**
+     * Compiles user information in preparation of actual registration.
      */
     public function do_registration()
     {
@@ -201,7 +210,7 @@ class LoginFacebook extends \core\models\LoginParent
     }
 
     /**
-     * Peruses the given Permissions Node for the status of the given permission.
+     * Peruses the object's Permissions Node for the status of the given permission.
      * 
      * Returns null if said permission is not found.
      * @param string $permisson
@@ -221,7 +230,9 @@ class LoginFacebook extends \core\models\LoginParent
     }
 
     /**
-     *
+     * Commit the provided User data to non-volatile storage,
+     * and redirect to the 2nd stage of registration.
+     * 
      * @param \core\models\data\User $user
      *            The data of the User in question
      */
