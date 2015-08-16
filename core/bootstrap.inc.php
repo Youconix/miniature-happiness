@@ -1,23 +1,23 @@
 <?php
-function reportException(\Exception $exception,$bo_caught = true){
-	$s_error = $exception->getMessage().PHP_EOL;
-	$s_error .= $exception->getTraceAsString();
 
-	try {
-		$logs = \Loader::Inject('\Logger');
-
-		if( $bo_caught ){
-			$logs->critical($s_error);
-		}
-		else {
-			$logs->alert($s_error);
-		}
-	}
-	catch(Exception $e){
-		if( defined('DEBUG') ){
-			echo($s_error);
-		}
-	}
+function reportException(\Exception $exception, $bo_caught = true)
+{
+    $s_error = $exception->getMessage() . PHP_EOL;
+    $s_error .= $exception->getTraceAsString();
+    
+    try {
+        $logs = \Loader::Inject('\Logger');
+        
+        if ($bo_caught) {
+            $logs->critical($s_error);
+        } else {
+            $logs->alert($s_error);
+        }
+    } catch (Exception $e) {
+        if (defined('DEBUG')) {
+            echo ($s_error);
+        }
+    }
 }
 
 /* Set error catcher */
@@ -47,7 +47,7 @@ function exception_handler($exception)
   	');
         exit();
     }
-
+    
     include (WEBSITE_ROOT . 'errors/Error500.php');
     exit();
 }
@@ -63,13 +63,17 @@ interface Routable
 /**
  * Start framework
  */
-if( file_exists(NIV.'files'.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'Memory.php') ){
-	require_once(NIV.'files'.DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'Memory.php');	
-}
-else {
-	require_once (NIV . 'core'.DIRECTORY_SEPARATOR.'Memory.php');
+require_once (NIV . 'core/Profiler.inc.php');
+Profiler::reset();
+
+if (file_exists(NIV . 'files' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'Memory.php')) {
+    require_once (NIV . 'files' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'Memory.php');
+} else {
+    require_once (NIV . 'core' . DIRECTORY_SEPARATOR . 'Memory.php');
 }
 \core\Memory::startUp();
 
 /* Check login */
+\Profiler::profileSystem('core/models/Provileges', 'Checking access level');
 \Loader::inject('\core\models\Privileges')->checkLogin();
+\Profiler::profileSystem('core/models/Provileges', 'Checking access level completed');

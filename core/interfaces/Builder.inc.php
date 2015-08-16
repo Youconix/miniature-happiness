@@ -10,6 +10,13 @@ interface Builder
 	 *            The DAL
 	 */
 	public function __construct(\DAL $service_Database);
+	
+	/**
+	 * Returns if the object schould be treated as singleton
+	 *
+	 * @return boolean True if the object is a singleton
+	 */
+	public static function isSingleton();
 
 	/**
 	 * Shows the tables in the current database

@@ -28,6 +28,14 @@ class Loader
             $s_fileName = str_replace('\\', DS, $s_namespace) . DS;
         }
         
+        if (file_exists(NIV . $s_fileName.DS.$s_className.'.inc.php')) {
+            return $s_fileName.DS.$s_className.'.inc.php';
+        }
+        
+        if (file_exists(NIV . $s_fileName.DS.$s_className.'.php')) {
+            return $s_fileName.DS.$s_className.'.php';
+        }
+        
         /* Check for website files */
         $s_name = strtolower($s_fileName . DS . $s_className . '.php');
         if (file_exists(NIV . $s_name)) {
@@ -35,8 +43,8 @@ class Loader
         }
         
         if (defined('WEBSITE_ROOT')) {
-            if (file_exists(WEBSITE_ROOT . $s_name)) {
-                return WEBSITE_ROOT . $s_name;
+            if (file_exists(WEBSITE_ROOT . $s_name.'.php')) {
+                return WEBSITE_ROOT . $s_name.'.php';
             }
         }
         
@@ -50,16 +58,6 @@ class Loader
         }
         if (file_exists(NIV . 'vendor' . DS . strtolower(str_replace('\\', DS, $s_namespace)) . DS . $s_fileName)) {
             return 'vendor' . DS . strtolower(str_replace('\\', DS, $s_namespace)) . DS . $s_fileName;
-        }
-        
-        if (file_exists(NIV . $s_fileName)) {
-            return $s_fileName;
-        }
-        
-        $s_fileName = str_replace('.php', '.inc.php', $s_fileName);
-        
-        if (file_exists(NIV . $s_fileName)) {
-            return $s_fileName;
         }
         
         return null;
@@ -87,6 +85,8 @@ class Loader
 
     public static function Inject($s_className, $a_arguments = array())
     {
+        \Profiler::profileSystem('core/Loader.php', 'Loading class ' . $s_className);
+        
         $s_fileName = null;
         /* Check IoC */
         $IoC = \core\Memory::getCache('IoC');
@@ -226,6 +226,8 @@ class Loader
             \core\Memory::setCache($s_caller, $object);
         }
         
+        \Profiler::profileSystem('core/Loader.php', 'Loaded class ' . $s_caller);
+        
         return $object;
     }
 
@@ -279,17 +281,17 @@ class Loader
                         
                         if (strpos($a_matches2[1], '\core') !== false || strpos($a_matches2[1], '\includes') !== false || strpos($a_matches2[1], '\admin') !== false) {
                             $s_filename = NIV . $a_matches2[1] . '.inc.php';
-                        }else 
+                        } else 
                             if (file_exists(NIV . str_replace('\\', DS, $a_matches2[1]) . '.php')) {
                                 $s_filename = NIV . $a_matches2[1] . '.php';
                             } 
-                        
-                        else 
-                            if (file_exists(NIV . str_replace('\\', DS, strtolower($a_matches2[1])) . '.php')) {
-                                $s_filename = NIV . strtolower($a_matches2[1]) . '.php';
-                            } else {
-                                $s_filename = NIV . 'vendor' . DS . $a_matches2[1] . '.php';
-                            }
+
+                            else 
+                                if (file_exists(NIV . str_replace('\\', DS, strtolower($a_matches2[1])) . '.php')) {
+                                    $s_filename = NIV . strtolower($a_matches2[1]) . '.php';
+                                } else {
+                                    $s_filename = NIV . 'vendor' . DS . $a_matches2[1] . '.php';
+                                }
                         $s_filename = str_replace(array(
                             '\\',
                             DS . DS

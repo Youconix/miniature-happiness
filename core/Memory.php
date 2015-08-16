@@ -88,17 +88,19 @@ class Memory
         if (! is_null(Memory::$a_cache)) {
             return;
         }
-
-        if( !defined('DS') ){
-        	define('DS',DIRECTORY_SEPARATOR);
+        
+        \Profiler::profileSystem('core/Memory', 'Framework start');
+        
+        if (! defined('DS')) {
+            define('DS', DIRECTORY_SEPARATOR);
         }
         
         try {
             if (! defined('DATA_DIR')) {
                 if (Memory::$bo_testing) {
-                    define('DATA_DIR', NIV . 'admin'.DS.'data'.DS.'tests'.DS);
+                    define('DATA_DIR', NIV . 'admin' . DS . 'data' . DS . 'tests' . DS);
                 } else {
-                    define('DATA_DIR', NIV . 'admin'.DS.'data'.DS);
+                    define('DATA_DIR', NIV . 'admin' . DS . 'data' . DS);
                 }
             }
             
@@ -106,73 +108,73 @@ class Memory
             Memory::$a_cache = array();
             
             Memory::$a_service = array(
-                'systemPath' => NIV . 'core'.DS.'services'.DS,
-                'userPath' => NIV . 'includes'.DS.'services'.DS,
+                'systemPath' => NIV . 'core' . DS . 'services' . DS,
+                'userPath' => NIV . 'includes' . DS . 'services' . DS,
                 'systemNamespace' => '\core\services\\',
                 'userNamespace' => '\includes\services\\'
             );
             Memory::$a_serviceData = array(
-                'systemPath' => NIV . 'core'.DS.'services'.DS.'data'.DS,
-                'userPath' => NIV . 'includes'.DS.'services'.DS.'data'.DS,
+                'systemPath' => NIV . 'core' . DS . 'services' . DS . 'data' . DS,
+                'userPath' => NIV . 'includes' . DS . 'services' . DS . 'data' . DS,
                 'systemNamespace' => '\core\services\data\\',
                 'userNamespace' => '\includes\services\data\\'
             );
             Memory::$a_model = array(
-                'systemPath' => NIV . 'core'.DS.'models'.DS,
-                'userPath' => NIV . 'includes'.DS.'models'.DS,
+                'systemPath' => NIV . 'core' . DS . 'models' . DS,
+                'userPath' => NIV . 'includes' . DS . 'models' . DS,
                 'systemNamespace' => '\core\models\\',
                 'userNamespace' => '\includes\models\\'
             );
             Memory::$a_modelData = array(
-                'systemPath' => NIV . 'core'.DS.'models'.DS.'data'.DS,
-                'userPath' => NIV . 'includes'.DS.'models'.DS.'data'.DS,
+                'systemPath' => NIV . 'core' . DS . 'models' . DS . 'data' . DS,
+                'userPath' => NIV . 'includes' . DS . 'models' . DS . 'data' . DS,
                 'systemNamespace' => '\core\models\data\\',
                 'userNamespace' => '\includes\models\data\\'
             );
             Memory::$a_helper = array(
-                'systemPath' => NIV . 'core'.DS.'helpers'.DS,
-                'userPath' => NIV . 'includes'.DS.'helpers'.DS,
+                'systemPath' => NIV . 'core' . DS . 'helpers' . DS,
+                'userPath' => NIV . 'includes' . DS . 'helpers' . DS,
                 'systemNamespace' => '\core\helpers\\',
                 'userNamespace' => '\includes\helpers\\'
             );
             Memory::$a_helperData = array(
-                'systemPath' => NIV . 'core'.DS.'helpers'.DS.'data'.DS,
-                'userPath' => NIV . 'includes'.DS.'helpers'.DS.'data'.DS,
+                'systemPath' => NIV . 'core' . DS . 'helpers' . DS . 'data' . DS,
+                'userPath' => NIV . 'includes' . DS . 'helpers' . DS . 'data' . DS,
                 'systemNamespace' => '\core\helpers\data\\',
                 'userNamespace' => '\includes\helpers\data\\'
             );
             Memory::$a_class = array(
-                'systemPath' => NIV . 'core'.DS.'classes'.DS,
-                'userPath' => NIV . 'includes'.DS.'classes'.DS,
+                'systemPath' => NIV . 'core' . DS . 'classes' . DS,
+                'userPath' => NIV . 'includes' . DS . 'classes' . DS,
                 'systemNamespace' => '\core\classes\\',
                 'userNamespace' => '\includes\classes\\'
             );
             Memory::$a_interface = array(
-                'systemPath' => NIV . 'core'.DS.'interfaces'.DS,
-                'userPath' => NIV . 'includes'.DS.'interfaces'.DS,
+                'systemPath' => NIV . 'core' . DS . 'interfaces' . DS,
+                'userPath' => NIV . 'includes' . DS . 'interfaces' . DS,
                 'systemNamespace' => '\core\interfaces\\',
                 'userNamespace' => '\includes\interfaces\\'
             );
             Memory::$a_database = array(
-                'systemPath' => NIV . 'core'.DS.'database'.DS,
-                'userPath' => NIV . 'includes'.DS.'database'.DS,
+                'systemPath' => NIV . 'core' . DS . 'database' . DS,
+                'userPath' => NIV . 'includes' . DS . 'database' . DS,
                 'systemNamespace' => '\core\database\\',
                 'userNamespace' => '\includes\database\\'
             );
             
-            Memory::loadCoreClass(NIV . 'core'.DS.'Object.inc.php');
+            Memory::loadCoreClass(NIV . 'core' . DS . 'Object.inc.php');
             Memory::loadCoreClass(Memory::$a_service['systemPath'] . 'Service.inc.php');
             Memory::loadCoreClass(Memory::$a_model['systemPath'] . 'Model.inc.php');
             Memory::loadCoreClass(Memory::$a_helper['systemPath'] . 'Helper.inc.php');
             Memory::loadCoreClass(NIV . 'core' . DS . 'Loader.php');
-            Memory::loadCoreClass(NIV.'core/IoC.inc.php');
+            Memory::loadCoreClass(NIV . 'core/IoC.inc.php');
             
-            /* Load standard services */            
+            /* Load standard services */
             $caller = IoC::$s_ruleFileHandler;
             $service_File = new $caller();
             Memory::$a_cache[$caller] = $service_File;
-            if( !$service_File->exists(NIV.'files'.DS.'updates') ){
-            	$service_File->newDirectory(NIV.'files'.DS.'updates',0700);
+            if (! $service_File->exists(NIV . 'files' . DS . 'updates')) {
+                $service_File->newDirectory(NIV . 'files' . DS . 'updates', 0700);
             }
             
             unset($caller);
@@ -185,28 +187,30 @@ class Memory
             unset($caller);
             date_default_timezone_set($service_Settings->get('settings/main/timeZone'));
             
-            /*  Load IoC */
+            /* Load IoC */
             $caller = '\core\IoC';
-            if( file_exists(NIV.'includes/IoC.inc.php') ){
-            	require_once(NIV.'includes/IoC.inc.php');
-            	$caller = '\includes\IoC';
+            if (file_exists(NIV . 'includes/IoC.inc.php')) {
+                require_once (NIV . 'includes/IoC.inc.php');
+                $caller = '\includes\IoC';
             }
             $IoC = new $caller($service_Settings);
             Memory::$a_cache['IoC'] = $IoC;
             
             Memory::setDefaultValues($service_Settings);
+            
+            \Profiler::profileSystem('core/Memory', 'Framework startup complete');
         } catch (\Exception $e) {
             throw new \CoreException('Starting up framework failed', 0, $e);
         }
     }
-    
-    private static function loadCoreClass($s_filename){
-    	if( file_exists(str_replace('core','files'.DS.'updates'.DS.'core',$s_filename)) ){
-    		require_once(file_exists(str_replace('core','files'.DS.'updates'.DS.'core',$s_filename)) );
-    	}
-    	else {
-    		require_once ($s_filename);
-    	}
+
+    private static function loadCoreClass($s_filename)
+    {
+        if (file_exists(str_replace('core', 'files' . DS . 'updates' . DS . 'core', $s_filename))) {
+            require_once (file_exists(str_replace('core', 'files' . DS . 'updates' . DS . 'core', $s_filename)));
+        } else {
+            require_once ($s_filename);
+        }
     }
 
     /**
@@ -341,7 +345,7 @@ class Memory
     /**
      * Checks if testing-mode is active
      *
-     * return boolean	True if testing-mode is active
+     * return boolean True if testing-mode is active
      */
     public static function isTesting()
     {
@@ -687,7 +691,7 @@ class Memory
         $s_type = strtolower($s_type);
         $s_name = ucfirst($s_name);
         
-        if (array_key_exists('\core\\'.$s_type.'s\\'.$s_name, Memory::$a_cache)) {
+        if (array_key_exists('\core\\' . $s_type . 's\\' . $s_name, Memory::$a_cache)) {
             return true;
         }
         
@@ -899,6 +903,8 @@ class Memory
      */
     public static function endProgram()
     {
+        \Profiler::dump();
+        
         $service_Template = null;
         if (array_key_exists('\core\services\Template', Memory::$a_cache)) {
             $service_Template = Memory::$a_cache['\core\services\Template'];
@@ -931,6 +937,8 @@ class Memory
         Memory::$a_interface = null;
         Memory::$bo_prettyUrls = null;
         Memory::$a_cache = null;
+        
+        \Profiler::reset();
     }
 
     /**
@@ -957,7 +965,7 @@ class Memory
                     $s_url .= 'index.php?';
                 }
             } else {
-                if (strpos($s_url, '.php') === false ){
+                if (strpos($s_url, '.php') === false) {
                     $s_url .= '.php';
                 }
                 if (count($a_payload) > 0) {

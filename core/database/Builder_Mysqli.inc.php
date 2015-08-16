@@ -42,6 +42,8 @@ class Builder_Mysqli implements \Builder
      */
     public function __construct(\DAL $service_Database)
     {
+        \Profiler::profileSystem('core/database/Builder_Mysql.inc.php','Loading query builder');
+        
         $this->service_Database = $service_Database;
         if( !$this->service_Database->isConnected() ){
         	$this->service_Database->defaultConnect();
@@ -51,6 +53,8 @@ class Builder_Mysqli implements \Builder
         $this->obj_create = new Create_Mysqli();
         $this->obj_having = new Having_Mysqli();
         $this->reset();
+        
+        \Profiler::profileSystem('core/database/Builder_Mysql.inc.php','Loaded query builder');
     }
 
     /**
@@ -90,6 +94,15 @@ class Builder_Mysqli implements \Builder
         $this->obj_create = new Create_Mysqli();
         $this->obj_having = new Having_Mysqli();
         $this->reset();
+    }
+    
+    /**
+	 * Returns if the object schould be treated as singleton
+	 *
+	 * @return boolean True if the object is a singleton
+	 */
+	public static function isSingleton(){
+        return true;
     }
 
     /**

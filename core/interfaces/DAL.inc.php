@@ -34,6 +34,13 @@ interface DAL {
 	 * Connects to the database with the preset login data
 	*/
 	public function defaultConnect();
+	
+	/**
+	 * Returns if the object schould be treated as singleton
+	 *
+	 * @return boolean True if the object is a singleton
+	 */
+	public static function isSingleton();
 
 	/**
 	 * Checks if the given connection-data is correct
@@ -251,4 +258,11 @@ interface DAL {
 	 * @throws \DBException If the table does not exists
 	*/
 	public function describe($s_table, $bo_addNotExists = false, $bo_dropTable = false);
+	
+	/**
+	 * Returns the current loaded database
+	 *
+	 * @return string
+	 */
+	public function getDatabase();
 }

@@ -66,12 +66,24 @@ class Mysqli implements \DAL {
 	 * Connects to the database with the preset login data
 	 */
 	public function defaultConnect() {
+		\Profiler::profileSystem('core/database/Mysqli.inc.php','Connecting to database');
 		$this->bo_connection = false;
 		
 		$s_type = $this->service_Settings->get ( 'settings/SQL/type' );
 		$this->connection ( $this->service_Settings->get ( 'settings/SQL/' . $s_type . '/username' ), $this->service_Settings->get ( 'settings/SQL/' . $s_type . '/password' ), $this->service_Settings->get ( 'settings/SQL/' . $s_type . '/database' ), $this->service_Settings->get ( 'settings/SQL/' . $s_type . '/host' ), $this->service_Settings->get ( 'settings/SQL/' . $s_type . '/port' ) );
 		
 		$this->reset ();
+
+		\Profiler::profileSystem('core/database/Mysqli.inc.php','Connected to database');
+	}
+	
+	/**
+	 * Returns if the object schould be treated as singleton
+	 *
+	 * @return boolean True if the object is a singleton
+	 */
+	public static function isSingleton(){
+	    return true;
 	}
 	
 	/**
@@ -629,6 +641,8 @@ class Mysqli implements \DAL {
 	public function useDB($s_database) {
 		try {
 			$this->query ( "USE " . $s_database );
+			
+			$this->s_lastDatabase = $s_database;
 		} catch ( \Exception $ex ) {
 			throw new \Exception ( "Database-change failed .\n" . $s_database );
 		}
@@ -678,8 +692,8 @@ class Mysqli implements \DAL {
 			throw new \DBException ( 'Table ' . $s_table . ' does not exist.' );
 		}
 		
-		$a_table = $this->fetch_assoc ();
-		$s_description = $a_table [0] [$s_table];
+		$a_table = $this->fetch_row ();
+		$s_description = $a_table [0] [1];
 		if ($bo_dropTable) {
 			$s_description = 'DROP TABLE IF EXISTS ' . $s_table . ";\n" . $s_description;
 		}
@@ -707,5 +721,15 @@ class Mysqli implements \DAL {
 			
 			$this->obj_query = null;
 		}
+	}
+
+	
+	/**
+	 * Returns the current loaded database
+	 * 
+	 * @return string
+	 */
+	public function getDatabase(){
+		return $this->s_lastDatabase;
 	}
 }
