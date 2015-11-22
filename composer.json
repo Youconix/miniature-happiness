@@ -2,13 +2,19 @@
 	"name": "youconix/miniature_happiness",
 	"description": "Low level website framework.",
 	"license": "LGPL-3.0+",
+	"repositories": [
+	  {
+	      "url": "https://github.com/Youconix/admin.git",
+	      "type": "git"
+	  },
+	  {
+	    "url": "https://github.com/Youconix/core.git",
+	    "type": "git"
+	  }
+      ],
 	"require" : {
-		"phpmailer/phpmailer" : "5.2.*",
-		"dompdf/dompdf" : "0.6.*",
-		"facebook/php-sdk-v4": "~5.0",
-		"psr/log" : "1.*",
-		"guzzlehttp/guzzle": "^6.0",
-		"firephp/firephp-core" : "0.4.*"
+		"youconix/core" : "dev-master",
+		"youconix/admin" : "dev-master"
 	},
 	"authors": [
         {
