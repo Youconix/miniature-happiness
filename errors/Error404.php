@@ -6,73 +6,60 @@ namespace errors;
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *     
+ *
  * Miniature-happiness is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *     
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Error 404 class
  *
- * @copyright   Youconix
- * @author :	Rachelle Scheijen
+ * @copyright Youconix
+ * @author : Rachelle Scheijen
  * @version 1.0
  * @since 1.0
  */
-if (! defined('NIV')) {
-    define('NIV', '../');
-    require (NIV . 'includes/BaseLogicClass.php');
-}
-
 $_SERVER['REQUEST_URI'] = 'errors/Error404.php';
 $config = \Loader::inject('\Config');
 $config->detectTemplateDir();
 
-class Error404 extends \includes\BaseLogicClass
+class Error404 extends \core\templating\BaseController
 {
+
     /**
-     * @var \Headers
+     *
+     * @var \Language
      */
-    protected $headers;
-    
+    private $language;
+
     /**
-     * @var \Logger
+     *
+     * @var \Output
      */
-    protected $logs;
+    private $template;
 
     /**
      * Starts the class Error404
-     * 
-     * @param \Input $input
-     * @param \Config $config
-     * @param \Language $language
-     * @param \Output $template
-     * @param \Header $header
-     * @param \Menu $menu
-     * @param \Footer $footer
-     * @param \Headers $headers
-     * @param \Logger $logs
+     *
+     * @param \Request $request            
+     * @param \Language $language            
+     * @param \Output $template            
      */
-    public function __construct(\Input $input,\Config $config,\Language $language,\Output $template,
-        \Header $header, \Menu $menu, \Footer $footer,\Headers $headers,\Logger $logs)
+    public function __construct(\Request $request, \Language $language, \Output $template)
     {
-        parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
+        $this->language = $language;
+        $this->template = $template;
         
-        $this->headers = $headers;
-        $this->logs = $logs;
-        
-        $this->showLayout();
-        
-        $this->displayError();
+        parent::__construct($request);
     }
 
     /**
      * Displays the error
      */
-    private function displayError()
+    protected function index()
     {
         $this->headers->http404();
         $this->headers->printHeaders();
@@ -81,14 +68,12 @@ class Error404 extends \includes\BaseLogicClass
         
         $this->template->set('notice', t('errors/error404/pageMissing'));
         
-        if (isset($_SESSION['error'])) {
-            $this->logs->critical($_SESSION['error']);
+        if ( $this->session->exists('error') ) {            
             if (defined('DEBUG')) {
-                
                 $this->template->set('debug_notice', $_SESSION['error']);
             }
+        
+            $this->session->delete('error');
         }
     }
 }
-
-\Loader::inject('\errors\Error404');

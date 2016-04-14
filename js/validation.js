@@ -207,7 +207,7 @@ Validation.prototype.html5Validate	= function(item){
 	return true;
 }
 
-validation = new Validation();
+var validation = new Validation();
 
 $(document).ready(function(){
 	validation.init();

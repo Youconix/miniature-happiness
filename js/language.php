@@ -1,7 +1,11 @@
 <?php
-define('NIV', '../');
+namespace js;
 
-class SiteLanguage
+define('NIV', '../');
+define('DS',DIRECTORY_SEPARATOR);
+require_once(NIV.DS.'vendor'.DS.'youconix'.DS.'core'.DS.'bootstrap.php');
+
+class Language
 {
 
     /**
@@ -9,19 +13,16 @@ class SiteLanguage
      */
     private $service_Language;
     /**
-     * @var \core\services\Builder
+     * @var \Builder
      */
     private $service_Builder;
     private $a_items = array();
     private $a_widgetItems = array();
 
-    public function __construct()
-    {
-        require (NIV . 'core/Memory.php');
-        \core\Memory::startUp();
-        
-        $this->service_Language = \Loader::inject('\Language');
-        $this->service_Builder = \Loader::inject('\Builder');
+    public function __construct(\Language $language,\Builder $builder)
+    {       
+        $this->service_Language = $language;
+        $this->service_Builder = $builder;
         
         $this->getSiteItems();
         
@@ -88,5 +89,5 @@ class SiteLanguage
     }
 }
 
-$obj_SiteLanguage = new SiteLanguage();
+\Loader::Inject('\js\Language');
 ?>

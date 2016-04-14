@@ -1,7 +1,7 @@
 <?php
 namespace includes;
 
-class BaseLogicClass extends \core\BaseLogicClass
+class BaseLogicClass extends \youconix\core\templating\gui\BaseLogicClass
 {
 }
 ?>

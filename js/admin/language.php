@@ -1,5 +1,7 @@
 <?php
 define('NIV', '../../');
+define('DS',DIRECTORY_SEPARATOR);
+require_once(NIV.DS.'vendor'.DS.'youconix'.DS.'core'.DS.'bootstrap.inc.php');
 
 class AdminLanguage
 {
@@ -15,10 +17,7 @@ class AdminLanguage
     private $a_items = array();
 
     public function __construct()
-    {
-        require (NIV . 'core/Memory.php');
-        \core\Memory::startUp();
-        
+    {        
         $this->service_Language = \Loader::inject('\Language');
         $this->builder = \Loader::inject('\Builder');
         

@@ -31,7 +31,7 @@ class Activate extends \includes\BaseLogicClass
 
     /**
      * 
-     * @var \core\models\User
+     * @var \youconix\core\models\User
      */
     private $user;
 
@@ -45,11 +45,11 @@ class Activate extends \includes\BaseLogicClass
      * @param \Header $header
      * @param \Menu $menu
      * @param \Footer $footer
-     * @param \core\models\User $user
+     * @param \youconix\core\models\User $user
      * @param \Headers $headers
      */
     public function __construct(\Input $input,\Config $config,\Language $language,
-        \Output $template,\Header $header,\Menu $menu,\Footer $footer,\core\models\User $user,\Headers $headers)
+        \Output $template,\Header $header,\Menu $menu,\Footer $footer,\youconix\core\models\User $user,\Headers $headers)
     {
         parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
         

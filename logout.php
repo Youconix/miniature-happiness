@@ -1,53 +1,45 @@
 <?php
+use \youconix\core\templating\BaseController as BaseController;
+use \youconix\core\models\Login as Login;
+
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *     
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *     
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- * 
- * Log out page. Logs the user out of the system                                                   
- *                                                                              
- * This file is part of Miniature-happiness                                    
- *                                                                              
+ * Log out page.
+ * Logs the user out of the system
+ *
+ * This file is part of Miniature-happiness
+ *
  * @copyright Youconix
- * @author    Rachelle Scheijen
- * @since     1.0
+ * @author Rachelle Scheijen
+ * @since 1.0
  */
-if( strpos($_SERVER['REQUEST_URI'],'logout.php') !== false ){
+if (strpos($_SERVER['REQUEST_URI'], 'logout.php') !== false) {
     $s_url = str_replace('logout.php', 'logout/performLogout', $_SERVER['REQUEST_URI']);
-    header('location: '.$s_url);
+    header('location: ' . $s_url);
     die();
 }
 
-class Logout extends \core\BaseClass implements \Routable
+class Logout extends BaseController
 {
+
     /**
-     * 
+     *
      * @var \core\models\Login
      */
     private $login;
-    
-    
+
     /**
      * Starts the class Logout
      *
-     * @param \core\Input $input    The input parser           
+     * @param \Request $request            
+     * @param \core\models\Login $login            
      */
-    public function __construct(\core\Input $input,\core\models\Login $login)
+    public function __construct(\Request $request, Login $login)
     {
-        parent::__construct($input);
+        parent::__construct($request);
         
         $this->login = $login;
     }
-    
+
     /**
      * Routes the controller
      *

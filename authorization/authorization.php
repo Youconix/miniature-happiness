@@ -1,16 +1,28 @@
 <?php
 namespace authorization;
 
-abstract class Authorization extends \includes\BaseLogicClass {
+abstract class Authorization extends \youconix\core\templating\BaseController{
+    
     /**
-     *
-     * @var \Headers
+     * @var \Language
      */
-    protected $headers;
+    protected $language;
     
     /**
      * 
-     * @var \core\models\User
+     * @var \Output
+     */
+    protected $template;
+    
+    /**
+     * 
+     * @var \Config
+     */
+    protected $config;
+    
+    /**
+     * 
+     * @var \youconix\core\models\User
      */
     protected $user;
     
@@ -24,22 +36,19 @@ abstract class Authorization extends \includes\BaseLogicClass {
      * Constructor
      *
      * @param \Input $input    The input parser
-     * @param \Config $config
      * @param \Language $language
      * @param \Output $template
-     * @param \Header $header
-     * @param \Menu $menu
-     * @param \Footer $footer
-     * @param \core\models\User $user
-     * @param \Headers $headers
+     * @param \youconix\core\models\User $user
      */
-    public function __construct(\Input $input,\Config $config,
-        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\Headers $headers)
+    public function __construct(\Request $request,\Language $language,\Output $template,\youconix\core\models\User $user)
     {
+        $this->language = $language;
+        $this->template = $template;
         $this->user = $user;
-        $this->headers = $headers;
+        
+        $this->config = $request->getConfig();
     
-        parent::__construct($input, $config, $language, $template, $header, $menu, $footer);
+        parent::__construct($request);        
     }
     
     /**

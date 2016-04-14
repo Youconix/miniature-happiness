@@ -4,7 +4,7 @@ namespace authorization;
 class Facebook extends  \authorization\Authorization  {
     /**
      * 
-     * @var \core\models\LoginFacebook
+     * @var \youconix\core\models\LoginFacebook
      */
     
     private $login;
@@ -12,31 +12,21 @@ class Facebook extends  \authorization\Authorization  {
     /**
      * Constructor
      *
-     * @param \Input $input    The input parser
-     * @param \Config $config
+     * @param \Request $request
      * @param \Language $language
      * @param \Output $template
-     * @param \Header $header
-     * @param \Menu $menu
-     * @param \Footer $footer
-     * @param \core\models\User $user
-     * @param \Headers $headers
-     * @param   \core\models\LoginFacebook    $login
+     * @param \youconix\core\models\User $user
+     * @param   \youconix\core\models\LoginFacebook    $login
      */
     public function __construct(
-        \Input $input,
-        \Config $config,
+        \Request $request,
         \Language $language,
         \Output $template,
-        \Header $header,
-        \Menu $menu,
-        \Footer $footer,
-        \core\models\User $user,
-        \Headers $headers,
-        \core\models\LoginFacebook $login
+        \youconix\core\models\User $user,
+        \youconix\core\models\LoginFacebook $login
         )
     {
-        parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);
+        parent::__construct($request, $language, $template, $user);
         
         $this->login = $login;
     }

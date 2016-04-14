@@ -157,6 +157,7 @@
         <xs:element name="prefix" type="xs:string"/>
         <xs:element name="type" type="non-empty-string"/>
         <xs:element ref="Mysqli" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="PostgreSql" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -168,6 +169,17 @@
         <xs:element name="database" type="non-empty-string"/>
         <xs:element name="host" type="non-empty-string"/>
         <xs:element name="port" type="port-number" default="3306"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PostgreSql">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="username" type="non-empty-string"/>
+        <xs:element name="password" type="non-empty-string"/>
+        <xs:element name="database" type="non-empty-string"/>
+        <xs:element name="host" type="non-empty-string"/>
+        <xs:element name="port" type="port-number" default="5432"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

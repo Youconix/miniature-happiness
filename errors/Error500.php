@@ -2,19 +2,6 @@
 namespace errors;
 
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *     
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *     
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- * 
  * Error 500 class
  *
  * @copyright   Youconix
@@ -26,39 +13,33 @@ $_SERVER['REQUEST_URI'] = 'errors/Error500.php';
 $config = \Loader::inject('\Config');
 $config->detectTemplateDir();
 
-class Error500 extends \includes\BaseLogicClass
+class Error500 extends \core\templating\BaseController
 {
     /**
-     * @var \Headers
+     * 
+     * @var \Output
      */
-    protected $headers;
+    protected $template;
     
     /**
-     * @var \Logger
+     * 
+     * @var \Language
      */
-    protected $logs;
-
+    protected $language;
+    
     /**
      * Starts the class Error404
      * 
-     * @param \Input $input
-     * @param \Config $config
+     * @param \Request $request
      * @param \Language $language
      * @param \Output $template
-     * @param \Header $header
-     * @param \Menu $menu
-     * @param \Footer $footer
-     * @param \Headers $headers
-     * @param \Logger $logs
      */
-    public function __construct(\Input $input,\Config $config,
-        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,
-        \Headers $headers,\Logger $logs)
+    public function __construct(\Request $request,\Language $language,\Output $template)
     {
-        parent::__construct($input,$config,$language,$template,$header,$menu,$footer);
+        $this->template = $template;
+        $this->language = $language;
         
-        $this->headers = $headers;
-        $this->logs = $logs;
+        parent::__construct($request);
         
         $this->template->setCss('body {
           background-color:black;
@@ -67,13 +48,9 @@ class Error500 extends \includes\BaseLogicClass
           background: linear-gradient(#111, #111) repeat scroll 0 0 rgba(0, 0, 0, 0);
         }
         #content { margin:5%; }');
-        
-        $this->displayError();
-        
-        $this->showLayout();
     }
 
-    private function displayError()
+    protected function index()
     {
         $this->headers->http500();
         $this->headers->printHeaders();
@@ -83,18 +60,18 @@ class Error500 extends \includes\BaseLogicClass
         
         $this->template->set('notice', t('errors/error500/systemError'));
         
-        if (isset($_SESSION['error'])) {
-            if (isset($_SESSION['errorObject'])) {
+        if ( $this->session->exists('error') ) {
+            if ( $this->session->exists('errorObject') && ( $this->session->get('errorObject') instanceof \Exception) ) {
             	reportException($_SESSION['errorObject'],false);
             } else {
-                $this->logs->critical($_SESSION['error']);
+                $this->logger->critical($_SESSION['error']);
             }
             
             if (defined('DEBUG')) {
                 $this->template->set('debug_notice', $_SESSION['error']);
             }
+            
+            $this->session->delete('error');
         }
     }
 }
-
-\Loader::inject('\errors\Error500');

@@ -23,24 +23,18 @@ class Normal extends \authorization\Authorization {
     /**
      * Constructor
      *
-     * @param \Input $input    The input parser
-     * @param \onfig $config
+     * @param \Request $request
      * @param \Language $language
      * @param \Output $template
-     * @param \Header $header
-     * @param \Menu $menu
-     * @param \Footer $footer
-     * @param \core\models\User $user
-     * @param \Headers $headers
+     * @param \youconix\core\models\User $user
      * @param \core\models\Login $login
      * @param \core\helpers\PasswordForm $form
      * @param \core\helpers\Captcha $captcha
      */
-    public function __construct(\Input $input,\Config $config,
-        \Language $language,\Output $template,\Header $header, \Menu $menu, \Footer $footer,\core\models\User $user,\Headers $headers,\core\models\Login $login,
-        \core\helpers\PasswordForm $form,\core\helpers\Captcha $captcha)
+    public function __construct(\Request $request, \Language $language,\Output $template,\youconix\core\models\User $user,
+        \youconix\core\models\Login $login, \youconix\core\helpers\PasswordForm $form,\youconix\core\helpers\Captcha $captcha)
     {
-        parent::__construct($input, $config, $language, $template, $header, $menu, $footer, $user, $headers);
+        parent::__construct($request, $language, $template, $user);
         
         $this->login = $login;
         $this->form = $form;
@@ -118,6 +112,7 @@ class Normal extends \authorization\Authorization {
         }
         
         (isset($this->post['autologin'])) ? $bo_autologin = true : $bo_autologin = false;
+        echo('doing login');
         $bo_login = $this->login->do_login($this->post['username'], $this->post['password'], $bo_autologin);
         
         /* No redirect, so the login was incorrect */

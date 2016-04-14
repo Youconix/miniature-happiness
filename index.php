@@ -1,27 +1,29 @@
 <?php
+use \youconix\core\templating\BaseController as BaseController;
+use \youconix\core\helpers\IndexInstall as IndexInstall;
+
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *     
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *     
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- * 
  * General landing page.
  *
- * @author:		Rachelle Scheijen
- * @copyright	Youconix
- * @version	1.0
- * @since		1.0
+ * @author : Rachelle Scheijen
+ * @copyright Youconix
+ * @version 1.0
+ * @since 1.0
  */
-class Index extends \includes\BaseLogicClass
+class Index extends BaseController
 {
+
+    /**
+     *
+     * @var \Output
+     */
+    protected $template;
+
+    /**
+     *
+     * @var \Language
+     */
+    protected $language;
 
     /**
      *
@@ -32,19 +34,21 @@ class Index extends \includes\BaseLogicClass
     /**
      * Constructor
      *
-     * @param \Input $Input    The input parser       
+     * @param \Request $request
      * @param \Config $config            
      * @param \Language $language            
      * @param \Output $template            
      * @param \core\classes\Header $header            
-     * @param \core\classes\Menu $menu    
-     * @param \core\classes\Footer $footer
-     * @param \core\helpers\IndexInstall $index        
+     * @param \core\classes\Menu $menu            
+     * @param \core\classes\Footer $footer            
+     * @param \core\helpers\IndexInstall $index            
      */
-    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Header $header, \Menu $menu, \Footer $footer, \core\helpers\IndexInstall $index)
+    public function __construct(\Request $request, \Language $language, \Output $template, IndexInstall $index)
     {
-    	parent::__construct($Input, $config, $language, $template, $header, $menu, $footer);
+        parent::__construct($request);
         
+        $this->template = $template;
+        $this->language = $language;
         $this->indexInstall = $index;
     }
 
@@ -53,6 +57,15 @@ class Index extends \includes\BaseLogicClass
      */
     protected function view()
     {
-    	$this->template->set('content', $this->indexInstall->generate());
+        $this->template->set('content', $this->indexInstall->generate());
+        
+        try {
+        $builder = \Loader::inject('\DatabaseParser');
+        $parser = simplexml_load_file(NIV.DATA_DIR.'database/0_framework.xml');
+        print_r($builder->updateTables($parser));
+        }
+        catch(\Exception $e){
+            print_r($e);
+        }
     }
 }

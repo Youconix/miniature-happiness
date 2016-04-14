@@ -1,4 +1,6 @@
 <?php
+namespace stats;
+
 /**
  * Miniature-happiness is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,11 +26,31 @@
  */
 define('PROCESS', '1');
 define('NIV', '../');
-define('DATA_DIR', '../../data/');
+define('DS',DIRECTORY_SEPARATOR);
+
+require(NIV.'vendor'.DS.'youconix'.DS.'core'.DS.'bootstrap.php');
 
 class Stats
 {
 
+    /**
+     * 
+     * @var \Security
+     */
+    private $security;
+    
+    /**
+     * 
+     * @var \youconix\core\models\Stats
+     */
+    private $stats;
+    
+    /**
+     * 
+     * @var \Config
+     */
+    private $config;
+    
     private $s_page;
 
     private $s_ip;
@@ -52,9 +74,12 @@ class Stats
     /**
      * PHP 5 constructor
      */
-    public function __construct()
+    public function __construct(\Security $security,\youconix\core\models\Stats $stats,\Config $config)
     {
-        return;
+        $this->security = $security;
+        $this->stats = $stats;
+        $this->config = $config;
+        
         $this->init();
         
         $this->save();
@@ -63,22 +88,11 @@ class Stats
     }
 
     /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        // \core\Memory::endProgram();
-    }
-
-    /**
      * Inits the class Stats
      * Collects the information from the client
      */
     private function init()
-    {
-        require (NIV . 'core/Memory.php');
-        \core\Memory::startUp();
-        
+    {        
         $a_init_get = array(
             'colors' => 'int',
             'width' => 'int',
@@ -86,8 +100,7 @@ class Stats
             'page' => 'string-DB'
         );
         
-        $service_Security = \core\Memory::services('Security');
-        $a_get = $service_Security->secureInput('GET', $a_init_get);
+        $a_get = $this->security->secureInput('GET', $a_init_get);
         
         if (array_key_exists('colors', $a_get)) {
             $this->i_colors = $a_get['colors'];
@@ -98,9 +111,9 @@ class Stats
         $this->s_ip = $_SERVER['REMOTE_ADDR'];
         
         if (array_key_exists('HTTP_REFERER', $_SERVER))
-            $this->s_reference = $service_Security->secureStringDB($_SERVER['HTTP_REFERER']);
+            $this->s_reference =  $this->security->secureStringDB($_SERVER['HTTP_REFERER']);
         
-        $s_useragent = $service_Security->secureStringDB($_SERVER['HTTP_USER_AGENT']);
+        $s_useragent =  $this->security->secureStringDB($_SERVER['HTTP_USER_AGENT']);
         $this->s_page = $a_get['page'];
         
         /* Get OS */
@@ -200,20 +213,18 @@ class Stats
      */
     private function save()
     {
-        $model_Stats = \core\Memory::models('Stats');
-        
-        if (! $model_Stats->saveIP($this->s_ip, $this->s_page)) {
+        if (! $this->stats->saveIP($this->s_ip, $this->s_page)) {
             return;
         }
         
         /* Unique visitor */
-        $model_Stats->saveOS($this->s_OS, $this->s_OsType);
-        $model_Stats->saveBrowser($this->s_browser, $this->s_browserVersion);
-        $model_Stats->saveReference($this->s_reference);
+        $this->stats->saveOS($this->s_OS, $this->s_OsType);
+        $this->stats->saveBrowser($this->s_browser, $this->s_browserVersion);
+        $this->stats->saveReference($this->s_reference);
         
         if (! is_null($this->i_colors)) {
-            $model_Stats->saveScreenSize($this->i_width, $this->i_height);
-            $model_Stats->saveScreenColors($this->i_colors . '');
+            $this->stats->saveScreenSize($this->i_width, $this->i_height);
+            $this->stats->saveScreenColors($this->i_colors . '');
         }
     }
 
@@ -222,8 +233,8 @@ class Stats
      */
     private function image()
     {
-        $s_styledir = \core\Memory::services('XmlSettings')->get('settings/templates/dir');
-        $s_file = NIV . 'styles/' . $s_styledir . '/images/stats.png';
+        $s_styledir = $this->config->getSharedStylesDir();
+        $s_file = WEB_ROOT.'/' . $s_styledir . '/images/stats.png';
         
         header('Content-type: image/png');
         header('Content-Transfer-Encoding: binary');
@@ -234,5 +245,4 @@ class Stats
     }
 }
 
-$obj_Stats = new Stats();
-unset($obj_Stats);
+\Loader::Inject('stats\Stats');

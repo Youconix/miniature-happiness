@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.concrete5.org/doctrine-xml/0.5"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.concrete5.org/doctrine-xml/0.5 http://concrete5.github.io/doctrine-xml/doctrine-xml-0.5.xsd">
+	<table name="admin_modules">
+		<field name="id" type="integer" size="11">
+		      <unsigned/>
+		      <autoincrement/>
+		      <key/>
+        </field>
+        <field name="name" type="string" size="100">
+            <notnull/>
+        </field>
+        <field name="installed" type="integer" size="11">
+            <notnull/>
+        </field>
+        <field name="author" type="string" size="50">
+            <notnull/>
+        </field>
+        <field name="description" type="string" size="250">
+            <notnull/>
+        </field>
+        <field name="version" type="string" size="10">
+            <notnull/>
+        </field>
+	</table>
+	<table name="autologin">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+	       <autoincrement/>
+	       <key/>
+	   </field>
+	   <field name="userID" type="integer" size="11">
+	       <unsigned/>
+	       <notnull/>
+	   </field>
+	   <field name="username" type="string" size="255">
+	       <notnull/>
+	   </field>
+	   <field name="IP" type="string" size="40">
+	       <notnull/>
+	   </field>
+	   <foreign_key>
+	      <col>userID</col>
+	      <ref>users.id</ref>
+	    </foreign_key>
+	</table>
+	<table name="countries">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+	       <autoincrement/>
+	       <key/>
+	   </field>
+	   <field name="country" type="string" size="250">
+	       <notnull/>
+	   </field>
+	</table>
+	<table name="groups">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+	       <autoincrement/>
+           <key/>
+	   </field>
+	   <field name="name" type="string" size="100">
+	       <notnull/>
+	   </field>
+	   <field name="description" type="text">
+	       <notnull/>
+	   </field>
+	   <field name="automatic" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <default value="0" />
+	   </field>
+	</table>
+	<table name="group_pages">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+	       <autoincrement/>
+	       <key/>
+	   </field>
+	   <field name="groupID" type="integer" size="11">
+	       <unsigned/>
+	       <notnull/>
+	   </field>
+	   <field name="page" type="string" size="255">
+	       <notnull/>
+	   </field>
+	   <field name="minLevel" type="smallint" size="6">
+	       <default value="-1"/>
+	   </field>
+	   <foreign_key>
+	       <col>groupID</col>
+	       <ref>groups.id</ref>
+	   </foreign_key>
+	</table>
+	<table name="group_pages_command">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+           <autoincrement/>
+           <key/>
+	   </field>
+	   <field name="groupID" type="integer" size="11">
+	       <unsigned/>
+	       <notnull/>
+	   </field>
+	   <field name="minLevel" type="smallint" size="6">
+	       <notnull/>
+	   </field>
+	   <field name="command" type="string" size="150">
+	       <notnull/>
+	   </field>
+	   <field name="page" type="string" size="150">
+           <notnull/>
+       </field>
+	   <foreign_key>
+           <col>groupID</col>
+           <ref>groups.id</ref>
+       </foreign_key>
+	</table>
+	<table name="group_users">
+	   <field name="id" type="bigint" size="20">
+	       <unsigned/>
+           <autoincrement/>
+           <key/>
+	   </field>
+	   <field name="groupID" type="integer" size="11">
+	       <unsigned/>
+	       <notnull/>
+	   </field>
+	   <field name="userid" type="integer" size="11">
+	       <unsigned/>
+	       <notnull/>
+	   </field>
+	   <field name="level" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <value>2</value>
+	       <default value="0"/>
+	   </field>
+	   <foreign_key>
+           <col>groupID</col>
+           <ref>groups.id</ref>
+       </foreign_key>
+       <foreign_key>
+           <col>groupID</col>
+           <ref>users.id</ref>
+       </foreign_key>
+	</table>
+	<table name="ipban">
+        <field name="id" type="integer" size="11">
+            <unsigned/>
+            <autoincrement/>
+            <key/>
+        </field>
+        <field name="ip" type="string" size="250">
+            <notnull/>
+        </field>
+	</table>
+	<table name="users">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+            <autoincrement/>
+            <key/>
+	   </field>
+	   <field name="nick" type="string" size="100">
+	       <notnull/>
+	   </field>
+	   <field name="password" type="string" size="100">
+	       <notnull/>
+	   </field>
+	   <field name="email" type="string" size="150">
+	       <notnull/>
+	   </field>
+	   <field name="avatar" type="string" size="100">
+	       <notnull/>
+	   </field>
+	   <field name="bot" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <default value="0"/>
+	   </field>
+	   <field name="registrated" type="integer" size="11">
+	       <default value="0"/>
+	   </field>
+	   <field name="active" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <default value="0"/>
+	   </field>
+	   <field name="blocked" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <default value="0"/>
+	   </field>
+	   <field name="password_expired" type="enum">
+	       <value>0</value>
+	       <value>1</value>
+	       <default value="0"/>
+	   </field>
+	   <field name="activation" type="string" size="150">
+	       <notnull/>
+	   </field>
+	   <field name="lastLogin" type="integer" size="11">
+	       <default value="0"/>
+	   </field>
+	   <field name="profile" type="text"/>
+	   <field name="language" type="string" size="10">
+	       <default value="en_UK"/>
+	   </field>
+	   <field name="loginType" type="string" size="100">
+	       <default value="normal"/>
+	   </field>
+	   <field name="salt" type="string" size="100">
+	       <notnull/>
+	   </field>
+	   <field name="bindToIp" type="smallint" size="6">
+	       <notnull/>
+	   </field>
+	   <index name="username">
+	       <unique/>
+	       <col>username</col>
+	   </index>
+	   <index name="email">
+           <unique/>
+           <col>email</col>
+       </index>
+	</table>
+	<table name="test">
+	   <field name="id" type="integer" size="11">
+	       <unsigned/>
+           <autoincrement/>
+           <key/>
+	   </field>
+	</table>
+</schema>
