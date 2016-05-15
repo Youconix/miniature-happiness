@@ -1,6 +1,6 @@
 {
-	"name": "youconix/miniature_happiness",
-	"description": "Low level website framework.",
+	"name": "youconix/admin",
+	"description": "Admin module for the miniature_happyness framework.",
 	"license": "LGPL-3.0+",
 	"repositories": [
 	  {
@@ -9,7 +9,7 @@
 	  }
       ],
 	"require" : {
-		"youconix/core" : "dev-master"
+		"youconix/core" : "master"
 	},
 	"authors": [
         {

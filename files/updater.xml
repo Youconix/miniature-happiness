@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+  <currentMajor>2</currentMajor>
+  <maxMajor>3</maxMajor>
+  <currentVersion>2.0</currentVersion>
+  <maxVersion>2.1</maxVersion>
+  <versions>
+    <version>
+      <number>2.0.1</number>
+      <description>some bugfixes</description>
+      <path>2.0.1.zip</path>
+    </version>
+    <version>
+      <number>2.0.2</number>
+      <description>some bugfixes</description>
+      <path>2.0.2.zip</path>
+    </version>
+    <version>
+      <number>2.1</number>
+      <description>Added LDAP support</description>
+      <path>2.1.zip</path>
+    </version>
+  </versions>
+</updates>

@@ -55,7 +55,7 @@ class Index extends BaseController
     /**
      * Sets the index content
      */
-    protected function view()
+    public function view()
     {
         $this->template->set('content', $this->indexInstall->generate());
         
