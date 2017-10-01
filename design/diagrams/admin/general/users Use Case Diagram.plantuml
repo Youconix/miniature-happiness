@@ -1,0 +1,16 @@
+@startuml
+:Admin:
+
+usecase crud as "CRUD users"
+usecase login_as as "Login as user"
+usecase block as "Block user"
+usecase unblock as "Unblock user"
+usecase groups as "Change groups and 
+permissions of user"
+
+Admin -left-> crud
+Admin -up-> login_as
+Admin -down-> block
+Admin -down-> unblock
+Admin -right-> groups
+@enduml

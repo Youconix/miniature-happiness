@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <encoding>iso-8859-1</encoding>
+  <locale><![CDATA[en_UK]]></locale>
+  <noscript>Please activate javascript.</noscript>
+  <sessionExpired>Your session has expired. Relogin.</sessionExpired>
+  <registration>
+    <title>Subscribe now</title>
+    <screenTitle>Register</screenTitle>
+    <name>Username</name>
+    <email>Email address</email>
+    <password1>Password</password1>
+    <password2>Repeat password</password2>
+    <conditions>I agree with the conditions</conditions>
+    <submitButton>Register</submitButton>
+    <passwordIncorrect>The provided passwords do not match.</passwordIncorrect>
+    <checkConditions>You need to agree with the conditions</checkConditions>
+    <failed>Registering your account was not possible at this time. Please try again later.</failed>
+    <emailSend>Your account has been registered. An activation email was sent to [email].</emailSend>
+    <emailFailed>The activation email could not be sent.</emailFailed>
+    <captcha>Repeat the following code as a check.</captcha>
+    <notices>
+      <notices0>The username has not been filled in.</notices0>
+      <notices1>The email address has not been filled in.</notices1>
+      <notices2>The password has not been filled in.</notices2>
+      <conditions>You need to agree with the conditions.</conditions>
+      <emailInvalid>The email address is invalid.</emailInvalid>
+      <passwordInvalid>The entered passwords do not match.</passwordInvalid>
+      <codeInvalid>The entered code is incorrect.</codeInvalid>
+      <usernameTaken>The requested username is already in use.</usernameTaken>
+      <usernameTakenOpenID>An account with this username already exists. Have you not registered, before?</usernameTakenOpenID>
+      <emailTaken>The email address is already in use.</emailTaken>
+      <emailTakenOpenID>An account with this email already exists. Have you not registered, before?</emailTakenOpenID>
+      <usernameToShort>The username has to be at least 3 characters long.</usernameToShort>
+      <passwordToShort>The password has to be at least 8 characters long.</passwordToShort>
+      <veryStrongPassword>Very strong password</veryStrongPassword>
+      <strongPassword>Strong password</strongPassword>
+      <fairPassword>Fair password</fairPassword>
+      <weakPassword>Weak password</weakPassword>
+    </notices>
+    <registrationVia>Registration via</registrationVia>
+  </registration>
+  <activate>
+    <accountActivated><![CDATA[ Your account has been activated. It is now posible <a href="{NIV}authorization/login/index">to log in.</a> ]]></accountActivated>
+    <accountNotActivated>The activation link is invalid. Maybe the account is already activated?</accountNotActivated>
+  </activate>
+  <forgotPassword>
+    <header>Resetting password</header>
+    <verifyCodeFailed>The password could not be reset. The provided code is invalid.</verifyCodeFailed>
+    <verifyCodeSuccess><![CDATA[ The password has been reset. You may now <a href="{NIV}login.php">log in</a>. ]]></verifyCodeSuccess>
+    <fieldsEmpty>You have not filled in all the fields.</fieldsEmpty>
+    <emailError>The email address is invalid.</emailError>
+    <resetFailed>The provided combination of username and email address is unknown.</resetFailed>
+    <resetSuccess>A email has been sent with further instructions.</resetSuccess>
+  </forgotPassword>
+  <messages>
+    <messages>Messages</messages>
+    <subject>Subject</subject>
+    <sender>Sender</sender>
+    <recipient>Recipient</recipient>
+    <date>Date</date>
+    <send>Send</send>
+    <sendTo>Send to</sendTo>
+    <new>New message</new>
+    <form>
+      <read>Read</read>
+      <unread>Unread</unread>
+      <message>Message</message>
+      <subject>Subject</subject>
+      <recipient>Receiver</recipient>
+      <reset>Reset</reset>
+      <answer>Answer</answer>
+    </form>
+    <notices>
+      <messageSent><![CDATA[<h2 class="Notice">The message has been sent to [username].]]></messageSent>
+      <noSuchUser><![CDATA[<h2 class="errorNotice">This user does not exist.</h2>]]></noSuchUser>
+      <noReceiver>The receiver has not been filled in.</noReceiver>
+      <noSubject>The subject has not been filled in.</noSubject>
+      <noMessage>The message body has not been filled in.</noMessage>
+      <deleteConfirm>Are you sure that you want to delete this message?</deleteConfirm>
+    </notices>
+  </messages>
+  <errors>
+    <error403>
+      <accessDenied>Access denied.</accessDenied>
+      <noRights>You do not have the required privileges to view this page.</noRights>
+    </error403>
+    <error404>
+      <notFound>Page not found.</notFound>
+      <pageMissing>The requested page cannot be found on this server.</pageMissing>
+    </error404>
+    <error500>
+      <serverError>Oops, something went wrong.</serverError>
+      <systemError><![CDATA[An error has occured on the server. The server&#39;s administrator has been warned.]]></systemError>
+    </error500>
+  </errors>
+</language>

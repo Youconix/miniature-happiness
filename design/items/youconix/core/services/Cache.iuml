@@ -1,0 +1,29 @@
+@startuml
+!include Service.iuml
+
+class youconix.core.services.Cache extends youconix.core.services.Service {
+     # $builder : Builder
+    # $file : FileHandler
+    # $config : Config
+    # $settings : Settings
+    # $headers : Headers
+    # $s_language : string
+    # $bo_cache : bool
+
+    + isSingleton() : bool
+    # getDirectory() : string
+    # getSeperator() : string
+    # shouldCache() : bool
+    + checkCache() : bool
+    # displayCache($a_file : array) : void
+    + writeCache($s_output : string) : void
+    # getCurrentPage() : string
+    # getAddress($s_page : string) : string
+    + clearPage($s_page : string) : void
+    + cleanLanguageCache() : void
+    + clearSiteCache() : void
+    + getNoCachePages() : array
+    + addNoCachePage($s_page : string) : void
+    + deleteNoCache($i_id : int) : void
+}
+@enduml

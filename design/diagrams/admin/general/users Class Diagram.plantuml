@@ -1,0 +1,32 @@
+@startuml
+!include ../../../items/admin/adminController.iuml
+!include ../../../items/youconix/core/models/User.iuml
+
+class admin.modules.general.Users extends admin.AdminController  {
+    -  $view : AdminUserViews
+    - $user : User
+    - $localisation : Localisation
+    
+    # init() : void
+    + addScreen() : Output
+    + index() : Output
+    + search($username : string) : Output
+    + editScreen($userid : int) : Output
+    + view($userid : int ) : Output
+    # addGroup() : void
+    # deleteGroup() : void
+    +  login() : void
+    + edit($userid : int) : void
+    + add() : void
+    + delete() : void
+    + checkUsername($s_username : string) : void
+    + checkEmail($s_email : string) : void
+    - getUser($userID : int) : User
+    - validate($a_rules : array) : void
+}
+
+admin.modules.general.Users -up-> youconix.core.models.User
+
+hide youconix.core.models.Model
+hide youconix.core.models.Equivalent
+@enduml

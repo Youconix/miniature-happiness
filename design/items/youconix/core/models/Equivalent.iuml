@@ -1,0 +1,26 @@
+@startuml
+class youconix.core.models.Equivalent extends youconix.core.models.Model {
+    # $helper : EquavalentHelper
+    # $s_table : string
+    # $s_primary : string = 'id';
+    # $a_modelFields : array
+
+    # detectTable() : void
+    # detectFields() : void
+    # detectValidation() : void
+    + getTable() : string
+    # getPrimary() : string
+    + setData($data : stdClass) : void
+    + get($i_id : int) : Equivalent
+    + find($relations : array) : array
+    + save() : void
+    # add() : void
+    # update() : void
+    # buildSave() : void
+    + delete() : void
+    # has($s_class : string,$s_foreignKey : string = '',$s_localKey : string = '') : array
+    # belongsTo($s_class : string,$s_foreignKey : string = '',$s_localKey : string= '') : array
+    + __get($s_key : string): string
+    + __set($s_key : string,$s_value : string) : void
+}
+@enduml

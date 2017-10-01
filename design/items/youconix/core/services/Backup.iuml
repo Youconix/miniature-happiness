@@ -1,0 +1,23 @@
+@startuml
+!include Service.iuml
+
+class youconix.core.services.Backup extends youconix.core.services.Service {
+     # $logger : Logger
+    # $builder : Builder
+    # $file : FileHandler
+    # $config : Config
+    # $s_backupDir : string
+    # $obj_zip : ZipArchive
+    # $headers : Headers
+    # $s_root : string
+
+    # openZip($s_name : string) : string
+    + createPartialBackup() : string
+    + createBackupFull() : string
+    # addDirectory($a_files : array, $s_pre : string,$s_rootPath : string) : void
+    # backupDatabase() : string
+    # isZipSupported() : bool
+    + download($s_file : string) : void
+	+ removeBackups() : void
+}
+@enduml

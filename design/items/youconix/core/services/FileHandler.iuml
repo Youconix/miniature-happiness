@@ -1,0 +1,22 @@
+@startuml
+!include Service.iuml
+
+class youconix.core.services.FileHandler extends youconix.core.services.Service {
+	+ readDirectory($s_directory : string) : DirectoryIterator
+	+ readRecursiveDirectory($s_directory : string) :RecursiveIteratorIterator
+	+ directoryFilterName($directory : DirectoryIterator, $a_names : array) :DirectoryIterator
+	+ recursiveDirectoryFilterName($directory : RecursiveIteratorIterator, $s_filter : string) : RegexIterator
+	+ readFilteredDirectory($s_directory : string, $a_skipDirs : array, $s_extension : string) : array
+	+ readFilteredDirectoryNames($s_directory : string, $a_skipDirs : array, $s_extension : string) : array
+	+ getFile($s_file : string) : string
+	+ readFileObject($file : SplFileObject) : string
+	+ readFile($s_file : string, $bo_binary : bool) : void
+	+ writeFile($s_file : string, $s_content : string, $i_rights : int, $bo_binary : bool) : void
+	+ newDirectory($s_name : string, $i_rights : int) : void
+	+ removeDirectory($s_directory : string, $s_extension : string) : string
+	+ removeDirectoryContent($s_directory : string, $s_extension : string) : void
+	+ exists($s_file : string ) : bool
+	+ isReadable($s_file : string) : bool
+	+ rights($s_file : string, $i_rights : int) : bool
+}
+@enduml

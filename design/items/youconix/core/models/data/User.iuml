@@ -1,0 +1,68 @@
+@startuml
+
+class youconix.core.models.data.User extends youconix.core.models.Equivalent {
+    # $groups : Groups;
+    # $obj_language : Language
+    # $hashing : Hashing
+    # $userid : int = null
+    # $username : string
+    # $email : string
+    # $bot : bool
+    # $registrated : int
+    # $loggedIn : int
+    # $active : bool
+    # $blocked : bool
+    # $passwordExpired : bool
+    # $password : string
+    # $profile : string
+    # $activation : string;
+    # $a_levels : array
+    # $loginType : string
+    # $language : string
+    # $bindToIp  : bool
+    # $password_expired : bool
+    
+    + loadData($i_userid : int) : void
+    + setData($data : stdClass) : void
+    + getID() : int
+    + getUsername() : string
+    + setUsername($s_username : string) : void
+    + getEmail() : string
+    + setEmail($s_email : string) : void
+    + setPassword($s_password : string, $bo_expired : bool = false) : void
+    + changePassword($s_passwordOld : string, $s_password : string) : bool
+    + isBot() : bool
+    + setBot($bo_bot : bool) : void
+    + isPasswordExpired() : bool
+    + isEnabled() : bool
+    + getRegistrated() : int
+    + lastLoggedIn() : int
+    + updateLastLoggedIn() : void
+    + isBlocked() : bool
+    + setBlocked($bo_blocked : bool) : void
+    + setActivation($s_activation : string) : void
+    + getActivation() : string
+    + getProfile() : string
+    + setProfile($s_profile : string) : void
+    + getGroups() : array
+    + getLevel($i_groupid : int = -1) : int
+    + disableAccount() : void
+    +  enableAccount() : void
+    + getColor($i_groupid : int = -1) : string
+    + isModerator($i_groupid : int = -1) : bool
+    + isAdmin($i_groupid : int = -1) : bool
+    # checkGroup($i_groupid : int) : int
+    + expirePassword() : void
+    + getLanguage() : string
+    + getLoginType() : string
+    + setLoginType($s_type : string) : void
+    + setBindToIp($bo_bind : bool) : void
+    + isBindedToIp() : bool
+    + save() : void
+    + add() : void
+    +update() : void
+    + delete() : void
+    + __get($s_key : string) : string
+    +  __set($s_key: string,$s_value : string): void
+}
+@enduml

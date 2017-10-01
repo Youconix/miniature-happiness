@@ -1,0 +1,16 @@
+@startuml
+!include ../../../items/admin/adminController.iuml
+!include ../../../items/youconix/core/services/Backup.iuml
+
+class admin.modules.general.Backup extends admin.AdminController  {
+    - $backup : Backup
+    
+    + createBackupscreen() : void
+    + createPartialBackup() : void
+    + createFullBackup() : void
+    + download() : void
+    + removeBackups() : void
+}
+
+admin.modules.general.Backup -down-> youconix.core.services.Backup
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+abstract class youconix.core.services.Service extends youconix.core.Object {
+    + cloneService() + Service
+}
+@enduml

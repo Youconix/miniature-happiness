@@ -1,0 +1,16 @@
+@startuml
+abstract class admin.AdminController {
+    # $request : Request
+    # $language : Language
+    # $output : Output
+    # $logger : Logger
+    # $init_post : array
+    # $init_get : array
+    # $post : Input
+    # $get : Input
+
+    # init() : void
+    # createView($s_view : string, $a_data : array= []) : Output
+    #createJsonView($a_data : array) : Output
+}
+@enduml

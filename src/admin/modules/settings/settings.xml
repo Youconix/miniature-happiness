@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../settings.xsd">
+  <name>Settings</name>
+  <author>Youconix</author>
+  <description>Settings module for the framework Miniature-happiness</description>
+  <version>1.0</version>
+  <install>install.php</install>
+  <upgrade></upgrade>
+  <deinstall>deinstall.php</deinstall>
+  <title>system/menu/settings</title>
+  <js>js/email.js,js/general.js,js/session.js,js/database.js,js/cache.js,js/language.js,js/settings.js</js>
+  <css>settings.min.css</css>
+  <block>
+    <title>system/settings/email/title</title>
+    <id>admin_settings_email</id>
+  </block>
+  <block>
+    <title>system/settings/general/title2</title>
+    <id>admin_settings_general</id>
+  </block>
+  <block>
+    <title>system/settings/login/title</title>
+    <id>admin_settings_login</id>
+  </block>
+  <block>
+    <title>system/settings/sessions/title</title>
+    <id>admin_settings_sessions</id>
+  </block>
+  <block>
+    <title>system/settings/database/title</title>
+    <id>admin_settings_database</id>
+  </block>
+
+  <block>
+    <title>system/settings/cache/title</title>
+    <id>admin_settings_cache</id>
+  </block>
+  <block>
+    <title>system/settings/languages/title</title>
+    <id>admin_settings_languages</id>
+    <link>
+      <title>system/settings/languages/editLanguages</title>
+      <id>admin_settings_editLanguages</id>
+    </link>
+  </block>	
+  <block>
+    <title>system/settings/ssl/title</title>
+    <id>admin_settings_ssl</id>
+  </block>
+</module>

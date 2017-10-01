@@ -1,0 +1,226 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	background: webkit-linear-gradient(#e5e5e5, #FFF);
+	background: moz-linear-gradient(#e5e5e5, #FFF);
+	background: o-gradient(#e5e5e5, #FFF);
+	background: ms-linear-gradient(#e5e5e5, #FFF);
+	background: linear-gradient(#e5e5e5, #FFF);
+	color: #111;
+}
+
+a {
+	color: #111;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse
+}
+
+input[type=text], input[type=email], input[type=url], input[type=date],
+	input[type=password], textarea {
+	border-radius: 5px;
+	display: inline-block;
+	margin-bottom: 2px;
+}
+
+.notice {
+	color: green;
+	font-weight: bold;
+}
+
+.errorNotice {
+	color: red;
+	font-weight: bold;
+}
+
+#headerLogo {
+	margin: 0;
+	padding: 0;
+	width: auto;
+	height: auto;
+	float: left;
+}
+
+#wrapper {
+	min-width: 800px;
+	max-width: 1600px;
+	width: auto;
+	height: auto;
+	margin: auto;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+header, #content, footer, nav {
+	width: 100%;
+	float: left;
+}
+
+header, footer {
+	background-color: #b49fb3;
+	border: 3px outset #b49fb3;
+	border-top: 1px solid #b49fb3;
+	padding-left: 10px;
+	padding-right: 10px;
+	color: #efecec;
+}
+
+header {
+	height: 60px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	ms-border-bottom-left-radius: 15px;
+	ms-border-bottom-right-radius: 15px;
+}
+
+footer {
+	height: 30px;
+	border-radius: 15px;
+	ms-border-radius: 15px;
+}
+
+footer table {
+	width: 99%;
+	float: left;
+}
+
+nav {
+	padding-left: 30px;
+	padding-right: 30px;
+	height: 30px;
+	margin-bottom: 15px;
+}
+
+nav ul {
+	width: 95%;
+	display: block;
+}
+
+nav li {
+	border: 2px outset #8c5489;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	background-color: #8c5489;
+	padding: 5px 10px;
+	float: left;
+	margin-right: 5px;
+	display: block;
+	width: auto;
+	
+	cursor:pointer;
+	moz-box-shadow: 5px 5px 2px #888888;
+    webkit-box-shadow: 5px 5px 2px #888888;
+    ms-box-shadow: 5px 5px 2px #888888;
+    box-shadow: 5px 5px 2px #888888;
+}
+
+nav li:hover {
+	border: 2px inset #8c5489;
+	moz-box-shadow: 2px 2px 0px #888888;
+    webkit-box-shadow: 2px 2px 0px #888888;
+    ms-box-shadow: 2px 2px 0px #888888;
+    box-shadow: 2px 2px 0px #888888;
+}
+
+nav li a, footer a {
+	color: #FFF;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#content {
+	min-height: 400px;
+	height: auto;
+	margin-bottom: 20px;
+}
+
+li {
+	list-style-type: none;
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+}
+
+#headerLanguages {
+	width: auto;
+	float: right;
+}
+
+#headerLanguages li {
+	float: right;
+}
+
+#headerLanguages ul {
+	width: 60px;
+	float: right;
+	padding: 0;
+	margin: 0;
+	margin-top: 5px;
+	margin-right: 10px;
+}
+
+#headerSlogan {
+	width: 400px;
+	height: 100%;
+	float: right;
+}
+
+noscript {
+	width: 100%;
+	height: auto;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: red;
+	background-color: yellow;
+	display: block;
+	text-align: center;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.textRight {
+	text-align: right;
+}
+
+#registration {
+	margin-left: 2em;
+	width: 90%;
+}
+
+#registration tr td:first-child {
+	width: 200px;
+	padding-left: 1em;
+}
+
+.icon {
+	width: 25px;
+	height: 25px;
+	padding-right: 5px;
+}
+
+.language_icon {
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+fieldset {
+	border:0;
+}
+.label {
+	width:150px;
+	display:inline-block;
+	text-align:right;
+	margin-right:10px;
+}

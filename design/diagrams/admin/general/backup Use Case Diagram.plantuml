@@ -1,0 +1,12 @@
+@startuml
+:Admin:
+
+usecase part_backup as "Create partial backup"
+usecase full_backup as "Create full backup"
+usecase restore as "Restore website
+from backup"
+
+Admin -left-> part_backup
+Admin -up-> restore
+Admin -right-> full_backup
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+!include ../../../items/admin/adminController.iuml
+!include ../../../items/youconix/core/services/Cache.iuml
+
+class admin.modules.general.Cache extends admin.AdminController  {
+    - $cache : Cache
+    
+     + route($s_command : string) : void
+}
+
+admin.modules.general.Cache -right-> youconix.core.services.Cache
+
+hide youconix.core.Object
+@enduml

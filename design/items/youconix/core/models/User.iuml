@@ -1,0 +1,25 @@
+@startuml
+!include data/User.iuml
+
+class youconix.core.models.User extends youconix.core.models.Model {
+    # $a_userModels : array
+    # $userData : User
+    
+    + isSingleton() : bool
+    + getUsersById($a_userid : array) : array
+    + get($i_userid : int = -1) : User
+    + getByName($s_username : string, $s_email : string = '') : User
+    # checkUserid($i_userid : int) : int
+    + getUsers($i_start : int = 0) : array
+    + searchUser($s_username : string) : array
+    + getSalt($s_username : string, $s_loginType : string) : string
+    + activate($s_code : string) : bool
+    + createUser() : User
+    + checkUsername($s_username : string, $i_userid : int = -1, $s_type : string = 'normal') : bool
+    + checkEmail($s_email : string, $i_userid : int= -1) : bool
+    + getSiteAdmins() : array
+    + getUserIDs() : array
+}
+
+youconix.core.models.User -right-> youconix.core.models.data.User
+@enduml

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <encoding>iso-8859-1</encoding>
+  <locale><![CDATA[nl_NL]]></locale>
+  <noscript>Activeer AUB javascript.</noscript>
+  <sessionExpired>Uw sessie is verlopen. Opnieuw inloggen.</sessionExpired>
+  <title/>
+  <registration>
+    <title>Meld je nu aan</title>
+    <screenTitle>Registreren</screenTitle>
+    <name>Gebruikernaam</name>
+    <email>E-mail adres</email>
+    <password1>Wachtwoord</password1>
+    <password2>Wachtwoord herhalen</password2>
+    <conditions>Ik ga akkoord met de voorwaarden</conditions>
+    <submitButton>Registreren</submitButton>
+    <passwordIncorrect>De wachtwoorden zijn niet gelijk</passwordIncorrect>
+    <checkConditions>De voorwaarden moeten geaccepteerd worden</checkConditions>
+    <failed>Je account kon niet geregistreerd worden. Probeer het later nog een keer.</failed>
+    <emailSend>Je account is geregistreerd. Er is een activeringsmail verzonden naar [email].</emailSend>
+    <emailFailed>De activatie email kon niet verzonden worden.</emailFailed>
+    <captcha>Type de onderstaande code over als controle.</captcha>
+    <notices>
+      <notices0>De gebruikersnaam is niet ingevuld of korter dan 3 tekens.</notices0>
+      <notices1>Het email adres is niet ingevuld of ongeldig.</notices1>
+      <notices2>Je hebt geen wachtwoord ingevuld.</notices2>
+      <passwordInvalid>De wachtwoorden zijn niet gelijk.</passwordInvalid>
+      <codeInvalid>De code is incorrect.</codeInvalid>
+      <usernameTaken>De gebruikersnaam is al in gebruik.</usernameTaken>
+      <emailTaken>Het E-mail adres is al in gebruik.</emailTaken>
+      <passwordToShort>Het wachtwoord moet minimaal 8 tekens lang zijn.</passwordToShort>
+      <veryStrongPassword>Erg sterk wachtwoord</veryStrongPassword>
+      <strongPassword>Sterk wachtwoord</strongPassword>
+      <fairPassword>Redelijk wachtwoord</fairPassword>
+      <weakPassword>Zwak wachtwoord</weakPassword>
+    </notices>
+    <registrationVia>Registratie via</registrationVia>
+    <registration_openID>Registratie via OpenID</registration_openID>
+    <registration_facebook>Registratie via Facebook</registration_facebook>
+  </registration>
+  <activate>
+    <accountActivated><![CDATA[ Je account is geactiveerd. Je kan nu <a href="{LEVEL}authorization/login/index">inloggen.</a> ]]></accountActivated>
+    <accountNotActivated>De activerings-link is ongeldig. Mogelijk is het account al geactiveerd.</accountNotActivated>
+  </activate>
+  <forgotPassword>
+    <header>Wachtwoord resetten</header>
+    <verifyCodeFailed>Het wachtwoord kon niet gereset worden. De reset code is niet geldig.</verifyCodeFailed>
+    <verifyCodeSuccess><![CDATA[ Het wachtwoord is gereset. Je kan nu <a href="{LEVEL}login">inloggen</a>. ]]></verifyCodeSuccess>
+    <fieldsEmpty>Je hebt niet alle velden ingevuld.</fieldsEmpty>
+    <emailError>Het E-mail adres is ongeldig.</emailError>
+    <resetFailed>Onbekende combinatie van gebruikersnaam en E-mail adres.</resetFailed>
+    <resetSuccess>Er is een email verstuurd met verdere instructies.</resetSuccess>
+  </forgotPassword>
+  <login>
+    <title/>
+    <button>Inloggen</button>
+    <registration>Registreren</registration>
+    <forgotPassword>Wachtwoord vergeten</forgotPassword>
+    <editPassword>Wachtwoord aanpassen</editPassword>
+    <currentPassword>Huidige wachtwoord</currentPassword>
+    <newPassword>Nieuwe wachtwoord</newPassword>
+    <newPasswordAgain>Nieuwe wachtwoord herhalen</newPasswordAgain>
+    <currentPasswordIncorrect>Het oude wachtwoord is incorrect.</currentPasswordIncorrect>
+    <autologin>Automatisch inloggen</autologin>
+    <loginFacebook>Inloggen met Facebook</loginFacebook>
+    <loginOpenID>Inloggen met openID</loginOpenID>
+  </login>
+  <menu>
+    <home>Home</home>
+    <registration>Registreren</registration>
+    <login>Inloggen</login>
+    <logout>Uitloggen</logout>
+  </menu>
+  <errors>
+    <error403>
+      <accessDenied>Verboden toegang.</accessDenied>
+      <noRights>Je hebt niet de benodigde rechten om deze pagina te bekijken.</noRights>
+    </error403>
+    <error404>
+      <notFound>Pagina niet gevonden.</notFound>
+      <pageMissing>De opgevraagde pagina is onvindbaar op deze server.</pageMissing>
+    </error404>
+    <error500>
+      <serverError>Oeps er ging iets fout.</serverError>
+      <systemError>Er heeft zich een fout voorgedaan op deze pagina. De administrator is gewaarschuwd.</systemError>
+    </error500>
+  </errors>
+  <messages>
+    <messages>Berichten</messages>
+    <subject>Onderwerp</subject>
+    <sender>Verzender</sender>
+    <recipient>Ontvanger</recipient>
+    <date>Datum</date>
+    <send>Verzonden</send>
+    <sendTo>Verzonden aan</sendTo>
+    <new>Nieuw bericht</new>
+    <form>
+      <read>Gelezen</read>
+      <unread>Ongelezen</unread>
+      <message>Bericht</message>
+      <subject>Onderwerp</subject>
+      <recipient>Ontvanger</recipient>
+      <reset>Opnieuw</reset>
+      <answer>Beantwoorden</answer>
+    </form>
+    <notices>
+      <messageSent><![CDATA[<h2 class="Notice">Je hebt het bericht naar [username] verzonden!]]></messageSent>
+      <noSuchUser><![CDATA[<h2 class="errorNotice">Deze gebruiker bestaat niet!</h2>]]></noSuchUser>
+      <noReceiver>Er is geen ontvanger ingevuld.</noReceiver>
+      <noSubject>Er is geen onderwerp ingevuld.</noSubject>
+      <noMessage>Er is geen bericht ingevuld.</noMessage>
+      <deleteConfirm>Weet je zeker dat je dit bericht wilt verwijderen?</deleteConfirm>
+    </notices>
+  </messages>
+</language>
