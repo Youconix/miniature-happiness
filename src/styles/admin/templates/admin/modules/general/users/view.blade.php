@@ -43,8 +43,8 @@
         </tr>
         <tr>
           <td><label>{{ $loggedinHeader }}</label></td>
-          <td>@if( !empty($user->lastLoggedIn()) )
-            {{ $localisation->dateOrTime($user->lastLoggedIn()) }}
+          <td>@if( $user->getLastLogin()->getTimestamp() != 0 )
+            {{ $localisation->dateOrTime($user->getLastLogin()) }}
             @else 
                 -
             @endif

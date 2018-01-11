@@ -9,6 +9,7 @@
         </nav>
     </section>
     
+  <form id="addForm" method="post" action="path('admin_users_add')">
 	<section class="item_body">
 	    <fieldset>
             <label for="username" class="label">{{ $usernameHeader }}</label>
@@ -20,22 +21,20 @@
 		</fieldset>
 		<fieldset>
 			<label for="bot" class="label">{{ $botHeader }}</label>
-			<input type="radio" name="bot" id="bot_0" value="0" checked="checked"><label>{{ $no }}</label>
-            <input type="radio" name="bot" id="bot_1" value="1"><label>{{ $yes }}</label>
+			{!! $bot->generate() !!}
 		</fieldset>
         
-        <fieldset>
-            <label for="password" class="label">{{ $passwordHeader }}</label>
-            <input type="password" name="password" id="password1" data-validation="{{ $passwordError }}" required>
-        </fieldset>
-        <fieldset>
-            <label for="password2" class="label">{{ $passwordRepeatHeader }}</label>
-            <input type="password" name="password2" id="password2" data-validation="{{ $passwordError }}" required>
-        </fieldset>
+        {!! $passwordForm->generate() !!}
         <fieldset>
                 <input type="submit" value="{{ $saveButton }}" id="userSaveButton">
                 <input type="hidden" id="usernameOK" value="0">
                 <input type="hidden" id="emailOK" value="0">            
         </fieldset>
 	</section>
+  </form>
 </section>
+
+{!! $head !!}
+<script>
+  onOff.init();
+</script>

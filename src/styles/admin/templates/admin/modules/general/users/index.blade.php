@@ -20,12 +20,12 @@
 	      </tr>
 	    </thead>
 	    <tbody>
-	        @foreach($users['data'] as $user)
+	        @foreach($users as $user)
 	            <tr data-id="{{ $user->getId() }}">
 	            	<td>{{ $user->getId() }}</td>
 	            	<td>{{ $user->getUsername() }}</td>
 	            	<td>{{ $user->getEmail() }}</td>
-	            	<td>{!! $localistation->dateOrTime($user->lastLoggedIn()) !!}</td>
+	            	<td>{!! $localistation->dateOrTime($user->getLastLogin()) !!}</td>
 	            	<td>{!! $localistation->dateOrTime($user->getRegistrated()) !!}</td>
 	            </tr>
 	        @endforeach

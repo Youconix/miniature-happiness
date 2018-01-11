@@ -1,0 +1,16 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Youconix/miniature-happiness"
+  },
+  "description": "Miniature-happiness framework",
+  "license": "LGPL-3.0-or-later",
+  "devDependencies": {
+    "babel-preset-minify": "^0.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel-minify": "^0.2.0",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-less": "^3.4.0"
+  }
+}
