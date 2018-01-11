@@ -2,85 +2,83 @@
 
 class Router
 {
+
     private $config;
     private $routes;
     private $exception;
-    
+
     public function __construct()
     {
-      define('NIV','./');
-      
-      try {
-	require (NIV . 'vendor/youconix/core/bootstrap.php');
-	require(NIV.'vendor/youconix/core/Routes.php');
+        define('NIV', './');
 
-        $this->config = \Loader::inject('\Config');
-        $this->routes = \Loader::inject('\youconix\core\Routes');	
+        try {
+            require (NIV . 'vendor/youconix/core/bootstrap.php');
+            require(NIV . 'vendor/youconix/core/Routes.php');
 
-	$this->doRouting();
-      }
-      catch(CoreException $ex){
-	$this->coreException($ex);
-      }
-      catch (Exception $ex) {
-	print_r($ex->getMessage());
-	print_r($ex->getTrace());
-	if( !is_null($this->exception) ){ //loop 
-	  $this->coreException($ex);
-	  return;
-	}
-	
-	$this->exception = $ex;
-	try {
-	  $_SERVER['PHP_SELF'] = '/router.php/errors/error500/index';
-	  
-	  $this->doRouting();
-	} catch (Exception $ex) {
-	  $this->coreException($ex);
-	}
-      }
-      
-      if (class_exists('\youconix\core\Memory')) {
-	\youconix\core\Memory::endProgram();
-      }
+            $this->config = \Loader::inject('\Config');
+            $this->routes = \Loader::inject('\youconix\core\Routes');
+
+            $this->doRouting();
+        } catch (CoreException $ex) {
+            $this->coreException($ex);
+        } catch (Exception $ex) {
+            print_r($ex->getMessage());
+            if (!is_null($this->exception)) { //loop 
+                $this->coreException($ex);
+                return;
+            }
+
+            $this->exception = $ex;
+            try {
+                $_SERVER['PHP_SELF'] = '/router.php/errors/error500/index';
+
+                $this->doRouting();
+            } catch (Exception $ex) {
+                $this->coreException($ex);
+            }
+        }
+
+        if (class_exists('\youconix\core\Memory')) {
+            \youconix\core\Memory::endProgram();
+        }
     }
-    
-    public function __destruct(){
+
+    public function __destruct()
+    {
         $this->s_gui = null;
         $this->obj_class = null;
     }
 
-    private function doRouting(){
-      try {
-	$this->routes->clearException();
-	if( !is_null($this->exception) ){
-	  $this->routes->setException($this->exception);
-	}
-	$controller = $this->routes->findController($this->config);
-	
-	$result = $this->routes->getResult();
-	if( $result instanceof \Output ){
-	  $result->printToScreen();
-	}
-	
-	unset($controller);
-	unset($result);
-      } 
-      catch(Http401Exception $ex){
-	$_SERVER['PHP_SELF'] = '/router.php/login/index';
-	
-	$this->doRouting();
-      }
-      catch(Http403Exception $ex){
-	$_SERVER['PHP_SELF'] = '/router.php/errors/error403/index';
-	
-	$this->doRouting();
-      }
-      catch(Http404Exception $ex){
-	$_SERVER['PHP_SELF'] = '/router.php/errors/error404/index';
-	
-	$this->doRouting();
-      }
+    private function doRouting()
+    {
+        try {
+            $this->routes->clearException();
+            if (!is_null($this->exception)) {
+                $this->routes->setException($this->exception);
+            }
+            $controller = $this->routes->findController($this->config);
+
+            $result = $this->routes->getResult();
+	    
+            if ($result instanceof \Output) {
+                $result->printToScreen();
+            }
+
+            unset($controller);
+            unset($result);
+        } catch (Http401Exception $ex) {
+            $_SERVER['PHP_SELF'] = '/router.php/login/index';
+
+            $this->doRouting();
+        } catch (Http403Exception $ex) {
+            $_SERVER['PHP_SELF'] = '/router.php/errors/403';
+
+            $this->doRouting();
+        } catch (Http404Exception $ex) {
+            $_SERVER['PHP_SELF'] = '/router.php/errors/404';
+
+            $this->doRouting();
+        }
     }
 
     private function coreException($e)
@@ -116,6 +114,7 @@ class Router
   	');
         exit();
     }
+
 }
 
 $router = new Router();

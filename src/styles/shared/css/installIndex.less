@@ -1,0 +1,53 @@
+h1, h2 {
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.2em;
+}
+
+.generalWindows(@width, @float: 'left', @height: 40px){
+  float: @float;
+  border: 2px outset black;
+  min-height: @height;
+  border-radius: 15px;
+  padding: 10px;
+  width: @width;
+}
+
+.link(){
+  color: #222;
+  text-decoration: underline;
+}
+
+#installCompleted {
+  .generalWindows('98%', 'left', '20px');
+  padding: 1%;
+  margin-bottom: 20px;
+}
+
+#gettingStarted {
+  .generalWindows('68%');
+  margin-right: 1.5%;
+  height: 200px;
+  
+  a {
+    .link();
+  }
+}
+
+#maintenance {
+  .generalWindows('25%', 'right');
+  
+  ul {
+    margin-left: 20px;
+  }
+
+  li {
+    list-style-type: disc;
+      
+    a {
+      .link();
+    }
+  }
+}

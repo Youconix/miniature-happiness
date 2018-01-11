@@ -12,11 +12,11 @@
                 <article id="tab_{{ $item->id }}">
                     @foreach( $item->items AS $menuItem )
                         <div class="menu_item" id="{{ $menuItem->item_id }}">
-                            <h2>{{ $menuItem->title }}</h2>
+			  <h2><a href="{!! $menuItem->path !!}">{{ $menuItem->title }}</a></h2>
                             
-                            @foreach( $menuItem->links AS $link )
-                                <p id="{{ $link->link_id }}">{{ $link->link_title }}</p>
-                            @endforeach
+                          @foreach( $menuItem->links AS $link )
+			    <p id="{{ $link->link_id }}"><a href="{!! $link->path !!}">{{ $link->link_title }}</a></p>
+                          @endforeach
                         </div>
                     @endforeach
                 </article>

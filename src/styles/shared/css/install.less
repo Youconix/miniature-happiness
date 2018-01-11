@@ -1,0 +1,163 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style-type: none;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 3px
+}
+
+label {
+  width: 300px;
+  margin-right: 10px;
+  display: inline-block;
+  text-align: right;
+  float: left
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.errorNotice {
+  color: #9a0012;
+}
+
+.Notice {
+  color: #006600;
+}
+
+.grey {
+  background-color: #aeaeaa;
+  color: #939393;
+}
+
+.current {
+  background-color: green;
+  color: #000;
+}
+
+.container {
+  width: 99.9%;
+  height: auto;
+  float: left;
+}
+
+header {
+  width: 1000px;
+  margin: auto;
+  margin-top: 2%;
+  height: 25px;
+  color: #FFF;
+  font-weight: bold;
+  text-align: center;
+}
+
+#stepLink {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+#content {
+  width: 972px;
+  margin: auto;
+  height: auto;
+  min-height: 200px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-left: 4px solid #200000;
+  border-right: 4px solid #200000;
+  background-color: #8f8e21; 
+  background: linear-gradient(top, #8f8e21, #b1b036);
+  opacity: 0.5;
+  
+  > div {
+    font-weight: bold;
+    opacity: 1.0;
+  }
+  
+  > section {
+    width: 95%;
+    margin: auto;
+    text-align: left;
+  }
+}
+
+footer {
+  width: 1000px;
+  margin: auto;
+  height: 25px;
+}
+
+.holder {
+  border-radius: 20px;
+  background-color: #471414; 
+  background: linear-gradient(top, #471414, #983f3f);
+}
+
+.button, a.button {
+  padding: 3px;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  padding: 5px;
+}
+
+.title {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#progressBar {
+  width: 99%;
+  display: block;
+  float: left;
+  padding: 0;
+  margin: 0;
+  padding-left: 5px;
+  margin-bottom: 15px;
+  
+  li {
+    padding: 0;
+    margin: 0;
+    padding: 3px;
+    border-radius: 20px;
+    display: block;
+    margin-right: 5%;
+    width: 20px;
+    text-align: center;
+    float: left;
+  }
+}
+
+#settings {
+  > div {
+    margin-bottom: 20px;
+  }
+
+  select {
+    width: 200px
+  }
+
+  input {
+    width: 300px
+  }
+
+  input[type=button] {
+    width: auto;
+  }
+}
+
+#LDAP_block, #smtp_box {
+  display: none
+}

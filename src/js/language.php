@@ -89,5 +89,5 @@ class Language
     }
 }
 
-\Loader::Inject('\js\Language');
+\Loader::inject('\js\Language');
 ?>

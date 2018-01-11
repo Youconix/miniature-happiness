@@ -3,37 +3,14 @@
 namespace admin;
 
 use \youconix\core\templating\BaseController as BaseController;
-use \youconix\core\templating\gui\AdminLogicClass AS Layout;
 
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *
  * Admin homepage
  *
- * This file is part of Miniature-happiness
- *
- * @copyright Youconix
- * @author Rachelle Scheijen
  * @since 1.0
  */
 class Index extends BaseController
 {
-  /**
-   *
-   * @var \Language
-   */
-  private $language;
 
   /**
    *
@@ -42,25 +19,33 @@ class Index extends BaseController
   private $confirmBox;
 
   /**
+   *
+   * @var \youconix\core\helpers\OnOff
+   */
+  protected $slider;
+
+  /**
    * Constructor
    *
-   * @param \Request $request
-   * @param \Config $config            
-   * @param \Language $language            
-   * @param \Output $template
-   * @param \youconix\core\templating\gui\AdminLogicClass $layout
+   * @param \youconix\core\templating\AdminControllerWrapper $wrapper
    * @param \youconix\core\helpers\ConfirmBox $confirmbox
    */
-  public function __construct(\Request $request, \Language $language,
-                              \Output $template, Layout $layout,
-                              \youconix\core\helpers\ConfirmBox $confirmbox)
+  public function __construct(\youconix\core\templating\AdminControllerWrapper $wrapper,
+      \youconix\core\helpers\ConfirmBox $confirmbox,
+      \youconix\core\helpers\OnOff $slider
+  )
   {
-    parent::__construct($request, $layout, $template);
+    parent::__construct($wrapper);
 
-    $this->language = $language;
     $this->confirmBox = $confirmbox;
+    $this->slider = $slider;
   }
 
+  /**
+   * 
+   * @return \Output
+   * @Route("/controlpanel", name="admin_index_view")
+   */
   public function view()
   {
     $template = $this->createView('admin/index/view', [], 'admin');
@@ -77,9 +62,9 @@ class Index extends BaseController
   protected function setJavascript($template)
   {
     $this->confirmBox->create($template);
-    $template->append('head',
-        '<script src="/js/admin/language.php?lang='.$this->language->getLanguage().'"></script>');
+    $this->slider->addHead($template);
+    $template->set('currentLanguage', $this->getLanguage()->getLanguage());
     $template->set('noscript',
-        '<noscript>'.$this->language->get('language/noscript').'</noscript>');
+		   '<noscript>' . $this->getLanguage()->get('language/noscript') . '</noscript>');
   }
 }
