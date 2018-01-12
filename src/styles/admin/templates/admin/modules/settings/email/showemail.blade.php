@@ -1,11 +1,5 @@
 @extends layouts/admin.blade.php
 
-@section('head')
-<script src="/admin/modules/settings/js/email.js"></script>
-<script src="/js/admin/language.php?lang={{ $currentLanguage }}"></script>
-<link rel="stylesheet" href="/admin/modules/settings/settings.css"/>
-@endsection
-
 @section('body_content')
 <section id="settings">
     <section class="item_header">
@@ -31,9 +25,9 @@
         <h2>{{ $SmtpTitle }}</h2>
         <fieldset>
             <label class="label" for="smtp_active">{{ $smtpActiveText }}</label>
-            <input type="checkbox" id="smtp_active" name="smtp_active" @if( $smtpActive ) checked="checked" @endif value="1">
+            {!! $smtpActive->generate() !!}
         </fieldset>
-        <div id="smtp_settings" @if( !$smtpActive ) style="display:none" @endif>
+        <div id="smtp_settings">
         <fieldset>
             <label class="label" for="smtp_host">{{ $smtpHostText }} *</label>
             <input type="text" id="smtp_host" name="smtp_host" value="{{ $smtpHost }}" data-validation="{{ $smtpHostError }}" required>
@@ -68,4 +62,12 @@
         </form>
     </section>
 </section>
+
+<script>
+<!--
+$(document).ready(() => {
+  settingsEmail.init();
+});
+//-->
+</script>
 @endsection

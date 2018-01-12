@@ -8,43 +8,50 @@
   <upgrade></upgrade>
   <deinstall>deinstall.php</deinstall>
   <title>system/menu/settings</title>
-  <js>js/email.js,js/general.js,js/session.js,js/database.js,js/cache.js,js/language.js,js/settings.js</js>
   <css>settings.min.css</css>
   <block>
     <title>system/settings/email/title</title>
     <id>admin_settings_email</id>
+    <path>admin_settings_email_index</path>
   </block>
   <block>
     <title>system/settings/general/title2</title>
     <id>admin_settings_general</id>
+    <path>admin_settings_general_index</path>
   </block>
   <block>
     <title>system/settings/login/title</title>
     <id>admin_settings_login</id>
+    <path>admin_settings_login_index</path>
   </block>
   <block>
     <title>system/settings/sessions/title</title>
     <id>admin_settings_sessions</id>
+    <path>admin_settings_session_index</path>
   </block>
   <block>
     <title>system/settings/database/title</title>
     <id>admin_settings_database</id>
+    <path>admin_settings_database_index</path>
   </block>
-
   <block>
     <title>system/settings/cache/title</title>
     <id>admin_settings_cache</id>
+    <path>admin_settings_cache</path>
   </block>
   <block>
     <title>system/settings/languages/title</title>
     <id>admin_settings_languages</id>
+    <path>admin_settings_language_index</path>
     <link>
       <title>system/settings/languages/editLanguages</title>
       <id>admin_settings_editLanguages</id>
+      <path>admin_settings_language_edit</path>
     </link>
   </block>	
   <block>
     <title>system/settings/ssl/title</title>
     <id>admin_settings_ssl</id>
+    <path>admin_settings_ssl_index</path>
   </block>
 </module>
