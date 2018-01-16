@@ -1,11 +1,5 @@
 @extends layouts/admin.blade.php
 
-@section('head')
-<script src="/admin/modules/settings/js/session.js"></script>
-<script src="/js/admin/language.php?lang={{ $currentLanguage }}"></script>
-<link rel="stylesheet" href="/admin/modules/settings/settings.css"/>
-@endsection
-
 @section('body_content')
 <section id="settings">
     <section class="item_header">
@@ -15,7 +9,7 @@
     <section class="item_body">        
         <h2 id="notice" class="notice"></h2>
         
-        <form action="path('admin_settings_ssl_save')" method="post" id="ssl_form">
+        <form action="path('admin_settings_session_save')" method="post" id="session_form">
         <fieldset>
             <label class="label" for="session_name">{{ $sessionNameText }} *</label>
             <input type="text" id="session_name" name="session_name" value="{{ $sessionName }}" data-validation="{{ $sessionNameError }}" required>
@@ -33,4 +27,12 @@
         </form>
     </section>
 </section>
+
+<script>
+<!--
+$(document).ready(() => {
+    settingsSession.init();
+});
+//-->
+</script>
 @endsection
