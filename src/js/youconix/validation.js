@@ -11,7 +11,7 @@ function arraySearch(arrayName, value) {
 
 class Validation {
   constructor(){
-    this.skip = new Array('button', 'submit', 'reset', 'checkbox', 'radio');
+    this.skip = new Array('button', 'submit', 'reset', 'checkbox', 'radio', 'hidden');
   }
   init(){
     /* Check for stylesheet */

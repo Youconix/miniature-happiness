@@ -103,8 +103,9 @@
       <title>Login</title>
       <loginRedirect>Redirect after login</loginRedirect>
       <logoutRedirect>Redirect after logout</logoutRedirect>
-      <registrationRedirect>Redirect after registration
-      </registrationRedirect>
+      <registrationRedirect>Redirect after registration</registrationRedirect>
+      <defaultGuard>Default guard</defaultGuard>
+      <registrationEnabled>Users can register</registrationEnabled>
       <normalLogin>Standard login</normalLogin>
       <googleLogin>Google+ login</googleLogin>
       <facebookLogin>Facebook login</facebookLogin>
@@ -113,8 +114,7 @@
       <ldapLogin>LDAP login</ldapLogin>
       <loginChoice>You must choose at least 1.</loginChoice>
       <redirectError>The redirect can not be empty.</redirectError>
-      <facebookAppError>The app ID is not filled in.
-      </facebookAppError>
+      <facebookAppError>The app ID is not filled in.</facebookAppError>
       <facebookAppSecretError>The app secret is not filled in.</facebookAppSecretError>
       <ldapServerError>The LDAP server can not be empty.</ldapServerError>
       <ldapPortError>The LDAP poort can not be empty.</ldapPortError>

@@ -12,12 +12,13 @@ use \youconix\core\templating\AdminController as AdminController;
  */
 abstract class Settings extends AdminController
 {
+
   /**
    *
    * @var \youconix\core\helpers\OnOff
    */
   protected $onOff;
-  
+
   /**
    *
    * @var \Settings
@@ -32,8 +33,7 @@ abstract class Settings extends AdminController
    * @param \Settings $settings
    */
   public function __construct(\youconix\core\templating\AdminControllerWrapper $wrapper,
-			      \youconix\core\helpers\OnOff $onOff,
-			      \Settings $settings)
+			      \youconix\core\helpers\OnOff $onOff, \Settings $settings)
   {
     parent::__construct($wrapper);
 
@@ -57,7 +57,7 @@ abstract class Settings extends AdminController
     }
 
     $s_value = $this->settings->get($s_key);
-    if (empty($s_value) && !empty($default)) {
+    if ($s_value == '' && !empty($default)) {
       return $default;
     }
 
@@ -80,28 +80,62 @@ abstract class Settings extends AdminController
       $this->settings->set($s_key, $s_value);
     }
   }
-  
+
   /**
-     * Loads the given view into the parser
-     *
-     * @param string $s_view
-     *            The view relative to the template-directory
-     * @param array $a_data
-     * 		  Data as key-value pair
-     * @param string $s_templateDir
-     * 		  Override the default template directory
-     * @return \Output
-     * @throws \TemplateException if the view does not exist
-     * @throws \IOException if the view is not readable
-     */
-    protected function createView($s_view, $a_data = [], $s_templateDir = 'admin')
-    {
-        $output = $this->wrapper->getOutput();
+   * Loads the given view into the parser
+   *
+   * @param string $s_view
+   *            The view relative to the template-directory
+   * @param array $a_data
+   * 		  Data as key-value pair
+   * @param string $s_templateDir
+   * 		  Override the default template directory
+   * @return \Output
+   * @throws \TemplateException if the view does not exist
+   * @throws \IOException if the view is not readable
+   */
+  protected function createView($s_view, $a_data = [], $s_templateDir = 'admin')
+  {
+    $output = $this->wrapper->getOutput();
 
-        $output->load($s_view, $s_templateDir);
-        $output->setArray($a_data);
-        $this->wrapper->getLayout()->parse($output);
+    $output->load($s_view, $s_templateDir);
+    $output->setArray($a_data);
+    $this->wrapper->getLayout()->parse($output);
 
-        return $output;
+    return $output;
+  }
+
+  /**
+   * 
+   * @param string $parent
+   * @param string $field
+   * @return string
+   */
+  protected function getText($parent, $field)
+  {
+    return t('system/settings/' . $parent . '/' . $field);
+  }
+
+  protected function badRequest()
+  {
+    $this->getHeaders()->http400();
+    $this->getHeaders()->printHeaders();
+  }
+
+  /**
+   * 
+   * @param string $name
+   * @param boolan $value
+   * @return \youconix\core\helpers\OnOff
+   */
+  protected function createSlider($name, $value)
+  {
+    $slider = clone $this->onOff;
+    $slider->setName($name);
+    if ($value) {
+      $slider->setSelected(true);
     }
+
+    return $slider;
+  }
 }

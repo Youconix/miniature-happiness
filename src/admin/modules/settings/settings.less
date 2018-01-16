@@ -2,6 +2,20 @@
   width:75%;
   height:auto;
   margin:auto;
+  
+  fieldset label.label {
+    width:25%;
+  }
+  input[type="text"],input[type="number"],input[type="password"],input[type="email"] {
+    width:60%;
+  }
+  
+  .login_config {
+    width:80%;
+    float:right;
+    margin-bottom:25px;
+    display:none;
+  }
 }
 
 #settings input[type="text"], #settings input[type="password"], #settings input[type="number"], #settings input[type="email"] {
@@ -52,15 +66,6 @@
 #admin_settings_ssl h2, #settings_ssl_title {
   background-image: url('/admin/modules/general/icons/youconix.png');
   background-position: 0 -165px;
-}
-
-#settings {
-  fieldset label.label {
-    width:25%;
-  }
-  input[type="text"],input[type="number"],input[type="password"],input[type="email"] {
-    width:60%;
-  }
 }
 
 #language_list_block {

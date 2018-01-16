@@ -108,8 +108,9 @@
       <title>Inloggen</title>
       <loginRedirect>Verwijzing na inloggen</loginRedirect>
       <logoutRedirect>Verwijzing na uitloggen</logoutRedirect>
-      <registrationRedirect>Verwijzing na registratie
-      </registrationRedirect>
+      <registrationRedirect>Verwijzing na registratie</registrationRedirect>
+      <defaultGuard>Standaard guard</defaultGuard>
+      <registrationEnabled>Gebruikers kunnen zich registreren</registrationEnabled>
       <normalLogin>Standaard login</normalLogin>
       <googleLogin>Google+ login</googleLogin>
       <facebookLogin>Facebook login</facebookLogin>
@@ -118,8 +119,7 @@
       <ldapLogin>LDAP login</ldapLogin>
       <loginChoice>Minimaal 1 moet er gekozen worden.</loginChoice>
       <redirectError>De verwijziging kan niet leeg zijn.</redirectError>
-      <facebookAppError>De app ID is niet ingevuld.
-      </facebookAppError>
+      <facebookAppError>De app ID is niet ingevuld.</facebookAppError>
       <facebookAppSecretError>De app secret is niet ingevuld.</facebookAppSecretError>
       <ldapServerError>De LDAP server kan niet leeg zijn.</ldapServerError>
       <ldapPortError>De LDAP poort kan niet leeg zijn.</ldapPortError>
