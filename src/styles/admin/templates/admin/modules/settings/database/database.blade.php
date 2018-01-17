@@ -1,11 +1,5 @@
 @extends layouts/admin.blade.php
 
-@section('head')
-<script src="/admin/modules/settings/js/database.js"></script>
-<script src="/js/admin/language.php?lang={{ $currentLanguage }}"></script>
-<link rel="stylesheet" href="/admin/modules/settings/settings.css"/>
-@endsection
-
 @section('body_content')
 <section id="settings">
     <section class="item_header">
@@ -53,4 +47,12 @@
         </form>
     </section>
 </section>
+
+<script>
+<!--
+$(document).ready(() => {
+    settingsDatabase.init();
+});
+//-->
+</script>
 @endsection
