@@ -1,11 +1,5 @@
 @extends layouts/admin.blade.php
 
-@section('head')
-<script src="/admin/modules/settings/js/general.js"></script>
-<script src="/js/admin/language.php?lang={{ $currentLanguage }}"></script>
-<link rel="stylesheet" href="/admin/modules/settings/settings.css"/>
-@endsection
-
 @section('body_content')
 
 <section id="settings">
@@ -16,7 +10,7 @@
     <section class="item_body">        
         <h2 id="notice" class="notice"></h2>
         
-        <form action="path('admin_settings_ssl_save')" method="post">
+        <form action="path('admin_settings_ssl_save')" method="post" id="ssl_form">
         <fieldset>
             <label class="label">{{ $noSslText }}</label>
             <input type="radio" name="ssl" value="{{ $no_ssl }}" {!! $no_ssl_value !!}>
@@ -36,4 +30,12 @@
         </form>
     </section>
 </section>
+
+<script>
+<!--
+$(document).ready(() => {
+    settingsSSL.init();
+});
+//-->
+</script>
 @endsection
