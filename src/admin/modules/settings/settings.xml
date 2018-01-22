@@ -53,11 +53,6 @@
     <title>system/settings/languages/title</title>
     <id>admin_settings_languages</id>
     <path>admin_settings_language_index</path>
-    <link>
-      <title>system/settings/languages/editLanguages</title>
-      <id>admin_settings_editLanguages</id>
-      <path>admin_settings_language_edit</path>
-    </link>
   </block>	
   <block>
     <title>system/settings/ssl/title</title>

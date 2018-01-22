@@ -132,9 +132,8 @@
     </sessions>
     <languages>
       <title>Languages</title>
-      <installLanguages>Install languages</installLanguages>
-      <editLanguages>Edit language files</editLanguages>
-      <file>File</file>
+      <defaultLanguage>Default language</defaultLanguage>
+      <fallbackLanguage>Fallback language</fallbackLanguage>
     </languages>
     <cache>
       <title>Cache settings</title>

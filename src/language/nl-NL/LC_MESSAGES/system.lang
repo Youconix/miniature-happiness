@@ -138,9 +138,8 @@
     <smtp>SMTP</smtp>
     <languages>
       <title>Talen</title>
-      <installLanguages>Talen installeren</installLanguages>
-      <editLanguages>Taalbestanden bewerken</editLanguages>
-      <file>Bestand</file>
+      <defaultLanguage>Standaard taal</defaultLanguage>
+      <fallbackLanguage>Alternative taal</fallbackLanguage>
     </languages>
     <cache>
       <title>Cache instellingen</title>
