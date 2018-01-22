@@ -147,15 +147,21 @@
       <cacheActive>Caching geactiveerd</cacheActive>
       <cacheExpire>Cache verloop tijd in seconden.</cacheExpire>
       <expireError>De verlooptijd moet minimaal 60 seconden zijn.</expireError>
-      <excludedCaching>Pagina's uitgesloten van caching</excludedCaching>
+      <excludeCache>Pagina's uitgesloten van caching</excludeCache>
+      <excludeTitle>Sluit een pagina uit van de cache</excludeTitle>
+      <addExcludeTitle>Verwijder cache uitsluiting</addExcludeTitle>
       <page>Pagina</page>			
       <languageCache>Taal bestanden cache verwijderen</languageCache>
       <siteCache>Site cache verwijderen</siteCache>
       <title>Cache verwijderen</title>
-      <language>Weet u zeker dat u de taal cache wilt verwijderen?
-      </language>
+      <language>Weet u zeker dat u de taal cache wilt verwijderen?</language>
       <site>Weet u zeker dat u de site cache wilt verwijderen?</site>
+      <cacheAgainTitle>Cache uitzondering verwijderen</cacheAgainTitle>
       <cacheAgain>Weet u zeker dat u deze pagina weer wilt cachen?</cacheAgain>
+      <emptyCache>Caches legen</emptyCache>
+      <emptyCacheProgress>Bezig met de cache te legen...</emptyCacheProgress>
+      <emptyCacheComplete>Cache geleegd</emptyCacheComplete>
+      <emptyCacheButton>Caches legen</emptyCacheButton>
     </cache>
     <email>
       <title>E-mail</title>

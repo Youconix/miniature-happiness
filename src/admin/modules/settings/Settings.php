@@ -104,6 +104,19 @@ abstract class Settings extends AdminController
 
     return $output;
   }
+  
+  /**
+   * 
+   * @param array $a_data
+   */
+  protected function createJsonResponse(array $a_data)
+  {
+    $this->getHeaders()->contentType('application/json');
+    $this->getHeaders()->printHeaders();
+    
+    echo(json_encode($a_data));
+    die();
+  }
 
   /**
    * 

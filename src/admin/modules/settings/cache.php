@@ -1,172 +1,212 @@
 <?php
+
 namespace admin\modules\settings;
 
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *
- * Admin settings configuration class
- *
- * This file is part of Miniature-happiness
- *
- * @copyright Youconix
+ * Cache configuration class
  * @author Rachelle Scheijen
  * @since 1.0
  */
 class Cache extends \admin\modules\settings\Settings
 {
 
-    /**
-     *
-     * @var \Cache
-     */
-    private $cache;
+  /**
+   *
+   * @var \Cache
+   */
+  private $cache;
+  
+  /**
+   *
+   * @var \youconix\core\Routes
+   */
+  private $routes;
+  
+  /**
+   *
+   * @var \youconix\core\ORM\EntityHelper
+   */
+  private $entityHelper;
 
-    /**
-     * Constructor
-     *
-     * @param \Input $Input            
-     * @param \Config $config            
-     * @param \Language $language            
-     * @param \Output $template            
-     * @param \Logger $logs            
-     * @param \Settings $settings            
-     * @param \Cache $cache            
-     */
-    public function __construct(\core\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \Cache $cache)
-    {
-        parent::__construct($Input, $config, $language, $template, $logs, $settings);
-        
-        $this->cache = $cache;
+  /**
+   * Constructor
+   *
+   * @param \youconix\core\templating\AdminControllerWrapper $wrapper
+   * @param \youconix\core\helpers\OnOff $onOff
+   * @param \Settings $settings 
+   * @param \Cache $cache            
+   * @param \youconix\core\Routes $routes
+   * @param \youconix\core\ORM\EntityHelper $entityHelper
+   */
+  public function __construct(\youconix\core\templating\AdminControllerWrapper $wrapper,
+			      \youconix\core\helpers\OnOff $onOff, \Settings $settings, 
+			      \Cache $cache, \youconix\core\Routes $routes,
+			      \youconix\core\ORM\EntityHelper $entityHelper)
+  {
+    parent::__construct($wrapper, $onOff, $settings);
+
+    $this->cache = $cache;
+    $this->routes = $routes;
+    $this->entityHelper = $entityHelper;
+  }
+  
+  /**
+   * Inits the class Settings
+   */
+  protected function init()
+  {
+    $this->init_post = [
+	'cacheActive' => 'boolean',
+	'expire' => 'int',
+	'page' => 'string',
+	'id' => 'int'
+    ];
+
+    parent::init();
+  }
+
+  /**
+   * Loads the cache settings
+   * @Route("/admin/settings/cache", name="admin_settings_cache")
+   */
+  public function cache()
+  {
+    $template = $this->createView('admin/modules/settings/cache/cache');
+    
+    $cacheActive = $this->createSlider('cacheActive', $this->getValue('cache/status'));
+    
+    $template->set('cacheTitle', $this->getText('cache', 'title'));
+    $template->set('cacheActiveText', $this->getText('cache', 'cacheActive'));
+    $template->set('cacheActive', $cacheActive);
+    $template->set('cacheExpireText',$this->getText('cache', 'cacheExpire'));
+    $template->set('expireError', $this->getText('cache', 'expireError'));
+    $template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
+    $template->set('saveButton', t('system/buttons/save'));
+    
+    $this->setDefaultValues($template);
+    
+    return $template;
+  }
+
+  /**
+   * Saves the cache settings
+   * @Route("/admin/settings/cache/save", name="admin_settings_cache_save")
+   */
+  public function cacheSave()
+  {
+    $post = $this->getRequest()->post();
+    if (!$post->validate([
+	    'cacheActive' => 'required|set:0,1',
+	    'expire' => 'required|type:int|min:60'
+	])) {
+      $this->badRequest();
+      return;
     }
 
-    /**
-     * Routes the controller
-     *
-     * @see Routable::route()
-     */
-    public function route($s_command)
-    {
-        if ($_SERVER["REQUEST_METHOD"] != 'POST') {
-            $this->cache();
-        } else
-            switch ($s_command) {
-                case 'cache':
-                    $this->cacheSave();
-                    break;
-                
-                case 'addNoCache':
-                    $this->addNoCache();
-                    break;
-                
-                case 'deleteNoCache':
-                    $this->deleteNoCache();
-                    break;
-            }
+    $this->setValue('cache/status', $post->get('cacheActive'));
+    $this->setValue('cache/timeout', $post->get('expire'));
+    $this->settings->save();
+  }
+  
+  /**
+   * @Route("/admin/settings/cache/no/screen", name="admin_settings_cache_exclude")
+   */
+  public function noCacheScreen()
+  {
+    $template = $this->createView('admin/modules/settings/cache/no_cache');
+    
+    $template->set('cacheTitle', $this->getText('cache', 'excludeCache'));
+    
+    $pages = $this->cache->getNoCachePages();
+    $addresses = $this->routes->getAllAddresses();
+    
+    $noCache = [];
+    foreach ($pages as $page) {
+      $noCache[] = [
+	  'id' => $page['id'],
+	  'name' => $page['page']
+      ];
+      
+      $addresses = array_diff($addresses, [$page['page']]);
+    }
+    $template->set('noCache', $noCache);
+    
+    asort($addresses);
+    $template->set('addresses', $addresses);
+    $template->set('excludeTitle', $this->getText('cache', 'excludeTitle'));
+    $template->set('addExcludeTitle', $this->getText('cache', 'addExcludeTitle'));
+    $template->set('delete', t('system/buttons/delete'));
+    $template->set('saveButton', t('system/buttons/save'));
+    $template->set('page', t('system/settings/cache/page'));
+    $template->set('addButton', t('system/buttons/add'));
+    
+    $this->setDefaultValues($template);
+    
+    return $template;
+  }
+
+  /**
+   * Adds a no cache item
+   * @Route("/admin/settings/cache/no", name="admin_settings_no_cache")
+   */
+  public function addNoCache()
+  {
+    $post = $this->getRequest()->post();
+    if (!$post->validate([
+      'page' => 'required|type:string'
+      ])) {
+      $this->badRequest();
+      return;
     }
 
-    /**
-     * Inits the class Settings
-     */
-    protected function init()
-    {
-        $this->init_post = array(
-            'cache' => 'boolean',
-            'expire' => 'int',
-            'page' => 'string',
-            'id' => 'int'
-        );
-        
-        parent::init();
+    $id = $this->cache->addNoCachePage($post->get('page'));
+    $this->createJsonResponse([
+	'id' => $id,
+	'name' => $post->get('page')
+    ]);
+  }
+
+  /**
+   * Deletes the no cache item
+   * @Route("/admin/settings/cache/delete", name="admin_settings_cache_delete")
+   */
+  public function deleteNoCache()
+  {
+    $post = $this->getRequest()->post();
+    if (!$post->validate([
+	    'id' => 'required|type:int|min:1'
+	])) {
+      return;
     }
 
-    /**
-     * Loads the cache settings
-     */
-    private function cache()
-    {
-        $this->template->set('cacheTitle', t('system/settings/cache/title'));
-        $this->template->set('cacheActiveText', t('system/settings/cache/cacheActive'));
-        if ($this->getValue('cache/status') == 1) {
-            $this->template->set('cacheActive', 'checked="checked"');
-        } else {
-            $this->template->set('cacheSettings', 'style="display:none"');
-        }
-        
-        $this->template->set('cacheExpireText', t('system/settings/cache/cacheExpire'));
-        $this->template->set('expireError',t('system/settings/cache/expireError'));
-        $this->template->set('cacheExpire', $this->getValue('cache/timeout', 86400));
-        
-        $a_pages = $this->cache->getNoCachePages();
-        foreach ($a_pages as $a_page) {
-            $this->template->setBlock('noCache', array(
-                'id' => $a_page['id'],
-                'name' => $a_page['page']
-            ));
-        }
-        
-        $this->template->set('excludedCachingTitle',t('system/settings/cache/excludedCaching'));
-        $this->template->set('delete', t('system/buttons/delete'));
-        $this->template->set('saveButton', t('system/buttons/save'));
-        $this->template->set('page', t('system/settings/cache/page'));
-        $this->template->set('addButton', t('system/buttons/add'));
-    }
-
-    /**
-     * Saves the cache settings
-     */
-    private function cacheSave()
-    {
-        if (! $this->post->validate(array(
-            'cache' => 'required|set:0,1',
-            'expire' => 'required|type:int|min:60'
-        ))) {
-            return;
-        }
-        
-        $this->setValue('cache/status', $this->post['cache']);
-        $this->setValue('cache/timeout', $this->post['expire']);
-        $this->settings->save();
-    }
-
-    /**
-     * Adds a no cache item
-     */
-    private function addNoCache()
-    {
-        if (! $this->post->validate(array(
-            'page' => 'required|type:string'
-        ))) {
-            return;
-        }
-        
-        $i_id = $this->cache->addNoCachePage($this->post['page']);
-        $this->template->set('id', $i_id);
-        $this->template->set('name', $this->post['page']);
-        $this->template->set('delete', t('system/buttons/delete'));
-    }
-
-    /**
-     * Deletes the no cache item
-     */
-    private function deleteNoCache()
-    {
-        if (! $this->post->validate(array(
-            'id' => 'required|type:int|min:1'
-        ))) {
-            return;
-        }
-        
-        $this->cache->deleteNoCache($this->post['id']);
-    }
+    $this->cache->deleteNoCache($post->get('id'));
+  }
+  
+  /**
+   * @Route("/admin/settings/cache/empty/screen", name="admin_settings_cache_empty_screen")
+   */
+  public function emptyCacheScreen()
+  {
+    $template = $this->createView('admin/modules/settings/cache/empty_cache');
+    
+    $template->set('cacheTitle', $this->getText('cache', 'emptyCache'));
+    $template->set('cacheRemovalProcess', $this->getText('cache', 'emptyCacheProgress'));
+    $template->set('cacheRemovalComplete', $this->getText('cache', 'emptyCacheComplete'));
+    $template->set('emptyButton', $this->getText('cache', 'emptyCacheButton'));
+    
+    $this->setDefaultValues($template);
+    
+    return $template;
+  }
+  
+  /**
+   * @Route("/admin/settings/cache/empty", name="admin_settings_cache_empty")
+   */
+  public function emptyCache()
+  {
+    $this->cache->clearSiteCache();
+    $this->cache->cleanLanguageCache();
+    $this->entityHelper->dropCache();
+    $this->routes->dropCache();
+  }
 }

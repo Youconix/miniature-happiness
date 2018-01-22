@@ -38,6 +38,16 @@
     <title>system/settings/cache/title</title>
     <id>admin_settings_cache</id>
     <path>admin_settings_cache</path>
+    <link>
+      <title>system/settings/cache/excludeCache</title>
+      <id>admin_settings_cache_exclude</id>
+      <path>admin_settings_cache_exclude</path>
+    </link>
+    <link>
+      <title>system/settings/cache/emptyCache</title>
+      <id>admin_settings_cache_empty</id>
+      <path>admin_settings_cache_empty_screen</path>
+    </link>
   </block>
   <block>
     <title>system/settings/languages/title</title>

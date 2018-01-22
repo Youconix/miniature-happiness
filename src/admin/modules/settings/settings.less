@@ -25,19 +25,20 @@
   width:20%;
 }
 
-#settings_general_title, #settings_ssl_title {
+#settings_general_title, #settings_ssl_title,#settings_no_cache_title {
   width: 50%;
 }
 
 /* Icons */
 #admin_settings_e-mail h2, #admin_settings_general h2,
 #admin_settings_database h2, #admin_settings_login h2,
-#admin_settings_sessions h2, #admin_settings_cache h2,
+#admin_settings_sessions h2, #admin_settings_cache_settings h2,
 #admin_settings_ssl h2,
 #admin_settings_languages h2, #settings_email_title,
 #settings_general_title, #settings_login_title,
 #settings_sessions_title, #settings_templates_title,
-#settings_database_title,#settings_language_title,#settings_ssl_title,#settings_language_edit_title  {
+#settings_database_title,#settings_language_title,#settings_ssl_title,#settings_language_edit_title,
+#settings_no_cache_title {
   background-image: url('/admin/modules/settings/icons/youconix.png');
   background-size: 25px;
   background-repeat: no-repeat;
@@ -59,8 +60,9 @@
   background-position: 0 -225px;
 }
 
-#admin_settings_cache h2, #admin_settings_languages h2,
-#admin_settings_cache, #settings_language_title,#settings_language_edit_title {
+#admin_settings_cache_settings h2, #admin_settings_languages h2,
+#admin_settings_cache_settings, #settings_language_title,#settings_language_edit_title,
+#settings_no_cache_title{
   background-position: 0px -62px;
 }
 #admin_settings_ssl h2, #settings_ssl_title {
@@ -107,3 +109,11 @@
 }
 #settings_language_edit_title { width:60%}
 #language_editor nav { width:30%}
+#cacheSettings {
+  display:none;
+}
+#remove_caches {
+  #delete_process, #delete_done {
+    display:none;
+  }
+}

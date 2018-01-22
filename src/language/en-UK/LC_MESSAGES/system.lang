@@ -141,15 +141,21 @@
       <cacheActive>Caching activated</cacheActive>
       <cacheExpire>Cache expire time in seconds.</cacheExpire>
       <expireError>The expire time must be at least 60 seconds.</expireError>
-      <excludedCaching>Pages excluded from caching</excludedCaching>
+      <excludeCache>Pages excluded from caching</excludeCache>
+      <excludeTitle>Exclude page from cache</excludeTitle>
+      <addExcludeTitle>Add excluded page to cache</addExcludeTitle>
       <page>Page</page>
       <languageCache>Remove language cache files</languageCache>
       <siteCache>Remove site cache files</siteCache>
-      <title>Remove cache</title>
-      <language>Are you sure you want to delete the language cache?
-      </language>
+      <title>Cache settings</title>
+      <language>Are you sure you want to delete the language cache?</language>
       <site>Are you sure you want to delete the site cache?</site>
+      <cacheAgainTitle>Remove cache exclusion</cacheAgainTitle>
       <cacheAgain>Are you sure you want to cache this page again?</cacheAgain>
+      <emptyCache>Empty caches</emptyCache>
+      <emptyCacheProgress>Cache removal in progress...</emptyCacheProgress>
+      <emptyCacheComplete>Cache removal complete</emptyCacheComplete>
+      <emptyCacheButton>Empty caches</emptyCacheButton>
     </cache>
     <email>
       <title>E-mail</title>
