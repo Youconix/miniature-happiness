@@ -1,11 +1,5 @@
 @extends layouts/admin.blade.php
 
-@section('head')
-<script src="/admin/modules/settings/js/general.js"></script>
-<script src="/js/admin/language.php?lang={{ $currentLanguage }}"></script>
-<link rel="stylesheet" href="/admin/modules/settings/settings.css"/>
-@endsection
-
 @section('body_content')
 <section id="settings">
     <section class="item_header">
@@ -26,7 +20,7 @@
         </fieldset>
         <fieldset>
             <label class="label" for="timezone">{{ $timezoneText }} *</label>
-            <input type="text" id="timezone" name="timezone" value="{{ $timezone }}" pattern="^[A-Z]{$1}[a-z]+/{$1}[A-Z]{$1}[a-z]+$" 
+            <input type="text" id="timezone" name="timezone" value="{{ $timezone }}" pattern="^[A-Z]{1}[a-z]+/{1}[A-Z]{1}[a-z]+$" 
                 data-validation="{{ $timezoneError }}" required>
         </fieldset>
         <fieldset><br></fieldset>
@@ -63,4 +57,12 @@
         </form>
     </section>
 </section>
+
+<script>
+  <!--
+  $(document).ready(() => {
+    settingsGeneral.init();
+  });
+  //-->
+</script>
 @endsection

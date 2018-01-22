@@ -1,0 +1,119 @@
+#settings {
+  width:75%;
+  height:auto;
+  margin:auto;
+  
+  fieldset label.label {
+    width:30%;
+  }
+  input[type="text"],input[type="number"],input[type="password"],input[type="email"] {
+    width:60%;
+  }
+  
+  .login_config {
+    width:80%;
+    float:right;
+    margin-bottom:25px;
+    display:none;
+  }
+}
+
+#settings input[type="text"], #settings input[type="password"], #settings input[type="number"], #settings input[type="email"] {
+  width:40%;
+}
+#settings span.validation-error-message {
+  width:20%;
+}
+
+#settings_general_title, #settings_ssl_title,#settings_no_cache_title {
+  width: 50%;
+}
+
+/* Icons */
+#admin_settings_e-mail h2, #admin_settings_general h2,
+#admin_settings_database h2, #admin_settings_login h2,
+#admin_settings_sessions h2, #admin_settings_cache_settings h2,
+#admin_settings_ssl_encryption h2,
+#admin_settings_languages h2, #settings_email_title,
+#settings_general_title, #settings_login_title,
+#settings_sessions_title, #settings_templates_title,
+#settings_database_title,#settings_language_title,#settings_ssl_title,#settings_language_edit_title,
+#settings_no_cache_title {
+  background-image: url('/admin/modules/settings/icons/youconix.png');
+  background-size: 25px;
+  background-repeat: no-repeat;
+  padding-left: 30px;
+}
+
+#admin_settings_e-mail h2, #settings_email_title {
+  background-position: 0px 0px;
+}
+
+#admin_settings_general h2, #admin_settings_database h2,
+#settings_general_title, #settings_database_title {
+  background-position: 0px -33px;
+}
+
+#admin_settings_login h2, #admin_settings_sessions h2,
+#settings_login_title, #settings_sessions_title {
+  background-image: url('/admin/modules/general/icons/youconix.png');
+  background-position: 0 -225px;
+}
+
+#admin_settings_cache_settings h2, #admin_settings_languages h2,
+#admin_settings_cache_settings, #settings_language_title,#settings_language_edit_title,
+#settings_no_cache_title{
+  background-position: 0px -62px;
+}
+#admin_settings_ssl_encryption h2, #settings_ssl_title {
+  background-image: url('/admin/modules/general/icons/youconix.png');
+  background-position: 0 -165px;
+}
+
+#language_list_block {
+  width:50%;
+  margin-left:15%;
+}
+#language_list li {
+  list-style-type:circle;
+}
+
+#language_tree {
+  li {
+    display:inline-block;
+    margin-left:15px;
+    float:left;
+    width:95%;
+  }
+  .tree {
+    display:inline-block;
+    margin-right:5px;
+    cursor:pointer;
+  }
+  .closed {
+    display:none;
+  }
+  .open {
+    display:inline-block;
+  }
+  ul.closed > li {
+    display:none;
+  }
+
+  ul.open>li, .open>li {
+    display:inline-block;
+  }
+}
+#languageEditor {
+  width:98%;
+}
+#settings_language_edit_title { width:60%}
+#language_editor nav { width:30%}
+#cacheSettings {
+  display:none;
+}
+#remove_caches {
+  #delete_process, #delete_done {
+    display:none;
+  }
+}

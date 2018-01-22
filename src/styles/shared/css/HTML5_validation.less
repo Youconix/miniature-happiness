@@ -8,13 +8,13 @@
 input[type=text].invalid, input[type=password].invalid, input[type=number].invalid,
 	input[type=email].invalid, input[type=url].invalid, input[type=tel].invalid,
 	textarea.invalid {
-  .validImage('../images/icons/invalid.png');
+  .validImage('/styles/shared/images/icons/invalid.png');
 }
 
 input[type=text].valid, input[type=password].valid, input[type=number].valid,
 	input[type=email].valid, input[type=url].valid, input[type=tel].valid,
 	textarea.valid {
-  .validImage('../images/icons/valid.png');
+  .validImage('/styles/shared/images/icons/valid.png');
 }
 
 select.invalid {
@@ -23,14 +23,16 @@ select.invalid {
 }
 
 .validation-error-message {
-  display: inline-block;
   margin: 5px;
   border: 4px solid grey;
   background-color: grey;
   color: white;
   padding: 4px;
-  max-width: 350px;
+  max-width: 500px;
   height: auto;
   border-radius: 5px;
   box-shadow: 10px 10px 5px #888888;
+  position:absolute;
+  display:none;
+  z-index:500;
 }

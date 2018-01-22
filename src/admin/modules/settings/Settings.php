@@ -1,91 +1,154 @@
 <?php
+
 namespace admin\modules\settings;
 
+use \youconix\core\templating\AdminController as AdminController;
+
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *
  * Admin settings configuration class
  *
- * This file is part of Miniature-happiness
- *
- * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
  */
-
-abstract class Settings extends \core\AdminLogicClass
+abstract class Settings extends AdminController
 {
 
-    /**
-     *
-     * @var \Settings
-     */
-    protected $settings;
+  /**
+   *
+   * @var \youconix\core\helpers\OnOff
+   */
+  protected $onOff;
 
-    /**
-     * Constructor
-     * 
-     * @param \Input $Input
-     * @param \Config $config
-     * @param \Language $language
-     * @param \Output $template
-     * @param \Logger $logs
-     * @param \Settings $settings
-     */
-    public function __construct(\Input $Input,\Config $config,\Language $language,\Output $template,\Logger $logs,\Settings $settings){
-        parent::__construct($Input, $config, $language, $template, $logs);
-        
-        $this->settings = $settings;
+  /**
+   *
+   * @var \Settings
+   */
+  protected $settings;
+
+  /**
+   * Constructor
+   * 
+   * @param \youconix\core\templating\AdminControllerWrapper $wrapper
+   * @param \youconix\core\helpers\OnOff $onOff
+   * @param \Settings $settings
+   */
+  public function __construct(\youconix\core\templating\AdminControllerWrapper $wrapper,
+			      \youconix\core\helpers\OnOff $onOff, \Settings $settings)
+  {
+    parent::__construct($wrapper);
+
+    $this->settings = $settings;
+    $this->onOff = $onOff;
+  }
+
+  /**
+   * Returns the value
+   *
+   * @param string $s_key
+   *            The key
+   * @param string $default
+   *            The default value if the key does not exist
+   * @return string The value
+   */
+  protected function getValue($s_key, $default = '')
+  {
+    if (!$this->settings->exists($s_key)) {
+      return $default;
     }
 
-    /**
-     * Returns the value
-     *
-     * @param string $s_key
-     *            The key
-     * @param string $default
-     *            The default value if the key does not exist
-     * @return string The value
-     */
-    protected function getValue($s_key, $default = '')
-    {
-        if (! $this->settings->exists($s_key)) {
-            return $default;
-        }
-        
-        $s_value = $this->settings->get($s_key);
-        if (empty($s_value) && ! empty($default)) {
-            return $default;
-        }
-        
-        return $s_value;
+    $s_value = $this->settings->get($s_key);
+    if ($s_value == '' && !empty($default)) {
+      return $default;
     }
 
-    /**
-     * Sets the value
-     *
-     * @param string $s_key
-     *            The key
-     * @param string $s_value
-     *            The value
-     */
-    protected function setValue($s_key, $s_value)
-    {
-        if (! $this->settings->exists($s_key)) {
-            $this->settings->add($s_key, $s_value);
-        } else {
-            $this->settings->set($s_key, $s_value);
-        }
+    return $s_value;
+  }
+
+  /**
+   * Sets the value
+   *
+   * @param string $s_key
+   *            The key
+   * @param string $s_value
+   *            The value
+   */
+  protected function setValue($s_key, $s_value)
+  {
+    if (!$this->settings->exists($s_key)) {
+      $this->settings->add($s_key, $s_value);
+    } else {
+      $this->settings->set($s_key, $s_value);
     }
+  }
+
+  /**
+   * Loads the given view into the parser
+   *
+   * @param string $s_view
+   *            The view relative to the template-directory
+   * @param array $a_data
+   * 		  Data as key-value pair
+   * @param string $s_templateDir
+   * 		  Override the default template directory
+   * @return \Output
+   * @throws \TemplateException if the view does not exist
+   * @throws \IOException if the view is not readable
+   */
+  protected function createView($s_view, $a_data = [], $s_templateDir = 'admin')
+  {
+    $output = $this->wrapper->getOutput();
+
+    $output->load($s_view, $s_templateDir);
+    $output->setArray($a_data);
+    $this->wrapper->getLayout()->parse($output);
+
+    return $output;
+  }
+  
+  /**
+   * 
+   * @param array $a_data
+   */
+  protected function createJsonResponse(array $a_data)
+  {
+    $this->getHeaders()->contentType('application/json');
+    $this->getHeaders()->printHeaders();
+    
+    echo(json_encode($a_data));
+    die();
+  }
+
+  /**
+   * 
+   * @param string $parent
+   * @param string $field
+   * @return string
+   */
+  protected function getText($parent, $field)
+  {
+    return t('system/settings/' . $parent . '/' . $field);
+  }
+
+  protected function badRequest()
+  {
+    $this->getHeaders()->http400();
+    $this->getHeaders()->printHeaders();
+  }
+
+  /**
+   * 
+   * @param string $name
+   * @param boolan $value
+   * @return \youconix\core\helpers\OnOff
+   */
+  protected function createSlider($name, $value)
+  {
+    $slider = clone $this->onOff;
+    $slider->setName($name);
+    if ($value) {
+      $slider->setSelected(true);
+    }
+
+    return $slider;
+  }
 }

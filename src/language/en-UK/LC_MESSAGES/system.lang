@@ -103,8 +103,9 @@
       <title>Login</title>
       <loginRedirect>Redirect after login</loginRedirect>
       <logoutRedirect>Redirect after logout</logoutRedirect>
-      <registrationRedirect>Redirect after registration
-      </registrationRedirect>
+      <registrationRedirect>Redirect after registration</registrationRedirect>
+      <defaultGuard>Default guard</defaultGuard>
+      <registrationEnabled>Users can register</registrationEnabled>
       <normalLogin>Standard login</normalLogin>
       <googleLogin>Google+ login</googleLogin>
       <facebookLogin>Facebook login</facebookLogin>
@@ -113,8 +114,7 @@
       <ldapLogin>LDAP login</ldapLogin>
       <loginChoice>You must choose at least 1.</loginChoice>
       <redirectError>The redirect can not be empty.</redirectError>
-      <facebookAppError>The app ID is not filled in.
-      </facebookAppError>
+      <facebookAppError>The app ID is not filled in.</facebookAppError>
       <facebookAppSecretError>The app secret is not filled in.</facebookAppSecretError>
       <ldapServerError>The LDAP server can not be empty.</ldapServerError>
       <ldapPortError>The LDAP poort can not be empty.</ldapPortError>
@@ -132,24 +132,29 @@
     </sessions>
     <languages>
       <title>Languages</title>
-      <installLanguages>Install languages</installLanguages>
-      <editLanguages>Edit language files</editLanguages>
-      <file>File</file>
+      <defaultLanguage>Default language</defaultLanguage>
+      <fallbackLanguage>Fallback language</fallbackLanguage>
     </languages>
     <cache>
       <title>Cache settings</title>
       <cacheActive>Caching activated</cacheActive>
       <cacheExpire>Cache expire time in seconds.</cacheExpire>
       <expireError>The expire time must be at least 60 seconds.</expireError>
-      <excludedCaching>Pages excluded from caching</excludedCaching>
+      <excludeCache>Pages excluded from caching</excludeCache>
+      <excludeTitle>Exclude page from cache</excludeTitle>
+      <addExcludeTitle>Add excluded page to cache</addExcludeTitle>
       <page>Page</page>
       <languageCache>Remove language cache files</languageCache>
       <siteCache>Remove site cache files</siteCache>
-      <title>Remove cache</title>
-      <language>Are you sure you want to delete the language cache?
-      </language>
+      <title>Cache settings</title>
+      <language>Are you sure you want to delete the language cache?</language>
       <site>Are you sure you want to delete the site cache?</site>
+      <cacheAgainTitle>Remove cache exclusion</cacheAgainTitle>
       <cacheAgain>Are you sure you want to cache this page again?</cacheAgain>
+      <emptyCache>Empty caches</emptyCache>
+      <emptyCacheProgress>Cache removal in progress...</emptyCacheProgress>
+      <emptyCacheComplete>Cache removal complete</emptyCacheComplete>
+      <emptyCacheButton>Empty caches</emptyCacheButton>
     </cache>
     <email>
       <title>E-mail</title>

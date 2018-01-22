@@ -1,205 +1,215 @@
 <?php
+
 namespace admin\modules\settings;
 
 /**
- * Miniature-happiness is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Database configuration class
  *
- * Miniature-happiness is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Miniature-happiness. If not, see <http://www.gnu.org/licenses/>.
- *
- * Admin settings configuration class
- *
- * This file is part of Miniature-happiness
- *
- * @copyright Youconix
  * @author Rachelle Scheijen
  * @since 1.0
  */
 class Database extends \admin\modules\settings\Settings
 {
 
-    /**
-     *
-     * @var \core\services\FileHandler
-     */
-    private $fileHandler;
+  /**
+   *
+   * @var \youconix\core\services\FileHandler
+   */
+  private $fileHandler;
+  private $dalDirectory;
 
-    /**
-     * Constructor
-     *
-     * @param \Input $Input            
-     * @param \Config $config            
-     * @param \Language $language            
-     * @param \Output $template            
-     * @param \Logger $logs            
-     * @param \Settings $settings            
-     * @param \core\services\FileHandler $fileHandler            
-     */
-    public function __construct(\Input $Input, \Config $config, \Language $language, \Output $template, \Logger $logs, \Settings $settings, \core\services\FileHandler $fileHandler)
-    {
-        parent::__construct($Input, $config, $language, $template, $logs, $settings);
-        
-        $this->fileHandler = $fileHandler;
+  /**
+   * Constructor
+   *
+   * @param \youconix\core\templating\AdminControllerWrapper $wrapper
+   * @param \youconix\core\helpers\OnOff $onOff
+   * @param \Settings $settings            
+   * @param \youconix\core\services\FileHandler $fileHandler
+   */
+  public function __construct(\youconix\core\templating\AdminControllerWrapper $wrapper,
+			      \youconix\core\helpers\OnOff $onOff, \Settings $settings,
+			      \youconix\core\services\FileHandler $fileHandler)
+  {
+    parent::__construct($wrapper, $onOff, $settings);
+
+    $this->fileHandler = $fileHandler;
+    $this->dalDirectory = NIV . 'vendor' . DS . 'youconix' . DS . 'core' . DS . 'ORM' . DS . 'database';
+  }
+
+  /**
+   * Inits the class Settings
+   */
+  protected function init()
+  {
+    $this->init_post = [
+	'prefix' => 'string',
+	'type' => 'string',
+	'username' => 'string',
+	'password' => 'string',
+	'database' => 'string',
+	'host' => 'string',
+	'port' => 'int'
+    ];
+
+    parent::init();
+  }
+
+  /**
+   * Displays the database settings
+   * @Route("/controlpanel/settings/database/index", name="admin_settings_database_index")
+   * @return \Output
+   */
+  public function database()
+  {
+    $template = $this->createView('admin/modules/settings/database/database');
+
+    $template->set('databaseTitle', t('system/settings/database/title'));
+    $template->set('prefixText', t('system/settings/database/prefix'));
+    $template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
+    $template->set('typeText', t('system/settings/database/type'));
+
+    $type = $this->getValue('SQL/type');
+    $databases = $this->getDatabases($type);
+    $template->set('databases', $databases);
+
+    $template->set('usernameText', t('system/settings/username'));
+    $template->set('username', $this->getValue('SQL/' . $type . '/username'));
+    $template->set('passwordText', t('system/settings/password'));
+    $template->set('password', $this->getValue('SQL/' . $type . '/password'));
+    $template->set('databaseText', t('system/settings/database/database'));
+    $template->set('database', $this->getValue('SQL/' . $type . '/database'));
+    $template->set('hostText', t('system/settings/host'));
+    $template->set('host', $this->getValue('SQL/' . $type . '/host'));
+    $template->set('portText', t('system/settings/port'));
+    $template->set('port', $this->getValue('SQL/' . $type . '/port', 3306));
+
+    $template->set('saveButton', t('system/buttons/save'));
+
+    $template->set('prefixError', $this->getText('database', 'prefixError'));
+    $template->set('usernameError', $this->getText('database', 'usernameError'));
+    $template->set('passwordError', $this->getText('database', 'passwordError'));
+    $template->set('databaseError', $this->getText('database', 'databaseError'));
+    $template->set('hostError', $this->getText('database', 'hostError'));
+
+    $this->setDefaultValues($template);
+
+    return $template;
+  }
+
+  /**
+   * 
+   * @param string $type
+   * @return array
+   */
+  private function getDatabases($type)
+  {
+    $directory = $this->fileHandler->readDirectory($this->dalDirectory);
+    $directory = $this->fileHandler->directoryFilterName($directory,
+							 [
+	'*.php',
+	'!_binded',
+	'!GeneralDAL.php',
+	'!Builder_',
+	'!Parser_'
+    ]);
+
+    foreach ($directory as $file) {
+      $name = str_replace('.php', '', $file->getFilename());
+      $selected = (($name == $type) ? 'selected="selected"' : '');
+      $databases[] = [
+	  'value' => $name,
+	  'selected' => $selected,
+	  'text' => $name
+      ];
     }
 
-    /**
-     * Routes the controller
-     *
-     * @see Routable::route()
-     */
-    public function route($s_command)
-    {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $this->database();
-        } else {
-            switch ($s_command) {
-                case 'databaseCheck':
-                    $this->databaseCheck();
-                    break;
-                
-                case 'database':
-                    $this->databaseSave();
-                    break;
-            }
-        }
+    return $databases;
+  }
+
+  /**
+   * Checks the database settings
+   * @Route("/controlpanel/settings/database/check", name="admin_settings_database_check")
+   */
+  public function databaseCheck()
+  {
+    $post = $this->getRequest()->post();
+    if (!$this->validateRequest()) {
+      echo ('0');
+      die();
     }
 
-    /**
-     * Inits the class Settings
-     */
-    protected function init()
-    {
-        $this->init_post = array(
-            'prefix' => 'string',
-            'type' => 'string',
-            'username' => 'string',
-            'password' => 'string',
-            'database' => 'string',
-            'host' => 'string',
-            'port' => 'int'
-        );
-        
-        parent::init();
+    $username = $post->get('username');
+    $password = $post->get('password');
+    $database = $post->get('database');
+    $host = $post->get('host');
+    $port = $post->get('port');
+    $type = $post->get('type');
+
+    switch ($type) {
+      case 'Mysqli':
+	require_once ($this->dalDirectory . '/Mysqli.php');
+	$class = '\youconix\core\ORM\database\Mysqli';
+	break;
+
+      case 'PostgreSql':
+	require_once ($this->dalDirectory . '/PostgreSql.php');
+	$class = '\youconix\core\ORM\database\PostgreSql';
+	break;
     }
 
-    /**
-     * Displays the database settings
-     */
-    private function database()
-    {
-        $this->template->set('databaseTitle', t('system/settings/database/title'));
-        $this->template->set('prefixText', t('system/settings/database/prefix'));
-        $this->template->set('prefix', $this->getValue('SQL/prefix', 'MH_'));
-        $this->template->set('typeText', t('system/settings/database/type'));
-        $s_type = $this->getValue('SQL/type');
-        
-        $directory = $this->fileHandler->readDirectory(NIV . 'core' . DIRECTORY_SEPARATOR . 'database');
-        $directory = $this->fileHandler->directoryFilterName($directory, array(
-            '*.inc.php',
-            '!_binded',
-            '!Database.inc.php',
-            '!builder_'
-        ));
-        foreach ($directory as $file) {
-            $s_name = str_replace('.inc.php', '', $file->getFilename());
-            ($s_name == $s_type) ? $selected = 'selected="selected"' : $selected = '';
-            $this->template->setBlock('type', array(
-                'value' => $s_name,
-                'selected' => $selected,
-                'text' => $s_name
-            ));
-        }
-        
-        $this->template->set('usernameText', t('system/settings/username'));
-        $this->template->set('username', $this->getValue('SQL/' . $s_type . '/username'));
-        $this->template->set('passwordText', t('system/settings/password'));
-        $this->template->set('password', $this->getValue('SQL/' . $s_type . '/password'));
-        $this->template->set('databaseText', t('system/settings/database/database'));
-        $this->template->set('database', $this->getValue('SQL/' . $s_type . '/database'));
-        $this->template->set('hostText', t('system/settings/host'));
-        $this->template->set('host', $this->getValue('SQL/' . $s_type . '/host'));
-        $this->template->set('portText', t('system/settings/port'));
-        $this->template->set('port', $this->getValue('SQL/' . $s_type . '/port', 3306));
-        
-        $this->template->set('saveButton', t('system/buttons/save'));
-        
-        $this->template->set('prefixError',t('system/settings/database/prefixError'));
-        $this->template->set('usernameError',t('system/settings/database/usernameError'));
-        $this->template->set('passwordError',t('system/settings/database/passwordError'));
-        $this->template->set('databaseError',t('system/settings/database/databaseError'));
-        $this->template->set('hostError',t('system/settings/database/hostError'));
+    $oke = $class::checkLogin(
+	    $username, $password, $database, $host, $port
+    );
+
+    if ($oke) {
+      echo ('1');
+    } else {
+      echo ('0');
+    }
+    die();
+  }
+
+  /**
+   * @Route("/controlpanel/settings/database/save", name="admin_settings_database_save")
+   * Saves the database settings
+   */
+  public function databaseSave()
+  {
+    $post = $this->getRequest()->post();
+    if (!$this->validateRequest()) {
+      return;
     }
 
-    /**
-     * Checks the database settings
-     */
-    private function databaseCheck()
-    {
-        if (! $this->post->validate(array(
-            'type' => 'required',
-            'username' => 'required',
-            'password' => 'required',
-            'database' => 'required',
-            'host' => 'required',
-            'port' => 'required|type:port'
-        ))) {
-            echo ('0');
-            die();
-        }
-        $bo_oke = false;
-        switch ($this->post['type']) {
-            case 'Mysqli':
-                require_once (NIV . 'core/database/Mysqli.inc.php');
-                $bo_oke = \core\database\Database_Mysqli::checkLogin($this->post['username'], $this->post['password'], $this->post['database'], $this->post['host'], $this->post['port']);
-                break;
-            
-            case 'PostgreSql':
-                require_once (NIV . 'core/database/PostgreSql.inc.php');
-                $bo_oke = \core\database\Database_PostgreSql::checkLogin($this->post['username'], $this->post['password'], $this->post['database'], $this->post['host'], $this->post['port']);
-                break;
-        }
-        
-        if ($bo_oke) {
-            echo ('1');
-        } else {
-            echo ('0');
-        }
-        die();
+    $type = $post->get('type');
+    $this->setValue('SQL/prefix', $post->get('prefix'));
+    $this->setValue('SQL/type', $type);
+    $this->setValue('SQL/' . $type . '/username', $post->get('username'));
+    $this->setValue('SQL/' . $type . '/password', $post->get('password'));
+    $this->setValue('SQL/' . $type . '/database', $post->get('database'));
+    $this->setValue('SQL/' . $type . '/host', $post->get('host'));
+    $this->setValue('SQL/' . $type . '/port', $post->get('port'));
+
+    $this->settings->save();
+  }
+
+  /**
+   * 
+   * @return boolean
+   */
+  private function validateRequest()
+  {
+    $post = $this->getRequest()->post();
+    if (!$post->validate([
+	    'type' => 'required',
+	    'username' => 'required',
+	    'password' => 'required',
+	    'database' => 'required',
+	    'host' => 'required',
+	    'port' => 'required|type:port'
+	])) {
+      return false;
     }
 
-    /**
-     * Saves the database settings
-     */
-    private function databaseSave()
-    {
-        if (! $this->post->validate(array(
-            'type' => 'required',
-            'username' => 'required',
-            'password' => 'required',
-            'database' => 'required',
-            'host' => 'required',
-            'port' => 'required|type:port'
-        ))) {
-            return;
-        }
-        
-        $s_type = $this->post['type'];
-        $this->setValue('SQL/prefix', $this->post['prefix']);
-        $this->setValue('SQL/type', $s_type);
-        $this->setValue('SQL/' . $s_type . '/username', $this->post['username']);
-        $this->setValue('SQL/' . $s_type . '/password', $this->post['password']);
-        $this->setValue('SQL/' . $s_type . '/database', $this->post['database']);
-        $this->setValue('SQL/' . $s_type . '/host', $this->post['host']);
-        $this->setValue('SQL/' . $s_type . '/port', $this->post['port']);
-        
-        $this->settings->save();
-    }
+    return true;
+  }
 }

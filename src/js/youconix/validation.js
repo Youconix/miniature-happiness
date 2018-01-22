@@ -11,7 +11,7 @@ function arraySearch(arrayName, value) {
 
 class Validation {
   constructor(){
-    this.skip = new Array('button', 'submit', 'reset', 'checkbox', 'radio');
+    this.skip = new Array('button', 'submit', 'reset', 'checkbox', 'radio', 'hidden');
   }
   init(){
     /* Check for stylesheet */
@@ -97,7 +97,7 @@ class Validation {
       }
     });
   }
-  valiateForm(id){
+  validateForm(id){
     let oke = true;
     let form = $('#'+id);
     
@@ -121,7 +121,7 @@ class Validation {
       item = $(item);
       let type = item.prop('type');
 
-      if ((!type) || (arraySearch(this.skip, type) == -1)) {
+      if ((!type) || (arraySearch(this.skip, type) === -1)) {
 	if (!this.html5Validate(item)) {
 	  oke = false;
 	}
@@ -141,18 +141,36 @@ class Validation {
     return this.html5Validate(item);
   }
   errorMessage(item, type = 'missing') {
-    item.next().remove();
-
-    if (item.hasClass('valid')) {
-      item.prop('title', '');
+    let message;
+    
+    if (item.data().hasOwnProperty('validation-' + type) || item.attr('data-validation-' + type)) {
+      message = item.data('validation-' + type);
+    } else if (item.data().hasOwnProperty('validation') || item.attr('data-validation')) {
+      message = item.data('validation');
+    }
+    else {
       return;
     }
-
-    if (item.data().hasOwnProperty('validation-' + type) || item.attr('data-validation-' + type)) {
-      item.after('<span class="validation-error-message">' + item.data('validation-' + type) + '</span>');
-    } else if (item.data().hasOwnProperty('validation') || item.attr('data-validation')) {
-      item.after('<span class="validation-error-message">' + item.data('validation') + '</span>');
-    }
+    
+    let id = this.getErrorMessageId(item);
+    message = '<span class="validation-error-message" id="'+id+'">'+message+'</span>';
+    $(message).insertAfter(item);
+    
+    let position = item.position();
+    message = $('#'+id);
+    let height = parseInt(message.css('height').replace('px',''));
+    
+    let left = (parseFloat(position.left));
+    let top = (parseFloat(position.top) - height - 40);
+    message.css('left',left+'px');
+    message.css('top',top+'px');
+    
+    item.on('mouseover', (event) => {
+      this.showErrorMessage($(event.currentTarget));
+    });
+    item.on('mouseout', (event) => {
+      this.hideErrorMessage($(event.currentTarget));
+    });
   }
   trigger(item,error_type){
     item = $(item);
@@ -160,9 +178,17 @@ class Validation {
     item.removeClass('valid').addClass('invalid');
     this.errorMessage(item,error_type);
   }
+  clearItem(item){
+    item.removeClass("invalid valid");
+    item.off('mouseover');
+    item.off('mouseout');
+    
+    let id = this.getErrorMessageId(item);
+    $('#'+id).remove();    
+  }
   html5Validate(item) {
     item = $(item);
-    item.removeClass("invalid valid");
+    this.clearItem(item);    
 
     let required = $(item).prop("required");
     let isRequired = false;
@@ -241,9 +267,20 @@ class Validation {
     }
 
     item.addClass("valid");
-    this.errorMessage(item);
 
     return true;
+  }
+  showErrorMessage(item){
+    let id = this.getErrorMessageId(item);
+    $('#'+id).fadeIn(500);
+  }
+  hideErrorMessage(item){
+    let id = this.getErrorMessageId(item);
+    $('#'+id).fadeOut(500);
+  }
+  getErrorMessageId(item){
+    let name = item.prop('name');
+    return 'error_message_'+name;
   }
 }
 
@@ -251,4 +288,4 @@ var validation = new Validation();
 
 $(document).ready(function () {
   validation.init();
-})
+});
