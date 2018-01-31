@@ -7,7 +7,7 @@
     </section>
     
     <section class="item_body">
-         <canvas id="screenColorsCanvas" width="1250" height="600">
+         <canvas id="screenColorsCanvas" width="1200" height="600">
          </canvas> 
        
        <script>

@@ -7,7 +7,7 @@
     </section>
     
     <section class="item_body">
-         <canvas id="hitsCanvas" width="1250" height="600">
+         <canvas id="hitsCanvas" width="1200" height="600">
          </canvas> 
          
          <section id="no_html5">

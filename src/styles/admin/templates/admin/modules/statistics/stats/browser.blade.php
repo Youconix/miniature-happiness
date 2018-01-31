@@ -7,7 +7,7 @@
     </section>
     
     <section class="item_body">
-         <canvas id="browserCanvas" width="1250" height="600">
+         <canvas id="browserCanvas" width="1200" height="600">
          </canvas> 
        
        <script>
